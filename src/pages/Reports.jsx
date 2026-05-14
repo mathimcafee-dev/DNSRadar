@@ -126,11 +126,11 @@ export default function Reports({ user }) {
         <div style={{ ...card, marginBottom:14 }}>
           <div style={{ ...cardHd }}><span style={{ fontSize:12, fontWeight:600, color:D.t }}>Upload DMARC aggregate report (XML)</span></div>
           <div style={{ padding:14 }}>
-            <div style={{ fontSize:11, color:D.m, marginBottom:10, lineHeight:1.6 }}>
+            <div style={{ fontSize:12, color:D.m, marginBottom:10, lineHeight:1.6 }}>
               Paste the raw XML content from a DMARC aggregate report. Mail servers (Google, Microsoft, Yahoo) send these to the <code style={{ fontFamily:'monospace', color:'#16a34a' }}>rua=</code> address in your DMARC record. Add <code style={{ fontFamily:'monospace', color:'#16a34a' }}>rua=mailto:reports@dnsradar.easysecurity.in</code> to your DMARC record to receive them automatically.
             </div>
             <textarea value={xmlInput} onChange={e=>setXmlInput(e.target.value)} rows={8} placeholder="<?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?><feedback>..."
-              style={{ width:'100%', padding:'10px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:11, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
+              style={{ width:'100%', padding:'10px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
             {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(16,185,129,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'#00e5a0':'#ff4d6a', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
             <div style={{ display:'flex', gap:8, marginTop:8 }}>
               <button onClick={uploadReport} disabled={uploading||!xmlInput}
@@ -168,7 +168,7 @@ export default function Reports({ user }) {
               { l:'Threats detected', v:threats.length, c:threats.length>0?'#ff4d6a':'#00e5a0', sub:'unauthorised sources' },
             ].map(k=>(
               <div key={k.l} style={{ ...card, padding:'13px 16px' }}>
-                <div style={{ fontSize:11, color:D.m, marginBottom:4 }}>{k.l}</div>
+                <div style={{ fontSize:12, color:D.m, marginBottom:4 }}>{k.l}</div>
                 <div style={{ fontSize:24, fontWeight:700, color:k.c, lineHeight:1 }}>{k.v}</div>
                 <div style={{ fontSize:10, color:D.d, marginTop:4 }}>{k.sub}</div>
               </div>
@@ -214,7 +214,7 @@ export default function Reports({ user }) {
           <div style={{ ...card, marginBottom:14 }}>
             <div style={{ ...cardHd }}>
               <span style={{ fontSize:12, fontWeight:600, color:D.t }}>Sending sources</span>
-              <span style={{ fontSize:11, color:D.m }}>{serviceList.length} sources</span>
+              <span style={{ fontSize:12, color:D.m }}>{serviceList.length} sources</span>
             </div>
             <div style={{ overflowX:'auto' }}>
               <table style={{ width:'100%', borderCollapse:'collapse', fontSize:12 }}>
@@ -240,7 +240,7 @@ export default function Reports({ user }) {
                             <div style={{ height:5, width:60, background:'#e5e7eb', borderRadius:3, overflow:'hidden' }}>
                               <div style={{ height:'100%', width:`${rate}%`, background:rate>=90?'#00e5a0':rate>=70?'#ffb224':'#ff4d6a', borderRadius:3 }}/>
                             </div>
-                            <span style={{ fontSize:11, color:rate>=90?'#00e5a0':rate>=70?'#ffb224':'#ff4d6a', fontWeight:600 }}>{rate}%</span>
+                            <span style={{ fontSize:12, color:rate>=90?'#00e5a0':rate>=70?'#ffb224':'#ff4d6a', fontWeight:600 }}>{rate}%</span>
                           </div>
                         </td>
                         <td style={{ padding:'9px 14px' }}>

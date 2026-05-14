@@ -52,7 +52,7 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
           <div style={{fontSize:10,fontFamily:'monospace',color:'#374151',marginBottom:2}}>Type: {mapping.type} · Name: {typeof mapping.name==='function'?mapping.name(domainName):mapping.name}</div>
           <div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',background:'rgba(16,185,129,0.06)',padding:'4px 8px',borderRadius:5,marginBottom:10,wordBreak:'break-all'}}>{fixValue?.slice(0,80)}</div>
           <div style={{display:'flex',gap:6}}>
-            <button onClick={execute} style={{flex:1,padding:'6px',background:'#00e5a0',color:'#fff',border:'none',borderRadius:6,cursor:'pointer',fontSize:11,fontWeight:600}}>Confirm push</button>
+            <button onClick={execute} style={{flex:1,padding:'6px',background:'#00e5a0',color:'#fff',border:'none',borderRadius:6,cursor:'pointer',fontSize:12,fontWeight:600}}>Confirm push</button>
             <button onClick={()=>setShowConfirm(false)} style={{padding:'6px 10px',background:'#1e2535',color:'rgba(255,255,255,0.6)',border:'none',borderRadius:6,cursor:'pointer',fontSize:11}}>Cancel</button>
           </div>
         </div>
@@ -261,7 +261,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
         </div>
         <div style={{flex:1,overflowY:'auto',padding:'6px 0'}}>
           <div style={{fontSize:10,fontWeight:600,color:'#374151',textTransform:'uppercase',letterSpacing:'0.09em',padding:'4px 14px 6px'}}>Domains</div>
-          {loading?[1,2].map(i=><div key={i} style={{margin:'4px 10px',height:44,borderRadius:8,background:'rgba(255,255,255,0.04)'}}/>)
+          {loading?[1,2].map(i=><div key={i} style={{margin:'4px 10px',height:44,borderRadius:8,background:'#f8fafc'}}/>)
           :domains.map(d=>{
             const s=d.scan_results?.[0]; const score=s?.health_score; const isActive=selected?.id===d.id
             const sc=score>=70?'#16a34a':score>=50?'#d97706':'#dc2626'
@@ -272,7 +272,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 <div style={{width:7,height:7,borderRadius:'50%',background:d.paused?'#4a5470':!d.verified?'#ffb224':sc,flexShrink:0}}/>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:12,fontWeight:500,color:D.text,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{d.domain_name}</div>
-                  <div style={{fontSize:10,color:D.muted}}>{!d.verified?'Pending verification':d.paused?'Paused':`${critCount>0?`${critCount} critical · `:''}${d.monitor_interval}`}</div>
+                  <div style={{fontSize:10,color:'#374151'}}>{!d.verified?'Pending verification':d.paused?'Paused':`${critCount>0?`${critCount} critical · `:''}${d.monitor_interval}`}</div>
                 </div>
                 {score!=null&&<span style={{fontSize:13,fontWeight:700,color:sc}}>{score}</span>}
                 <div onClick={e=>{e.stopPropagation();setDeleteTarget(d)}} style={{color:'#374151',cursor:'pointer',padding:2}}><Trash2 size={11}/></div>
@@ -289,7 +289,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               <div style={{fontSize:10,color:'#374151',fontWeight:600,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:4}}>Fleet avg score</div>
               <div style={{fontSize:22,fontWeight:700,color:c,lineHeight:1,marginBottom:5}}>{avg||'–'}</div>
               <AnimBar pct={avg} color={c} h={3}/>
-              <div style={{fontSize:10,color:D.dim,marginTop:4}}>{domains.length} domain{domains.length>1?'s':''} · {domains.filter(d=>d.scan_results?.[0]?.issues?.some(i=>i.severity==='critical')).length} with critical issues</div>
+              <div style={{fontSize:10,color:'#6b7280',marginTop:4}}>{domains.length} domain{domains.length>1?'s':''} · {domains.filter(d=>d.scan_results?.[0]?.issues?.some(i=>i.severity==='critical')).length} with critical issues</div>
             </div>
           )
         })()}
@@ -316,7 +316,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#fef2f2',color:'#dc2626',border:'1px solid #fecaca',fontWeight:600}}>{critical.length} critical</span>}
                     {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#fffbeb',color:'#d97706',border:'1px solid #fde68a',fontWeight:600}}>{warns.length} warnings</span>}
                   </div>
-                  <div style={{fontSize:12,color:D.muted,display:'flex',gap:14,flexWrap:'wrap',marginBottom:10}}>
+                  <div style={{fontSize:12,color:'#374151',display:'flex',gap:14,flexWrap:'wrap',marginBottom:10}}>
                     {scan?.blacklists?.ip&&<span style={{fontFamily:'monospace',color:'#374151'}}>{scan.blacklists.ip}</span>}
                     <span>{selected.monitor_interval} monitoring</span>
                     {scan?.scanned_at&&<span>Scanned {timeAgo(scan.scanned_at)}</span>}
@@ -346,7 +346,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       {icon:FileDown,label:'PDF',fn:()=>window.print()},
                     ].map(b=>(
                       <button key={b.label} className="dsh-btn" onClick={b.fn}
-                        style={{padding:'6px 12px',background:'#ffffff',color:'#555555',border:'1px solid #e4e7ec',borderRadius:7,cursor:'pointer',fontSize:11,fontWeight:500,display:'flex',alignItems:'center',gap:4,transition:'background 0.15s'}}>
+                        style={{padding:'6px 12px',background:'#ffffff',color:'#555555',border:'1px solid #e4e7ec',borderRadius:7,cursor:'pointer',fontSize:12,fontWeight:500,display:'flex',alignItems:'center',gap:4,transition:'background 0.15s'}}>
                         <b.icon size={11}/>{b.label}
                       </button>
                     ))}
@@ -394,7 +394,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     <div className="print-card" style={{...card}}>
                       <div style={{...cardHd}}>
                         <span style={{fontSize:12,fontWeight:700,color:D.text}}>Score breakdown</span>
-                        <span style={{fontSize:10,color:D.dim}}>weighted 0–100</span>
+                        <span style={{fontSize:10,color:'#6b7280'}}>weighted 0–100</span>
                       </div>
                       <div style={{padding:'8px 16px'}}>
                         {cats.map((c,i)=>(
@@ -404,8 +404,8 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                             </div>
                             <div style={{flex:1}}>
                               <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
-                                <span style={{fontSize:12,color:D.muted}}>{c.label}</span>
-                                <span style={{fontSize:11,fontWeight:700,color:c.color}}>{c.score}<span style={{fontSize:10,color:D.dim,fontWeight:400}}>/{c.max}</span></span>
+                                <span style={{fontSize:12,color:'#374151'}}>{c.label}</span>
+                                <span style={{fontSize:12,fontWeight:700,color:c.color}}>{c.score}<span style={{fontSize:10,color:'#6b7280',fontWeight:400}}>/{c.max}</span></span>
                               </div>
                               <AnimBar pct={Math.round((c.score/c.max)*100)} color={c.color} delay={i*80} h={5}/>
                             </div>
@@ -439,7 +439,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       </div>
                     </div>
                     {issues.length===0?(
-                      <div style={{padding:'32px',textAlign:'center'}}><CheckCircle size={32} color="#10b981" style={{marginBottom:8}}/><div style={{fontSize:13,color:D.muted}}>All checks passing</div></div>
+                      <div style={{padding:'32px',textAlign:'center'}}><CheckCircle size={32} color="#10b981" style={{marginBottom:8}}/><div style={{fontSize:13,color:'#374151'}}>All checks passing</div></div>
                     ):issues.map((iss,i)=>(
                       <div key={i} className="dsh-issue" style={{display:'flex',alignItems:'flex-start',gap:12,padding:'10px 16px',borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
                         <div style={{width:22,height:22,borderRadius:6,background:`rgba(${iss.severity==='critical'?'239,68,68':iss.severity==='warn'?'245,158,11':'96,165,250'},0.15)`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1}}>
@@ -450,7 +450,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                             <span style={{fontSize:12,fontWeight:700,color:D.text,fontFamily:'monospace'}}>{iss.type}</span>
                             <span style={{fontSize:10,padding:'1px 6px',borderRadius:8,background:`rgba(${iss.severity==='critical'?'239,68,68':iss.severity==='warn'?'245,158,11':'96,165,250'},0.15)`,color:iss.severity==='critical'?'#ff4d6a':iss.severity==='warn'?'#ffb224':'#3d9bff'}}>{iss.severity}</span>
                           </div>
-                          <div style={{fontSize:12,color:D.muted,marginBottom:iss.fix?4:0}}>{iss.message}</div>
+                          <div style={{fontSize:12,color:'#374151',marginBottom:iss.fix?4:0}}>{iss.message}</div>
                           {iss.fix&&<div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',padding:'3px 8px',background:'rgba(16,185,129,0.06)',borderRadius:5,display:'inline-block',wordBreak:'break-all'}}>{iss.fix}</div>}
                         </div>
                         {iss.fix&&['SPF','DMARC','CAA'].includes(iss.type)&&(
@@ -490,11 +490,11 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     <div key={r.name} style={{display:'flex',alignItems:'flex-start',gap:14,padding:'12px 16px',borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
                       <div style={{width:60,flexShrink:0}}>
                         <div style={{fontSize:13,fontWeight:700,color:D.text,fontFamily:'monospace'}}>{r.name}</div>
-                        {r.extra&&<div style={{fontSize:10,color:D.dim,marginTop:3}}>{r.extra}</div>}
+                        {r.extra&&<div style={{fontSize:10,color:'#6b7280',marginTop:3}}>{r.extra}</div>}
                       </div>
                       <div style={{flex:1}}>
-                        {r.val&&<div style={{fontSize:11,fontFamily:'monospace',color:'#374151',marginBottom:4,wordBreak:'break-all',padding:'4px 8px',background:'rgba(255,255,255,0.03)',borderRadius:5}}>{r.val}</div>}
-                        {r.note&&<div style={{fontSize:12,color:D.muted,lineHeight:1.5}}>{r.note}</div>}
+                        {r.val&&<div style={{fontSize:12,fontFamily:'monospace',color:'#374151',marginBottom:4,wordBreak:'break-all',padding:'4px 8px',background:'rgba(255,255,255,0.03)',borderRadius:5}}>{r.val}</div>}
+                        {r.note&&<div style={{fontSize:12,color:'#374151',lineHeight:1.5}}>{r.note}</div>}
                         {r.suggest&&<div style={{marginTop:5,padding:'4px 8px',background:'rgba(16,185,129,0.06)',borderRadius:5,fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',wordBreak:'break-all'}}>✦ {r.suggest}</div>}
                       </div>
                       <SBadge status={r.status}/>
@@ -542,10 +542,10 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                         <div key={reg.key} style={{padding:14,background:'rgba(255,255,255,0.03)',borderRadius:10,border:`1px solid ${allPass?'rgba(16,185,129,0.2)':'rgba(245,158,11,0.2)'}`}}>
                           <div style={{fontSize:22,marginBottom:4}}>{reg.flag}</div>
                           <div style={{fontSize:12,fontWeight:700,color:D.text}}>{reg.name}</div>
-                          <div style={{fontSize:10,color:D.dim,marginBottom:10}}>{reg.sub}</div>
+                          <div style={{fontSize:10,color:'#6b7280',marginBottom:10}}>{reg.sub}</div>
                           {scan.propagation.records?.map(rec=>(
-                            <div key={rec.type} style={{display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:11,padding:'3px 0',borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
-                              <span style={{fontFamily:'monospace',color:D.muted}}>{rec.type}</span>
+                            <div key={rec.type} style={{display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:12,padding:'3px 0',borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
+                              <span style={{fontFamily:'monospace',color:'#334155'}}>{rec.type}</span>
                               <div style={{width:8,height:8,borderRadius:'50%',background:rec[reg.key]==='pass'?'#00e5a0':'#ffb224'}}/>
                             </div>
                           ))}
@@ -553,7 +553,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       )
                     })}
                   </div>
-                  <div style={{display:'flex',gap:16,padding:'4px 16px 14px',fontSize:12,color:D.muted}}>
+                  <div style={{display:'flex',gap:16,padding:'4px 16px 14px',fontSize:12,color:'#374151'}}>
                     <span style={{display:'flex',alignItems:'center',gap:5}}><div style={{width:7,height:7,borderRadius:'50%',background:'#00e5a0'}}/> Consistent</span>
                     <span style={{display:'flex',alignItems:'center',gap:5}}><div style={{width:7,height:7,borderRadius:'50%',background:'#ffb224'}}/> Inconsistent</span>
                   </div>
@@ -566,7 +566,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10}}>
                     {[{l:'IP address',v:scan.blacklists.ip||'–',c:'#a855f7'},{l:'Lists checked',v:scan.blacklists.results?.length||0,c:'#3d9bff'},{l:'Listed on',v:scan.blacklists.listed_count||0,c:(scan.blacklists.listed_count||0)>0?'#ff4d6a':'#00e5a0'}].map(s=>(
                       <div key={s.l} style={{...card,padding:'14px 16px'}}>
-                        <div style={{fontSize:12,color:D.muted,marginBottom:4}}>{s.l}</div>
+                        <div style={{fontSize:12,color:'#374151',marginBottom:4}}>{s.l}</div>
                         <div style={{fontSize:24,fontWeight:700,color:s.c}}>{s.v}</div>
                       </div>
                     ))}
@@ -576,7 +576,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     <div style={{display:'grid',gridTemplateColumns:'1fr 1fr'}}>
                       {scan.blacklists.results?.map((bl,i)=>(
                         <div key={bl.name} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'9px 16px',borderBottom:`1px solid rgba(255,255,255,0.04)`,background:bl.listed?'rgba(239,68,68,0.04)':'transparent'}}>
-                          <span style={{fontSize:11,fontFamily:'monospace',color:bl.listed?'#ff4d6a':'rgba(255,255,255,0.35)'}}>{bl.name}</span>
+                          <span style={{fontSize:12,fontFamily:'monospace',color:bl.listed?'#ff4d6a':'rgba(255,255,255,0.35)'}}>{bl.name}</span>
                           <div style={{display:'flex',alignItems:'center',gap:5}}>
                             <div style={{width:6,height:6,borderRadius:'50%',background:bl.listed?'#ff4d6a':'#00e5a0'}}/>
                             <span style={{fontSize:10,color:bl.listed?'#ff4d6a':'#00e5a0',fontWeight:500}}>{bl.listed?'Listed':'Clean'}</span>
@@ -593,14 +593,14 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 <div style={card}>
                   <div style={cardHd}>
                     <span style={{fontSize:12,fontWeight:700,color:D.text}}>DNS records</span>
-                    <span style={{fontSize:12,color:D.muted}}>{scan.dns_records.length} found</span>
+                    <span style={{fontSize:12,color:'#374151'}}>{scan.dns_records.length} found</span>
                   </div>
                   <div style={{overflowX:'auto'}}>
                     <table style={{width:'100%',borderCollapse:'collapse',fontSize:12}}>
                       <thead>
                         <tr style={{background:'rgba(255,255,255,0.02)'}}>
                           {['Type','Value','TTL','Status'].map(h=>(
-                            <th key={h} style={{textAlign:'left',padding:'8px 16px',fontSize:10,fontWeight:600,color:D.muted,textTransform:'uppercase',letterSpacing:'0.06em',borderBottom:'1px solid #1e2535'}}>{h}</th>
+                            <th key={h} style={{textAlign:'left',padding:'8px 16px',fontSize:10,fontWeight:600,color:'#374151',textTransform:'uppercase',letterSpacing:'0.06em',borderBottom:'1px solid #1e2535'}}>{h}</th>
                           ))}
                         </tr>
                       </thead>
@@ -608,8 +608,8 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                         {scan.dns_records.map((r,i)=>(
                           <tr key={i} style={{borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
                             <td style={{padding:'9px 16px'}}><span style={{fontSize:10,padding:'2px 8px',borderRadius:5,background:'rgba(96,165,250,0.15)',color:'#3d9bff',fontFamily:'monospace',fontWeight:700}}>{r.type}</span></td>
-                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'#374151',fontSize:11,maxWidth:380,wordBreak:'break-all'}}>{r.value}</td>
-                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:D.muted,fontSize:11,whiteSpace:'nowrap'}}>{r.ttl}s</td>
+                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'#374151',fontSize:12,maxWidth:380,wordBreak:'break-all'}}>{r.value}</td>
+                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'#334155',fontSize:12,whiteSpace:'nowrap'}}>{r.ttl}s</td>
                             <td style={{padding:'9px 16px'}}><SBadge status={r.status||'Pass'}/></td>
                           </tr>
                         ))}

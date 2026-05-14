@@ -36,7 +36,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
             </div>
             <div>
               <div style={{ fontSize:14, fontWeight:700, color:'#f9fafb', letterSpacing:'-0.02em' }}>DomainRadar</div>
-              <div style={{ fontSize:9, color:'#4ade80', fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase' }}>BETA</div>
+              
             </div>
           </div>
         )}

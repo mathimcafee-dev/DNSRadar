@@ -16,7 +16,7 @@ function daysColor(days) {
 function DaysBadge({ days }) {
   const color = daysColor(days)
   return (
-    <span style={{ fontSize:11, fontWeight:600, padding:'2px 9px', borderRadius:20, background:color+'18', color, border:`1px solid ${color}28`, whiteSpace:'nowrap' }}>
+    <span style={{ fontSize:12, fontWeight:600, padding:'2px 9px', borderRadius:20, background:color+'18', color, border:`1px solid ${color}28`, whiteSpace:'nowrap' }}>
       {days == null ? '–' : days <= 0 ? 'Expired' : `${days}d left`}
     </span>
   )
@@ -26,7 +26,7 @@ function Field({ label, value, good }) {
   const color = good === true ? '#00e5a0' : good === false ? '#ff4d6a' : D.muted
   return (
     <div>
-      <div style={{ fontSize:10, color:D.dim, marginBottom:2, textTransform:'uppercase', letterSpacing:'0.05em' }}>{label}</div>
+      <div style={{ fontSize:10, color:'#6b7280', marginBottom:2, textTransform:'uppercase', letterSpacing:'0.05em' }}>{label}</div>
       <div style={{ fontSize:12, color, fontWeight:500 }}>{value || '–'}</div>
     </div>
   )
@@ -90,7 +90,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
               <div style={{ fontSize:12,color:'#374151', marginBottom:6, fontWeight:500 }}>TLS versions</div>
               <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                 {tlsVersions.map(v => (
-                  <span key={v} style={{ fontSize:11, padding:'2px 8px', borderRadius:6, background:(v==='TLSv1.0'||v==='TLSv1.1')?'rgba(239,68,68,0.12)':'rgba(16,185,129,0.12)', color:(v==='TLSv1.0'||v==='TLSv1.1')?'#ff4d6a':'#00e5a0', border:`1px solid ${(v==='TLSv1.0'||v==='TLSv1.1')?'rgba(239,68,68,0.2)':'rgba(16,185,129,0.2)'}`, fontWeight:500 }}>{v}</span>
+                  <span key={v} style={{ fontSize:12, padding:'2px 8px', borderRadius:6, background:(v==='TLSv1.0'||v==='TLSv1.1')?'rgba(239,68,68,0.12)':'rgba(16,185,129,0.12)', color:(v==='TLSv1.0'||v==='TLSv1.1')?'#ff4d6a':'#00e5a0', border:`1px solid ${(v==='TLSv1.0'||v==='TLSv1.1')?'rgba(239,68,68,0.2)':'rgba(16,185,129,0.2)'}`, fontWeight:500 }}>{v}</span>
                 ))}
               </div>
             </div>
@@ -100,14 +100,14 @@ function CertCard({ cert, open, onToggle, onDelete }) {
               <div style={{ fontSize:12,color:'#374151', marginBottom:6, fontWeight:500 }}>Subject alt names ({sans.length})</div>
               <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
                 {sans.slice(0,12).map(s => (
-                  <span key={s} style={{ fontSize:10, fontFamily:'monospace', padding:'2px 7px', borderRadius:5, background:'#f9fafb', color:D.muted, border:'1px solid #e5e7eb' }}>{s}</span>
+                  <span key={s} style={{ fontSize:10, fontFamily:'monospace', padding:'2px 7px', borderRadius:5, background:'#f9fafb', color:'#374151', border:'1px solid #e5e7eb' }}>{s}</span>
                 ))}
-                {sans.length > 12 && <span style={{ fontSize:10, color:D.dim }}>+{sans.length-12} more</span>}
+                {sans.length > 12 && <span style={{ fontSize:10, color:'#6b7280' }}>+{sans.length-12} more</span>}
               </div>
             </div>
           )}
-          {cert.serial_number && <div style={{ fontSize:10, fontFamily:'monospace', color:D.dim, marginTop:4 }}>Serial: {cert.serial_number}</div>}
-          <div style={{ fontSize:10, color:D.dim, marginTop:6 }}>Last scanned {cert.scanned_at ? new Date(cert.scanned_at).toLocaleString() : '–'}</div>
+          {cert.serial_number && <div style={{ fontSize:10, fontFamily:'monospace', color:'#6b7280', marginTop:4 }}>Serial: {cert.serial_number}</div>}
+          <div style={{ fontSize:10, color:'#6b7280', marginTop:6 }}>Last scanned {cert.scanned_at ? new Date(cert.scanned_at).toLocaleString() : '–'}</div>
         </div>
       )}
     </div>
@@ -231,7 +231,7 @@ export default function SslCertificates({ user }) {
       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:20, flexWrap:'wrap', gap:12 }}>
         <div>
           <h2 style={{ fontSize:18, fontWeight:700, color:D.text, marginBottom:4 }}>SSL Certificates</h2>
-          <p style={{ fontSize:13, color:D.muted }}>TLS certificate health across all monitored domains</p>
+          <p style={{ fontSize:13, color:'#374151' }}>TLS certificate health across all monitored domains</p>
         </div>
         <button onClick={scanAll} disabled={scanning || !domains.some(d=>d.verified)}
           style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'rgba(16,185,129,0.12)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:8, color:'#16a34a', fontSize:12, fontWeight:600, cursor:'pointer', opacity:scanning?0.6:1 }}>
@@ -250,7 +250,7 @@ export default function SslCertificates({ user }) {
             onChange={e => setManualDomain(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && !manualScanning && scanManualDomain()}
             placeholder="Enter any domain — e.g. github.com"
-            style={{ flex:1, padding:'9px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:8, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
+            style={{ flex:1, padding:'9px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:8, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
           />
           <button
             onClick={scanManualDomain}
@@ -262,7 +262,7 @@ export default function SslCertificates({ user }) {
             }
           </button>
         </div>
-        <div style={{ fontSize:12,color:'#6b7280', marginTop:7 }}>
+        <div style={{ fontSize:12,color:'#374151', marginTop:7 }}>
           Checks any domain — doesn't need to be in your account. Result is saved so you can track it.
         </div>
       </div>
@@ -299,7 +299,7 @@ export default function SslCertificates({ user }) {
         <div style={{ ...card, padding:'48px 24px', textAlign:'center' }}>
           <Lock size={36} color={D.dim} style={{ marginBottom:14 }}/>
           <div style={{ fontSize:15, fontWeight:600, color:D.text, marginBottom:8 }}>No SSL data yet</div>
-          <p style={{ fontSize:13, color:D.muted, maxWidth:420, margin:'0 auto 16px', lineHeight:1.6 }}>
+          <p style={{ fontSize:13, color:'#374151', maxWidth:420, margin:'0 auto 16px', lineHeight:1.6 }}>
             Enter a domain above to check its certificate, or scan all your tracked domains at once.
           </p>
           {domains.filter(d=>d.verified).length > 0 && (
@@ -309,7 +309,7 @@ export default function SslCertificates({ user }) {
           )}
         </div>
       ) : filtered.length === 0 ? (
-        <div style={{ textAlign:'center', padding:'48px 24px', color:D.muted, fontSize:13 }}>No certificates match this filter</div>
+        <div style={{ textAlign:'center', padding:'48px 24px', color:'#374151', fontSize:13 }}>No certificates match this filter</div>
       ) : (
         filtered.map(cert => (
           <CertCard
@@ -328,8 +328,8 @@ export default function SslCertificates({ user }) {
           <div style={{ fontSize:13,color:'#374151', marginBottom:10, fontWeight:500 }}>Tracked domains not yet scanned for SSL</div>
           {domains.filter(d=>d.verified&&!certs.find(c=>c.domain_name===d.domain_name)).map(d=>(
             <div key={d.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', background:D.surface, border:'1px solid #e5e7eb', borderRadius:10, marginBottom:6 }}>
-              <span style={{ fontSize:13, color:D.muted }}>{d.domain_name}</span>
-              <button onClick={()=>scanDomain(d)} disabled={scanning} style={{ padding:'5px 14px', background:'#e5e7eb', border:'1px solid #e5e7eb', borderRadius:6, color:D.muted, fontSize:11, fontWeight:500, cursor:'pointer' }}>Scan now</button>
+              <span style={{ fontSize:13, color:'#374151' }}>{d.domain_name}</span>
+              <button onClick={()=>scanDomain(d)} disabled={scanning} style={{ padding:'5px 14px', background:'#e5e7eb', border:'1px solid #e5e7eb', borderRadius:6, color:'#374151', fontSize:12, fontWeight:500, cursor:'pointer' }}>Scan now</button>
             </div>
           ))}
         </div>

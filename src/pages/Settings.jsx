@@ -97,7 +97,7 @@ export default function Settings({ user }) {
               </div>
               {/* Endpoint docs */}
               <div style={{ background:'rgba(0,0,0,0.25)', borderRadius:8, padding:'12px 14px', marginBottom:16, fontFamily:'monospace', fontSize:11 }}>
-                <div style={{ color:D.dim, marginBottom:6 }}>Base URL: https://kbfgnbhjczicpjqxbxjj.supabase.co/functions/v1/api-scan</div>
+                <div style={{ color:'#6b7280', marginBottom:6 }}>Base URL: https://kbfgnbhjczicpjqxbxjj.supabase.co/functions/v1/api-scan</div>
                 {[
                   ['GET','?action=scan&domain=example.com','Full DNS scan'],
                   ['GET','?action=domains','List your domains'],
@@ -106,14 +106,14 @@ export default function Settings({ user }) {
                   <div key={ep} style={{ display:'flex', gap:10, marginBottom:4 }}>
                     <span style={{ color:'#3d9bff', width:30 }}>{m}</span>
                     <span style={{ color:'rgba(16,185,129,0.7)', flex:1 }}>{ep}</span>
-                    <span style={{ color:D.dim }}>{desc}</span>
+                    <span style={{ color:'#6b7280' }}>{desc}</span>
                   </div>
                 ))}
               </div>
               {/* Create new key */}
               <div style={{ display:'flex', gap:8, marginBottom:16 }}>
                 <input value={newKeyName} onChange={e => setNewKeyName(e.target.value)} placeholder="Key name (e.g. CI/CD pipeline)"
-                  style={{ flex:1, padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
+                  style={{ flex:1, padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
                   onKeyDown={e => e.key==='Enter'&&createApiKey()}/>
                 <button onClick={createApiKey} disabled={!newKeyName.trim()}
                   style={{ padding:'8px 16px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'#16a34a', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
@@ -127,7 +127,7 @@ export default function Settings({ user }) {
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                     <code style={{ flex:1, fontFamily:'monospace', fontSize:12, color:'#16a34a', background:'rgba(0,0,0,0.25)', padding:'6px 10px', borderRadius:6, wordBreak:'break-all' }}>{createdKey.key}</code>
                     <CopyBtn text={createdKey.key}/>
-                    <button onClick={() => setCreatedKey(null)} style={{ background:'none', border:'none', cursor:'pointer', color:D.dim, fontSize:16 }}>✕</button>
+                    <button onClick={() => setCreatedKey(null)} style={{ background:'none', border:'none', cursor:'pointer', color:'#6b7280', fontSize:16 }}>✕</button>
                   </div>
                 </div>
               )}
@@ -137,10 +137,10 @@ export default function Settings({ user }) {
                   <Key size={13} color={k.revoked?D.dim:'#00e5a0'}/>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:12, fontWeight:500, color:k.revoked?D.dim:D.text }}>{k.name}</div>
-                    <div style={{ fontSize:10, color:D.dim, fontFamily:'monospace' }}>{k.key_prefix}… · {k.request_count||0} requests · {k.last_used_at?`Last used ${new Date(k.last_used_at).toLocaleDateString()}`:'Never used'}</div>
+                    <div style={{ fontSize:10, color:'#6b7280', fontFamily:'monospace' }}>{k.key_prefix}… · {k.request_count||0} requests · {k.last_used_at?`Last used ${new Date(k.last_used_at).toLocaleDateString()}`:'Never used'}</div>
                   </div>
-                  {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'#e5e7eb', color:D.dim }}>Revoked</span>
-                    : <button onClick={() => revokeKey(k.id)} style={{ padding:'4px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'#ff4d6a', fontSize:11, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}><Trash2 size={10}/> Revoke</button>}
+                  {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'#e5e7eb', color:'#6b7280' }}>Revoked</span>
+                    : <button onClick={() => revokeKey(k.id)} style={{ padding:'4px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'#ff4d6a', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}><Trash2 size={10}/> Revoke</button>}
                 </div>
               ))}
             </div>
@@ -154,13 +154,13 @@ export default function Settings({ user }) {
           <div style={{ padding:16 }}>
             <div style={{ marginBottom:12 }}>
               <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Email</label>
-              <div style={{ padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:7, fontSize:13, color:D.dim, fontFamily:'monospace' }}>{user?.email}</div>
+              <div style={{ padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:7, fontSize:13, color:'#6b7280', fontFamily:'monospace' }}>{user?.email}</div>
             </div>
             <div style={{ marginBottom:16 }}>
               <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Display name</label>
               <input value={profile.full_name||''} onChange={e => setProfile(p => ({ ...p, full_name: e.target.value }))}
                 placeholder="Your name"
-                style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={saveProfile} disabled={saving}
@@ -191,7 +191,7 @@ export default function Settings({ user }) {
               <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Webhook URL (Slack, Teams, custom)</label>
               <input value={profile.alert_webhook||''} onChange={e => setProfile(p => ({ ...p, alert_webhook: e.target.value }))}
                 placeholder="https://hooks.slack.com/services/..."
-                style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'monospace' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'monospace' }}/>
             </div>
             <button onClick={saveProfile} disabled={saving}
               style={{ padding:'8px 18px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
@@ -216,7 +216,7 @@ function TeamSection({ user }) {
   const D = { surface:'#ffffff', surface2:'#f9fafb', border:'#e5e7eb', text:'#111827', muted:'#374151', dim:'#6b7280' }
   const card = { background:'#ffffff', border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }
   const cardHd = { padding:'11px 16px', borderBottom:'1px solid #1e2535', display:'flex', alignItems:'center', gap:7, background:D.surface2, fontSize:13, fontWeight:600, color:D.text }
-  const input = { width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
+  const input = { width:'100%', padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
 
   useEffect(() => { load() }, [user.id])
 
@@ -259,13 +259,13 @@ function TeamSection({ user }) {
         </div>
         {msg && <div style={{ fontSize:12, color:'#16a34a', marginBottom:12, padding:'6px 10px', background:'rgba(16,185,129,0.08)', borderRadius:6 }}>{msg}</div>}
         {members.length === 0 ? (
-          <div style={{ textAlign:'center', padding:'24px', color:D.dim, fontSize:12 }}>No team members yet. Invite someone above.</div>
+          <div style={{ textAlign:'center', padding:'24px', color:'#6b7280', fontSize:12 }}>No team members yet. Invite someone above.</div>
         ) : members.map(m => (
           <div key={m.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid #e5e7eb', marginBottom:6 }}>
-            <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(59,130,246,0.15)', color:'#3d9bff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0 }}>{m.member_email?.[0]?.toUpperCase()}</div>
+            <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(59,130,246,0.15)', color:'#3d9bff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:700, flexShrink:0 }}>{m.member_email?.[0]?.toUpperCase()}</div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontSize:12, fontWeight:500, color:D.text, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{m.member_email}</div>
-              <div style={{ fontSize:10, color:D.dim }}>{m.accepted_at ? `Joined ${new Date(m.accepted_at).toLocaleDateString()}` : `Invited ${new Date(m.invited_at).toLocaleDateString()}`}</div>
+              <div style={{ fontSize:10, color:'#6b7280' }}>{m.accepted_at ? `Joined ${new Date(m.accepted_at).toLocaleDateString()}` : `Invited ${new Date(m.invited_at).toLocaleDateString()}`}</div>
             </div>
             <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background:`${roleColor[m.role]||'#6b7280'}18`, color:roleColor[m.role]||'#6b7280', fontWeight:600, border:`1px solid ${roleColor[m.role]||'#6b7280'}30` }}>{m.role}</span>
             <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background:`${statusColor[m.status]||'#6b7280'}18`, color:statusColor[m.status]||'#6b7280', fontWeight:600 }}>{m.status}</span>

@@ -109,7 +109,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
             <Globe size={12} color="var(--green)" />
             <span className="mono" style={{ fontSize: 13, fontWeight: 500 }}>{domain}</span>
           </div>
-          <span style={{ fontSize: 11, color: 'var(--gray-400)' }}>Scanned just now</span>
+          <span style={{ fontSize:12, color: 'var(--gray-400)' }}>Scanned just now</span>
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <button className="btn btn-ghost btn-sm" onClick={runScan}><RefreshCw size={12} /> Re-scan</button>
@@ -172,7 +172,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
             <div key={i} style={{ display: 'grid', gridTemplateColumns: '80px 60px 1fr 80px', gap: 8, padding: '8px 16px', borderBottom: '1px solid var(--gray-50)', alignItems: 'start', fontSize: 12 }}>
               <span className="mono" style={{ fontWeight: 500, color: 'var(--gray-800)' }}>{rec.type}</span>
               <span style={{ color: 'var(--gray-400)' }}>{formatTTL(rec.ttl)}</span>
-              <span className="mono" style={{ fontSize: 11, color: 'var(--gray-600)', wordBreak: 'break-all' }}>{rec.value}</span>
+              <span className="mono" style={{ fontSize:12, color: 'var(--gray-600)', wordBreak: 'break-all' }}>{rec.value}</span>
               <span className={`pill ${getPillClass(rec.status)}`} style={{ justifySelf: 'end' }}>{rec.status || 'Present'}</span>
             </div>
           ))}
