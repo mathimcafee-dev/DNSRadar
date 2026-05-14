@@ -107,7 +107,7 @@ export default function App() {
       {page === 'auth' && <Auth setPage={setPage}/>}
       {page === 'scan' && <ScanResult domain={scanDomain} scanType={scanType} setPage={setPage} user={user}/>}
       {page === 'dashboard' && user && <Dashboard {...sharedDomainProps} setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>}
-      {page === 'tools' && <Tools/>}
+      {page === 'tools' && <Tools user={user}/>}
       {page === 'dmarc' && user && <DmarcReports user={user} selectedDomain={selectedDomain}/>}
       {page === 'autofix' && user && <DnsAutoFix user={user} domains={domains} selectedDomain={selectedDomain} onScanTrigger={() => setPage('dashboard')}/>}
       {page === 'ssl' && user && <SslCertificates user={user}/>}
