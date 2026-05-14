@@ -9,15 +9,15 @@ export const WEIGHTS = {
 }
 
 export function getScoreColor(score) {
-  if (score >= 90) return '#27500A'
-  if (score >= 70) return '#3B6D11'
-  if (score >= 50) return '#633806'
-  return '#791F1F'
+  if (score >= 90) return '#16a34a'
+  if (score >= 70) return '#16a34a'
+  if (score >= 50) return '#d97706'
+  return '#dc2626'
 }
 
 export function getScoreBg(score) {
-  if (score >= 70) return '#EAF3DE'
-  if (score >= 50) return '#FAEEDA'
+  if (score >= 70) return '#f0fdf4'
+  if (score >= 50) return '#fffbeb'
   return '#FCEBEB'
 }
 
