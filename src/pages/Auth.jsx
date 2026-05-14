@@ -1,25 +1,63 @@
 import { useState } from 'react'
-import { Radar, Mail, ArrowLeft } from 'lucide-react'
+import { Radar, Mail, Lock, Eye, EyeOff, ArrowLeft, CheckCircle } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
 export default function Auth({ setPage }) {
+  const [mode, setMode] = useState('signin') // signin | signup | forgot
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPw, setShowPw] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
-  async function handleMagicLink() {
+  async function handleSignIn() {
     setError('')
-    if (!email || !email.includes('@')) { setError('Please enter a valid email address'); return }
+    if (!email || !password) { setError('Please enter your email and password'); return }
     setLoading(true)
-    const { error: err } = await supabase.auth.signInWithOtp({
-      email,
+    const { error: err } = await supabase.auth.signInWithPassword({ email, password })
+    setLoading(false)
+    if (err) {
+      if (err.message.includes('Invalid login')) setError('Incorrect email or password.')
+      else setError(err.message)
+      return
+    }
+    setPage('dashboard')
+  }
+
+  async function handleSignUp() {
+    setError('')
+    if (!email || !password) { setError('Please fill in all fields'); return }
+    if (password.length < 8) { setError('Password must be at least 8 characters'); return }
+    if (password !== confirmPassword) { setError('Passwords do not match'); return }
+    setLoading(true)
+    const { error: err } = await supabase.auth.signUp({
+      email, password,
       options: { emailRedirectTo: 'https://dnsradar.easysecurity.in/?page=dashboard' }
     })
     setLoading(false)
     if (err) { setError(err.message); return }
-    setSent(true)
+    setSuccess('Account created! Check your email to confirm, then sign in below.')
+    setMode('signin')
+    setPassword('')
   }
+
+  async function handleForgot() {
+    setError('')
+    if (!email) { setError('Enter your email address first'); return }
+    setLoading(true)
+    const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://dnsradar.easysecurity.in/?page=reset'
+    })
+    setLoading(false)
+    if (err) { setError(err.message); return }
+    setSuccess('Password reset email sent. Check your inbox.')
+  }
+
+  const pwStrength = password.length === 0 ? null : password.length < 8 ? 'weak' : password.match(/[A-Z]/) && password.match(/[0-9]/) ? 'strong' : 'medium'
+  const pwColors = { weak: '#A32D2D', medium: '#854F0B', strong: '#0F6E56' }
+  const pwLabels = { weak: 'Weak', medium: 'Good', strong: 'Strong' }
 
   return (
     <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
@@ -27,59 +65,139 @@ export default function Auth({ setPage }) {
         <button className="btn btn-ghost btn-sm" onClick={() => setPage('landing')} style={{ marginBottom: 24 }}>
           <ArrowLeft size={13} /> Back
         </button>
+
         <div style={{ background: '#fff', border: '1px solid var(--gray-200)', borderRadius: 16, padding: 32, boxShadow: 'var(--shadow-md)' }}>
-          <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <div style={{ width: 48, height: 48, background: 'var(--green)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
+          {/* Logo */}
+          <div style={{ textAlign: 'center', marginBottom: 24 }}>
+            <div style={{ width: 48, height: 48, background: 'var(--green)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
               <Radar size={24} color="#fff" />
             </div>
-            <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 6 }}>
-              {sent ? 'Check your email' : 'Welcome to DomainRadar'}
+            <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>
+              {mode === 'signin' ? 'Sign in to DomainRadar' : mode === 'signup' ? 'Create your account' : 'Reset password'}
             </h1>
             <p style={{ fontSize: 13, color: 'var(--gray-500)' }}>
-              {sent
-                ? `We sent a magic link to ${email}`
-                : 'Sign in or create a free account — no password needed.'}
+              {mode === 'signin' ? 'Welcome back.' : mode === 'signup' ? 'Free during beta. No credit card.' : 'Enter your email to reset.'}
             </p>
           </div>
 
-          {!sent ? (
-            <>
-              <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>
-                Email address
-              </label>
-              <input type="email" placeholder="you@example.com" value={email}
-                onChange={e => setEmail(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleMagicLink()}
-                style={{ marginBottom: 12 }} autoFocus />
-              {error && (
-                <div style={{ padding: '8px 12px', background: 'var(--red-light)', color: 'var(--red-text)', borderRadius: 8, fontSize: 12, marginBottom: 12 }}>
-                  {error}
-                </div>
-              )}
-              <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}
-                onClick={handleMagicLink} disabled={loading}>
-                {loading
-                  ? <><div className="spinner" style={{ width: 14, height: 14, borderTopColor: '#fff' }} /> Sending…</>
-                  : <><Mail size={14} /> Send magic link</>}
-              </button>
-              <p style={{ fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 14 }}>
-                Free during beta · No credit card · No password
-              </p>
-            </>
-          ) : (
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ width: 56, height: 56, background: '#EAF3DE', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-                <Mail size={24} color="var(--green)" />
-              </div>
-              <p style={{ fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.7, marginBottom: 20 }}>
-                Click the link in your email to sign in. The link expires in 1 hour.
-              </p>
-              <button className="btn btn-ghost" style={{ width: '100%', justifyContent: 'center' }}
-                onClick={() => setSent(false)}>
-                Use a different email
-              </button>
+          {/* Tab toggle */}
+          {mode !== 'forgot' && (
+            <div style={{ display: 'flex', background: 'var(--gray-100)', borderRadius: 8, padding: 3, marginBottom: 20 }}>
+              {['signin', 'signup'].map(m => (
+                <button key={m} onClick={() => { setMode(m); setError(''); setSuccess('') }}
+                  style={{ flex: 1, padding: '7px 0', borderRadius: 6, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500, transition: 'all 0.15s', background: mode === m ? '#fff' : 'transparent', color: mode === m ? 'var(--gray-900)' : 'var(--gray-500)', boxShadow: mode === m ? 'var(--shadow-sm)' : 'none' }}>
+                  {m === 'signin' ? 'Sign in' : 'Create account'}
+                </button>
+              ))}
             </div>
           )}
+
+          {/* Success message */}
+          {success && (
+            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', padding: '10px 12px', background: '#EAF3DE', border: '1px solid var(--green-mid)', borderRadius: 8, fontSize: 13, color: 'var(--green-dark)', marginBottom: 16 }}>
+              <CheckCircle size={15} style={{ flexShrink: 0, marginTop: 1 }} />
+              {success}
+            </div>
+          )}
+
+          {/* Error message */}
+          {error && (
+            <div style={{ padding: '10px 12px', background: 'var(--red-light)', color: 'var(--red-text)', borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
+              {error}
+            </div>
+          )}
+
+          {/* Form */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {/* Email */}
+            <div>
+              <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--gray-700)', display: 'block', marginBottom: 5 }}>Email address</label>
+              <div style={{ position: 'relative' }}>
+                <Mail size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
+                <input type="email" placeholder="you@example.com" value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && (mode === 'signin' ? handleSignIn() : mode === 'signup' ? handleSignUp() : handleForgot())}
+                  style={{ paddingLeft: 32 }} autoFocus />
+              </div>
+            </div>
+
+            {/* Password */}
+            {mode !== 'forgot' && (
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--gray-700)', display: 'block', marginBottom: 5 }}>Password</label>
+                <div style={{ position: 'relative' }}>
+                  <Lock size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
+                  <input type={showPw ? 'text' : 'password'} placeholder={mode === 'signup' ? 'Min. 8 characters' : 'Your password'}
+                    value={password} onChange={e => setPassword(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && (mode === 'signin' ? handleSignIn() : handleSignUp())}
+                    style={{ paddingLeft: 32, paddingRight: 36 }} />
+                  <button onClick={() => setShowPw(s => !s)}
+                    style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', padding: 0 }}>
+                    {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
+                  </button>
+                </div>
+                {/* Password strength */}
+                {mode === 'signup' && password.length > 0 && (
+                  <div style={{ marginTop: 6 }}>
+                    <div style={{ display: 'flex', gap: 3, marginBottom: 3 }}>
+                      {['weak', 'medium', 'strong'].map((level, i) => (
+                        <div key={level} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= ['weak','medium','strong'].indexOf(pwStrength) ? pwColors[pwStrength] : 'var(--gray-200)', transition: 'background 0.2s' }} />
+                      ))}
+                    </div>
+                    <div style={{ fontSize: 11, color: pwColors[pwStrength] }}>{pwLabels[pwStrength]} password</div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Confirm password */}
+            {mode === 'signup' && (
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--gray-700)', display: 'block', marginBottom: 5 }}>Confirm password</label>
+                <div style={{ position: 'relative' }}>
+                  <Lock size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
+                  <input type={showPw ? 'text' : 'password'} placeholder="Re-enter password"
+                    value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handleSignUp()}
+                    style={{ paddingLeft: 32, borderColor: confirmPassword && confirmPassword !== password ? '#A32D2D' : confirmPassword && confirmPassword === password ? 'var(--green)' : undefined }} />
+                  {confirmPassword && confirmPassword === password && (
+                    <CheckCircle size={14} color="var(--green)" style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)' }} />
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Forgot password link */}
+            {mode === 'signin' && (
+              <div style={{ textAlign: 'right', marginTop: -8 }}>
+                <button onClick={() => { setMode('forgot'); setError(''); setSuccess('') }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--green)' }}>
+                  Forgot password?
+                </button>
+              </div>
+            )}
+
+            {/* Submit button */}
+            <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 4 }}
+              onClick={mode === 'signin' ? handleSignIn : mode === 'signup' ? handleSignUp : handleForgot}
+              disabled={loading}>
+              {loading
+                ? <><div className="spinner" style={{ width: 14, height: 14, borderTopColor: '#fff' }} /> Please wait…</>
+                : mode === 'signin' ? 'Sign in' : mode === 'signup' ? 'Create account' : 'Send reset email'}
+            </button>
+
+            {/* Back from forgot */}
+            {mode === 'forgot' && (
+              <button onClick={() => { setMode('signin'); setError(''); setSuccess('') }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--gray-500)', textAlign: 'center' }}>
+                ← Back to sign in
+              </button>
+            )}
+          </div>
+
+          <p style={{ fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 20 }}>
+            Free during beta · No credit card required
+          </p>
         </div>
       </div>
     </div>
