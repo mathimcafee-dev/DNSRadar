@@ -225,12 +225,12 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
   const cardHd={padding:'12px 16px',borderBottom:'1px solid #f0f2f5',display:'flex',alignItems:'center',justifyContent:'space-between',background:'#fafafa'}
 
   const cats=scan?[
-    {label:'DNS records',icon:Globe,color:'#3730a3',bg:'#eff6ff',score:scan.score_dns,max:25},
-    {label:'Email auth',icon:Mail,color:'#dc2626',bg:'#fef2f2',score:scan.score_email,max:30},
+    {label:'DNS records',icon:Globe,color:'#3730a3',bg:'#eff6ff',score:scan.score_dns,max:25,tab:'dns'},
+    {label:'Email auth',icon:Mail,color:'#dc2626',bg:'#fef2f2',score:scan.score_email,max:30,tab:'email'},
     {label:'SSL / TLS',icon:Lock,color:'#111827',bg:'#f0fdf4',score:scan.score_ssl,max:20},
-    {label:'Propagation',icon:Globe,color:'#d97706',bg:'#fffbeb',score:scan.score_propagation,max:10},
-    {label:'Security',icon:Shield,color:'#7c3aed',bg:'#f5f3ff',score:scan.score_security,max:10},
-    {label:'Blacklists',icon:Ban,color:'#dc2626',bg:'#fef2f2',score:scan.score_blacklist,max:5},
+    {label:'Propagation',icon:Globe,color:'#d97706',bg:'#fffbeb',score:scan.score_propagation,max:10,tab:'propagation'},
+    {label:'Security',icon:Shield,color:'#7c3aed',bg:'#f5f3ff',score:scan.score_security,max:10,tab:'overview'},
+    {label:'Blacklists',icon:Ban,color:'#dc2626',bg:'#fef2f2',score:scan.score_blacklist,max:5,tab:'blacklists'},
   ]:[]
 
   const tabs=['overview','email','ssl','propagation','blacklists','dns']
@@ -364,10 +364,10 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   {/* KPI row */}
                   <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16}}>
                     {[
-                      {label:'Health score',val:scan.health_score,color:getScoreColor(scan.health_score),sub:'out of 100',pct:scan.health_score},
-                      {label:'Critical issues',val:critical.length,color:critical.length>0?'#dc2626':'#16a34a',sub:critical.length>0?'Fix immediately':'All clear',pct:Math.min(critical.length*25,100)},
-                      {label:'Blacklisted',val:`${scan.blacklists?.listed_count||0}/${scan.blacklists?.results?.length||0}`,color:(scan.blacklists?.listed_count||0)>0?'#dc2626':'#16a34a',sub:'blacklists',pct:(scan.blacklists?.listed_count||0)>0?60:100},
-                      {label:'DNS records',val:scan.dns_records?.length||0,color:'#3730a3',sub:'records found',pct:100},
+                      {label:'Health score',val:scan.health_score,color:getScoreColor(scan.health_score),sub:'out of 100',pct:scan.health_score,tab:'overview'},
+                      {label:'Critical issues',val:critical.length,color:critical.length>0?'#dc2626':'#16a34a',sub:critical.length>0?'Fix immediately':'All clear',pct:Math.min(critical.length*25,100),tab:'overview'},
+                      {label:'Blacklisted',val:`${scan.blacklists?.listed_count||0}/${scan.blacklists?.results?.length||0}`,color:(scan.blacklists?.listed_count||0)>0?'#dc2626':'#16a34a',sub:'blacklists',pct:(scan.blacklists?.listed_count||0)>0?60:100,tab:'blacklists'},
+                      {label:'DNS records',val:scan.dns_records?.length||0,color:'#3730a3',sub:'records found',pct:100,tab:'dns'},
                     ].map(k=>(
                       <div key={k.label} className="print-card" style={{background:'#ffffff',border:'1px solid #e4e7ec',borderTop:`2px solid ${k.color}`,borderRadius:12,padding:'16px 18px',boxShadow:'0 1px 4px rgba(0,0,0,0.06)',transition:'transform 0.15s,box-shadow 0.15s'}}
                         onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'}}
