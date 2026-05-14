@@ -1,352 +1,205 @@
 import { useState, useEffect } from 'react'
+import { Key, Plus, Trash2, Eye, EyeOff, Copy, Check, Users, Mail, Bell, LogOut, RefreshCw } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { Plus, Trash2, Copy, Check, Eye, EyeOff, RefreshCw, Shield, Key, Globe, Clock, Bell, Zap, AlertTriangle, CheckCircle, ExternalLink } from 'lucide-react'
+import { useAuth } from '../hooks/useAuth'
 
-const D = { bg:'#0d1117', surface:'#161b22', surface2:'#1c2333', border:'rgba(255,255,255,0.08)', text:'#e6edf3', muted:'rgba(255,255,255,0.5)', dim:'rgba(255,255,255,0.25)' }
-const card = { background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, overflow:'hidden' }
-const cardHd = { padding:'11px 16px', borderBottom:`1px solid ${D.border}`, display:'flex', alignItems:'center', justifyContent:'space-between', background:D.surface2 }
-const input = { width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
-const btn = (primary) => ({ padding:'7px 16px', background:primary?'#10b981':'rgba(255,255,255,0.06)', color:primary?'#fff':'rgba(255,255,255,0.7)', border:`1px solid ${primary?'transparent':'rgba(255,255,255,0.1)'}`, borderRadius:8, cursor:'pointer', fontSize:12, fontWeight:500, display:'flex', alignItems:'center', gap:5 })
+const D = { bg:'#0d1117',surface:'#161b22',surface2:'#1c2333',border:'rgba(255,255,255,0.08)',text:'#e6edf3',muted:'rgba(255,255,255,0.5)',dim:'rgba(255,255,255,0.25)' }
+const card = { background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, overflow:'hidden', marginBottom:16 }
+const cardHd = { padding:'12px 16px', borderBottom:`1px solid ${D.border}`, background:D.surface2, fontSize:12, fontWeight:600, color:D.text, display:'flex', alignItems:'center', gap:7 }
 
 function CopyBtn({ text }) {
   const [c,setC]=useState(false)
-  return <button onClick={()=>{navigator.clipboard.writeText(text);setC(true);setTimeout(()=>setC(false),2000)}} style={btn(false)}>
-    {c?<><Check size={12} color="#10b981"/>Copied</>:<><Copy size={12}/>Copy</>}
-  </button>
+  return (
+    <button onClick={() => { navigator.clipboard.writeText(text); setC(true); setTimeout(()=>setC(false),2000) }}
+      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:5, color:'#10b981', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
+      {c?<><Check size={11}/>Copied</>:<><Copy size={11}/>Copy</>}
+    </button>
+  )
 }
 
-// ─── DNS CREDENTIALS SECTION ──────────────────────────────────────────
-function DNSCredentials({ user }) {
-  const [creds, setCreds] = useState([])
-  const [domains, setDomains] = useState([])
-  const [showAdd, setShowAdd] = useState(false)
-  const [form, setForm] = useState({ provider:'cloudflare', domain_id:'', zone_id:'', api_key:'', api_email:'', api_secret:'', label:'' })
+export default function Settings({ user }) {
+  const { signOut } = useAuth()
+  const [apiKeys, setApiKeys] = useState([])
+  const [profile, setProfile] = useState({})
   const [saving, setSaving] = useState(false)
-  const [testing, setTesting] = useState({})
+  const [newKeyName, setNewKeyName] = useState('')
+  const [createdKey, setCreatedKey] = useState(null)
   const [showKey, setShowKey] = useState({})
+  const [activeTab, setActiveTab] = useState('api')
 
-  useEffect(() => {
-    supabase.from('dns_credentials').select('*').eq('user_id', user.id).then(({data}) => setCreds(data||[]))
-    supabase.from('domains').select('id,domain_name').eq('user_id', user.id).then(({data}) => setDomains(data||[]))
-  }, [user.id])
+  useEffect(() => { if(user) { fetchKeys(); fetchProfile() } }, [user])
 
-  async function save() {
+  async function fetchKeys() {
+    const { data } = await supabase.from('api_keys').select('id,name,key_prefix,last_used_at,created_at,revoked,request_count').eq('user_id', user.id).order('created_at', { ascending: false })
+    setApiKeys(data || [])
+  }
+
+  async function fetchProfile() {
+    const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+    setProfile(data || {})
+  }
+
+  async function saveProfile() {
     setSaving(true)
-    const { error } = await supabase.from('dns_credentials').insert({ ...form, user_id: user.id })
-    if (!error) {
-      const {data} = await supabase.from('dns_credentials').select('*').eq('user_id', user.id)
-      setCreds(data||[]); setShowAdd(false); setForm({ provider:'cloudflare', domain_id:'', zone_id:'', api_key:'', api_email:'', api_secret:'', label:'' })
-    }
+    await supabase.from('profiles').update({ full_name: profile.full_name, alert_email: profile.alert_email, alert_webhook: profile.alert_webhook }).eq('id', user.id)
     setSaving(false)
   }
 
-  async function testCred(cred) {
-    setTesting(t=>({...t,[cred.id]:true}))
-    try {
-      if (cred.provider === 'cloudflare') {
-        const res = await fetch(`https://api.cloudflare.com/client/v4/zones/${cred.zone_id}`, { headers:{ 'Authorization':`Bearer ${cred.api_key}` } })
-        const data = await res.json()
-        const ok = data.success
-        await supabase.from('dns_credentials').update({ verified: ok, verified_at: ok ? new Date().toISOString() : null }).eq('id', cred.id)
-        setCreds(c=>c.map(x=>x.id===cred.id?{...x,verified:ok}:x))
-      }
-    } finally { setTesting(t=>({...t,[cred.id]:false})) }
-  }
-
-  async function remove(id) {
-    await supabase.from('dns_credentials').delete().eq('id', id)
-    setCreds(c=>c.filter(x=>x.id!==id))
-  }
-
-  const providerColors = { cloudflare:'#f38020', route53:'#ff9900', godaddy:'#1bdbad', namecheap:'#de3723' }
-  const providerIcons = { cloudflare:'☁️', route53:'🔶', godaddy:'🤠', namecheap:'🌿' }
-
-  return (
-    <div style={card}>
-      <div style={cardHd}>
-        <span style={{fontSize:13,fontWeight:600,color:D.text,display:'flex',alignItems:'center',gap:7}}>
-          <Globe size={14} color="#10b981"/> DNS provider credentials
-        </span>
-        <button onClick={()=>setShowAdd(s=>!s)} style={btn(true)}><Plus size={12}/> Add provider</button>
-      </div>
-
-      {showAdd && (
-        <div style={{padding:16,borderBottom:`1px solid ${D.border}`,background:'rgba(16,185,129,0.04)'}}>
-          <div style={{fontSize:12,fontWeight:500,color:D.text,marginBottom:12}}>Add DNS provider credentials</div>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
-            <div>
-              <label style={{fontSize:11,color:D.muted,display:'block',marginBottom:4}}>Provider</label>
-              <select value={form.provider} onChange={e=>setForm(f=>({...f,provider:e.target.value}))}
-                style={{...input}}>
-                <option value="cloudflare">Cloudflare</option>
-                <option value="godaddy">GoDaddy</option>
-                <option value="route53">AWS Route 53</option>
-                <option value="namecheap">Namecheap</option>
-              </select>
-            </div>
-            <div>
-              <label style={{fontSize:11,color:D.muted,display:'block',marginBottom:4}}>Domain (optional)</label>
-              <select value={form.domain_id} onChange={e=>setForm(f=>({...f,domain_id:e.target.value}))}
-                style={{...input}}>
-                <option value="">All domains</option>
-                {domains.map(d=><option key={d.id} value={d.id}>{d.domain_name}</option>)}
-              </select>
-            </div>
-            {form.provider==='cloudflare'&&<>
-              <div>
-                <label style={{fontSize:11,color:D.muted,display:'block',marginBottom:4}}>Zone ID</label>
-                <input style={input} placeholder="e.g. a1b2c3d4e5f6..." value={form.zone_id} onChange={e=>setForm(f=>({...f,zone_id:e.target.value}))}/>
-              </div>
-              <div>
-                <label style={{fontSize:11,color:D.muted,display:'block',marginBottom:4}}>API Token <span style={{color:D.dim}}>(Zone:DNS Edit)</span></label>
-                <input style={input} type="password" placeholder="cf_..." value={form.api_key} onChange={e=>setForm(f=>({...f,api_key:e.target.value}))}/>
-              </div>
-            </>}
-            {form.provider==='godaddy'&&<>
-              <div>
-                <label style={{fontSize:11,color:D.muted,display:'block',marginBottom:4}}>API Key</label>
-                <input style={input} value={form.api_key} onChange={e=>setForm(f=>({...f,api_key:e.target.value}))}/>
-              </div>
-              <div>
-                <label style={{fontSize:11,color:D.muted,display:'block',marginBottom:4}}>API Secret</label>
-                <input style={input} type="password" value={form.api_secret} onChange={e=>setForm(f=>({...f,api_secret:e.target.value}))}/>
-              </div>
-            </>}
-            <div>
-              <label style={{fontSize:11,color:D.muted,display:'block',marginBottom:4}}>Label (optional)</label>
-              <input style={input} placeholder="e.g. Production Cloudflare" value={form.label} onChange={e=>setForm(f=>({...f,label:e.target.value}))}/>
-            </div>
-          </div>
-          <div style={{padding:'10px 14px',background:'rgba(245,158,11,0.08)',border:'1px solid rgba(245,158,11,0.2)',borderRadius:8,fontSize:11,color:'rgba(245,158,11,0.9)',marginBottom:12}}>
-            <AlertTriangle size={12} style={{verticalAlign:'middle',marginRight:6}}/>
-            Credentials are stored securely. DomainRadar only creates DNS records — it never deletes or modifies existing ones without your confirmation.
-          </div>
-          <div style={{display:'flex',gap:8}}>
-            <button onClick={save} disabled={saving||!form.api_key} style={btn(true)}>
-              {saving?'Saving…':'Save credential'}
-            </button>
-            <button onClick={()=>setShowAdd(false)} style={btn(false)}>Cancel</button>
-          </div>
-        </div>
-      )}
-
-      {creds.length===0&&!showAdd&&(
-        <div style={{padding:'32px',textAlign:'center',color:D.muted,fontSize:13}}>
-          <Globe size={28} color="rgba(255,255,255,0.15)" style={{marginBottom:8,display:'block',margin:'0 auto 10px'}}/>
-          No DNS credentials yet. Add Cloudflare, GoDaddy, or Route 53 to enable one-click DNS record fixes.
-        </div>
-      )}
-
-      {creds.map(c=>(
-        <div key={c.id} style={{display:'flex',alignItems:'center',gap:14,padding:'12px 16px',borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
-          <div style={{fontSize:20}}>{providerIcons[c.provider]||'🌐'}</div>
-          <div style={{flex:1}}>
-            <div style={{display:'flex',alignItems:'center',gap:7,marginBottom:2}}>
-              <span style={{fontSize:13,fontWeight:600,color:D.text}}>{c.label||c.provider}</span>
-              <span style={{fontSize:10,padding:'1px 7px',borderRadius:8,background:`${providerColors[c.provider]||'#555'}20`,color:providerColors[c.provider]||D.muted}}>{c.provider}</span>
-              {c.verified&&<span style={{fontSize:10,padding:'1px 7px',borderRadius:8,background:'rgba(16,185,129,0.15)',color:'#10b981'}}>✓ Verified</span>}
-            </div>
-            <div style={{fontSize:11,color:D.dim,fontFamily:'monospace'}}>
-              {c.zone_id?`Zone: ${c.zone_id.slice(0,12)}…`:''}
-              {domains.find(d=>d.id===c.domain_id)?.domain_name||'All domains'}
-            </div>
-          </div>
-          <div style={{display:'flex',gap:6}}>
-            <button onClick={()=>testCred(c)} disabled={testing[c.id]} style={btn(false)}>
-              {testing[c.id]?<><RefreshCw size={11} style={{animation:'spin 0.7s linear infinite'}}/>Testing…</>:<><Zap size={11}/>Test</>}
-            </button>
-            <button onClick={()=>remove(c.id)} style={{...btn(false),color:'#ef4444',borderColor:'rgba(239,68,68,0.2)'}}>
-              <Trash2 size={11}/>
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// ─── API KEYS SECTION ─────────────────────────────────────────────────
-function APIKeys({ user }) {
-  const [keys, setKeys] = useState([])
-  const [newKey, setNewKey] = useState(null)
-  const [name, setName] = useState('')
-  const [creating, setCreating] = useState(false)
-  const [showKey, setShowKey] = useState({})
-
-  useEffect(() => {
-    supabase.from('api_keys').select('*').eq('user_id', user.id).order('created_at',{ascending:false}).then(({data})=>setKeys(data||[]))
-  },[user.id])
-
-  async function createKey() {
-    if (!name) return
-    setCreating(true)
-    const rawKey = `dr_${crypto.randomUUID().replace(/-/g,'')}`
+  async function createApiKey() {
+    if (!newKeyName.trim()) return
+    const rawKey = `dr_${crypto.randomUUID().replace(/-/g,'').slice(0,32)}`
     const encoder = new TextEncoder()
     const data = encoder.encode(rawKey)
-    const hashBuf = await crypto.subtle.digest('SHA-256', data)
-    const hash = Array.from(new Uint8Array(hashBuf)).map(b=>b.toString(16).padStart(2,'0')).join('')
-    const prefix = rawKey.slice(0,10)
-    const {error} = await supabase.from('api_keys').insert({ user_id:user.id, name, key_hash:hash, key_prefix:prefix, scopes:['scan:read'] })
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    const keyHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+
+    const { data: keyRow, error } = await supabase.from('api_keys').insert({
+      user_id: user.id,
+      name: newKeyName.trim(),
+      key_hash: keyHash,
+      key_prefix: rawKey.slice(0, 8),
+    }).select('id').single()
+
     if (!error) {
-      setNewKey(rawKey)
-      const {data:fresh}=await supabase.from('api_keys').select('*').eq('user_id',user.id).order('created_at',{ascending:false})
-      setKeys(fresh||[]); setName('')
+      setCreatedKey({ id: keyRow.id, key: rawKey })
+      setNewKeyName('')
+      fetchKeys()
     }
-    setCreating(false)
   }
 
   async function revokeKey(id) {
-    await supabase.from('api_keys').update({revoked:true}).eq('id',id)
-    setKeys(k=>k.map(x=>x.id===id?{...x,revoked:true}:x))
+    await supabase.from('api_keys').update({ revoked: true }).eq('id', id)
+    fetchKeys()
   }
 
   return (
-    <div style={card}>
-      <div style={cardHd}>
-        <span style={{fontSize:13,fontWeight:600,color:D.text,display:'flex',alignItems:'center',gap:7}}><Key size={14} color="#6366f1"/> API keys</span>
-        <a href="https://kbfgnbhjczicpjqxbxjj.supabase.co/functions/v1/api-scan?domain=google.com" target="_blank"
-          style={{fontSize:11,color:'rgba(99,102,241,0.7)',display:'flex',alignItems:'center',gap:4}}>
-          API docs <ExternalLink size={11}/>
-        </a>
+    <div style={{ background:D.bg, minHeight:'100%', padding:20, fontFamily:"'DM Sans','Inter',system-ui,sans-serif", maxWidth:800 }}>
+      <h2 style={{ fontSize:17, fontWeight:700, color:D.text, marginBottom:20 }}>Settings</h2>
+
+      {/* Tabs */}
+      <div style={{ display:'flex', gap:0, borderBottom:`1px solid ${D.border}`, marginBottom:20 }}>
+        {['api','profile','notifications'].map(t => (
+          <button key={t} onClick={() => setActiveTab(t)}
+            style={{ padding:'8px 16px', background:'transparent', border:'none', borderBottom:`2px solid ${activeTab===t?'#10b981':'transparent'}`, cursor:'pointer', fontSize:12, fontWeight:activeTab===t?600:400, color:activeTab===t?'#10b981':D.muted, textTransform:'capitalize', transition:'all 0.15s', marginBottom:-1 }}>
+            {t === 'api' ? 'API Keys' : t === 'notifications' ? 'Notifications' : 'Profile'}
+          </button>
+        ))}
       </div>
 
-      {newKey&&(
-        <div style={{margin:14,padding:'12px 14px',background:'rgba(16,185,129,0.08)',border:'1px solid rgba(16,185,129,0.25)',borderRadius:8}}>
-          <div style={{fontSize:12,fontWeight:600,color:'#10b981',marginBottom:6}}>✓ New API key created — copy it now, it won't be shown again</div>
-          <div style={{display:'flex',alignItems:'center',gap:8}}>
-            <code style={{flex:1,fontSize:12,fontFamily:'monospace',color:D.text,background:'rgba(0,0,0,0.3)',padding:'7px 10px',borderRadius:6,wordBreak:'break-all'}}>{newKey}</code>
-            <CopyBtn text={newKey}/>
+      {activeTab === 'api' && (
+        <>
+          <div style={card}>
+            <div style={{ ...cardHd }}><Key size={13} color="#10b981"/> API keys</div>
+            <div style={{ padding:16 }}>
+              <div style={{ fontSize:12, color:D.muted, marginBottom:12, lineHeight:1.6 }}>
+                Use API keys to access DomainRadar programmatically. Include as <code style={{ fontFamily:'monospace', background:'rgba(255,255,255,0.06)', padding:'1px 6px', borderRadius:4 }}>Authorization: Bearer YOUR_KEY</code> header.
+              </div>
+              {/* Endpoint docs */}
+              <div style={{ background:'rgba(0,0,0,0.25)', borderRadius:8, padding:'12px 14px', marginBottom:16, fontFamily:'monospace', fontSize:11 }}>
+                <div style={{ color:D.dim, marginBottom:6 }}>Base URL: https://kbfgnbhjczicpjqxbxjj.supabase.co/functions/v1/api-scan</div>
+                {[
+                  ['GET','?action=scan&domain=example.com','Full DNS scan'],
+                  ['GET','?action=domains','List your domains'],
+                  ['GET','?action=history&domain=example.com','Scan history'],
+                ].map(([m,ep,desc]) => (
+                  <div key={ep} style={{ display:'flex', gap:10, marginBottom:4 }}>
+                    <span style={{ color:'#60a5fa', width:30 }}>{m}</span>
+                    <span style={{ color:'rgba(16,185,129,0.7)', flex:1 }}>{ep}</span>
+                    <span style={{ color:D.dim }}>{desc}</span>
+                  </div>
+                ))}
+              </div>
+              {/* Create new key */}
+              <div style={{ display:'flex', gap:8, marginBottom:16 }}>
+                <input value={newKeyName} onChange={e => setNewKeyName(e.target.value)} placeholder="Key name (e.g. CI/CD pipeline)"
+                  style={{ flex:1, padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
+                  onKeyDown={e => e.key==='Enter'&&createApiKey()}/>
+                <button onClick={createApiKey} disabled={!newKeyName.trim()}
+                  style={{ padding:'8px 16px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'#10b981', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
+                  <Plus size={13}/> Generate
+                </button>
+              </div>
+              {/* Show newly created key */}
+              {createdKey && (
+                <div style={{ padding:'12px 14px', background:'rgba(16,185,129,0.06)', border:'1px solid rgba(16,185,129,0.2)', borderRadius:8, marginBottom:16 }}>
+                  <div style={{ fontSize:12, fontWeight:600, color:'#10b981', marginBottom:6 }}>✓ Key created — copy it now, it won't be shown again</div>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <code style={{ flex:1, fontFamily:'monospace', fontSize:12, color:'#10b981', background:'rgba(0,0,0,0.25)', padding:'6px 10px', borderRadius:6, wordBreak:'break-all' }}>{createdKey.key}</code>
+                    <CopyBtn text={createdKey.key}/>
+                    <button onClick={() => setCreatedKey(null)} style={{ background:'none', border:'none', cursor:'pointer', color:D.dim, fontSize:16 }}>✕</button>
+                  </div>
+                </div>
+              )}
+              {/* Keys list */}
+              {apiKeys.map(k => (
+                <div key={k.id} style={{ display:'flex', alignItems:'center', gap:12, padding:'9px 0', borderBottom:`1px solid rgba(255,255,255,0.04)` }}>
+                  <Key size={13} color={k.revoked?D.dim:'#10b981'}/>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:12, fontWeight:500, color:k.revoked?D.dim:D.text }}>{k.name}</div>
+                    <div style={{ fontSize:10, color:D.dim, fontFamily:'monospace' }}>{k.key_prefix}… · {k.request_count||0} requests · {k.last_used_at?`Last used ${new Date(k.last_used_at).toLocaleDateString()}`:'Never used'}</div>
+                  </div>
+                  {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'rgba(255,255,255,0.06)', color:D.dim }}>Revoked</span>
+                    : <button onClick={() => revokeKey(k.id)} style={{ padding:'4px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'#ef4444', fontSize:11, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}><Trash2 size={10}/> Revoke</button>}
+                </div>
+              ))}
+            </div>
           </div>
-          <div style={{fontSize:11,color:D.muted,marginTop:8}}>
-            Use as: <code style={{fontFamily:'monospace',color:'#10b981'}}>X-API-Key: {newKey}</code> or <code style={{fontFamily:'monospace',color:'#10b981'}}>?api_key={newKey}</code>
+        </>
+      )}
+
+      {activeTab === 'profile' && (
+        <div style={card}>
+          <div style={{ ...cardHd }}><Users size={13} color="#a78bfa"/> Profile</div>
+          <div style={{ padding:16 }}>
+            <div style={{ marginBottom:12 }}>
+              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Email</label>
+              <div style={{ padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:7, fontSize:13, color:D.dim, fontFamily:'monospace' }}>{user?.email}</div>
+            </div>
+            <div style={{ marginBottom:16 }}>
+              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Display name</label>
+              <input value={profile.full_name||''} onChange={e => setProfile(p => ({ ...p, full_name: e.target.value }))}
+                placeholder="Your name"
+                style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+            </div>
+            <div style={{ display:'flex', gap:8 }}>
+              <button onClick={saveProfile} disabled={saving}
+                style={{ padding:'8px 18px', background:'#10b981', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
+                {saving ? 'Saving…' : 'Save changes'}
+              </button>
+              <button onClick={() => { if(window.confirm('Sign out?')) signOut() }}
+                style={{ padding:'8px 14px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:7, color:'#ef4444', fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+                <LogOut size={13}/> Sign out
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      <div style={{padding:'12px 16px',borderBottom:`1px solid ${D.border}`,display:'flex',gap:8}}>
-        <input style={{...input,flex:1}} placeholder="Key name, e.g. CI/CD pipeline" value={name} onChange={e=>setName(e.target.value)} onKeyDown={e=>e.key==='Enter'&&createKey()}/>
-        <button onClick={createKey} disabled={creating||!name} style={btn(true)}>
-          {creating?'Creating…':<><Plus size={12}/>Generate key</>}
-        </button>
-      </div>
-
-      {keys.length===0&&(
-        <div style={{padding:'24px',textAlign:'center',color:D.muted,fontSize:12}}>No API keys yet. Generate one to access your scan data programmatically.</div>
-      )}
-
-      {keys.map(k=>(
-        <div key={k.id} style={{display:'flex',alignItems:'center',gap:12,padding:'10px 16px',borderBottom:`1px solid rgba(255,255,255,0.04)`,opacity:k.revoked?0.5:1}}>
-          <div style={{flex:1}}>
-            <div style={{display:'flex',alignItems:'center',gap:7,marginBottom:2}}>
-              <span style={{fontSize:12,fontWeight:600,color:D.text}}>{k.name}</span>
-              {k.revoked&&<span style={{fontSize:10,padding:'1px 6px',borderRadius:8,background:'rgba(239,68,68,0.15)',color:'#ef4444'}}>Revoked</span>}
-              <span style={{fontSize:10,padding:'1px 6px',borderRadius:8,background:'rgba(99,102,241,0.15)',color:'#818cf8'}}>{k.scopes?.join(', ')}</span>
+      {activeTab === 'notifications' && (
+        <div style={card}>
+          <div style={{ ...cardHd }}><Bell size={13} color="#f59e0b"/> Notifications</div>
+          <div style={{ padding:16 }}>
+            <label style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16, cursor:'pointer' }}>
+              <input type="checkbox" checked={profile.alert_email||true} onChange={e => setProfile(p => ({ ...p, alert_email: e.target.checked }))} style={{ accentColor:'#10b981', width:16, height:16 }}/>
+              <div>
+                <div style={{ fontSize:13, fontWeight:500, color:D.text }}>Email alerts</div>
+                <div style={{ fontSize:11, color:D.muted }}>Get notified when a domain score changes or new issues are detected</div>
+              </div>
+            </label>
+            <div style={{ marginBottom:16 }}>
+              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Webhook URL (Slack, Teams, custom)</label>
+              <input value={profile.alert_webhook||''} onChange={e => setProfile(p => ({ ...p, alert_webhook: e.target.value }))}
+                placeholder="https://hooks.slack.com/services/..."
+                style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'monospace' }}/>
             </div>
-            <div style={{fontSize:11,color:D.dim,fontFamily:'monospace'}}>
-              {k.key_prefix}… · {k.request_count||0} requests · Created {new Date(k.created_at).toLocaleDateString()}
-              {k.last_used_at&&` · Last used ${new Date(k.last_used_at).toLocaleDateString()}`}
-            </div>
-          </div>
-          {!k.revoked&&<button onClick={()=>revokeKey(k.id)} style={{...btn(false),color:'#ef4444',borderColor:'rgba(239,68,68,0.2)'}}>Revoke</button>}
-        </div>
-      ))}
-
-      <div style={{padding:'12px 16px',background:'rgba(99,102,241,0.04)',borderTop:`1px solid ${D.border}`}}>
-        <div style={{fontSize:12,fontWeight:500,color:D.text,marginBottom:6}}>API endpoint</div>
-        <div style={{display:'flex',alignItems:'center',gap:8}}>
-          <code style={{flex:1,fontSize:11,fontFamily:'monospace',color:'#818cf8',background:'rgba(0,0,0,0.3)',padding:'7px 10px',borderRadius:6}}>
-            GET https://kbfgnbhjczicpjqxbxjj.supabase.co/functions/v1/api-scan?domain=example.com
-          </code>
-          <CopyBtn text="curl -H 'X-API-Key: YOUR_KEY' 'https://kbfgnbhjczicpjqxbxjj.supabase.co/functions/v1/api-scan?domain=example.com'"/>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─── PROFILE / ALERTS SECTION ─────────────────────────────────────────
-function ProfileSettings({ user }) {
-  const [profile, setProfile] = useState({ full_name:'', alert_email:true, alert_webhook:'', report_time:'07:00' })
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-
-  useEffect(()=>{
-    supabase.from('profiles').select('*').eq('id',user.id).single().then(({data})=>{
-      if(data) setProfile({full_name:data.full_name||'',alert_email:data.alert_email??true,alert_webhook:data.alert_webhook||'',report_time:data.report_time||'07:00'})
-    })
-  },[user.id])
-
-  async function save() {
-    setSaving(true)
-    await supabase.from('profiles').update(profile).eq('id',user.id)
-    setSaving(false); setSaved(true); setTimeout(()=>setSaved(false),2500)
-  }
-
-  return (
-    <div style={card}>
-      <div style={cardHd}>
-        <span style={{fontSize:13,fontWeight:600,color:D.text,display:'flex',alignItems:'center',gap:7}}><Bell size={14} color="#a78bfa"/> Notifications & profile</span>
-        {saved&&<span style={{fontSize:11,color:'#10b981',display:'flex',alignItems:'center',gap:4}}><CheckCircle size={12}/>Saved</span>}
-      </div>
-      <div style={{padding:16,display:'flex',flexDirection:'column',gap:12}}>
-        <div>
-          <label style={{fontSize:11,color:D.muted,display:'block',marginBottom:4}}>Display name</label>
-          <input style={input} value={profile.full_name} onChange={e=>setProfile(p=>({...p,full_name:e.target.value}))} placeholder="Your name"/>
-        </div>
-        <div>
-          <label style={{fontSize:11,color:D.muted,display:'block',marginBottom:4}}>Email</label>
-          <input style={{...input,opacity:0.5}} value={user.email} disabled/>
-        </div>
-        <div style={{display:'flex',alignItems:'center',gap:10,padding:'10px 14px',background:'rgba(255,255,255,0.03)',borderRadius:8,border:`1px solid ${D.border}`}}>
-          <input type="checkbox" id="alertEmail" checked={profile.alert_email} onChange={e=>setProfile(p=>({...p,alert_email:e.target.checked}))} style={{accentColor:'#10b981',width:15,height:15}}/>
-          <label htmlFor="alertEmail" style={{fontSize:13,color:D.text,cursor:'pointer'}}>Email alerts when DNS records change</label>
-        </div>
-        <div>
-          <label style={{fontSize:11,color:D.muted,display:'block',marginBottom:4}}>Slack / Teams webhook URL <span style={{color:D.dim}}>(optional)</span></label>
-          <input style={input} value={profile.alert_webhook} onChange={e=>setProfile(p=>({...p,alert_webhook:e.target.value}))} placeholder="https://hooks.slack.com/services/..."/>
-        </div>
-        <div>
-          <label style={{fontSize:11,color:D.muted,display:'block',marginBottom:4}}>Daily report time (UTC)</label>
-          <select value={profile.report_time} onChange={e=>setProfile(p=>({...p,report_time:e.target.value}))} style={{...input,width:'auto'}}>
-            {['06:00','07:00','08:00','09:00','12:00','18:00'].map(t=><option key={t} value={t}>{t} UTC</option>)}
-          </select>
-        </div>
-        <button onClick={save} disabled={saving} style={{...btn(true),alignSelf:'flex-start'}}>
-          {saving?'Saving…':'Save settings'}
-        </button>
-      </div>
-    </div>
-  )
-}
-
-// ─── MAIN SETTINGS PAGE ───────────────────────────────────────────────
-export default function Settings({ user }) {
-  const [tab, setTab] = useState('dns')
-  const tabs = [
-    { id:'dns', icon:Globe, label:'DNS providers' },
-    { id:'api', icon:Key, label:'API keys' },
-    { id:'profile', icon:Bell, label:'Notifications' },
-  ]
-
-  return (
-    <div style={{background:D.bg,minHeight:'100%',fontFamily:"'DM Sans','Inter',system-ui,sans-serif"}}>
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-      <div style={{padding:'16px 20px',borderBottom:`1px solid ${D.border}`,background:D.surface}}>
-        <h2 style={{fontSize:16,fontWeight:700,color:D.text,marginBottom:12}}>Settings</h2>
-        <div style={{display:'flex',gap:2}}>
-          {tabs.map(t=>(
-            <button key={t.id} onClick={()=>setTab(t.id)}
-              style={{padding:'7px 16px',background:tab===t.id?'rgba(16,185,129,0.12)':'transparent',border:`1px solid ${tab===t.id?'rgba(16,185,129,0.25)':'transparent'}`,borderRadius:8,color:tab===t.id?'#10b981':'rgba(255,255,255,0.45)',fontSize:12,fontWeight:500,cursor:'pointer',display:'flex',alignItems:'center',gap:5}}>
-              <t.icon size={13}/>{t.label}
+            <button onClick={saveProfile} disabled={saving}
+              style={{ padding:'8px 18px', background:'#10b981', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
+              {saving ? 'Saving…' : 'Save'}
             </button>
-          ))}
+          </div>
         </div>
-      </div>
-      <div style={{padding:20,display:'flex',flexDirection:'column',gap:14,maxWidth:820}}>
-        {tab==='dns'&&<DNSCredentials user={user}/>}
-        {tab==='api'&&<APIKeys user={user}/>}
-        {tab==='profile'&&<ProfileSettings user={user}/>}
-      </div>
+      )}
     </div>
   )
 }
