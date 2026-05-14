@@ -23,6 +23,8 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
     if (!d || !d.includes('.')) { setError('Please enter a valid domain name'); return }
     setLoading(true)
     try {
+      // Ensure profile exists (handles stale sessions / first-time users)
+      await supabase.from('profiles').upsert({ id: user.id, email: user.email }, { onConflict: 'id' })
       const tok = 'dr-verify-' + Math.random().toString(36).slice(2, 18)
       const { data, error: err } = await supabase.from('domains').insert({
         user_id: user.id,
