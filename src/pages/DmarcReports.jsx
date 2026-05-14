@@ -26,7 +26,7 @@ function CopyBtn({ text }) {
   const [c,setC] = useState(false)
   return (
     <button onClick={() => { navigator.clipboard.writeText(text); setC(true); setTimeout(() => setC(false), 2000) }}
-      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.12)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:6, color:'#111827', fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:5, flexShrink:0 }}>
+      style={{ padding:'4px 10px', background:'#dcfce7', border:'1px solid #86efac', borderRadius:6, color:'#111827', fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:5, flexShrink:0 }}>
       {c ? <><Check size={11}/>Copied</> : <><Copy size={11}/>Copy</>}
     </button>
   )
@@ -36,8 +36,8 @@ function RuaSetupCard({ ruaAddress }) {
   const [open, setOpen] = useState(true)
   const dmarcRecord = `v=DMARC1; p=none; rua=mailto:${ruaAddress}; ruf=mailto:${ruaAddress}; adkim=r; aspf=r`
   return (
-    <div style={{ ...card, marginBottom:16, border:'1px solid rgba(16,185,129,0.25)', background:'rgba(16,185,129,0.04)' }}>
-      <div style={{ ...cardHd, background:'rgba(16,185,129,0.08)', cursor:'pointer' }} onClick={() => setOpen(o=>!o)}>
+    <div style={{ ...card, marginBottom:16, border:'1px solid #86efac', background:'rgba(16,185,129,0.04)' }}>
+      <div style={{ ...cardHd, background:'#f0fdf4', cursor:'pointer' }} onClick={() => setOpen(o=>!o)}>
         <span style={{ fontSize:13, fontWeight:600, color:'#111827', display:'flex', alignItems:'center', gap:7 }}>
           <Zap size={14}/> Step 1 — Point your DMARC rua= address here to start receiving reports automatically
         </span>
@@ -262,7 +262,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
         </div>
         <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
           {[7,30,90].map(r => (
-            <button key={r} onClick={() => setRange(r)} style={{ padding:'5px 12px', background:range===r?'rgba(16,185,129,0.12)':'#f9fafb', border:`1px solid ${range===r?'rgba(16,185,129,0.3)':'#e5e7eb'}`, borderRadius:7, color:range===r?'#00e5a0':D.muted, fontSize:12, fontWeight:500, cursor:'pointer' }}>{r}d</button>
+            <button key={r} onClick={() => setRange(r)} style={{ padding:'5px 12px', background:range===r?'#dcfce7':'#f9fafb', border:`1px solid ${range===r?'rgba(16,185,129,0.3)':'#e5e7eb'}`, borderRadius:7, color:range===r?'#00e5a0':D.muted, fontSize:12, fontWeight:500, cursor:'pointer' }}>{r}d</button>
           ))}
           <button onClick={() => setShowUpload(true)} style={{ padding:'5px 12px', background:'#e5e7eb', border:'1px solid #e5e7eb', borderRadius:7, color:'#111827', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}><Upload size={11}/> Upload XML</button>
           <button onClick={fetchData} style={{ padding:'5px 10px', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:7, color:'#374151', cursor:'pointer' }}><RefreshCw size={12}/></button>

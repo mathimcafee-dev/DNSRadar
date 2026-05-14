@@ -87,7 +87,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
         {!user && (
           <div style={{ padding:'16px 10px', display:'flex', flexDirection:'column', gap:7 }}>
             <button onClick={() => setPage('auth')} style={{ padding:'9px', background:'#16a34a', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:"'Inter',system-ui" }}>Start free</button>
-            <button onClick={() => setPage('auth')} style={{ padding:'9px', background:'#1f2937', color:'#9ca3af', border:'1px solid #374151', borderRadius:8, fontSize:13, cursor:'pointer', fontFamily:"'Inter',system-ui" }}>Sign in</button>
+            <button onClick={() => setPage('auth')} style={{ padding:'9px', background:'#1f2937', color:'#6b7280', border:'1px solid #374151', borderRadius:8, fontSize:13, cursor:'pointer', fontFamily:"'Inter',system-ui" }}>Sign in</button>
           </div>
         )}
       </nav>
@@ -111,7 +111,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
               style={{ width:'100%', display:'flex', alignItems:'center', gap:9, padding:collapsed?'7px 0':'8px 10px', justifyContent:collapsed?'center':'flex-start', background:'#1f2937', border:'1px solid #374151', borderRadius:9, cursor:'pointer', transition:'background 0.12s' }}
               onMouseEnter={e => e.currentTarget.style.background='#374151'}
               onMouseLeave={e => e.currentTarget.style.background='#1f2937'}>
-              <div style={{ width:26, height:26, borderRadius:'50%', background:'#14532d', color:'#4ade80', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0, border:'1px solid #166534' }}>
+              <div style={{ width:26, height:26, borderRadius:'50%', background:'#14532d', color:'#15803d', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0, border:'1px solid #166534' }}>
                 {user.email?.[0]?.toUpperCase()}
               </div>
               {!collapsed && (
@@ -128,7 +128,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
               <div style={{ position:'absolute', bottom:'calc(100% + 6px)', left:0, right:0, background:'#1f2937', border:'1px solid #374151', borderRadius:10, boxShadow:'0 -8px 24px rgba(0,0,0,0.4)', padding:'4px', zIndex:200, minWidth:190 }}>
                 <div style={{ padding:'8px 10px 6px', fontSize:11, color:'#4b5563', borderBottom:'1px solid #374151', marginBottom:4 }}>{user.email}</div>
                 {[
-                  { label:'Settings', icon:Settings, fn:()=>{setPage('settings');setUserOpen(false)}, color:'#9ca3af' },
+                  { label:'Settings', icon:Settings, fn:()=>{setPage('settings');setUserOpen(false)}, color:'#6b7280' },
                   { label:'Sign out', icon:LogOut,   fn:()=>{signOut();setUserOpen(false)},           color:'#fca5a5' },
                 ].map(item => (
                   <button key={item.label} onClick={item.fn}

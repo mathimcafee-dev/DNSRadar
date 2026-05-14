@@ -115,7 +115,7 @@ export default function Reports({ user }) {
             </select>
           )}
           <button onClick={()=>setUploadXML(u=>!u)}
-            style={{ padding:'7px 14px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:8, color:'#111827', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+            style={{ padding:'7px 14px', background:'#dcfce7', border:'1px solid rgba(16,185,129,0.3)', borderRadius:8, color:'#111827', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
             <Upload size={13}/> Upload XML report
           </button>
         </div>
@@ -152,7 +152,7 @@ export default function Reports({ user }) {
           <div style={{ fontSize:13, color:D.m, maxWidth:420, margin:'0 auto', lineHeight:1.7 }}>
             To receive aggregate reports automatically, add this to your DMARC record:
           </div>
-          <div style={{ fontFamily:'monospace', fontSize:12, color:'#111827', background:'rgba(16,185,129,0.08)', border:'1px solid #d1d5db', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
+          <div style={{ fontFamily:'monospace', fontSize:12, color:'#111827', background:'#f0fdf4', border:'1px solid #d1d5db', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
             rua=mailto:reports@dnsradar.easysecurity.in
           </div>
           <div style={{ fontSize:12, color:D.d }}>Or upload an existing XML report above to get started immediately.</div>

@@ -62,7 +62,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
         <div style={{ display:'flex', alignItems:'center', gap:8, flexShrink:0 }}>
           <DaysBadge days={cert.days_remaining}/>
           {cert.chain_valid === false && <span style={{ fontSize:10, padding:'2px 7px', borderRadius:6, background:'rgba(239,68,68,0.12)', color:'#ff4d6a', border:'1px solid rgba(239,68,68,0.2)', fontWeight:500 }}>Chain error</span>}
-          {cert.weak_cipher_detected && <span style={{ fontSize:10, padding:'2px 7px', borderRadius:6, background:'rgba(245,158,11,0.12)', color:'#ffb224', border:'1px solid rgba(245,158,11,0.2)', fontWeight:500 }}>Weak cipher</span>}
+          {cert.weak_cipher_detected && <span style={{ fontSize:10, padding:'2px 7px', borderRadius:6, background:'rgba(245,158,11,0.12)', color:'#92400e', border:'1px solid rgba(245,158,11,0.2)', fontWeight:500 }}>Weak cipher</span>}
           <button onClick={handleDelete} disabled={deleting}
             style={{ padding:'5px 7px', background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.15)', borderRadius:7, color:'rgba(239,68,68,0.7)', cursor:'pointer', lineHeight:0, flexShrink:0 }}
             title="Delete this SSL record">
@@ -90,7 +90,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
               <div style={{ fontSize:12,color:'#374151', marginBottom:6, fontWeight:500 }}>TLS versions</div>
               <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                 {tlsVersions.map(v => (
-                  <span key={v} style={{ fontSize:12, padding:'2px 8px', borderRadius:6, background:(v==='TLSv1.0'||v==='TLSv1.1')?'rgba(239,68,68,0.12)':'rgba(16,185,129,0.12)', color:(v==='TLSv1.0'||v==='TLSv1.1')?'#ff4d6a':'#00e5a0', border:`1px solid ${(v==='TLSv1.0'||v==='TLSv1.1')?'rgba(239,68,68,0.2)':'rgba(16,185,129,0.2)'}`, fontWeight:500 }}>{v}</span>
+                  <span key={v} style={{ fontSize:12, padding:'2px 8px', borderRadius:6, background:(v==='TLSv1.0'||v==='TLSv1.1')?'rgba(239,68,68,0.12)':'#dcfce7', color:(v==='TLSv1.0'||v==='TLSv1.1')?'#ff4d6a':'#00e5a0', border:`1px solid ${(v==='TLSv1.0'||v==='TLSv1.1')?'rgba(239,68,68,0.2)':'rgba(16,185,129,0.2)'}`, fontWeight:500 }}>{v}</span>
                 ))}
               </div>
             </div>
@@ -234,7 +234,7 @@ export default function SslCertificates({ user }) {
           <p style={{ fontSize:13, color:'#374151' }}>TLS certificate health across all monitored domains</p>
         </div>
         <button onClick={scanAll} disabled={scanning || !domains.some(d=>d.verified)}
-          style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'rgba(16,185,129,0.12)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:8, color:'#111827', fontSize:12, fontWeight:600, cursor:'pointer', opacity:scanning?0.6:1 }}>
+          style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'#dcfce7', border:'1px solid #86efac', borderRadius:8, color:'#111827', fontSize:12, fontWeight:600, cursor:'pointer', opacity:scanning?0.6:1 }}>
           <RefreshCw size={13} style={{ animation:scanning?'sslspin 1s linear infinite':'none' }}/> Scan all
         </button>
       </div>
@@ -268,7 +268,7 @@ export default function SslCertificates({ user }) {
       </div>
 
       {/* Status messages */}
-      {scanMsg && <div style={{ padding:'9px 14px', background:'rgba(16,185,129,0.08)', border:'1px solid #d1d5db', borderRadius:8, color:'#111827', fontSize:12, marginBottom:14 }}>{scanMsg}</div>}
+      {scanMsg && <div style={{ padding:'9px 14px', background:'#f0fdf4', border:'1px solid #d1d5db', borderRadius:8, color:'#111827', fontSize:12, marginBottom:14 }}>{scanMsg}</div>}
       {scanError && <div style={{ padding:'9px 14px', background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:8, color:'#ff4d6a', fontSize:12, marginBottom:14 }}>{scanError}</div>}
 
       {/* Summary cards */}
@@ -285,7 +285,7 @@ export default function SslCertificates({ user }) {
       {certs.length > 0 && (
         <div style={{ display:'flex', gap:6, marginBottom:14, flexWrap:'wrap' }}>
           {[['all','All'],['expiring','Expiring soon'],['issues','Issues']].map(([v,l])=>(
-            <button key={v} onClick={()=>setFilter(v)} style={{ padding:'5px 12px', background:filter===v?'rgba(16,185,129,0.12)':'#f9fafb', border:`1px solid ${filter===v?'rgba(16,185,129,0.25)':'#e5e7eb'}`, borderRadius:7, color:filter===v?'#00e5a0':D.muted, fontSize:12, fontWeight:filter===v?600:400, cursor:'pointer' }}>{l}</button>
+            <button key={v} onClick={()=>setFilter(v)} style={{ padding:'5px 12px', background:filter===v?'#dcfce7':'#f9fafb', border:`1px solid ${filter===v?'#86efac':'#e5e7eb'}`, borderRadius:7, color:filter===v?'#15803d':'#374151', fontSize:12, fontWeight:filter===v?600:400, cursor:'pointer' }}>{l}</button>
           ))}
         </div>
       )}

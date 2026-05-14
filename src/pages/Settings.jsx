@@ -11,7 +11,7 @@ function CopyBtn({ text }) {
   const [c,setC]=useState(false)
   return (
     <button onClick={() => { navigator.clipboard.writeText(text); setC(true); setTimeout(()=>setC(false),2000) }}
-      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:5, color:'#111827', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
+      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid #86efac', borderRadius:5, color:'#111827', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
       {c?<><Check size={11}/>Copied</>:<><Copy size={11}/>Copy</>}
     </button>
   )
@@ -116,13 +116,13 @@ export default function Settings({ user }) {
                   style={{ flex:1, padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}
                   onKeyDown={e => e.key==='Enter'&&createApiKey()}/>
                 <button onClick={createApiKey} disabled={!newKeyName.trim()}
-                  style={{ padding:'8px 16px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'#111827', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
+                  style={{ padding:'8px 16px', background:'#dcfce7', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'#111827', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
                   <Plus size={13}/> Generate
                 </button>
               </div>
               {/* Show newly created key */}
               {createdKey && (
-                <div style={{ padding:'12px 14px', background:'rgba(16,185,129,0.06)', border:'1px solid #d1d5db', borderRadius:8, marginBottom:16 }}>
+                <div style={{ padding:'12px 14px', background:'#f0fdf4', border:'1px solid #d1d5db', borderRadius:8, marginBottom:16 }}>
                   <div style={{ fontSize:12, fontWeight:600, color:'#111827', marginBottom:6 }}>✓ Key created — copy it now, it won't be shown again</div>
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                     <code style={{ flex:1, fontFamily:'monospace', fontSize:12, color:'#111827', background:'#f1f5f9', padding:'6px 10px', borderRadius:6, wordBreak:'break-all' }}>{createdKey.key}</code>
@@ -257,7 +257,7 @@ function TeamSection({ user }) {
             {saving ? 'Sending…' : 'Invite'}
           </button>
         </div>
-        {msg && <div style={{ fontSize:12, color:'#111827', marginBottom:12, padding:'6px 10px', background:'rgba(16,185,129,0.08)', borderRadius:6 }}>{msg}</div>}
+        {msg && <div style={{ fontSize:12, color:'#111827', marginBottom:12, padding:'6px 10px', background:'#f0fdf4', borderRadius:6 }}>{msg}</div>}
         {members.length === 0 ? (
           <div style={{ textAlign:'center', padding:'24px', color:'#374151', fontSize:12 }}>No team members yet. Invite someone above.</div>
         ) : members.map(m => (

@@ -39,7 +39,7 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
   }
 
   if (state === 'no-cred') return (
-    <a href="#" onClick={e=>{e.preventDefault();setState('idle')}} style={{fontSize:10,color:'#ffb224',textDecoration:'none',whiteSpace:'nowrap'}}>
+    <a href="#" onClick={e=>{e.preventDefault();setState('idle')}} style={{fontSize:10,color:'#92400e',textDecoration:'none',whiteSpace:'nowrap'}}>
       Add DNS credentials in Settings →
     </a>
   )
@@ -50,7 +50,7 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
         <div style={{position:'absolute',right:16,zIndex:50,background:'#1d2330',border:'1px solid rgba(255,255,255,0.12)',borderRadius:10,padding:'12px 14px',width:260,boxShadow:'0 8px 32px rgba(0,0,0,0.4)'}}>
           <div style={{fontSize:12,fontWeight:600,color:'#fff',marginBottom:5}}>Push to {cred?.provider}?</div>
           <div style={{fontSize:10,fontFamily:'monospace',color:'#0f172a',marginBottom:2}}>Type: {mapping.type} · Name: {typeof mapping.name==='function'?mapping.name(domainName):mapping.name}</div>
-          <div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',background:'rgba(16,185,129,0.06)',padding:'4px 8px',borderRadius:5,marginBottom:10,wordBreak:'break-all'}}>{fixValue?.slice(0,80)}</div>
+          <div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',background:'#f0fdf4',padding:'4px 8px',borderRadius:5,marginBottom:10,wordBreak:'break-all'}}>{fixValue?.slice(0,80)}</div>
           <div style={{display:'flex',gap:6}}>
             <button onClick={execute} style={{flex:1,padding:'6px',background:'#00e5a0',color:'#fff',border:'none',borderRadius:6,cursor:'pointer',fontSize:12,fontWeight:600}}>Confirm push</button>
             <button onClick={()=>setShowConfirm(false)} style={{padding:'6px 10px',background:'#f1f5f9',color:'rgba(255,255,255,0.6)',border:'none',borderRadius:6,cursor:'pointer',fontSize:11}}>Cancel</button>
@@ -229,7 +229,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
     {label:'Email auth',icon:Mail,color:'#dc2626',bg:'#fef2f2',score:scan.score_email,max:30,tab:'email'},
     {label:'SSL / TLS',icon:Lock,color:'#111827',bg:'#f0fdf4',score:scan.score_ssl,max:20},
     {label:'Propagation',icon:Globe,color:'#d97706',bg:'#fffbeb',score:scan.score_propagation,max:10,tab:'propagation'},
-    {label:'Security',icon:Shield,color:'#7c3aed',bg:'#f5f3ff',score:scan.score_security,max:10,tab:'overview'},
+    {label:'Security',icon:Shield,color:'#4338ca',bg:'#f5f3ff',score:scan.score_security,max:10,tab:'overview'},
     {label:'Blacklists',icon:Ban,color:'#dc2626',bg:'#fef2f2',score:scan.score_blacklist,max:5,tab:'blacklists'},
   ]:[]
 
@@ -437,7 +437,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       <span style={{fontSize:12,fontWeight:700,color:'#111827'}}>Issues to fix</span>
                       <div style={{display:'flex',gap:5}}>
                         {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(239,68,68,0.15)',color:'#ff4d6a'}}>{critical.length} critical</span>}
-                        {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(245,158,11,0.15)',color:'#ffb224'}}>{warns.length} warnings</span>}
+                        {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(245,158,11,0.15)',color:'#92400e'}}>{warns.length} warnings</span>}
                       </div>
                     </div>
                     {issues.length===0?(
@@ -453,7 +453,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                             <span style={{fontSize:10,padding:'1px 6px',borderRadius:8,background:`rgba(${iss.severity==='critical'?'239,68,68':iss.severity==='warn'?'245,158,11':'96,165,250'},0.15)`,color:iss.severity==='critical'?'#ff4d6a':iss.severity==='warn'?'#ffb224':'#3d9bff'}}>{iss.severity}</span>
                           </div>
                           <div style={{fontSize:12,color:'#374151',marginBottom:iss.fix?4:0}}>{iss.message}</div>
-                          {iss.fix&&<div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',padding:'3px 8px',background:'rgba(16,185,129,0.06)',borderRadius:5,display:'inline-block',wordBreak:'break-all'}}>{iss.fix}</div>}
+                          {iss.fix&&<div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',padding:'3px 8px',background:'#f0fdf4',borderRadius:5,display:'inline-block',wordBreak:'break-all'}}>{iss.fix}</div>}
                         </div>
                         {iss.fix&&['SPF','DMARC','CAA'].includes(iss.type)&&(
                           <AutoFixButton domainId={selected.id} issueType={iss.type} fixValue={iss.fix} domainName={selected.domain_name}/>
