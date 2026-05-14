@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { Plus, Trash2, Copy, Check, Eye, EyeOff, RefreshCw, Shield, Key, Globe, Clock, Bell, Zap, AlertTriangle, CheckCircle, ExternalLink } from 'lucide-react'
+import { Plus, Trash2, Copy, Check, Eye, EyeOff, RefreshCw, Shield, Key, Globe, Clock, Bell, Zap, AlertTriangle, CheckCircle, ExternalLink, Users } from 'lucide-react'
 
 const D = { bg:'#0d1117', surface:'#161b22', surface2:'#1c2333', border:'rgba(255,255,255,0.08)', text:'#e6edf3', muted:'rgba(255,255,255,0.5)', dim:'rgba(255,255,255,0.25)' }
 const card = { background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, overflow:'hidden' }
@@ -319,13 +319,120 @@ function ProfileSettings({ user }) {
   )
 }
 
+// ─── TEAM MANAGEMENT ─────────────────────────────────────────────────
+function TeamManagement({ user }) {
+  const [members, setMembers] = useState([])
+  const [inviteEmail, setInviteEmail] = useState('')
+  const [inviteRole, setInviteRole] = useState('viewer')
+  const [inviting, setInviting] = useState(false)
+  const [msg, setMsg] = useState('')
+
+  useEffect(() => { loadMembers() }, [user.id])
+
+  async function loadMembers() {
+    const { data } = await supabase.from('team_members').select('*').eq('owner_id', user.id).order('invited_at', { ascending:false })
+    setMembers(data || [])
+  }
+
+  async function invite() {
+    if (!inviteEmail.trim()) return
+    setInviting(true)
+    const token = Math.random().toString(36).slice(2) + Date.now().toString(36)
+    const { error } = await supabase.from('team_members').insert({
+      owner_id: user.id,
+      member_email: inviteEmail.trim(),
+      role: inviteRole,
+      status: 'pending',
+      invite_token: token,
+      invited_at: new Date().toISOString(),
+    })
+    if (error) {
+      setMsg('Error sending invite: ' + error.message)
+    } else {
+      setMsg(`Invite sent to ${inviteEmail.trim()}`)
+      setInviteEmail('')
+      await loadMembers()
+    }
+    setInviting(false)
+    setTimeout(() => setMsg(''), 4000)
+  }
+
+  async function removeMember(id) {
+    await supabase.from('team_members').delete().eq('id', id)
+    setMembers(m => m.filter(x => x.id !== id))
+  }
+
+  const statusColor = { pending:'#f59e0b', active:'#10b981', rejected:'#ef4444' }
+  const roleColor   = { admin:'#a78bfa', editor:'#3b82f6', viewer:'#6b7280' }
+
+  return (
+    <div style={card}>
+      <div style={cardHd}>
+        <span style={{fontSize:13,fontWeight:600,color:D.text,display:'flex',alignItems:'center',gap:7}}>
+          <Users size={14} color="#3b82f6"/> Team members
+        </span>
+      </div>
+      <div style={{padding:16}}>
+        {/* Invite row */}
+        <div style={{display:'flex',gap:8,marginBottom:16,flexWrap:'wrap'}}>
+          <input style={{...input,flex:1,minWidth:200}} placeholder="colleague@company.com" value={inviteEmail} onChange={e=>setInviteEmail(e.target.value)}
+            onKeyDown={e=>e.key==='Enter'&&invite()}/>
+          <select value={inviteRole} onChange={e=>setInviteRole(e.target.value)} style={{...input,width:'auto'}}>
+            <option value="viewer">Viewer</option>
+            <option value="editor">Editor</option>
+            <option value="admin">Admin</option>
+          </select>
+          <button onClick={invite} disabled={inviting||!inviteEmail.trim()} style={btn(true)}>
+            <Plus size={12}/>{inviting?'Sending…':'Invite'}
+          </button>
+        </div>
+
+        {msg && <div style={{fontSize:12,color:'#10b981',marginBottom:12,padding:'6px 10px',background:'rgba(16,185,129,0.08)',borderRadius:6}}>{msg}</div>}
+
+        {/* Role explanation */}
+        <div style={{display:'flex',gap:10,marginBottom:16,flexWrap:'wrap'}}>
+          {[['viewer','Can view all domains and scans'],['editor','Can add domains and trigger scans'],['admin','Full access including settings']].map(([role,desc])=>(
+            <div key={role} style={{fontSize:10,padding:'3px 8px',borderRadius:6,background:'rgba(255,255,255,0.04)',color:D.dim}}>
+              <span style={{color:roleColor[role],fontWeight:600}}>{role}</span>: {desc}
+            </div>
+          ))}
+        </div>
+
+        {members.length === 0 ? (
+          <div style={{textAlign:'center',padding:'24px',color:D.dim,fontSize:12}}>No team members yet. Invite someone above.</div>
+        ) : (
+          <div style={{display:'flex',flexDirection:'column',gap:6}}>
+            {members.map(m => (
+              <div key={m.id} style={{display:'flex',alignItems:'center',gap:10,padding:'10px 12px',background:'rgba(255,255,255,0.03)',borderRadius:8,border:`1px solid ${D.border}`}}>
+                <div style={{width:28,height:28,borderRadius:'50%',background:'rgba(59,130,246,0.15)',color:'#3b82f6',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:700,flexShrink:0}}>
+                  {m.member_email?.[0]?.toUpperCase()}
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:12,fontWeight:500,color:D.text,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{m.member_email}</div>
+                  <div style={{fontSize:10,color:D.dim}}>{m.accepted_at?`Joined ${new Date(m.accepted_at).toLocaleDateString()}`:`Invited ${new Date(m.invited_at).toLocaleDateString()}`}</div>
+                </div>
+                <span style={{fontSize:10,padding:'2px 7px',borderRadius:5,background:`${roleColor[m.role]}18`,color:roleColor[m.role],fontWeight:600,border:`1px solid ${roleColor[m.role]}30`}}>{m.role}</span>
+                <span style={{fontSize:10,padding:'2px 7px',borderRadius:5,background:`${statusColor[m.status]||'#6b7280'}18`,color:statusColor[m.status]||'#6b7280',fontWeight:600}}>{m.status}</span>
+                <button onClick={()=>removeMember(m.id)} style={{padding:'4px',background:'none',border:'none',cursor:'pointer',color:'rgba(239,68,68,0.6)',lineHeight:0,flexShrink:0}}>
+                  <Trash2 size={13}/>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ─── MAIN SETTINGS PAGE ───────────────────────────────────────────────
 export default function Settings({ user }) {
   const [tab, setTab] = useState('dns')
   const tabs = [
-    { id:'dns', icon:Globe, label:'DNS providers' },
-    { id:'api', icon:Key, label:'API keys' },
-    { id:'profile', icon:Bell, label:'Notifications' },
+    { id:'dns',     icon:Globe,  label:'DNS providers' },
+    { id:'api',     icon:Key,    label:'API keys' },
+    { id:'team',    icon:Users,  label:'Team' },
+    { id:'profile', icon:Bell,   label:'Notifications' },
   ]
 
   return (
@@ -333,7 +440,7 @@ export default function Settings({ user }) {
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
       <div style={{padding:'16px 20px',borderBottom:`1px solid ${D.border}`,background:D.surface}}>
         <h2 style={{fontSize:16,fontWeight:700,color:D.text,marginBottom:12}}>Settings</h2>
-        <div style={{display:'flex',gap:2}}>
+        <div style={{display:'flex',gap:2,flexWrap:'wrap'}}>
           {tabs.map(t=>(
             <button key={t.id} onClick={()=>setTab(t.id)}
               style={{padding:'7px 16px',background:tab===t.id?'rgba(16,185,129,0.12)':'transparent',border:`1px solid ${tab===t.id?'rgba(16,185,129,0.25)':'transparent'}`,borderRadius:8,color:tab===t.id?'#10b981':'rgba(255,255,255,0.45)',fontSize:12,fontWeight:500,cursor:'pointer',display:'flex',alignItems:'center',gap:5}}>
@@ -343,9 +450,10 @@ export default function Settings({ user }) {
         </div>
       </div>
       <div style={{padding:20,display:'flex',flexDirection:'column',gap:14,maxWidth:820}}>
-        {tab==='dns'&&<DNSCredentials user={user}/>}
-        {tab==='api'&&<APIKeys user={user}/>}
-        {tab==='profile'&&<ProfileSettings user={user}/>}
+        {tab==='dns'     && <DNSCredentials user={user}/>}
+        {tab==='api'     && <APIKeys user={user}/>}
+        {tab==='team'    && <TeamManagement user={user}/>}
+        {tab==='profile' && <ProfileSettings user={user}/>}
       </div>
     </div>
   )

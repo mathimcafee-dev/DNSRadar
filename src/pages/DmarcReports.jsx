@@ -75,7 +75,7 @@ function UploadXMLModal({ domain, onClose, onSuccess }) {
   )
 }
 
-export default function DmarcReports({ user, selectedDomain }) {
+function DmarcReportsInner({ user, selectedDomain }) {
   const [stats, setStats] = useState([])
   const [sources, setSources] = useState([])
   const [reports, setReports] = useState([])
@@ -377,6 +377,38 @@ export default function DmarcReports({ user, selectedDomain }) {
       </>)}
 
       {showUpload && <UploadXMLModal domain={selectedDomain} onClose={() => setShowUpload(false)} onSuccess={() => { setShowUpload(false); fetchData() }}/>}
+    </div>
+  )
+}
+
+export default function DmarcReports({ user }) {
+  const [domains, setDomains] = useState([])
+  const [selectedId, setSelectedId] = useState(null)
+
+  useEffect(() => {
+    supabase.from('domains').select('id,domain_name').eq('user_id', user.id).eq('verified', true).order('domain_name').then(({ data }) => {
+      setDomains(data || [])
+      if (data?.length) setSelectedId(data[0].id)
+    })
+  }, [user.id])
+
+  const selectedDomain = domains.find(d => d.id === selectedId) || null
+
+  return (
+    <div style={{ background: D.bg, minHeight: '100%', fontFamily: "'DM Sans','Inter',system-ui,sans-serif" }}>
+      <div style={{ padding: '14px 20px', borderBottom: `1px solid ${D.border}`, background: D.surface, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <h2 style={{ fontSize: 16, fontWeight: 700, color: D.text, margin: 0 }}>DMARC Reports</h2>
+        {domains.length > 0 && (
+          <select value={selectedId || ''} onChange={e => setSelectedId(e.target.value)}
+            style={{ padding: '5px 10px', background: D.surface2, border: `1px solid ${D.border}`, borderRadius: 7, fontSize: 12, color: D.text, cursor: 'pointer', outline: 'none' }}>
+            {domains.map(d => <option key={d.id} value={d.id}>{d.domain_name}</option>)}
+          </select>
+        )}
+        {domains.length === 0 && (
+          <span style={{ fontSize: 12, color: D.muted }}>No verified domains found</span>
+        )}
+      </div>
+      <DmarcReportsInner user={user} selectedDomain={selectedDomain} />
     </div>
   )
 }
