@@ -7,9 +7,9 @@ import Auth from './pages/Auth'
 import ScanResult from './pages/ScanResult'
 import Dashboard from './pages/Dashboard'
 import Tools from './pages/Tools'
-import DmarcReports from './pages/DmarcReports'
+import Reports from './pages/Reports'
 import Settings from './pages/Settings'
-import { Alerts, Reports } from './pages/Pages'
+import { Alerts } from './pages/Pages'
 import './styles/globals.css'
 
 export default function App() {
@@ -47,7 +47,7 @@ export default function App() {
     </div>
   )
 
-  const needsAuth = ['dashboard', 'tools', 'alerts', 'reports', 'dmarc', 'settings'].includes(page)
+  const needsAuth = ['dashboard', 'tools', 'alerts', 'reports', 'settings'].includes(page)
   if (needsAuth && !user) { setPage('auth'); return null }
 
   return (
@@ -58,9 +58,8 @@ export default function App() {
       {page === 'scan' && <ScanResult domain={scanDomain} scanType={scanType} setPage={setPage} user={user}/>}
       {page === 'dashboard' && user && <Dashboard user={user} setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>}
       {page === 'tools' && <Tools/>}
-      {page === 'dmarc' && user && <DmarcReports user={user}/>}
-      {page === 'alerts' && user && <Alerts user={user}/>}
       {page === 'reports' && user && <Reports user={user}/>}
+      {page === 'alerts' && user && <Alerts user={user}/>}
       {page === 'settings' && user && <Settings user={user}/>}
     </div>
   )

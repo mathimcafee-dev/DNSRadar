@@ -6,67 +6,68 @@ import ScoreHistoryChart from '../components/ScoreHistoryChart'
 import DmarcJourney from '../components/DmarcJourney'
 import { timeAgo, getScoreColor } from '../lib/scoreEngine'
 
-// ─── Auto Fix Button ──────────────────────────────────────────────────
+// ─── Auto-fix button ──────────────────────────────────────────────────
 function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
-  const [state, setState] = useState('idle') // idle | confirm | fixing | done | error | nocred
-  const [creds, setCreds] = useState([])
-  const [selectedCred, setSelectedCred] = useState('')
-  const [msg, setMsg] = useState('')
+  const [state, setState] = useState('idle') // idle | loading | success | error | no-cred
+  const [cred, setCred] = useState(null)
+  const [showConfirm, setShowConfirm] = useState(false)
 
   const RECORD_MAP = {
-    'SPF': { type:'TXT', name:'@', getValue: (domain, fix) => fix },
-    'DMARC': { type:'TXT', name:(domain)=>`_dmarc.${domain}`, getValue: (domain, fix) => fix },
-    'CAA': { type:'CAA', name:'@', getValue: (domain, fix) => '0 issue "letsencrypt.org"' },
-    'DKIM': { type:'TXT', name:'@', getValue: (domain, fix) => fix },
+    SPF:  { type:'TXT', name:'@', getValue:(v,d)=>v },
+    DMARC:{ type:'TXT', name:(d)=>`_dmarc.${d}`, getValue:(v,d)=>v },
+    CAA:  { type:'CAA', name:'@', getValue:(v,d)=>v },
+  }
+  const mapping = RECORD_MAP[issueType]
+  if (!mapping) return null
+
+  async function loadCred() {
+    const { data } = await supabase.from('dns_credentials').select('id,provider,label,verified').eq('user_id', (await supabase.auth.getUser()).data.user?.id).limit(1)
+    if (!data?.length) { setState('no-cred'); return }
+    setCred(data[0]); setShowConfirm(true)
   }
 
-  async function loadCreds() {
-    const { data } = await supabase.from('dns_credentials').select('id,label,provider,verified').eq('verified', true)
-    if (data?.length) { setCreds(data); setSelectedCred(data[0].id); setState('confirm') }
-    else setState('nocred')
-  }
-
-  async function fix() {
-    setState('fixing')
+  async function execute() {
+    setState('loading'); setShowConfirm(false)
     const { data: { session } } = await supabase.auth.getSession()
-    const map = RECORD_MAP[issueType]
-    if (!map) { setState('error'); setMsg('Fix not supported for this record type'); return }
-    const recordName = typeof map.name === 'function' ? map.name(domainName) : map.name
-    const recordValue = map.getValue(domainName, fixValue)
+    const recordName = typeof mapping.name === 'function' ? mapping.name(domainName) : `${mapping.name === '@' ? domainName : mapping.name}`
     const res = await supabase.functions.invoke('dns-autofix', {
-      body: { action:'create', credential_id:selectedCred, domain_id:domainId, record_type:map.type, record_name:recordName, record_value:recordValue, record_ttl:3600 },
-      headers: { Authorization: `Bearer ${session.access_token}` }
+      body: { credential_id: cred.id, domain_id: domainId, action:'create', record_type:mapping.type, record_name:recordName, record_content:fixValue, record_ttl:300 },
+      headers: { Authorization: `Bearer ${session?.access_token}` }
     })
-    if (res.data?.success) { setState('done'); setMsg('Record pushed!') }
-    else { setState('error'); setMsg(res.data?.error || 'Fix failed') }
-    setTimeout(() => { setState('idle'); setMsg('') }, 4000)
+    setState(res.data?.success ? 'success' : 'error')
+    if (res.data?.success) setTimeout(() => setState('idle'), 4000)
   }
 
-  if (state === 'idle') return (
-    <button onClick={loadCreds} style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:6, fontSize:10, color:'#10b981', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0 }}>
-      Fix automatically ⚡
-    </button>
+  if (state === 'no-cred') return (
+    <a href="#" onClick={e=>{e.preventDefault();setState('idle')}} style={{fontSize:10,color:'#f59e0b',textDecoration:'none',whiteSpace:'nowrap'}}>
+      Add DNS credentials in Settings →
+    </a>
   )
-  if (state === 'nocred') return (
-    <span style={{ fontSize:10, color:'#f59e0b', flexShrink:0 }}>No verified DNS provider — add in Settings</span>
-  )
-  if (state === 'confirm') return (
-    <div style={{ display:'flex', alignItems:'center', gap:5, flexShrink:0 }}>
-      {creds.length > 1 && (
-        <select value={selectedCred} onChange={e=>setSelectedCred(e.target.value)} style={{ fontSize:10, padding:'3px 6px', background:'rgba(0,0,0,0.3)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:5, color:'rgba(255,255,255,0.7)', outline:'none' }}>
-          {creds.map(c=><option key={c.id} value={c.id}>{c.label||c.provider}</option>)}
-        </select>
+
+  return (
+    <div style={{flexShrink:0}}>
+      {showConfirm && (
+        <div style={{position:'absolute',right:16,zIndex:50,background:'#1a2035',border:'1px solid rgba(255,255,255,0.12)',borderRadius:10,padding:'12px 14px',width:260,boxShadow:'0 8px 32px rgba(0,0,0,0.4)'}}>
+          <div style={{fontSize:12,fontWeight:600,color:'#fff',marginBottom:5}}>Push to {cred?.provider}?</div>
+          <div style={{fontSize:10,fontFamily:'monospace',color:'rgba(255,255,255,0.5)',marginBottom:2}}>Type: {mapping.type} · Name: {typeof mapping.name==='function'?mapping.name(domainName):mapping.name}</div>
+          <div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',background:'rgba(16,185,129,0.06)',padding:'4px 8px',borderRadius:5,marginBottom:10,wordBreak:'break-all'}}>{fixValue?.slice(0,80)}</div>
+          <div style={{display:'flex',gap:6}}>
+            <button onClick={execute} style={{flex:1,padding:'6px',background:'#10b981',color:'#fff',border:'none',borderRadius:6,cursor:'pointer',fontSize:11,fontWeight:600}}>Confirm push</button>
+            <button onClick={()=>setShowConfirm(false)} style={{padding:'6px 10px',background:'rgba(255,255,255,0.08)',color:'rgba(255,255,255,0.6)',border:'none',borderRadius:6,cursor:'pointer',fontSize:11}}>Cancel</button>
+          </div>
+        </div>
       )}
-      <button onClick={fix} style={{ padding:'4px 9px', background:'rgba(16,185,129,0.2)', border:'1px solid rgba(16,185,129,0.4)', borderRadius:6, fontSize:10, color:'#10b981', cursor:'pointer', fontWeight:600 }}>Confirm push</button>
-      <button onClick={()=>setState('idle')} style={{ padding:'4px 7px', background:'none', border:'1px solid rgba(255,255,255,0.1)', borderRadius:5, fontSize:10, color:'rgba(255,255,255,0.4)', cursor:'pointer' }}>✕</button>
+      <button onClick={state==='idle'?loadCred:undefined} disabled={state==='loading'||state==='success'}
+        style={{padding:'4px 10px',background:state==='success'?'rgba(16,185,129,0.15)':state==='error'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.12)',border:`1px solid ${state==='success'?'rgba(16,185,129,0.3)':state==='error'?'rgba(239,68,68,0.3)':'rgba(245,158,11,0.3)'}`,borderRadius:6,color:state==='success'?'#10b981':state==='error'?'#ef4444':'#f59e0b',fontSize:10,fontWeight:600,cursor:state==='idle'?'pointer':'default',whiteSpace:'nowrap',display:'flex',alignItems:'center',gap:4}}>
+        {state==='loading'&&<div style={{width:10,height:10,border:'2px solid rgba(245,158,11,0.3)',borderTopColor:'#f59e0b',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>}
+        {state==='idle'&&'⚡ Fix auto'}
+        {state==='loading'&&'Pushing…'}
+        {state==='success'&&'✓ Pushed!'}
+        {state==='error'&&'✗ Failed'}
+      </button>
     </div>
   )
-  if (state === 'fixing') return <span style={{ fontSize:10, color:'#f59e0b', flexShrink:0 }}>Pushing record…</span>
-  if (state === 'done') return <span style={{ fontSize:11, color:'#10b981', flexShrink:0 }}>✓ {msg}</span>
-  if (state === 'error') return <span style={{ fontSize:10, color:'#ef4444', flexShrink:0 }}>✗ {msg}</span>
-  return null
 }
-
 
 // ─── Gauge SVG ────────────────────────────────────────────────────────
 function Gauge({ score, size = 160 }) {
