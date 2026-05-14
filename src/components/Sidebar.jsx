@@ -28,7 +28,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
   return (
     <aside style={{
       width: w, minWidth: w, height: '100vh', position: 'sticky', top: 0,
-      background: '#0d1117',
+      background: '#ffffff',
       borderRight: '1px solid #1e2535',
       display: 'flex', flexDirection: 'column',
       transition: 'width 0.22s cubic-bezier(.4,0,.2,1)',
@@ -118,10 +118,10 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
         ))}
         {!user && (
           <div style={{ padding: '16px 10px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <button onClick={() => setPage('auth')} style={{ padding: '10px', background: '#00e5a0', color: '#021812', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', system-ui" }}>
+            <button onClick={() => setPage('auth')} style={{ padding: '10px', background: '#00e5a0', color: '#ffffff', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', system-ui" }}>
               Start free
             </button>
-            <button onClick={() => setPage('auth')} style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', color: '#8993ac', border: '1px solid #1e2535', borderRadius: 9, fontSize: 13, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', system-ui" }}>
+            <button onClick={() => setPage('auth')} style={{ padding: '10px', background: '#f7f8fa', color: '#8993ac', border: '1px solid #1e2535', borderRadius: 9, fontSize: 13, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', system-ui" }}>
               Sign in
             </button>
           </div>
