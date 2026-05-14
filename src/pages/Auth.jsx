@@ -38,7 +38,7 @@ export default function Auth({ setPage }) {
     })
     setLoading(false)
     if (err) { setError(err.message); return }
-    setSuccess('Account created! Check your email to confirm, then sign in below.')
+    setSuccess('Account created! You can now sign in below.')
     setMode('signin')
     setPassword('')
   }
