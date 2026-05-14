@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from './hooks/useAuth'
 import { supabase } from './lib/supabase'
-import Nav from './components/Nav'
+import Sidebar from './components/Sidebar'
 import Landing from './pages/Landing'
 import Auth from './pages/Auth'
 import ScanResult from './pages/ScanResult'
@@ -18,9 +18,9 @@ function Alerts({ user }) {
   useEffect(() => {
     supabase.from('alerts').select('*, domains(domain_name)').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50).then(({ data }) => setAlerts(data || []))
   }, [user])
-  const D = { bg:'#0d1117',surface:'#161b22',border:'rgba(255,255,255,0.08)',text:'#e6edf3',muted:'rgba(255,255,255,0.5)' }
+  const D = { bg:'#0b0f14',surface:'#111827',border:'rgba(255,255,255,0.07)',text:'#e2e8f0',muted:'rgba(255,255,255,0.4)' }
   return (
-    <div style={{ background:D.bg, minHeight:'100%', padding:20, fontFamily:"'DM Sans',system-ui,sans-serif" }}>
+    <div style={{ background:D.bg, minHeight:'100%', padding:24, fontFamily:"'DM Sans',system-ui,sans-serif" }}>
       <h2 style={{ fontSize:17, fontWeight:700, color:D.text, marginBottom:16 }}>Alerts</h2>
       {alerts.length === 0 ? (
         <div style={{ background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, padding:'48px', textAlign:'center', color:D.muted, fontSize:13 }}>No alerts yet — we'll notify you when anything changes</div>
@@ -31,7 +31,7 @@ function Alerts({ user }) {
             <div style={{ fontSize:12, fontWeight:600, color:D.text, marginBottom:2 }}>{a.domains?.domain_name} — {a.alert_type}</div>
             <div style={{ fontSize:11, color:D.muted }}>{a.message}</div>
           </div>
-          <div style={{ fontSize:10, color:'rgba(255,255,255,0.25)' }}>{new Date(a.created_at).toLocaleDateString()}</div>
+          <div style={{ fontSize:10, color:'rgba(255,255,255,0.2)' }}>{new Date(a.created_at).toLocaleDateString()}</div>
         </div>
       ))}
     </div>
@@ -39,11 +39,11 @@ function Alerts({ user }) {
 }
 
 function Reports({ user }) {
-  const D = { bg:'#0d1117',surface:'#161b22',border:'rgba(255,255,255,0.08)',text:'#e6edf3',muted:'rgba(255,255,255,0.5)' }
+  const D = { bg:'#0b0f14',surface:'#111827',border:'rgba(255,255,255,0.07)',text:'#e2e8f0',muted:'rgba(255,255,255,0.4)' }
   return (
-    <div style={{ background:D.bg, minHeight:'100%', padding:20, fontFamily:"'DM Sans',system-ui,sans-serif" }}>
-      <h2 style={{ fontSize:17, fontWeight:700, color:D.text, marginBottom:8 }}>Reports</h2>
-      <p style={{ fontSize:13, color:D.muted, marginBottom:20 }}>Automated daily email reports will appear here. PDF export is available from the Dashboard for each domain.</p>
+    <div style={{ background:D.bg, minHeight:'100%', padding:24, fontFamily:"'DM Sans',system-ui,sans-serif" }}>
+      <h2 style={{ fontSize:17, fontWeight:700, color:D.text, marginBottom:8 }}>Daily Reports</h2>
+      <p style={{ fontSize:13, color:D.muted, marginBottom:20 }}>Automated daily email reports will appear here.</p>
       <div style={{ background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, padding:'48px', textAlign:'center', color:D.muted, fontSize:13 }}>No reports generated yet</div>
     </div>
   )
@@ -79,7 +79,6 @@ export default function App() {
     return () => sub.unsubscribe()
   }, [user])
 
-  // Load domains for shared context
   useEffect(() => {
     if (!user) return
     supabase.from('domains').select(`*, scan_results(id,health_score,score_dns,score_email,score_ssl,score_propagation,score_security,score_blacklist,email_auth,ssl_info,security,propagation,blacklists,issues,dns_records,scanned_at)`).eq('user_id', user.id).order('created_at', { ascending: false }).then(({ data }) => {
@@ -89,31 +88,35 @@ export default function App() {
   }, [user, page])
 
   if (loading) return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'#0d1117' }}>
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'#0b0f14' }}>
       <div style={{ width:28, height:28, border:'3px solid rgba(16,185,129,0.2)', borderTopColor:'#10b981', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
 
-  const needsAuth = ['dashboard', 'tools', 'dmarc', 'autofix', 'ssl', 'alerts', 'reports', 'settings'].includes(page)
+  const needsAuth = ['dashboard','tools','dmarc','autofix','ssl','alerts','reports','settings'].includes(page)
   if (needsAuth && !user) { setPage('auth'); return null }
+
+  // Public pages — no sidebar
+  if (page === 'landing') return <Landing setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>
+  if (page === 'auth') return <Auth setPage={setPage}/>
+  if (page === 'scan') return <ScanResult domain={scanDomain} scanType={scanType} setPage={setPage} user={user}/>
 
   const sharedDomainProps = { user, domains, selectedDomain, setSelectedDomain }
 
   return (
-    <div style={{ background:'#0d1117', minHeight:'100vh' }}>
-      <Nav page={page} setPage={setPage} alertCount={alertCount}/>
-      {page === 'landing' && <Landing setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>}
-      {page === 'auth' && <Auth setPage={setPage}/>}
-      {page === 'scan' && <ScanResult domain={scanDomain} scanType={scanType} setPage={setPage} user={user}/>}
-      {page === 'dashboard' && user && <Dashboard {...sharedDomainProps} setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>}
-      {page === 'tools' && <Tools user={user}/>}
-      {page === 'dmarc' && user && <DmarcReports user={user} selectedDomain={selectedDomain}/>}
-      {page === 'autofix' && user && <DnsAutoFix user={user} domains={domains} selectedDomain={selectedDomain} onScanTrigger={() => setPage('dashboard')}/>}
-      {page === 'ssl' && user && <SslCertificates user={user}/>}
-      {page === 'alerts' && user && <Alerts user={user}/>}
-      {page === 'reports' && user && <Reports user={user}/>}
-      {page === 'settings' && user && <Settings user={user}/>}
+    <div style={{ display:'flex', minHeight:'100vh', background:'#0b0f14' }}>
+      <Sidebar page={page} setPage={setPage} alertCount={alertCount} user={user}/>
+      <main style={{ flex:1, minWidth:0, overflowY:'auto', minHeight:'100vh' }}>
+        {page === 'dashboard' && <Dashboard {...sharedDomainProps} setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>}
+        {page === 'dmarc'     && <DmarcReports user={user}/>}
+        {page === 'autofix'   && <DnsAutoFix user={user} domains={domains} selectedDomain={selectedDomain} onScanTrigger={() => setPage('dashboard')}/>}
+        {page === 'ssl'       && <SslCertificates user={user}/>}
+        {page === 'tools'     && <Tools user={user}/>}
+        {page === 'alerts'    && <Alerts user={user}/>}
+        {page === 'reports'   && <Reports user={user}/>}
+        {page === 'settings'  && <Settings user={user}/>}
+      </main>
     </div>
   )
 }
