@@ -60,29 +60,29 @@ export default function Auth({ setPage }) {
   const pwLabels = { weak: 'Weak', medium: 'Good', strong: 'Strong' }
 
   return (
-    <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: '#f7f8fa', fontFamily: "'Inter',system-ui,sans-serif" }}>
       <div style={{ width: '100%', maxWidth: 420 }}>
         <button className="btn btn-ghost btn-sm" onClick={() => setPage('landing')} style={{ marginBottom: 24 }}>
           <ArrowLeft size={13} /> Back
         </button>
 
-        <div style={{ background: '#fff', border: '1px solid var(--gray-200)', borderRadius: 16, padding: 32, boxShadow: 'var(--shadow-md)' }}>
+        <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 16, padding: 32, boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
           {/* Logo */}
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
-            <div style={{ width: 48, height: 48, background: 'var(--green)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+            <div style={{ width: 48, height: 48, background: '#16a34a', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
               <Radar size={24} color="#fff" />
             </div>
             <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>
               {mode === 'signin' ? 'Sign in to DomainRadar' : mode === 'signup' ? 'Create your account' : 'Reset password'}
             </h1>
-            <p style={{ fontSize: 13, color: 'var(--gray-500)' }}>
+            <p style={{ fontSize: 13, color: '#6b7280' }}>
               {mode === 'signin' ? 'Welcome back.' : mode === 'signup' ? 'Free during beta. No credit card.' : 'Enter your email to reset.'}
             </p>
           </div>
 
           {/* Tab toggle */}
           {mode !== 'forgot' && (
-            <div style={{ display: 'flex', background: 'var(--gray-100)', borderRadius: 8, padding: 3, marginBottom: 20 }}>
+            <div style={{ display: 'flex', background: '#f3f4f6', borderRadius: 8, padding: 3, marginBottom: 20 }}>
               {['signin', 'signup'].map(m => (
                 <button key={m} onClick={() => { setMode(m); setError(''); setSuccess('') }}
                   style={{ flex: 1, padding: '7px 0', borderRadius: 6, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500, transition: 'all 0.15s', background: mode === m ? '#fff' : 'transparent', color: mode === m ? 'var(--gray-900)' : 'var(--gray-500)', boxShadow: mode === m ? 'var(--shadow-sm)' : 'none' }}>
@@ -94,7 +94,7 @@ export default function Auth({ setPage }) {
 
           {/* Success message */}
           {success && (
-            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', padding: '10px 12px', background: '#EAF3DE', border: '1px solid var(--green-mid)', borderRadius: 8, fontSize: 13, color: 'var(--green-dark)', marginBottom: 16 }}>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', padding: '10px 12px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, fontSize: 13, color: '#15803d', marginBottom: 16 }}>
               <CheckCircle size={15} style={{ flexShrink: 0, marginTop: 1 }} />
               {success}
             </div>
@@ -102,7 +102,7 @@ export default function Auth({ setPage }) {
 
           {/* Error message */}
           {error && (
-            <div style={{ padding: '10px 12px', background: 'var(--red-light)', color: 'var(--red-text)', borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
+            <div style={{ padding: '10px 12px', background: '#fef2f2', color: '#dc2626', borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
               {error}
             </div>
           )}
@@ -111,9 +111,9 @@ export default function Auth({ setPage }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {/* Email */}
             <div>
-              <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--gray-700)', display: 'block', marginBottom: 5 }}>Email address</label>
+              <label style={{ fontSize: 12, fontWeight: 500, color: '#374151', display: 'block', marginBottom: 5 }}>Email address</label>
               <div style={{ position: 'relative' }}>
-                <Mail size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
+                <Mail size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
                 <input type="email" placeholder="you@example.com" value={email}
                   onChange={e => setEmail(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && (mode === 'signin' ? handleSignIn() : mode === 'signup' ? handleSignUp() : handleForgot())}
@@ -124,15 +124,15 @@ export default function Auth({ setPage }) {
             {/* Password */}
             {mode !== 'forgot' && (
               <div>
-                <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--gray-700)', display: 'block', marginBottom: 5 }}>Password</label>
+                <label style={{ fontSize: 12, fontWeight: 500, color: '#374151', display: 'block', marginBottom: 5 }}>Password</label>
                 <div style={{ position: 'relative' }}>
-                  <Lock size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
+                  <Lock size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
                   <input type={showPw ? 'text' : 'password'} placeholder={mode === 'signup' ? 'Min. 8 characters' : 'Your password'}
                     value={password} onChange={e => setPassword(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && (mode === 'signin' ? handleSignIn() : handleSignUp())}
                     style={{ paddingLeft: 32, paddingRight: 36 }} />
                   <button onClick={() => setShowPw(s => !s)}
-                    style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', padding: 0 }}>
+                    style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: 0 }}>
                     {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
                   </button>
                 </div>
@@ -153,9 +153,9 @@ export default function Auth({ setPage }) {
             {/* Confirm password */}
             {mode === 'signup' && (
               <div>
-                <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--gray-700)', display: 'block', marginBottom: 5 }}>Confirm password</label>
+                <label style={{ fontSize: 12, fontWeight: 500, color: '#374151', display: 'block', marginBottom: 5 }}>Confirm password</label>
                 <div style={{ position: 'relative' }}>
-                  <Lock size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
+                  <Lock size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
                   <input type={showPw ? 'text' : 'password'} placeholder="Re-enter password"
                     value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleSignUp()}
@@ -171,7 +171,7 @@ export default function Auth({ setPage }) {
             {mode === 'signin' && (
               <div style={{ textAlign: 'right', marginTop: -8 }}>
                 <button onClick={() => { setMode('forgot'); setError(''); setSuccess('') }}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--green)' }}>
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: '#16a34a' }}>
                   Forgot password?
                 </button>
               </div>
@@ -189,13 +189,13 @@ export default function Auth({ setPage }) {
             {/* Back from forgot */}
             {mode === 'forgot' && (
               <button onClick={() => { setMode('signin'); setError(''); setSuccess('') }}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--gray-500)', textAlign: 'center' }}>
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#6b7280', textAlign: 'center' }}>
                 ← Back to sign in
               </button>
             )}
           </div>
 
-          <p style={{ fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 20 }}>
+          <p style={{ fontSize: 11, color: '#9ca3af', textAlign: 'center', marginTop: 20 }}>
             Free during beta · No credit card required
           </p>
         </div>
