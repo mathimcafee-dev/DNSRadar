@@ -6,6 +6,68 @@ import ScoreHistoryChart from '../components/ScoreHistoryChart'
 import DmarcJourney from '../components/DmarcJourney'
 import { timeAgo, getScoreColor } from '../lib/scoreEngine'
 
+// ─── Auto Fix Button ──────────────────────────────────────────────────
+function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
+  const [state, setState] = useState('idle') // idle | confirm | fixing | done | error | nocred
+  const [creds, setCreds] = useState([])
+  const [selectedCred, setSelectedCred] = useState('')
+  const [msg, setMsg] = useState('')
+
+  const RECORD_MAP = {
+    'SPF': { type:'TXT', name:'@', getValue: (domain, fix) => fix },
+    'DMARC': { type:'TXT', name:(domain)=>`_dmarc.${domain}`, getValue: (domain, fix) => fix },
+    'CAA': { type:'CAA', name:'@', getValue: (domain, fix) => '0 issue "letsencrypt.org"' },
+    'DKIM': { type:'TXT', name:'@', getValue: (domain, fix) => fix },
+  }
+
+  async function loadCreds() {
+    const { data } = await supabase.from('dns_credentials').select('id,label,provider,verified').eq('verified', true)
+    if (data?.length) { setCreds(data); setSelectedCred(data[0].id); setState('confirm') }
+    else setState('nocred')
+  }
+
+  async function fix() {
+    setState('fixing')
+    const { data: { session } } = await supabase.auth.getSession()
+    const map = RECORD_MAP[issueType]
+    if (!map) { setState('error'); setMsg('Fix not supported for this record type'); return }
+    const recordName = typeof map.name === 'function' ? map.name(domainName) : map.name
+    const recordValue = map.getValue(domainName, fixValue)
+    const res = await supabase.functions.invoke('dns-autofix', {
+      body: { action:'create', credential_id:selectedCred, domain_id:domainId, record_type:map.type, record_name:recordName, record_value:recordValue, record_ttl:3600 },
+      headers: { Authorization: `Bearer ${session.access_token}` }
+    })
+    if (res.data?.success) { setState('done'); setMsg('Record pushed!') }
+    else { setState('error'); setMsg(res.data?.error || 'Fix failed') }
+    setTimeout(() => { setState('idle'); setMsg('') }, 4000)
+  }
+
+  if (state === 'idle') return (
+    <button onClick={loadCreds} style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:6, fontSize:10, color:'#10b981', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0 }}>
+      Fix automatically ⚡
+    </button>
+  )
+  if (state === 'nocred') return (
+    <span style={{ fontSize:10, color:'#f59e0b', flexShrink:0 }}>No verified DNS provider — add in Settings</span>
+  )
+  if (state === 'confirm') return (
+    <div style={{ display:'flex', alignItems:'center', gap:5, flexShrink:0 }}>
+      {creds.length > 1 && (
+        <select value={selectedCred} onChange={e=>setSelectedCred(e.target.value)} style={{ fontSize:10, padding:'3px 6px', background:'rgba(0,0,0,0.3)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:5, color:'rgba(255,255,255,0.7)', outline:'none' }}>
+          {creds.map(c=><option key={c.id} value={c.id}>{c.label||c.provider}</option>)}
+        </select>
+      )}
+      <button onClick={fix} style={{ padding:'4px 9px', background:'rgba(16,185,129,0.2)', border:'1px solid rgba(16,185,129,0.4)', borderRadius:6, fontSize:10, color:'#10b981', cursor:'pointer', fontWeight:600 }}>Confirm push</button>
+      <button onClick={()=>setState('idle')} style={{ padding:'4px 7px', background:'none', border:'1px solid rgba(255,255,255,0.1)', borderRadius:5, fontSize:10, color:'rgba(255,255,255,0.4)', cursor:'pointer' }}>✕</button>
+    </div>
+  )
+  if (state === 'fixing') return <span style={{ fontSize:10, color:'#f59e0b', flexShrink:0 }}>Pushing record…</span>
+  if (state === 'done') return <span style={{ fontSize:11, color:'#10b981', flexShrink:0 }}>✓ {msg}</span>
+  if (state === 'error') return <span style={{ fontSize:10, color:'#ef4444', flexShrink:0 }}>✗ {msg}</span>
+  return null
+}
+
+
 // ─── Gauge SVG ────────────────────────────────────────────────────────
 function Gauge({ score, size = 160 }) {
   const r = size * 0.36; const cx = size/2; const cy = size*0.54
@@ -108,7 +170,7 @@ function SBadge({ status }) {
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────
-export default function Dashboard({ user, setPage, setScanDomain, setScanType }) {
+export default function Dashboard({ user, setPage, setScanDomain, setScanType, onDomainSelect }) {
   const [domains,setDomains]=useState([])
   const [loading,setLoading]=useState(true)
   const [showAdd,setShowAdd]=useState(false)
@@ -126,7 +188,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType })
       .select(`*, scan_results(id,health_score,score_dns,score_email,score_ssl,score_propagation,score_security,score_blacklist,email_auth,ssl_info,security,propagation,blacklists,issues,dns_records,scanned_at)`)
       .eq('user_id',user.id).order('created_at',{ascending:false})
     setDomains(data||[])
-    if(data?.length&&!selected) setSelected(data[0])
+    if(data?.length&&!selected){setSelected(data[0]);onDomainSelect?.(data[0])}
     else if(selected) setSelected(s=>data?.find(d=>d.id===s?.id)||data?.[0]||null)
     setLoading(false)
   }
@@ -204,7 +266,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType })
             const sc=score>=70?'#10b981':score>=50?'#f59e0b':'#ef4444'
             const critCount=s?.issues?.filter(i=>i.severity==='critical').length||0
             return (
-              <div key={d.id} className="dsh-row" onClick={()=>{setSelected(d);setActiveTab('overview')}}
+              <div key={d.id} className="dsh-row" onClick={()=>{setSelected(d); onDomainSelect?.(d); setActiveTab('overview')}}
                 style={{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',cursor:'pointer',background:isActive?'rgba(16,185,129,0.07)':'transparent',borderLeft:`2px solid ${isActive?'#10b981':'transparent'}`}}>
                 <div style={{width:7,height:7,borderRadius:'50%',background:d.paused?'rgba(255,255,255,0.2)':!d.verified?'#f59e0b':sc,flexShrink:0}}/>
                 <div style={{flex:1,minWidth:0}}>
@@ -388,6 +450,9 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType })
                           <div style={{fontSize:11,color:D.muted,marginBottom:iss.fix?4:0}}>{iss.message}</div>
                           {iss.fix&&<div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',padding:'3px 8px',background:'rgba(16,185,129,0.06)',borderRadius:5,display:'inline-block',wordBreak:'break-all'}}>{iss.fix}</div>}
                         </div>
+                        {iss.fix&&['SPF','DMARC','CAA'].includes(iss.type)&&(
+                          <AutoFixButton domainId={selected.id} issueType={iss.type} fixValue={iss.fix} domainName={selected.domain_name}/>
+                        )}
                       </div>
                     ))}
                   </div>

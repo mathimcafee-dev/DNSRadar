@@ -1,18 +1,20 @@
 import { useState } from 'react'
-import { Radar, Bell, ChevronDown, LogOut, Settings, LayoutDashboard, Wrench } from 'lucide-react'
+import { Radar, Bell, ChevronDown, LogOut, Settings, LayoutDashboard, Wrench, FileBarChart, Zap, Shield } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
 export default function Nav({ page, setPage, alertCount = 0 }) {
   const { user, signOut } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
   const ac = '#10b981'
+
   const NavBtn = ({ id, icon: Icon, label, badge }) => (
     <button onClick={() => setPage(id)}
-      style={{ display:'flex',alignItems:'center',gap:5,padding:'5px 12px',background:page===id?'rgba(16,185,129,0.12)':'transparent',border:`1px solid ${page===id?'rgba(16,185,129,0.25)':'transparent'}`,borderRadius:7,color:page===id?ac:'rgba(255,255,255,0.5)',fontSize:12,fontWeight:500,cursor:'pointer',position:'relative',transition:'all 0.15s' }}>
+      style={{ display:'flex',alignItems:'center',gap:5,padding:'5px 11px',background:page===id?'rgba(16,185,129,0.12)':'transparent',border:`1px solid ${page===id?'rgba(16,185,129,0.25)':'transparent'}`,borderRadius:7,color:page===id?ac:'rgba(255,255,255,0.5)',fontSize:12,fontWeight:500,cursor:'pointer',transition:'all 0.15s' }}>
       {Icon&&<Icon size={13}/>}{label}
       {badge>0&&<span style={{fontSize:9,padding:'1px 5px',borderRadius:8,background:'rgba(239,68,68,0.2)',color:'#ef4444',fontWeight:600}}>{badge}</span>}
     </button>
   )
+
   return (
     <nav style={{ background:'#0d1117',borderBottom:'1px solid rgba(255,255,255,0.08)',padding:'0 20px',height:'56px',display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:100,fontFamily:"'DM Sans','Inter',system-ui,sans-serif" }}>
       <div style={{ display:'flex',alignItems:'center',gap:8,cursor:'pointer' }} onClick={() => setPage('landing')}>
@@ -21,11 +23,12 @@ export default function Nav({ page, setPage, alertCount = 0 }) {
         <span style={{ fontSize:9,background:'rgba(16,185,129,0.15)',color:ac,padding:'1px 7px',borderRadius:10,fontWeight:600,border:'1px solid rgba(16,185,129,0.25)' }}>beta</span>
       </div>
       {user ? (
-        <div style={{ display:'flex',alignItems:'center',gap:4 }}>
+        <div style={{ display:'flex',alignItems:'center',gap:3,flexWrap:'wrap' }}>
           <NavBtn id="dashboard" icon={LayoutDashboard} label="Dashboard"/>
+          <NavBtn id="dmarc" icon={FileBarChart} label="DMARC reports"/>
+          <NavBtn id="autofix" icon={Zap} label="Auto-fix DNS"/>
           <NavBtn id="tools" icon={Wrench} label="Tools"/>
           <NavBtn id="alerts" label="Alerts" badge={alertCount}/>
-          <NavBtn id="reports" label="Reports"/>
           <div style={{ position:'relative',marginLeft:4 }}>
             <button onClick={() => setMenuOpen(o => !o)}
               style={{ display:'flex',alignItems:'center',gap:5,padding:'5px 10px',background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:7,cursor:'pointer' }}>
