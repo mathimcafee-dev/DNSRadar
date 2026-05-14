@@ -358,7 +358,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
                       {!s.threat && <CheckCircle size={12} color="#10b981" style={{ flexShrink:0 }}/>}
                       <div style={{ flex:1, minWidth:0 }}>
                         <div style={{ fontSize:12, fontWeight:500, color:D.text, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{s.name}</div>
-                        <div style={{ height:4, borderRadius:2, background:rgba(255,255,255,0.07), marginTop:4, overflow:'hidden' }}>
+                        <div style={{ height:4, borderRadius:2, background:'rgba(255,255,255,0.07)', marginTop:4, overflow:'hidden' }}>
                           <div style={{ height:'100%', width:`${pct}%`, background: pct >= 90 ? '#00d97e' : pct >= 70 ? '#ffb547' : '#ff5e5e', borderRadius:2 }}/>
                         </div>
                       </div>
