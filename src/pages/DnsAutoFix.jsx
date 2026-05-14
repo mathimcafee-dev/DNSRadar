@@ -3,7 +3,7 @@ import { Shield, Plus, Trash2, CheckCircle, AlertTriangle, Zap, Eye, EyeOff, Inf
 import { supabase } from '../lib/supabase'
 
 const D = { bg:'#0a0e1a',surface:'#0f1525',surface2:'#141b2d',border:'rgba(255,255,255,0.07)',text:'#0a0e1a',muted:'rgba(255,255,255,0.45)',dim:'rgba(255,255,255,0.22)' }
-const card = { background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, overflow:'hidden' }
+const card = { background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:12, overflow:'hidden' }
 
 const PROVIDERS = [
   { id:'cloudflare', name:'Cloudflare', logo:'☁️', fields:[
@@ -153,7 +153,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
       </div>
 
       {/* Tabs */}
-      <div style={{ display:'flex', gap:0, borderBottom:`1px solid ${D.border}`, marginBottom:16 }}>
+      <div style={{ display:'flex', gap:0, borderBottom:'1px solid rgba(255,255,255,0.07)', marginBottom:16 }}>
         {['credentials','auto-fix','audit log'].map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
             style={{ padding:'8px 16px', background:'transparent', border:'none', borderBottom:`2px solid ${activeTab===t?'#ffb547':'transparent'}`, cursor:'pointer', fontSize:12, fontWeight:activeTab===t?600:400, color:activeTab===t?'#ffb547':D.muted, textTransform:'capitalize', transition:'all 0.15s', marginBottom:-1 }}>
@@ -165,7 +165,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
       {/* Add credential modal */}
       {showAdd && (
         <div style={{ ...card, marginBottom:16, border:'1px solid rgba(245,158,11,0.25)' }}>
-          <div style={{ padding:'12px 16px', borderBottom:`1px solid ${D.border}`, background:'rgba(245,158,11,0.06)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+          <div style={{ padding:'12px 16px', borderBottom:'1px solid rgba(255,255,255,0.07)', background:'rgba(245,158,11,0.06)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
             <span style={{ fontSize:13, fontWeight:600, color:'#ffb547' }}>Connect DNS provider</span>
             <button onClick={() => { setShowAdd(false); setForm({}) }} style={{ background:'none', border:'none', cursor:'pointer', color:D.muted }}>✕</button>
           </div>
@@ -294,7 +294,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                 if (!record) return null
                 return (
                   <div key={i} style={{ ...card }}>
-                    <div style={{ padding:'12px 16px', borderBottom:`1px solid ${D.border}`, display:'flex', alignItems:'center', gap:10 }}>
+                    <div style={{ padding:'12px 16px', borderBottom:'1px solid rgba(255,255,255,0.07)', display:'flex', alignItems:'center', gap:10 }}>
                       <div style={{ width:22, height:22, borderRadius:6, background:'rgba(239,68,68,0.15)', display:'flex', alignItems:'center', justifyContent:'center' }}>
                         <AlertTriangle size={11} color="#ef4444"/>
                       </div>
@@ -353,7 +353,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
 
       {activeTab === 'audit log' && (
         <div style={card}>
-          <div style={{ padding:'11px 16px', borderBottom:`1px solid ${D.border}`, background:D.surface2, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+          <div style={{ padding:'11px 16px', borderBottom:'1px solid rgba(255,255,255,0.07)', background:'#141b2d', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
             <span style={{ fontSize:12, fontWeight:600, color:D.text }}>DNS change audit log</span>
             <span style={{ fontSize:11, color:D.muted }}>{changeLog.length} entries</span>
           </div>
@@ -365,7 +365,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                 <thead>
                   <tr style={{ background:'#0f1525' }}>
                     {['Time','Provider','Type','Name','Value','Status'].map(h => (
-                      <th key={h} style={{ textAlign:'left', padding:'7px 14px', fontSize:10, fontWeight:600, color:D.muted, textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:`1px solid ${D.border}` }}>{h}</th>
+                      <th key={h} style={{ textAlign:'left', padding:'7px 14px', fontSize:10, fontWeight:600, color:D.muted, textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid rgba(255,255,255,0.07)' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>

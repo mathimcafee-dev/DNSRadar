@@ -7,8 +7,8 @@ const D = {
   border: rgba(255,255,255,0.07), text: '#f0f4ff',
   muted: 'rgba(255,255,255,0.45)', dim: 'rgba(255,255,255,0.25)',
 }
-const card = { background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, overflow:'hidden' }
-const cardHd = { padding:'12px 16px', borderBottom:`1px solid ${D.border}`, display:'flex', alignItems:'center', justifyContent:'space-between', background:D.surface2 }
+const card = { background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:12, overflow:'hidden' }
+const cardHd = { padding:'12px 16px', borderBottom:'1px solid rgba(255,255,255,0.07)', display:'flex', alignItems:'center', justifyContent:'space-between', background:D.surface2 }
 
 function CopyBtn({ text }) {
   const [copied, setCopied] = useState(false)
@@ -378,7 +378,7 @@ function EmailHeaderAnalyser() {
     const color = pass ? '#00d97e' : fail ? '#ff5e5e' : '#ffb547'
     const status = pass ? 'Pass' : fail ? 'Fail' : 'Unknown'
     return (
-      <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'10px 14px', borderBottom:`1px solid ${D.border}` }}>
+      <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'10px 14px', borderBottom:'1px solid rgba(255,255,255,0.07)' }}>
         <div style={{ width:22, height:22, borderRadius:6, background:`rgba(${pass ? '16,185,129' : fail ? '239,68,68' : '245,158,11'},0.15)`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
           {pass ? <CheckCircle size={13} color="#10b981"/> : fail ? <AlertTriangle size={13} color="#ef4444"/> : <AlertTriangle size={13} color="#f59e0b"/>}
         </div>
@@ -428,7 +428,7 @@ function EmailHeaderAnalyser() {
                 { l:'Date', v:result.date },
                 { l:'Subject', v:result.subject },
               ].filter(f => f.v).map(f => (
-                <div key={f.l} style={{ display:'flex', gap:12, padding:'8px 14px', borderBottom:`1px solid ${D.border}`, fontSize:12 }}>
+                <div key={f.l} style={{ display:'flex', gap:12, padding:'8px 14px', borderBottom:'1px solid rgba(255,255,255,0.07)', fontSize:12 }}>
                   <span style={{ color:D.dim, width:72, flexShrink:0 }}>{f.l}</span>
                   <span style={{ color:D.text, fontFamily: f.l === 'Sending IP' ? 'monospace' : 'inherit' }}>{f.v}</span>
                 </div>
@@ -531,7 +531,7 @@ function BulkScanner() {
                 <thead>
                   <tr style={{ background:'#0f1525' }}>
                     {['Domain','Score','SPF','DMARC','SSL','Critical'].map(h => (
-                      <th key={h} style={{ textAlign:'left', padding:'7px 12px', fontSize:10, fontWeight:600, color:D.muted, textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:`1px solid ${D.border}` }}>{h}</th>
+                      <th key={h} style={{ textAlign:'left', padding:'7px 12px', fontSize:10, fontWeight:600, color:D.muted, textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid rgba(255,255,255,0.07)' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -956,7 +956,7 @@ export default function Tools({ user }) {
   return (
     <div style={{ background:D.bg, minHeight:'100%', fontFamily:"'DM Sans','Inter',system-ui,sans-serif" }}>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-      <div style={{ padding:'14px 20px', borderBottom:`1px solid ${D.border}`, background:D.surface }}>
+      <div style={{ padding:'14px 20px', borderBottom:'1px solid rgba(255,255,255,0.07)', background:D.surface }}>
         <h2 style={{ fontSize:16, fontWeight:700, color:D.text, marginBottom:12 }}>Tools</h2>
         <div style={{ display:'flex', gap:2, flexWrap:'wrap' }}>
           {tabs.map(t => (

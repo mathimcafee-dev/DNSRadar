@@ -4,8 +4,8 @@ import { supabase } from '../lib/supabase'
 import { Shield, Mail, AlertTriangle, CheckCircle, Globe, Upload, Copy, Check, ChevronDown, ChevronUp, RefreshCw, Zap, Info, ExternalLink } from 'lucide-react'
 
 const D = { bg:'#0a0e1a', surface:'#0f1525', surface2:'#141b2d', border:'rgba(255,255,255,0.07)', text:'#0a0e1a', muted:'rgba(255,255,255,0.45)', dim:'rgba(255,255,255,0.22)' }
-const card = { background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, overflow:'hidden' }
-const cardHd = { padding:'11px 16px', borderBottom:`1px solid ${D.border}`, display:'flex', alignItems:'center', justifyContent:'space-between', background:D.surface2 }
+const card = { background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:12, overflow:'hidden' }
+const cardHd = { padding:'11px 16px', borderBottom:'1px solid rgba(255,255,255,0.07)', display:'flex', alignItems:'center', justifyContent:'space-between', background:D.surface2 }
 
 const VTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null

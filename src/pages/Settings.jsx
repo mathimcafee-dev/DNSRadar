@@ -4,8 +4,8 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 
 const D = { bg:'#0a0e1a',surface:'#0f1525',surface2:'#141b2d',border:'rgba(255,255,255,0.07)',text:'#0a0e1a',muted:'rgba(255,255,255,0.45)',dim:'rgba(255,255,255,0.22)' }
-const card = { background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, overflow:'hidden', marginBottom:16 }
-const cardHd = { padding:'12px 16px', borderBottom:`1px solid ${D.border}`, background:D.surface2, fontSize:12, fontWeight:600, color:D.text, display:'flex', alignItems:'center', gap:7 }
+const card = { background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:12, overflow:'hidden', marginBottom:16 }
+const cardHd = { padding:'12px 16px', borderBottom:'1px solid rgba(255,255,255,0.07)', background:'#141b2d', fontSize:12, fontWeight:600, color:D.text, display:'flex', alignItems:'center', gap:7 }
 
 function CopyBtn({ text }) {
   const [c,setC]=useState(false)
@@ -78,7 +78,7 @@ export default function Settings({ user }) {
       <h2 style={{ fontSize:17, fontWeight:700, color:D.text, marginBottom:20 }}>Settings</h2>
 
       {/* Tabs */}
-      <div style={{ display:'flex', gap:0, borderBottom:`1px solid ${D.border}`, marginBottom:20 }}>
+      <div style={{ display:'flex', gap:0, borderBottom:'1px solid rgba(255,255,255,0.07)', marginBottom:20 }}>
         {['api','profile','notifications','team'].map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
             style={{ padding:'8px 16px', background:'transparent', border:'none', borderBottom:`2px solid ${activeTab===t?'#00d97e':'transparent'}`, cursor:'pointer', fontSize:12, fontWeight:activeTab===t?600:400, color:activeTab===t?'#00d97e':D.muted, textTransform:'capitalize', transition:'all 0.15s', marginBottom:-1 }}>
@@ -214,8 +214,8 @@ function TeamSection({ user }) {
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
   const D = { surface:'#0f1525', surface2:'#141b2d', border:'rgba(255,255,255,0.07)', text:'#0a0e1a', muted:'rgba(255,255,255,0.45)', dim:'rgba(255,255,255,0.22)' }
-  const card = { background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, overflow:'hidden' }
-  const cardHd = { padding:'11px 16px', borderBottom:`1px solid ${D.border}`, display:'flex', alignItems:'center', gap:7, background:D.surface2, fontSize:13, fontWeight:600, color:D.text }
+  const card = { background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:12, overflow:'hidden' }
+  const cardHd = { padding:'11px 16px', borderBottom:'1px solid rgba(255,255,255,0.07)', display:'flex', alignItems:'center', gap:7, background:'#141b2d', fontSize:13, fontWeight:600, color:D.text }
   const input = { width:'100%', padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
 
   useEffect(() => { load() }, [user.id])
