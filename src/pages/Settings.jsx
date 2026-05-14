@@ -79,10 +79,10 @@ export default function Settings({ user }) {
 
       {/* Tabs */}
       <div style={{ display:'flex', gap:0, borderBottom:`1px solid ${D.border}`, marginBottom:20 }}>
-        {['api','profile','notifications'].map(t => (
+        {['api','profile','notifications','team'].map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
             style={{ padding:'8px 16px', background:'transparent', border:'none', borderBottom:`2px solid ${activeTab===t?'#10b981':'transparent'}`, cursor:'pointer', fontSize:12, fontWeight:activeTab===t?600:400, color:activeTab===t?'#10b981':D.muted, textTransform:'capitalize', transition:'all 0.15s', marginBottom:-1 }}>
-            {t === 'api' ? 'API Keys' : t === 'notifications' ? 'Notifications' : 'Profile'}
+            {t === 'api' ? 'API Keys' : t === 'notifications' ? 'Notifications' : t === 'team' ? 'Team' : 'Profile'}
           </button>
         ))}
       </div>
@@ -200,6 +200,79 @@ export default function Settings({ user }) {
           </div>
         </div>
       )}
+      {activeTab === 'team' && (
+        <TeamSection user={user}/>
+      )}
+    </div>
+  )
+}
+
+function TeamSection({ user }) {
+  const [members, setMembers] = useState([])
+  const [email, setEmail] = useState('')
+  const [role, setRole] = useState('viewer')
+  const [saving, setSaving] = useState(false)
+  const [msg, setMsg] = useState('')
+  const D = { surface:'#161b22', surface2:'#1c2333', border:'rgba(255,255,255,0.08)', text:'#e6edf3', muted:'rgba(255,255,255,0.5)', dim:'rgba(255,255,255,0.25)' }
+  const card = { background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, overflow:'hidden' }
+  const cardHd = { padding:'11px 16px', borderBottom:`1px solid ${D.border}`, display:'flex', alignItems:'center', gap:7, background:D.surface2, fontSize:13, fontWeight:600, color:D.text }
+  const input = { width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
+
+  useEffect(() => { load() }, [user.id])
+
+  async function load() {
+    const { data } = await supabase.from('team_members').select('*').eq('owner_id', user.id).order('invited_at', { ascending: false })
+    setMembers(data || [])
+  }
+
+  async function invite() {
+    if (!email.trim()) return
+    setSaving(true)
+    const token = crypto.randomUUID().replace(/-/g,'')
+    const { error } = await supabase.from('team_members').insert({ owner_id:user.id, member_email:email.trim(), role, status:'pending', invite_token:token, invited_at:new Date().toISOString() })
+    if (error) { setMsg('Error: ' + error.message) } else { setMsg(`Invite sent to ${email.trim()}`); setEmail(''); load() }
+    setSaving(false); setTimeout(() => setMsg(''), 4000)
+  }
+
+  async function remove(id) {
+    await supabase.from('team_members').delete().eq('id', id)
+    setMembers(m => m.filter(x => x.id !== id))
+  }
+
+  const statusColor = { pending:'#f59e0b', active:'#10b981', rejected:'#ef4444' }
+  const roleColor   = { admin:'#a78bfa', editor:'#3b82f6', viewer:'#6b7280' }
+
+  return (
+    <div style={card}>
+      <div style={cardHd}><Users size={13} color="#3b82f6"/> Team members</div>
+      <div style={{ padding:16 }}>
+        <div style={{ display:'flex', gap:8, marginBottom:16, flexWrap:'wrap' }}>
+          <input style={{ ...input, flex:1, minWidth:180 }} placeholder="colleague@company.com" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key==='Enter'&&invite()}/>
+          <select value={role} onChange={e => setRole(e.target.value)} style={{ ...input, width:'auto' }}>
+            <option value="viewer">Viewer</option>
+            <option value="editor">Editor</option>
+            <option value="admin">Admin</option>
+          </select>
+          <button onClick={invite} disabled={saving||!email.trim()} style={{ padding:'8px 16px', background:'#10b981', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap' }}>
+            {saving ? 'Sending…' : 'Invite'}
+          </button>
+        </div>
+        {msg && <div style={{ fontSize:12, color:'#10b981', marginBottom:12, padding:'6px 10px', background:'rgba(16,185,129,0.08)', borderRadius:6 }}>{msg}</div>}
+        {members.length === 0 ? (
+          <div style={{ textAlign:'center', padding:'24px', color:D.dim, fontSize:12 }}>No team members yet. Invite someone above.</div>
+        ) : members.map(m => (
+          <div key={m.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:`1px solid ${D.border}`, marginBottom:6 }}>
+            <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(59,130,246,0.15)', color:'#3b82f6', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0 }}>{m.member_email?.[0]?.toUpperCase()}</div>
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ fontSize:12, fontWeight:500, color:D.text, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{m.member_email}</div>
+              <div style={{ fontSize:10, color:D.dim }}>{m.accepted_at ? `Joined ${new Date(m.accepted_at).toLocaleDateString()}` : `Invited ${new Date(m.invited_at).toLocaleDateString()}`}</div>
+            </div>
+            <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background:`${roleColor[m.role]||'#6b7280'}18`, color:roleColor[m.role]||'#6b7280', fontWeight:600, border:`1px solid ${roleColor[m.role]||'#6b7280'}30` }}>{m.role}</span>
+            <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background:`${statusColor[m.status]||'#6b7280'}18`, color:statusColor[m.status]||'#6b7280', fontWeight:600 }}>{m.status}</span>
+            <button onClick={() => remove(m.id)} style={{ padding:4, background:'none', border:'none', cursor:'pointer', color:'rgba(239,68,68,0.6)', lineHeight:0, flexShrink:0 }}><Trash2 size={13}/></button>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

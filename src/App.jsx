@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard'
 import Tools from './pages/Tools'
 import DmarcReports from './pages/DmarcReports'
 import DnsAutoFix from './pages/DnsAutoFix'
+import SslCertificates from './pages/SslCertificates'
 import Settings from './pages/Settings'
 import './styles/globals.css'
 
@@ -94,7 +95,7 @@ export default function App() {
     </div>
   )
 
-  const needsAuth = ['dashboard', 'tools', 'dmarc', 'autofix', 'alerts', 'reports', 'settings'].includes(page)
+  const needsAuth = ['dashboard', 'tools', 'dmarc', 'autofix', 'ssl', 'alerts', 'reports', 'settings'].includes(page)
   if (needsAuth && !user) { setPage('auth'); return null }
 
   const sharedDomainProps = { user, domains, selectedDomain, setSelectedDomain }
@@ -109,6 +110,7 @@ export default function App() {
       {page === 'tools' && <Tools/>}
       {page === 'dmarc' && user && <DmarcReports user={user} selectedDomain={selectedDomain}/>}
       {page === 'autofix' && user && <DnsAutoFix user={user} domains={domains} selectedDomain={selectedDomain} onScanTrigger={() => setPage('dashboard')}/>}
+      {page === 'ssl' && user && <SslCertificates user={user}/>}
       {page === 'alerts' && user && <Alerts user={user}/>}
       {page === 'reports' && user && <Reports user={user}/>}
       {page === 'settings' && user && <Settings user={user}/>}

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Radar, Bell, ChevronDown, LogOut, Settings, LayoutDashboard, Wrench, FileBarChart, Zap } from 'lucide-react'
+import { Radar, Bell, ChevronDown, LogOut, Settings, LayoutDashboard, Wrench, FileBarChart, Zap, Lock } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
 export default function Nav({ page, setPage, alertCount = 0 }) {
@@ -8,9 +8,9 @@ export default function Nav({ page, setPage, alertCount = 0 }) {
   const ac = '#10b981'
   const NavBtn = ({ id, icon: Icon, label, badge }) => (
     <button onClick={() => setPage(id)}
-      style={{ display:'flex',alignItems:'center',gap:5,padding:'5px 11px',background:page===id?'rgba(16,185,129,0.12)':'transparent',border:`1px solid ${page===id?'rgba(16,185,129,0.25)':'transparent'}`,borderRadius:7,color:page===id?ac:'rgba(255,255,255,0.5)',fontSize:12,fontWeight:500,cursor:'pointer',transition:'all 0.15s' }}>
+      style={{ display:'flex',alignItems:'center',gap:5,padding:'5px 11px',background:page===id?'rgba(16,185,129,0.12)':'transparent',border:`1px solid ${page===id?'rgba(16,185,129,0.25)':'transparent'}`,borderRadius:7,color:page===id?ac:'rgba(255,255,255,0.5)',fontSize:12,fontWeight:500,cursor:'pointer',transition:'all 0.15s',whiteSpace:'nowrap' }}>
       {Icon&&<Icon size={13}/>}{label}
-      {badge>0&&<span style={{fontSize:9,padding:'1px 5px',borderRadius:8,background:'rgba(239,68,68,0.2)',color:'#ef4444',fontWeight:600}}>{badge}</span>}
+      {badge>0&&<span style={{fontSize:9,padding:'1px 5px',borderRadius:8,background:'rgba(239,68,68,0.2)',color:'#ef4444',fontWeight:600,marginLeft:2}}>{badge}</span>}
     </button>
   )
   return (
@@ -25,6 +25,7 @@ export default function Nav({ page, setPage, alertCount = 0 }) {
           <NavBtn id="dashboard" icon={LayoutDashboard} label="Dashboard"/>
           <NavBtn id="dmarc" icon={FileBarChart} label="DMARC"/>
           <NavBtn id="autofix" icon={Zap} label="Auto-Fix"/>
+          <NavBtn id="ssl" icon={Lock} label="SSL Certs"/>
           <NavBtn id="tools" icon={Wrench} label="Tools"/>
           <NavBtn id="alerts" label="Alerts" badge={alertCount}/>
           <div style={{ position:'relative',marginLeft:4 }}>
