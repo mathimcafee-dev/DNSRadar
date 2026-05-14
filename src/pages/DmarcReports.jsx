@@ -26,7 +26,7 @@ function CopyBtn({ text }) {
   const [c,setC] = useState(false)
   return (
     <button onClick={() => { navigator.clipboard.writeText(text); setC(true); setTimeout(() => setC(false), 2000) }}
-      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.12)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:6, color:'#00e5a0', fontSize:11, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:5, flexShrink:0 }}>
+      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.12)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:6, color:'#16a34a', fontSize:11, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:5, flexShrink:0 }}>
       {c ? <><Check size={11}/>Copied</> : <><Copy size={11}/>Copy</>}
     </button>
   )
@@ -38,7 +38,7 @@ function RuaSetupCard({ ruaAddress }) {
   return (
     <div style={{ ...card, marginBottom:16, border:'1px solid rgba(16,185,129,0.25)', background:'rgba(16,185,129,0.04)' }}>
       <div style={{ ...cardHd, background:'rgba(16,185,129,0.08)', cursor:'pointer' }} onClick={() => setOpen(o=>!o)}>
-        <span style={{ fontSize:13, fontWeight:600, color:'#00e5a0', display:'flex', alignItems:'center', gap:7 }}>
+        <span style={{ fontSize:13, fontWeight:600, color:'#16a34a', display:'flex', alignItems:'center', gap:7 }}>
           <Zap size={14}/> Step 1 — Point your DMARC rua= address here to start receiving reports automatically
         </span>
         {open ? <ChevronUp size={14} color={D.dim}/> : <ChevronDown size={14} color={D.dim}/>}
@@ -46,16 +46,16 @@ function RuaSetupCard({ ruaAddress }) {
       {open && (
         <div style={{ padding:16 }}>
           <div style={{ marginBottom:14 }}>
-            <div style={{ fontSize:11, color:D.muted, marginBottom:6, textTransform:'uppercase', letterSpacing:'0.06em', fontWeight:500 }}>Your unique RUA address</div>
+            <div style={{ fontSize:11, color:'#374151', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.08em', fontWeight:700 }}>Your unique RUA address</div>
             <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-              <div style={{ flex:1, fontFamily:'monospace', fontSize:13, color:'#00e5a0', background:'rgba(0,0,0,0.3)', padding:'8px 12px', borderRadius:7, border:`1px solid rgba(16,185,129,0.2)`, wordBreak:'break-all' }}>
+              <div style={{ flex:1, fontFamily:'monospace', fontSize:13, color:'#16a34a', background:'rgba(0,0,0,0.3)', padding:'8px 12px', borderRadius:7, border:`1px solid rgba(16,185,129,0.2)`, wordBreak:'break-all' }}>
                 {ruaAddress}
               </div>
               <CopyBtn text={ruaAddress}/>
             </div>
           </div>
           <div style={{ marginBottom:14 }}>
-            <div style={{ fontSize:11, color:D.muted, marginBottom:6, textTransform:'uppercase', letterSpacing:'0.06em', fontWeight:500 }}>Full DMARC record to add to your DNS</div>
+            <div style={{ fontSize:11, color:'#374151', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.08em', fontWeight:700 }}>Full DMARC record to add to your DNS</div>
             <div style={{ display:'flex', alignItems:'flex-start', gap:8 }}>
               <div style={{ flex:1, fontFamily:'monospace', fontSize:11, color:'#7dd3fc', background:'rgba(0,0,0,0.3)', padding:'8px 12px', borderRadius:7, border:'1px solid #e5e7eb', lineHeight:1.7, wordBreak:'break-all' }}>
                 {dmarcRecord}
@@ -63,7 +63,7 @@ function RuaSetupCard({ ruaAddress }) {
               <CopyBtn text={dmarcRecord}/>
             </div>
           </div>
-          <div style={{ background:'rgba(255,255,255,0.03)', borderRadius:8, padding:'10px 12px', fontSize:12, color:D.muted }}>
+          <div style={{ background:'rgba(255,255,255,0.03)', borderRadius:8, padding:'10px 12px', fontSize:13, color:'#374151' }}>
             <strong style={{ color:D.text }}>How it works:</strong> Add this TXT record to <code style={{ color:'#f97316' }}>_dmarc.yourdomain.com</code> → Google / Microsoft / other mail providers will automatically send DMARC aggregate reports to this address → reports appear here within 24–48 hours.
           </div>
         </div>
@@ -102,7 +102,7 @@ function PolicyWizard({ domain, currentPolicy, ruaAddress }) {
               {i === safeIdx && <div style={{ position:'absolute', top:8, right:8, fontSize:9, padding:'1px 6px', borderRadius:6, background:p.color+'25', color:p.color, fontWeight:700 }}>CURRENT</div>}
               {i < safeIdx && <CheckCircle size={12} color="#10b981" style={{ position:'absolute', top:8, right:8 }}/>}
               <div style={{ fontSize:13, fontWeight:600, color:i <= safeIdx ? p.color : D.dim, marginBottom:4 }}>{p.label}</div>
-              <div style={{ fontSize:11, color:D.dim }}>{p.desc}</div>
+              <div style={{ fontSize:12, color:'#374151' }}>{p.desc}</div>
             </div>
           ))}
         </div>
@@ -110,7 +110,7 @@ function PolicyWizard({ domain, currentPolicy, ruaAddress }) {
         {canUpgrade ? (
           <>
             <div style={{ background:'rgba(255,255,255,0.03)', borderRadius:8, padding:'12px 14px', marginBottom:14 }}>
-              <div style={{ fontSize:12, fontWeight:600, color:D.text, marginBottom:8 }}>Next step: upgrade to <span style={{ color:nextPolicy.color }}>{nextPolicy.label}</span></div>
+              <div style={{ fontSize:13, fontWeight:700, color:'#111827', marginBottom:8 }}>Next step: upgrade to <span style={{ color:nextPolicy.color }}>{nextPolicy.label}</span></div>
               <div style={{ fontSize:11, color:D.muted, marginBottom:10 }}>Update your <code style={{ color:'#f97316' }}>_dmarc.{domain?.domain_name}</code> TXT record to:</div>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                 <div style={{ flex:1, fontFamily:'monospace', fontSize:11, color:'#7dd3fc', background:'rgba(0,0,0,0.3)', padding:'8px 12px', borderRadius:7, border:'1px solid #e5e7eb', wordBreak:'break-all', lineHeight:1.6 }}>
@@ -119,12 +119,12 @@ function PolicyWizard({ domain, currentPolicy, ruaAddress }) {
                 <CopyBtn text={record}/>
               </div>
             </div>
-            <div style={{ fontSize:11, color:D.dim, lineHeight:1.6 }}>
-              ⚠️ Before upgrading to <strong style={{ color:D.muted }}>{nextPolicy.p}</strong>: ensure all your sending sources appear in your DMARC reports with <span style={{ color:'#00e5a0' }}>pass</span> status. If any legitimate sender shows <span style={{ color:'#ff4d6a' }}>fail</span>, fix it first.
+            <div style={{ fontSize:12, color:'#374151', lineHeight:1.6 }}>
+              ⚠️ Before upgrading to <strong style={{ color:D.muted }}>{nextPolicy.p}</strong>: ensure all your sending sources appear in your DMARC reports with <span style={{ color:'#16a34a' }}>pass</span> status. If any legitimate sender shows <span style={{ color:'#ff4d6a' }}>fail</span>, fix it first.
             </div>
           </>
         ) : (
-          <div style={{ textAlign:'center', padding:'20px', color:'#00e5a0', fontSize:13 }}>
+          <div style={{ textAlign:'center', padding:'20px', color:'#16a34a', fontSize:13 }}>
             <CheckCircle size={28} style={{ marginBottom:8 }} /><br/>
             Your domain is fully enforced at <strong>p=reject</strong>. Maximum protection active.
           </div>
@@ -257,8 +257,8 @@ function DmarcReportsInner({ user, selectedDomain }) {
       {/* Header */}
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:10 }}>
         <div>
-          <h2 style={{ fontSize:16, fontWeight:700, color:D.text, marginBottom:3 }}>DMARC Reports — {selectedDomain?.domain_name}</h2>
-          <div style={{ fontSize:12, color:D.muted }}>Last {range} days · {totalVolume.toLocaleString()} messages processed</div>
+          <h2 style={{ fontSize:18, fontWeight:700, color:'#111827', marginBottom:3 }}>DMARC Reports — {selectedDomain?.domain_name}</h2>
+          <div style={{ fontSize:13, color:'#374151' }}>Last {range} days · {totalVolume.toLocaleString()} messages processed</div>
         </div>
         <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
           {[7,30,90].map(r => (
@@ -298,7 +298,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
             {[
               { label:'Total messages', value:totalVolume.toLocaleString(), color:'#111827' },
               { label:'Pass rate', value:`${passRate}%`, color: passRate >= 90 ? '#00e5a0' : passRate >= 70 ? '#ffb224' : '#ff4d6a' },
-              { label:'Passing', value:totalPass.toLocaleString(), color:'#00e5a0' },
+              { label:'Passing', value:totalPass.toLocaleString(), color:'#16a34a' },
               { label:'Failing', value:totalFail.toLocaleString(), color: totalFail > 0 ? '#ff4d6a' : '#6b7280' },
             ].map(s => (
               <div key={s.label} style={{ background:D.surface, border:'1px solid #e5e7eb', borderRadius:10, padding:'12px 14px' }}>
@@ -311,7 +311,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
           {/* Volume chart + donut */}
           <div style={{ display:'grid', gridTemplateColumns:'1fr auto', gap:14, flexWrap:'wrap' }}>
             <div style={card}>
-              <div style={cardHd}><span style={{ fontSize:12, fontWeight:600, color:D.text }}>Email volume over time</span></div>
+              <div style={cardHd}><span style={{ fontSize:13, fontWeight:700, color:'#111827' }}>Email volume over time</span></div>
               <div style={{ padding:16, height:180 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={stats} margin={{ top:5, right:5, left:-20, bottom:0 }}>
@@ -330,7 +330,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
               </div>
             </div>
             <div style={{ ...card, minWidth:160 }}>
-              <div style={cardHd}><span style={{ fontSize:12, fontWeight:600, color:D.text }}>Compliance</span></div>
+              <div style={cardHd}><span style={{ fontSize:13, fontWeight:700, color:'#111827' }}>Compliance</span></div>
               <div style={{ padding:16, display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
                 <PieChart width={120} height={120}>
                   <Pie data={donutData} cx={60} cy={60} innerRadius={38} outerRadius={55} dataKey="value" strokeWidth={0}>
@@ -348,7 +348,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
           {/* Top sources */}
           {topSources.length > 0 && (
             <div style={card}>
-              <div style={cardHd}><span style={{ fontSize:12, fontWeight:600, color:D.text }}>Sending sources</span></div>
+              <div style={cardHd}><span style={{ fontSize:13, fontWeight:700, color:'#111827' }}>Sending sources</span></div>
               <div style={{ padding:'0 16px 8px' }}>
                 {topSources.map((s, i) => {
                   const pct = s.count > 0 ? Math.round((s.pass / s.count) * 100) : 0
@@ -376,7 +376,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
           {/* Country breakdown */}
           {topCountries.length > 0 && (
             <div style={card}>
-              <div style={cardHd}><span style={{ fontSize:12, fontWeight:600, color:D.text }}>Email by country</span></div>
+              <div style={cardHd}><span style={{ fontSize:13, fontWeight:700, color:'#111827' }}>Email by country</span></div>
               <div style={{ padding:16, height:220 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={topCountries} layout="vertical" margin={{ top:0, right:40, left:10, bottom:0 }}>
@@ -396,7 +396,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
           {/* Report list */}
           {reports.length > 0 && (
             <div style={card}>
-              <div style={cardHd}><span style={{ fontSize:12, fontWeight:600, color:D.text }}>Individual reports ({reports.length})</span></div>
+              <div style={cardHd}><span style={{ fontSize:13, fontWeight:700, color:'#111827' }}>Individual reports ({reports.length})</span></div>
               <div>
                 {reports.map((r, i) => (
                   <div key={r.id} style={{ display:'flex', alignItems:'center', gap:12, padding:'10px 16px', borderBottom: i < reports.length-1 ? '1px solid #1e2535' : 'none' }}>
@@ -405,7 +405,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
                       <div style={{ fontSize:10, color:D.dim }}>{r.report_date} · {r.total_volume?.toLocaleString()} messages</div>
                     </div>
                     <div style={{ textAlign:'right', flexShrink:0 }}>
-                      <div style={{ fontSize:11, color:'#00e5a0' }}>{r.total_volume > 0 ? Math.round((r.pass_count / r.total_volume) * 100) : 0}% pass</div>
+                      <div style={{ fontSize:11, color:'#16a34a' }}>{r.total_volume > 0 ? Math.round((r.pass_count / r.total_volume) * 100) : 0}% pass</div>
                       <div style={{ fontSize:10, color:D.dim }}>p={r.policy_p || '?'}</div>
                     </div>
                   </div>

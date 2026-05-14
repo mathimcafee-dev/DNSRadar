@@ -88,7 +88,7 @@ export default function Reports({ user }) {
   const serviceList = Object.values(byService).sort((a,b)=>b.count-a.count).slice(0,8)
 
   const pieData = [
-    { name:'Compliant', value:totalPass, color:'#00e5a0' },
+    { name:'Compliant', value:totalPass, color:'#16a34a' },
     { name:'Failing', value:totalFail, color:'#ff4d6a' },
   ].filter(d=>d.value>0)
 
@@ -115,7 +115,7 @@ export default function Reports({ user }) {
             </select>
           )}
           <button onClick={()=>setUploadXML(u=>!u)}
-            style={{ padding:'7px 14px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:8, color:'#00e5a0', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+            style={{ padding:'7px 14px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:8, color:'#16a34a', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
             <Upload size={13}/> Upload XML report
           </button>
         </div>
@@ -127,7 +127,7 @@ export default function Reports({ user }) {
           <div style={{ ...cardHd }}><span style={{ fontSize:12, fontWeight:600, color:D.t }}>Upload DMARC aggregate report (XML)</span></div>
           <div style={{ padding:14 }}>
             <div style={{ fontSize:11, color:D.m, marginBottom:10, lineHeight:1.6 }}>
-              Paste the raw XML content from a DMARC aggregate report. Mail servers (Google, Microsoft, Yahoo) send these to the <code style={{ fontFamily:'monospace', color:'#00e5a0' }}>rua=</code> address in your DMARC record. Add <code style={{ fontFamily:'monospace', color:'#00e5a0' }}>rua=mailto:reports@dnsradar.easysecurity.in</code> to your DMARC record to receive them automatically.
+              Paste the raw XML content from a DMARC aggregate report. Mail servers (Google, Microsoft, Yahoo) send these to the <code style={{ fontFamily:'monospace', color:'#16a34a' }}>rua=</code> address in your DMARC record. Add <code style={{ fontFamily:'monospace', color:'#16a34a' }}>rua=mailto:reports@dnsradar.easysecurity.in</code> to your DMARC record to receive them automatically.
             </div>
             <textarea value={xmlInput} onChange={e=>setXmlInput(e.target.value)} rows={8} placeholder="<?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?><feedback>..."
               style={{ width:'100%', padding:'10px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:11, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
@@ -152,7 +152,7 @@ export default function Reports({ user }) {
           <div style={{ fontSize:13, color:D.m, maxWidth:420, margin:'0 auto', lineHeight:1.7 }}>
             To receive aggregate reports automatically, add this to your DMARC record:
           </div>
-          <div style={{ fontFamily:'monospace', fontSize:12, color:'#00e5a0', background:'rgba(16,185,129,0.08)', border:'1px solid rgba(16,185,129,0.2)', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
+          <div style={{ fontFamily:'monospace', fontSize:12, color:'#16a34a', background:'rgba(16,185,129,0.08)', border:'1px solid rgba(16,185,129,0.2)', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
             rua=mailto:reports@dnsradar.easysecurity.in
           </div>
           <div style={{ fontSize:12, color:D.d }}>Or upload an existing XML report above to get started immediately.</div>
@@ -233,7 +233,7 @@ export default function Reports({ user }) {
                           <div style={{ fontSize:12, fontWeight:500, color:D.t }}>{s.name}</div>
                         </td>
                         <td style={{ padding:'9px 14px', fontFamily:'monospace', color:D.t, fontWeight:600 }}>{s.count.toLocaleString()}</td>
-                        <td style={{ padding:'9px 14px', color:'#00e5a0', fontFamily:'monospace' }}>{s.pass.toLocaleString()}</td>
+                        <td style={{ padding:'9px 14px', color:'#16a34a', fontFamily:'monospace' }}>{s.pass.toLocaleString()}</td>
                         <td style={{ padding:'9px 14px', color:s.fail>0?'#ff4d6a':D.d, fontFamily:'monospace' }}>{s.fail.toLocaleString()}</td>
                         <td style={{ padding:'9px 14px' }}>
                           <div style={{ display:'flex', alignItems:'center', gap:6 }}>

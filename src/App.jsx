@@ -51,18 +51,33 @@ function Reports({ user }) {
 
 export default function App() {
   const { user, loading } = useAuth()
-  const [page, setPage] = useState('landing')
+  const AUTH_PAGES = ['dashboard','tools','dmarc','autofix','ssl','alerts','reports','settings']
+
+  function getInitialPage() {
+    const params = new URLSearchParams(window.location.search)
+    const pg = params.get('page')
+    if (pg) { window.history.replaceState({}, '', '/'); return pg }
+    try {
+      const saved = localStorage.getItem('dr_page')
+      if (saved && AUTH_PAGES.includes(saved)) return saved
+    } catch(e) {}
+    return 'landing'
+  }
+
+  const [page, setPageRaw] = useState(getInitialPage)
   const [scanDomain, setScanDomain] = useState('')
   const [scanType, setScanType] = useState('website')
   const [alertCount, setAlertCount] = useState(0)
   const [domains, setDomains] = useState([])
   const [selectedDomain, setSelectedDomain] = useState(null)
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const pg = params.get('page')
-    if (pg) { setPage(pg); window.history.replaceState({}, '', '/') }
-  }, [])
+  function setPage(pg) {
+    setPageRaw(pg)
+    try {
+      if (AUTH_PAGES.includes(pg)) localStorage.setItem('dr_page', pg)
+      else localStorage.removeItem('dr_page')
+    } catch(e) {}
+  }
 
   useEffect(() => {
     if (user && (page === 'landing' || page === 'auth')) setPage('dashboard')

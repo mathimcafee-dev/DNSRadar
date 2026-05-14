@@ -18,7 +18,7 @@ function CopyBtn({ text }) {
     setTimeout(() => setCopied(false), 2000)
   }
   return (
-    <button onClick={copy} style={{ padding:'5px 12px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:6, color:'#00e5a0', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+    <button onClick={copy} style={{ padding:'5px 12px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:6, color:'#16a34a', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
       {copied ? <><Check size={12}/> Copied</> : <><Copy size={12}/> Copy</>}
     </button>
   )
@@ -94,12 +94,12 @@ function SPFGenerator() {
       {open && (
         <div style={{ padding:16 }}>
           <div style={{ marginBottom:12 }}>
-            <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Your domain</label>
+            <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Your domain</label>
             <input type="text" placeholder="yourdomain.com" value={domain} onChange={e => setDomain(e.target.value)}
               style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
           </div>
           <div style={{ marginBottom:12 }}>
-            <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:8 }}>Email providers</label>
+            <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:8 }}>Email providers</label>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6 }}>
               {PROVIDERS.map(p => (
                 <label key={p.key} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 10px', background:providers[p.key] ? 'rgba(16,185,129,0.08)' : 'rgba(255,255,255,0.03)', border:`1px solid ${providers[p.key] ? 'rgba(16,185,129,0.3)' : D.border}`, borderRadius:7, cursor:'pointer', fontSize:12, color:D.text }}>
@@ -111,12 +111,12 @@ function SPFGenerator() {
             </div>
           </div>
           <div style={{ marginBottom:12 }}>
-            <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Custom IPs (optional, one per line)</label>
+            <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Custom IPs (optional, one per line)</label>
             <textarea value={customIPs} onChange={e => setCustomIPs(e.target.value)} rows={2} placeholder="192.168.1.1&#10;10.0.0.0/24"
               style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:D.text, outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
           </div>
           <div style={{ marginBottom:12 }}>
-            <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:8 }}>Policy (how to handle failures)</label>
+            <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:8 }}>Policy (how to handle failures)</label>
             <div style={{ display:'flex', gap:6 }}>
               {[['~all','SoftFail (recommended)'],['−all','HardFail (strict)'],['?all','Neutral']].map(([v, l]) => (
                 <button key={v} onClick={() => setQualifier(v)}
@@ -181,12 +181,12 @@ function DMARCGenerator({ presetPolicy }) {
         <div style={{ padding:16 }}>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:12 }}>
             <div>
-              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Domain</label>
+              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Domain</label>
               <input type="text" placeholder="yourdomain.com" value={domain} onChange={e => setDomain(e.target.value)}
                 style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div>
-              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Policy (p=)</label>
+              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Policy (p=)</label>
               <div style={{ display:'flex', gap:5 }}>
                 {['none','quarantine','reject'].map(p => (
                   <button key={p} onClick={() => setPolicy(p)}
@@ -199,24 +199,24 @@ function DMARCGenerator({ presetPolicy }) {
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:12 }}>
             <div>
-              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>RUA email (aggregate reports)</label>
+              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>RUA email (aggregate reports)</label>
               <input type="email" placeholder={`dmarc@${domain || 'yourdomain.com'}`} value={rua} onChange={e => setRua(e.target.value)}
                 style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:D.text, outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div>
-              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>RUF email (forensic reports)</label>
+              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>RUF email (forensic reports)</label>
               <input type="email" placeholder={`forensic@${domain || 'yourdomain.com'}`} value={ruf} onChange={e => setRuf(e.target.value)}
                 style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:D.text, outline:'none', fontFamily:'inherit' }}/>
             </div>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:12, marginBottom:12 }}>
             <div>
-              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Percentage (pct=) {pct}%</label>
+              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Percentage (pct=) {pct}%</label>
               <input type="range" min={1} max={100} step={1} value={pct} onChange={e => setPct(+e.target.value)}
                 style={{ width:'100%', accentColor:'#6366f1' }}/>
             </div>
             <div>
-              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>DKIM alignment (adkim=)</label>
+              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>DKIM alignment (adkim=)</label>
               <div style={{ display:'flex', gap:5 }}>
                 {[['r','Relaxed'],['s','Strict']].map(([v,l]) => (
                   <button key={v} onClick={() => setAdkim(v)}
@@ -227,7 +227,7 @@ function DMARCGenerator({ presetPolicy }) {
               </div>
             </div>
             <div>
-              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>SPF alignment (aspf=)</label>
+              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>SPF alignment (aspf=)</label>
               <div style={{ display:'flex', gap:5 }}>
                 {[['r','Relaxed'],['s','Strict']].map(([v,l]) => (
                   <button key={v} onClick={() => setAspf(v)}
@@ -307,7 +307,7 @@ function DKIMTool() {
               {loading ? <><div style={{ width:13, height:13, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'#ffb224', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Scanning {SELECTORS.length} selectors…</> : <><Zap size={13}/> Discover</>}
             </button>
           </div>
-          <div style={{ fontSize:11, color:D.dim, marginBottom:12 }}>Checks {SELECTORS.length} known selectors via Cloudflare DoH</div>
+          <div style={{ fontSize:12,color:'#6b7280', marginBottom:12 }}>Checks {SELECTORS.length} known selectors via Cloudflare DoH</div>
           {results.length > 0 && (
             <div>
               {results[0]?.selector === null ? (
@@ -321,7 +321,7 @@ function DKIMTool() {
                       <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:6 }}>
                         <CheckCircle size={14} color="#10b981"/>
                         <span style={{ fontFamily:'monospace', fontSize:13, fontWeight:600, color:'#ffb224' }}>{r.selector}</span>
-                        <span style={{ fontSize:11, color:D.muted }}>._domainkey.{domain}</span>
+                        <span style={{ fontSize:12,color:'#374151' }}>._domainkey.{domain}</span>
                         {r.keySize && <span style={{ fontSize:11, padding:'2px 8px', borderRadius:8, background:r.keySize >= 2048 ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)', color:r.keySize >= 2048 ? '#00e5a0' : '#ffb224' }}>{r.keySize}-bit</span>}
                       </div>
                       <div style={{ fontFamily:'monospace', fontSize:10, color:D.dim, wordBreak:'break-all', lineHeight:1.5 }}>{r.raw?.slice(0, 120)}…</div>
@@ -406,12 +406,12 @@ function EmailHeaderAnalyser() {
       {open && (
         <div style={{ padding:16 }}>
           <div style={{ marginBottom:12 }}>
-            <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>
+            <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>
               Paste raw email header (Gmail: ⋮ → Show original → Copy to clipboard)
             </label>
             <textarea value={header} onChange={e => setHeader(e.target.value)} rows={6}
               placeholder="Delivered-To: user@example.com&#10;Received: from mail.example.com...&#10;Authentication-Results: mx.google.com;&#10;   dkim=pass header.i=@example.com;&#10;   spf=pass..."
-              style={{ width:'100%', padding:'10px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:11, color:D.muted, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
+              style={{ width:'100%', padding:'10px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12,color:'#374151', outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
           </div>
           <button onClick={analyse} disabled={!header}
             style={{ padding:'8px 20px', background:'rgba(167,139,250,0.15)', border:'1px solid rgba(167,139,250,0.3)', borderRadius:7, color:'#a855f7', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !header ? 0.5 : 1, marginBottom:12 }}>
@@ -435,7 +435,7 @@ function EmailHeaderAnalyser() {
               ))}
               {result.receivedFrom.length > 0 && (
                 <div style={{ padding:'8px 14px' }}>
-                  <div style={{ fontSize:11, color:D.dim, marginBottom:6 }}>Routing path ({result.receivedFrom.length} hops)</div>
+                  <div style={{ fontSize:12,color:'#6b7280', marginBottom:6 }}>Routing path ({result.receivedFrom.length} hops)</div>
                   {result.receivedFrom.map((r, i) => (
                     <div key={i} style={{ fontSize:10, color:D.dim, fontFamily:'monospace', padding:'3px 0', borderBottom:`1px solid rgba(255,255,255,0.03)` }}>{r.slice(0, 100)}</div>
                   ))}
@@ -501,7 +501,7 @@ function BulkScanner() {
       {open && (
         <div style={{ padding:16 }}>
           <div style={{ marginBottom:12 }}>
-            <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Domains (one per line, max 25)</label>
+            <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Domains (one per line, max 25)</label>
             <textarea value={input} onChange={e => setInput(e.target.value)} rows={5}
               placeholder="google.com&#10;microsoft.com&#10;digicert.com"
               style={{ width:'100%', padding:'10px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:D.text, outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
@@ -584,7 +584,7 @@ function SPFFlattener() {
         <span style={{ fontSize:13, fontWeight:600, color:D.text }}>SPF flattening — resolve all includes to a single flat record</span>
       </div>
       <div style={{ padding:16 }}>
-        <div style={{ fontSize:12, color:D.muted, marginBottom:12, lineHeight:1.6 }}>
+        <div style={{ fontSize:13,color:'#374151', marginBottom:12, lineHeight:1.6 }}>
           Too many DNS lookups? This tool recursively resolves all <code style={{ color:'#f97316' }}>include:</code>, <code style={{ color:'#f97316' }}>a:</code>, and <code style={{ color:'#f97316' }}>mx</code> mechanisms into a flat list of IP addresses — bringing your lookup count to near zero.
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
@@ -608,12 +608,12 @@ function SPFFlattener() {
             </div>
             {result.warning && <div style={{ fontSize:11, color:'#ffb224', marginBottom:10, padding:'6px 10px', background:'rgba(245,158,11,0.08)', borderRadius:6 }}>⚠️ {result.warning}</div>}
             <div style={{ marginBottom:8 }}>
-              <div style={{ fontSize:11, color:D.muted, marginBottom:5 }}>Original record</div>
+              <div style={{ fontSize:12,color:'#374151', marginBottom:5 }}>Original record</div>
               <div style={{ fontFamily:'monospace', fontSize:11, color:'#374151', background:'rgba(0,0,0,0.2)', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.original}</div>
             </div>
             <div>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:5 }}>
-                <span style={{ fontSize:11, color:D.muted }}>Flattened record (copy this into DNS)</span>
+                <span style={{ fontSize:12,color:'#374151' }}>Flattened record (copy this into DNS)</span>
                 <CopyBtn text={result.flattened}/>
               </div>
               <div style={{ fontFamily:'monospace', fontSize:11, color:'#7dd3fc', background:'rgba(0,0,0,0.3)', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.flattened}</div>
@@ -661,7 +661,7 @@ function DKIMRotation() {
         <span style={{ fontSize:13, fontWeight:600, color:D.text }}>DKIM key rotation wizard</span>
       </div>
       <div style={{ padding:16 }}>
-        <div style={{ fontSize:12, color:D.muted, marginBottom:12, lineHeight:1.6 }}>
+        <div style={{ fontSize:13,color:'#374151', marginBottom:12, lineHeight:1.6 }}>
           Find all active DKIM selectors on your domain, check key sizes, and get step-by-step rotation guidance.
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:14 }}>
@@ -675,19 +675,19 @@ function DKIMRotation() {
         {selectors.length > 0 && (
           <>
             <div style={{ marginBottom:14 }}>
-              <div style={{ fontSize:11, color:D.muted, marginBottom:8, fontWeight:500, textTransform:'uppercase', letterSpacing:'0.06em' }}>Active DKIM selectors found</div>
+              <div style={{ fontSize:12,color:'#374151', marginBottom:8, fontWeight:500, textTransform:'uppercase', letterSpacing:'0.06em' }}>Active DKIM selectors found</div>
               {selectors.map(s => (
                 <div key={s.selector} style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid #e5e7eb', marginBottom:6 }}>
                   <code style={{ fontSize:12, color:'#a855f7', fontWeight:600 }}>{s.selector}</code>
                   <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background: s.key_size >= 2048 ? 'rgba(16,185,129,0.12)' : 'rgba(245,158,11,0.12)', color: s.key_size >= 2048 ? '#00e5a0' : '#ffb224', fontWeight:600 }}>{s.key_size || '?'}-bit</span>
-                  <span style={{ fontSize:11, color:D.dim }}>TTL {s.ttl}s</span>
+                  <span style={{ fontSize:12,color:'#6b7280' }}>TTL {s.ttl}s</span>
                   {s.key_size < 2048 && <span style={{ fontSize:10, color:'#ffb224', marginLeft:'auto' }}>⚠️ Upgrade to 2048-bit</span>}
                 </div>
               ))}
             </div>
             <div style={{ background:'rgba(59,130,246,0.06)', border:'1px solid rgba(59,130,246,0.2)', borderRadius:8, padding:'12px 14px' }}>
               <div style={{ fontSize:12, fontWeight:600, color:D.text, marginBottom:8 }}>How to rotate safely (zero downtime)</div>
-              <ol style={{ fontSize:12, color:D.muted, margin:0, paddingLeft:20, lineHeight:2 }}>
+              <ol style={{ fontSize:13,color:'#374151', margin:0, paddingLeft:20, lineHeight:2 }}>
                 <li>Generate a new 2048-bit RSA key pair in your email provider dashboard</li>
                 <li>Add the new public key as a TXT record: <code style={{ color:'#f97316' }}>{newSelector}._domainkey.{domain}</code></li>
                 <li>Wait for DNS propagation (15–60 minutes), then verify it appears above</li>
@@ -698,7 +698,7 @@ function DKIMRotation() {
           </>
         )}
         {selectors.length === 0 && domain && !checking && (
-          <div style={{ fontSize:12, color:D.dim, textAlign:'center', padding:16 }}>No active DKIM selectors found. Check your email provider's setup instructions.</div>
+          <div style={{ fontSize:12,color:'#6b7280', textAlign:'center', padding:16 }}>No active DKIM selectors found. Check your email provider's setup instructions.</div>
         )}
       </div>
     </div>
@@ -747,7 +747,7 @@ function BIMIChecker() {
         <span style={{ fontSize:13, fontWeight:600, color:D.text }}>BIMI checker — Brand Indicators for Message Identification</span>
       </div>
       <div style={{ padding:16 }}>
-        <div style={{ fontSize:12, color:D.muted, marginBottom:12, lineHeight:1.6 }}>
+        <div style={{ fontSize:13,color:'#374151', marginBottom:12, lineHeight:1.6 }}>
           BIMI lets your brand logo appear in Gmail, Apple Mail, and Yahoo inboxes next to your emails. Requires DMARC p=quarantine or p=reject, and a verified SVG logo.
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
@@ -774,7 +774,7 @@ function BIMIChecker() {
             </div>
             {result.bimi_found && result.raw && (
               <div>
-                <div style={{ fontSize:11, color:D.muted, marginBottom:5 }}>BIMI record</div>
+                <div style={{ fontSize:12,color:'#374151', marginBottom:5 }}>BIMI record</div>
                 <div style={{ fontFamily:'monospace', fontSize:11, color:'#7dd3fc', background:'rgba(0,0,0,0.3)', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.raw}</div>
               </div>
             )}
@@ -782,7 +782,7 @@ function BIMIChecker() {
               <div style={{ display:'flex', alignItems:'center', gap:12, padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid #e5e7eb' }}>
                 <img src={result.logo_url} alt="BIMI logo" style={{ width:40, height:40, objectFit:'contain', background:'#fff', borderRadius:6, padding:2 }} onError={e => e.target.style.display='none'}/>
                 <div>
-                  <div style={{ fontSize:11, color:D.muted, marginBottom:2 }}>Logo URL</div>
+                  <div style={{ fontSize:12,color:'#374151', marginBottom:2 }}>Logo URL</div>
                   <a href={result.logo_url} target="_blank" rel="noopener noreferrer" style={{ fontSize:11, color:'#3d9bff', wordBreak:'break-all' }}>{result.logo_url}</a>
                 </div>
               </div>
@@ -790,7 +790,7 @@ function BIMIChecker() {
             {!result.bimi_found && (
               <div style={{ background:'rgba(167,139,250,0.06)', border:'1px solid rgba(167,139,250,0.2)', borderRadius:8, padding:'12px 14px' }}>
                 <div style={{ fontSize:12, fontWeight:600, color:D.text, marginBottom:6 }}>How to set up BIMI</div>
-                <ol style={{ fontSize:12, color:D.muted, margin:0, paddingLeft:20, lineHeight:2 }}>
+                <ol style={{ fontSize:13,color:'#374151', margin:0, paddingLeft:20, lineHeight:2 }}>
                   <li>Ensure DMARC is at p=quarantine or p=reject</li>
                   <li>Create a square SVG logo (aspect ratio 1:1, &lt;32KB)</li>
                   <li>Host it at a public HTTPS URL</li>
@@ -846,7 +846,7 @@ function MTASTSChecker() {
         <span style={{ fontSize:13, fontWeight:600, color:D.text }}>MTA-STS + TLS-RPT checker</span>
       </div>
       <div style={{ padding:16 }}>
-        <div style={{ fontSize:12, color:D.muted, marginBottom:12, lineHeight:1.6 }}>
+        <div style={{ fontSize:13,color:'#374151', marginBottom:12, lineHeight:1.6 }}>
           MTA-STS forces email servers to use TLS when delivering to your domain. TLS-RPT sends you reports when TLS fails. Together they protect against downgrade attacks.
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
@@ -875,7 +875,7 @@ function MTASTSChecker() {
             {(!result.mta_sts_record || !result.policy_file) && (
               <div style={{ background:'rgba(34,211,238,0.06)', border:'1px solid rgba(34,211,238,0.2)', borderRadius:8, padding:'12px 14px' }}>
                 <div style={{ fontSize:12, fontWeight:600, color:D.text, marginBottom:6 }}>How to set up MTA-STS</div>
-                <ol style={{ fontSize:12, color:D.muted, margin:0, paddingLeft:20, lineHeight:2 }}>
+                <ol style={{ fontSize:13,color:'#374151', margin:0, paddingLeft:20, lineHeight:2 }}>
                   <li>Host a policy file at <code style={{ color:'#f97316' }}>https://mta-sts.{result.domain}/.well-known/mta-sts.txt</code></li>
                   <li>Content: <code style={{ color:'#7dd3fc' }}>version: STSv1\nmode: enforce\nmx: mail.{result.domain}\nmax_age: 86400</code></li>
                   <li>Add DNS TXT: <code style={{ color:'#f97316' }}>_mta-sts.{result.domain}</code> → <code style={{ color:'#7dd3fc' }}>v=STSv1; id=20240101000000Z;</code></li>
@@ -919,7 +919,7 @@ function BulkDomainImport({ user }) {
         <span style={{ fontSize:13, fontWeight:600, color:D.text }}>Bulk domain import — add up to 50 domains at once</span>
       </div>
       <div style={{ padding:16 }}>
-        <div style={{ fontSize:12, color:D.muted, marginBottom:12 }}>Paste domains one per line, or comma/semicolon separated. URLs are automatically cleaned.</div>
+        <div style={{ fontSize:13,color:'#374151', marginBottom:12 }}>Paste domains one per line, or comma/semicolon separated. URLs are automatically cleaned.</div>
         <textarea value={text} onChange={e => setText(e.target.value)} rows={6} placeholder={'example.com\ngoogle.com\nhttps://microsoft.com/\nyourdomain.org'}
           style={{ width:'100%', padding:'10px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:8, fontSize:12, fontFamily:'monospace', color:D.text, outline:'none', resize:'vertical', boxSizing:'border-box', marginBottom:10 }}/>
         {!user && <div style={{ fontSize:11, color:'#ffb224', marginBottom:10 }}>⚠️ Sign in to import domains to your account</div>}
@@ -935,7 +935,7 @@ function BulkDomainImport({ user }) {
                 <span style={{ fontSize:10, color:D.muted }}>{r.status}</span>
               </div>
             ))}
-            {done && <div style={{ fontSize:12, color:'#00e5a0', marginTop:6 }}>Done. Go to Dashboard to verify and scan your new domains.</div>}
+            {done && <div style={{ fontSize:12, color:'#16a34a', marginTop:6 }}>Done. Go to Dashboard to verify and scan your new domains.</div>}
           </div>
         )}
       </div>

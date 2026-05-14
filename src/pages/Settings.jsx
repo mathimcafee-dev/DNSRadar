@@ -11,7 +11,7 @@ function CopyBtn({ text }) {
   const [c,setC]=useState(false)
   return (
     <button onClick={() => { navigator.clipboard.writeText(text); setC(true); setTimeout(()=>setC(false),2000) }}
-      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:5, color:'#00e5a0', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
+      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:5, color:'#16a34a', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
       {c?<><Check size={11}/>Copied</>:<><Copy size={11}/>Copy</>}
     </button>
   )
@@ -92,7 +92,7 @@ export default function Settings({ user }) {
           <div style={card}>
             <div style={{ ...cardHd }}><Key size={13} color="#10b981"/> API keys</div>
             <div style={{ padding:16 }}>
-              <div style={{ fontSize:12, color:D.muted, marginBottom:12, lineHeight:1.6 }}>
+              <div style={{ fontSize:13,color:'#374151', marginBottom:12, lineHeight:1.6 }}>
                 Use API keys to access DomainRadar programmatically. Include as <code style={{ fontFamily:'monospace', background:'#e5e7eb', padding:'1px 6px', borderRadius:4 }}>Authorization: Bearer YOUR_KEY</code> header.
               </div>
               {/* Endpoint docs */}
@@ -116,16 +116,16 @@ export default function Settings({ user }) {
                   style={{ flex:1, padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
                   onKeyDown={e => e.key==='Enter'&&createApiKey()}/>
                 <button onClick={createApiKey} disabled={!newKeyName.trim()}
-                  style={{ padding:'8px 16px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'#00e5a0', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
+                  style={{ padding:'8px 16px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'#16a34a', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
                   <Plus size={13}/> Generate
                 </button>
               </div>
               {/* Show newly created key */}
               {createdKey && (
                 <div style={{ padding:'12px 14px', background:'rgba(16,185,129,0.06)', border:'1px solid rgba(16,185,129,0.2)', borderRadius:8, marginBottom:16 }}>
-                  <div style={{ fontSize:12, fontWeight:600, color:'#00e5a0', marginBottom:6 }}>✓ Key created — copy it now, it won't be shown again</div>
+                  <div style={{ fontSize:12, fontWeight:600, color:'#16a34a', marginBottom:6 }}>✓ Key created — copy it now, it won't be shown again</div>
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    <code style={{ flex:1, fontFamily:'monospace', fontSize:12, color:'#00e5a0', background:'rgba(0,0,0,0.25)', padding:'6px 10px', borderRadius:6, wordBreak:'break-all' }}>{createdKey.key}</code>
+                    <code style={{ flex:1, fontFamily:'monospace', fontSize:12, color:'#16a34a', background:'rgba(0,0,0,0.25)', padding:'6px 10px', borderRadius:6, wordBreak:'break-all' }}>{createdKey.key}</code>
                     <CopyBtn text={createdKey.key}/>
                     <button onClick={() => setCreatedKey(null)} style={{ background:'none', border:'none', cursor:'pointer', color:D.dim, fontSize:16 }}>✕</button>
                   </div>
@@ -153,11 +153,11 @@ export default function Settings({ user }) {
           <div style={{ ...cardHd }}><Users size={13} color="#a78bfa"/> Profile</div>
           <div style={{ padding:16 }}>
             <div style={{ marginBottom:12 }}>
-              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Email</label>
+              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Email</label>
               <div style={{ padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:7, fontSize:13, color:D.dim, fontFamily:'monospace' }}>{user?.email}</div>
             </div>
             <div style={{ marginBottom:16 }}>
-              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Display name</label>
+              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Display name</label>
               <input value={profile.full_name||''} onChange={e => setProfile(p => ({ ...p, full_name: e.target.value }))}
                 placeholder="Your name"
                 style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
@@ -184,11 +184,11 @@ export default function Settings({ user }) {
               <input type="checkbox" checked={profile.alert_email||true} onChange={e => setProfile(p => ({ ...p, alert_email: e.target.checked }))} style={{ accentColor:'#00e5a0', width:16, height:16 }}/>
               <div>
                 <div style={{ fontSize:13, fontWeight:500, color:D.text }}>Email alerts</div>
-                <div style={{ fontSize:11, color:D.muted }}>Get notified when a domain score changes or new issues are detected</div>
+                <div style={{ fontSize:12,color:'#374151' }}>Get notified when a domain score changes or new issues are detected</div>
               </div>
             </label>
             <div style={{ marginBottom:16 }}>
-              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Webhook URL (Slack, Teams, custom)</label>
+              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Webhook URL (Slack, Teams, custom)</label>
               <input value={profile.alert_webhook||''} onChange={e => setProfile(p => ({ ...p, alert_webhook: e.target.value }))}
                 placeholder="https://hooks.slack.com/services/..."
                 style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'monospace' }}/>
@@ -257,7 +257,7 @@ function TeamSection({ user }) {
             {saving ? 'Sending…' : 'Invite'}
           </button>
         </div>
-        {msg && <div style={{ fontSize:12, color:'#00e5a0', marginBottom:12, padding:'6px 10px', background:'rgba(16,185,129,0.08)', borderRadius:6 }}>{msg}</div>}
+        {msg && <div style={{ fontSize:12, color:'#16a34a', marginBottom:12, padding:'6px 10px', background:'rgba(16,185,129,0.08)', borderRadius:6 }}>{msg}</div>}
         {members.length === 0 ? (
           <div style={{ textAlign:'center', padding:'24px', color:D.dim, fontSize:12 }}>No team members yet. Invite someone above.</div>
         ) : members.map(m => (

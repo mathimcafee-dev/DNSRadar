@@ -189,7 +189,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
 
             {/* Label */}
             <div style={{ marginBottom:12 }}>
-              <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:4 }}>Label (optional)</label>
+              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:4 }}>Label (optional)</label>
               <input value={label} onChange={e => setLabel(e.target.value)} placeholder={`My ${selectedProvider} credentials`}
                 style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
             </div>
@@ -197,7 +197,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
             {/* Dynamic fields */}
             {PROVIDERS.find(p=>p.id===selectedProvider)?.fields.map(f => (
               <div key={f.key} style={{ marginBottom:12 }}>
-                <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:4 }}>{f.label}</label>
+                <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:4 }}>{f.label}</label>
                 <div style={{ position:'relative' }}>
                   <input
                     type={f.secret && !showSecrets[f.key] ? 'password' : 'text'}
@@ -248,7 +248,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                     <span style={{ fontSize:24 }}>{provider?.logo}</span>
                     <div style={{ flex:1 }}>
                       <div style={{ fontSize:13, fontWeight:600, color:D.text }}>{cred.label || provider?.name}</div>
-                      <div style={{ fontSize:11, color:D.dim, fontFamily:'monospace' }}>{cred.zone_id}</div>
+                      <div style={{ fontSize:12,color:'#6b7280', fontFamily:'monospace' }}>{cred.zone_id}</div>
                     </div>
                     <div style={{ display:'flex', gap:6 }}>
                       <button onClick={() => testCredential(cred)} disabled={testing === cred.id}
@@ -280,8 +280,8 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
           ) : fixableIssues.length === 0 ? (
             <div style={{ ...card, padding:'40px', textAlign:'center' }}>
               <CheckCircle size={36} color="#10b981" style={{ marginBottom:12 }}/>
-              <div style={{ fontSize:14, fontWeight:600, color:'#00e5a0' }}>No auto-fixable issues for {selectedDomain.domain_name}</div>
-              <div style={{ fontSize:12, color:D.dim, marginTop:6 }}>SPF, DMARC and CAA records are all present</div>
+              <div style={{ fontSize:14, fontWeight:600, color:'#16a34a' }}>No auto-fixable issues for {selectedDomain.domain_name}</div>
+              <div style={{ fontSize:12,color:'#6b7280', marginTop:6 }}>SPF, DMARC and CAA records are all present</div>
             </div>
           ) : (
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
@@ -300,12 +300,12 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                       </div>
                       <div style={{ flex:1 }}>
                         <div style={{ fontSize:12, fontWeight:700, color:D.text, fontFamily:'monospace' }}>{issue.type}</div>
-                        <div style={{ fontSize:11, color:D.muted }}>{issue.message}</div>
+                        <div style={{ fontSize:12,color:'#374151' }}>{issue.message}</div>
                       </div>
                       <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'rgba(239,68,68,0.15)', color:'#ff4d6a' }}>{issue.severity}</span>
                     </div>
                     <div style={{ padding:'12px 16px' }}>
-                      <div style={{ fontSize:11, color:D.muted, marginBottom:6 }}>Will create this record:</div>
+                      <div style={{ fontSize:12,color:'#374151', marginBottom:6 }}>Will create this record:</div>
                       <div style={{ display:'grid', gridTemplateColumns:'80px 120px 1fr', gap:8, padding:'8px 12px', background:'rgba(0,0,0,0.25)', borderRadius:7, fontFamily:'monospace', fontSize:11, marginBottom:12 }}>
                         <span style={{ color:'#3d9bff' }}>{record.type}</span>
                         <span style={{ color:D.muted }}>{record.name}</span>
@@ -355,7 +355,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
         <div style={card}>
           <div style={{ padding:'11px 16px', borderBottom:'1px solid #1e2535', background:D.surface2, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
             <span style={{ fontSize:12, fontWeight:600, color:D.text }}>DNS change audit log</span>
-            <span style={{ fontSize:11, color:D.muted }}>{changeLog.length} entries</span>
+            <span style={{ fontSize:12,color:'#374151' }}>{changeLog.length} entries</span>
           </div>
           {changeLog.length === 0 ? (
             <div style={{ padding:'40px', textAlign:'center', color:D.dim, fontSize:13 }}>No DNS changes made yet</div>
