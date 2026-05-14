@@ -186,10 +186,39 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
         .check-item { display:flex; align-items:center; gap:8px; font-size:13px; color:rgba(255,255,255,0.75); margin-bottom:8px }
       `}</style>
 
+      {/* ── NAVBAR ───────────────────────────────────────────────── */}
+      <nav style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 999,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 32px', height: 60,
+        background: 'rgba(10,15,30,0.85)', backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(255,255,255,0.07)',
+      }}>
+        {/* Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => window.scrollTo(0,0)}>
+          <div style={{ width: 28, height: 28, background: '#10b981', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
+          </div>
+          <span style={{ fontSize: 15, fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>DomainRadar</span>
+          <span style={{ fontSize: 10, background: 'rgba(16,185,129,0.15)', color: '#10b981', padding: '1px 7px', borderRadius: 10, fontWeight: 600, border: '1px solid rgba(16,185,129,0.25)' }}>BETA</span>
+        </div>
+        {/* Nav buttons */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button onClick={() => setPage('auth')}
+            style={{ padding: '7px 18px', background: 'transparent', color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, fontSize: 13, fontWeight: 500, cursor: 'pointer' }}>
+            Sign in
+          </button>
+          <button onClick={() => setPage('auth')}
+            style={{ padding: '7px 18px', background: '#10b981', color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            Start free
+          </button>
+        </div>
+      </nav>
+
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section style={{
         background: 'linear-gradient(160deg, #0a0f1e 0%, #0d1a14 50%, #0a1628 100%)',
-        padding: '80px 24px 100px', position: 'relative', overflow: 'hidden',
+        padding: '140px 24px 100px', position: 'relative', overflow: 'hidden',
       }}>
         {/* Background grid */}
         <div style={{
