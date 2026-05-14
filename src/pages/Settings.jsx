@@ -3,7 +3,7 @@ import { Key, Plus, Trash2, Eye, EyeOff, Copy, Check, Users, Mail, Bell, LogOut,
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 
-const D = { bg:'#0a0e1a',surface:'#0f1525',surface2:'#141b2d',border:'rgba(255,255,255,0.07)',text:'#0a0e1a',muted:'rgba(255,255,255,0.45)',dim:'rgba(255,255,255,0.22)' }
+const D = { bg:'#0a0e1a',surface:'#0f1525',surface2:'#141b2d',border:'SAFE_BORDER',text:'#0a0e1a',muted:'rgba(255,255,255,0.45)',dim:'rgba(255,255,255,0.22)' }
 const card = { background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:12, overflow:'hidden', marginBottom:16 }
 const cardHd = { padding:'12px 16px', borderBottom:'1px solid rgba(255,255,255,0.07)', background:'#141b2d', fontSize:12, fontWeight:600, color:D.text, display:'flex', alignItems:'center', gap:7 }
 
@@ -113,7 +113,7 @@ export default function Settings({ user }) {
               {/* Create new key */}
               <div style={{ display:'flex', gap:8, marginBottom:16 }}>
                 <input value={newKeyName} onChange={e => setNewKeyName(e.target.value)} placeholder="Key name (e.g. CI/CD pipeline)"
-                  style={{ flex:1, padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
+                  style={{ flex:1, padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
                   onKeyDown={e => e.key==='Enter'&&createApiKey()}/>
                 <button onClick={createApiKey} disabled={!newKeyName.trim()}
                   style={{ padding:'8px 16px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'#00d97e', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
@@ -160,7 +160,7 @@ export default function Settings({ user }) {
               <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Display name</label>
               <input value={profile.full_name||''} onChange={e => setProfile(p => ({ ...p, full_name: e.target.value }))}
                 placeholder="Your name"
-                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={saveProfile} disabled={saving}
@@ -191,7 +191,7 @@ export default function Settings({ user }) {
               <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Webhook URL (Slack, Teams, custom)</label>
               <input value={profile.alert_webhook||''} onChange={e => setProfile(p => ({ ...p, alert_webhook: e.target.value }))}
                 placeholder="https://hooks.slack.com/services/..."
-                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'monospace' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'monospace' }}/>
             </div>
             <button onClick={saveProfile} disabled={saving}
               style={{ padding:'8px 18px', background:'#00d97e', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
@@ -213,10 +213,10 @@ function TeamSection({ user }) {
   const [role, setRole] = useState('viewer')
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
-  const D = { surface:'#0f1525', surface2:'#141b2d', border:'rgba(255,255,255,0.07)', text:'#0a0e1a', muted:'rgba(255,255,255,0.45)', dim:'rgba(255,255,255,0.22)' }
+  const D = { surface:'#0f1525', surface2:'#141b2d', border:'SAFE_BORDER', text:'#0a0e1a', muted:'rgba(255,255,255,0.45)', dim:'rgba(255,255,255,0.22)' }
   const card = { background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:12, overflow:'hidden' }
   const cardHd = { padding:'11px 16px', borderBottom:'1px solid rgba(255,255,255,0.07)', display:'flex', alignItems:'center', gap:7, background:'#141b2d', fontSize:13, fontWeight:600, color:D.text }
-  const input = { width:'100%', padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
+  const input = { width:'100%', padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
 
   useEffect(() => { load() }, [user.id])
 
@@ -261,7 +261,7 @@ function TeamSection({ user }) {
         {members.length === 0 ? (
           <div style={{ textAlign:'center', padding:'24px', color:D.dim, fontSize:12 }}>No team members yet. Invite someone above.</div>
         ) : members.map(m => (
-          <div key={m.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'#0f1525', borderRadius:8, border:`1px solid ${D.border}`, marginBottom:6 }}>
+          <div key={m.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'#0f1525', borderRadius:8, border:'1px solid rgba(255,255,255,0.07)', marginBottom:6 }}>
             <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(59,130,246,0.15)', color:'#3b82f6', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0 }}>{m.member_email?.[0]?.toUpperCase()}</div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontSize:12, fontWeight:500, color:D.text, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{m.member_email}</div>

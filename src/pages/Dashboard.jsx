@@ -220,9 +220,9 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
   const critical=issues.filter(i=>i.severity==='critical')
   const warns=issues.filter(i=>i.severity==='warn')
 
-  const D={bg:'#0a0e1a',surface:'#0f1525',surface2:'#141b2d',border:'rgba(255,255,255,0.07)',text:'#f0f4ff',muted:'rgba(255,255,255,0.45)',dim:'rgba(255,255,255,0.22)'}
-  const card={background:D.surface,border:`1px solid ${D.border}`,borderRadius:12,overflow:'hidden'}
-  const cardHd={padding:'11px 16px',borderBottom:`1px solid ${D.border}`,display:'flex',alignItems:'center',justifyContent:'space-between',background:D.surface2}
+  const D={bg:'#0a0e1a',surface:'#0f1525',surface2:'#141b2d',border:'SAFE_BORDER',text:'#f0f4ff',muted:'rgba(255,255,255,0.45)',dim:'rgba(255,255,255,0.22)'}
+  const card={background:D.surface,border:'1px solid rgba(255,255,255,0.07)',borderRadius:12,overflow:'hidden'}
+  const cardHd={padding:'11px 16px',borderBottom:'1px solid rgba(255,255,255,0.07)',display:'flex',alignItems:'center',justifyContent:'space-between',background:D.surface2}
 
   const cats=scan?[
     {label:'DNS records',icon:Globe,color:'#3b82f6',bg:'#1e3a5f',score:scan.score_dns,max:25},
@@ -252,8 +252,8 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
       `}</style>
 
       {/* ── SIDEBAR ──────────────────────────────────────────── */}
-      <div className="no-print" style={{width:220,flexShrink:0,background:D.surface,borderRight:`1px solid ${D.border}`,display:'flex',flexDirection:'column'}}>
-        <div style={{padding:12,borderBottom:`1px solid ${D.border}`}}>
+      <div className="no-print" style={{width:220,flexShrink:0,background:D.surface,borderRight:'1px solid rgba(255,255,255,0.07)',display:'flex',flexDirection:'column'}}>
+        <div style={{padding:12,borderBottom:'1px solid rgba(255,255,255,0.07)'}}>
           <button onClick={()=>setShowAdd(true)}
             style={{width:'100%',padding:'8px 12px',background:'rgba(16,185,129,0.15)',border:'1px solid rgba(16,185,129,0.3)',borderRadius:8,color:'#00d97e',fontSize:13,fontWeight:500,cursor:'pointer',display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}>
             <Plus size={14}/> Add domain
@@ -285,7 +285,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
           const avg=scored.length?Math.round(scored.reduce((a,d)=>a+(d.scan_results[0].health_score||0),0)/scored.length):0
           const c=avg>=70?'#00d97e':avg>=50?'#ffb547':'#ff5e5e'
           return (
-            <div style={{padding:'10px 14px',borderTop:`1px solid ${D.border}`}}>
+            <div style={{padding:'10px 14px',borderTop:'1px solid rgba(255,255,255,0.07)'}}>
               <div style={{fontSize:10,color:D.dim,marginBottom:4}}>Fleet avg score</div>
               <div style={{fontSize:22,fontWeight:700,color:c,lineHeight:1,marginBottom:5}}>{avg||'–'}</div>
               <AnimBar pct={avg} color={c} h={3}/>
@@ -306,7 +306,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
         ):(
           <div>
             {/* ── DOMAIN HEADER ── */}
-            <div className="no-print" style={{padding:'14px 20px',borderBottom:`1px solid ${D.border}`,background:D.surface}}>
+            <div className="no-print" style={{padding:'14px 20px',borderBottom:'1px solid rgba(255,255,255,0.07)',background:D.surface}}>
               <div style={{display:'flex',alignItems:'flex-start',gap:16,flexWrap:'wrap'}}>
                 <div style={{flex:1}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4,flexWrap:'wrap'}}>
@@ -322,7 +322,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     {scan?.scanned_at&&<span>Scanned {timeAgo(scan.scanned_at)}</span>}
                   </div>
                   {/* Sub-nav tabs */}
-                  <div style={{display:'flex',gap:0,borderBottom:`1px solid ${D.border}`,marginBottom:-14}}>
+                  <div style={{display:'flex',gap:0,borderBottom:'1px solid rgba(255,255,255,0.07)',marginBottom:-14}}>
                     {tabs.map(t=>(
                       <button key={t} className="dsh-tab" onClick={()=>setActiveTab(t)}
                         style={{padding:'8px 14px',background:'transparent',border:'none',borderBottom:`2px solid ${activeTab===t?'#00d97e':'transparent'}`,cursor:'pointer',fontSize:12,fontWeight:activeTab===t?600:400,color:activeTab===t?'#00d97e':'rgba(255,255,255,0.4)',textTransform:'capitalize',transition:'all 0.15s',marginBottom:-1}}>
@@ -512,7 +512,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     <div key={i} style={{padding:'16px'}}>
                       <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12,marginBottom:12}}>
                         {[{l:'Domain',v:cert.domain},{l:'Protocol',v:cert.protocol||'TLS'},{l:'Key size',v:`${cert.key_size||'?'}-bit`},{l:'Chain',v:cert.chain_valid?'✓ Valid':'✗ Invalid'},{l:'CT log',v:cert.ct_log?'✓ Verified':'Not found'},{l:'HSTS',v:cert.hsts||'Not configured'}].map(f=>(
-                          <div key={f.l} style={{padding:'10px 12px',background:'rgba(255,255,255,0.03)',borderRadius:8,border:`1px solid ${D.border}`}}>
+                          <div key={f.l} style={{padding:'10px 12px',background:'rgba(255,255,255,0.03)',borderRadius:8,border:'1px solid rgba(255,255,255,0.07)'}}>
                             <div style={{fontSize:10,color:D.dim,marginBottom:4}}>{f.l}</div>
                             <div style={{fontSize:13,fontWeight:500,color:D.text}}>{f.v}</div>
                           </div>
@@ -598,7 +598,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       <thead>
                         <tr style={{background:'#0f1525'}}>
                           {['Type','Value','TTL','Status'].map(h=>(
-                            <th key={h} style={{textAlign:'left',padding:'8px 16px',fontSize:10,fontWeight:600,color:D.muted,textTransform:'uppercase',letterSpacing:'0.06em',borderBottom:`1px solid ${D.border}`}}>{h}</th>
+                            <th key={h} style={{textAlign:'left',padding:'8px 16px',fontSize:10,fontWeight:600,color:D.muted,textTransform:'uppercase',letterSpacing:'0.06em',borderBottom:'1px solid rgba(255,255,255,0.07)'}}>{h}</th>
                           ))}
                         </tr>
                       </thead>

@@ -3,14 +3,14 @@ import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { supabase } from '../lib/supabase'
 import { Shield, Mail, AlertTriangle, CheckCircle, Globe, Upload, Copy, Check, ChevronDown, ChevronUp, RefreshCw, Zap, Info, ExternalLink } from 'lucide-react'
 
-const D = { bg:'#0a0e1a', surface:'#0f1525', surface2:'#141b2d', border:'rgba(255,255,255,0.07)', text:'#0a0e1a', muted:'rgba(255,255,255,0.45)', dim:'rgba(255,255,255,0.22)' }
+const D = { bg:'#0a0e1a', surface:'#0f1525', surface2:'#141b2d', border:'SAFE_BORDER', text:'#0a0e1a', muted:'rgba(255,255,255,0.45)', dim:'rgba(255,255,255,0.22)' }
 const card = { background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:12, overflow:'hidden' }
 const cardHd = { padding:'11px 16px', borderBottom:'1px solid rgba(255,255,255,0.07)', display:'flex', alignItems:'center', justifyContent:'space-between', background:D.surface2 }
 
 const VTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
   return (
-    <div style={{ background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:8, padding:'10px 14px', fontSize:11 }}>
+    <div style={{ background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:8, padding:'10px 14px', fontSize:11 }}>
       <div style={{ color:D.muted, marginBottom:6 }}>{label}</div>
       {payload.map(p => (
         <div key={p.dataKey} style={{ display:'flex', alignItems:'center', gap:7, marginBottom:3 }}>
@@ -57,7 +57,7 @@ function RuaSetupCard({ ruaAddress }) {
           <div style={{ marginBottom:14 }}>
             <div style={{ fontSize:11, color:D.muted, marginBottom:6, textTransform:'uppercase', letterSpacing:'0.06em', fontWeight:500 }}>Full DMARC record to add to your DNS</div>
             <div style={{ display:'flex', alignItems:'flex-start', gap:8 }}>
-              <div style={{ flex:1, fontFamily:'monospace', fontSize:11, color:'#4d9fff', background:'#0f1525', padding:'8px 12px', borderRadius:7, border:`1px solid ${D.border}`, lineHeight:1.7, wordBreak:'break-all' }}>
+              <div style={{ flex:1, fontFamily:'monospace', fontSize:11, color:'#4d9fff', background:'#0f1525', padding:'8px 12px', borderRadius:7, border:'1px solid rgba(255,255,255,0.07)', lineHeight:1.7, wordBreak:'break-all' }}>
                 {dmarcRecord}
               </div>
               <CopyBtn text={dmarcRecord}/>
@@ -113,7 +113,7 @@ function PolicyWizard({ domain, currentPolicy, ruaAddress }) {
               <div style={{ fontSize:12, fontWeight:600, color:D.text, marginBottom:8 }}>Next step: upgrade to <span style={{ color:nextPolicy.color }}>{nextPolicy.label}</span></div>
               <div style={{ fontSize:11, color:D.muted, marginBottom:10 }}>Update your <code style={{ color:'#ea580c' }}>_dmarc.{domain?.domain_name}</code> TXT record to:</div>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                <div style={{ flex:1, fontFamily:'monospace', fontSize:11, color:'#4d9fff', background:'#0f1525', padding:'8px 12px', borderRadius:7, border:`1px solid ${D.border}`, wordBreak:'break-all', lineHeight:1.6 }}>
+                <div style={{ flex:1, fontFamily:'monospace', fontSize:11, color:'#4d9fff', background:'#0f1525', padding:'8px 12px', borderRadius:7, border:'1px solid rgba(255,255,255,0.07)', wordBreak:'break-all', lineHeight:1.6 }}>
                   {record}
                 </div>
                 <CopyBtn text={record}/>
@@ -157,27 +157,27 @@ function UploadXMLModal({ domain, onClose, onSuccess }) {
 
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.3)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:500 }}>
-      <div style={{ background:D.surface, border:`1px solid ${D.border}`, borderRadius:14, padding:20, width:'min(520px,95vw)', maxHeight:'80vh', overflow:'auto' }}>
+      <div style={{ background:D.surface, border:'1px solid rgba(255,255,255,0.07)', borderRadius:14, padding:20, width:'min(520px,95vw)', maxHeight:'80vh', overflow:'auto' }}>
         <div style={{ display:'flex', justifyContent:'space-between', marginBottom:16 }}>
           <span style={{ fontSize:14, fontWeight:600, color:D.text }}>Upload DMARC XML report</span>
           <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:D.muted, fontSize:18 }}>×</button>
         </div>
         <div style={{ marginBottom:12 }}>
-          <button onClick={() => fileRef.current?.click()} style={{ padding:'7px 14px', background:'#141b2d', border:`1px solid ${D.border}`, borderRadius:7, color:D.text, fontSize:12, cursor:'pointer', marginBottom:10 }}>
+          <button onClick={() => fileRef.current?.click()} style={{ padding:'7px 14px', background:'#141b2d', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, color:D.text, fontSize:12, cursor:'pointer', marginBottom:10 }}>
             {file ? `📎 ${file.name}` : '📎 Select .xml / .gz file'}
           </button>
           <input ref={fileRef} type="file" accept=".xml,.gz,.zip" style={{ display:'none' }} onChange={e => setFile(e.target.files[0])}/>
         </div>
         {!file && (
           <textarea value={xml} onChange={e => setXml(e.target.value)} placeholder="Or paste XML content here..." rows={8}
-            style={{ width:'100%', padding:'10px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:8, fontSize:11, fontFamily:'monospace', color:D.text, outline:'none', resize:'vertical', boxSizing:'border-box' }}/>
+            style={{ width:'100%', padding:'10px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:8, fontSize:11, fontFamily:'monospace', color:D.text, outline:'none', resize:'vertical', boxSizing:'border-box' }}/>
         )}
         {error && <div style={{ fontSize:12, color:'#ff5e5e', marginTop:8 }}>{error}</div>}
         <div style={{ display:'flex', gap:8, marginTop:14 }}>
           <button onClick={upload} disabled={loading} style={{ flex:1, padding:'9px', background:'#00d97e', color:'#fff', border:'none', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer' }}>
             {loading ? 'Processing…' : 'Upload & parse'}
           </button>
-          <button onClick={onClose} style={{ padding:'9px 16px', background:'#141b2d', border:`1px solid ${D.border}`, borderRadius:8, color:D.muted, fontSize:13, cursor:'pointer' }}>Cancel</button>
+          <button onClick={onClose} style={{ padding:'9px 16px', background:'#141b2d', border:'1px solid rgba(255,255,255,0.07)', borderRadius:8, color:D.muted, fontSize:13, cursor:'pointer' }}>Cancel</button>
         </div>
       </div>
     </div>
@@ -264,8 +264,8 @@ function DmarcReportsInner({ user, selectedDomain }) {
           {[7,30,90].map(r => (
             <button key={r} onClick={() => setRange(r)} style={{ padding:'5px 12px', background:range===r?'rgba(16,185,129,0.12)':'#0f1525', border:`1px solid ${range===r?'rgba(16,185,129,0.3)':rgba(255,255,255,0.07)}`, borderRadius:7, color:range===r?'#00d97e':D.muted, fontSize:11, fontWeight:500, cursor:'pointer' }}>{r}d</button>
           ))}
-          <button onClick={() => setShowUpload(true)} style={{ padding:'5px 12px', background:'#141b2d', border:`1px solid ${D.border}`, borderRadius:7, color:D.text, fontSize:11, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}><Upload size={11}/> Upload XML</button>
-          <button onClick={fetchData} style={{ padding:'5px 10px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, color:D.muted, cursor:'pointer' }}><RefreshCw size={12}/></button>
+          <button onClick={() => setShowUpload(true)} style={{ padding:'5px 12px', background:'#141b2d', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, color:D.text, fontSize:11, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}><Upload size={11}/> Upload XML</button>
+          <button onClick={fetchData} style={{ padding:'5px 10px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, color:D.muted, cursor:'pointer' }}><RefreshCw size={12}/></button>
         </div>
       </div>
 
@@ -301,7 +301,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
               { label:'Passing', value:totalPass.toLocaleString(), color:'#00d97e' },
               { label:'Failing', value:totalFail.toLocaleString(), color: totalFail > 0 ? '#ff5e5e' : 'rgba(255,255,255,0.45)' },
             ].map(s => (
-              <div key={s.label} style={{ background:D.surface, border:`1px solid ${D.border}`, borderRadius:10, padding:'12px 14px' }}>
+              <div key={s.label} style={{ background:D.surface, border:'1px solid rgba(255,255,255,0.07)', borderRadius:10, padding:'12px 14px' }}>
                 <div style={{ fontSize:20, fontWeight:700, color:s.color, marginBottom:2 }}>{s.value}</div>
                 <div style={{ fontSize:11, color:D.muted }}>{s.label}</div>
               </div>
@@ -353,7 +353,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
                 {topSources.map((s, i) => {
                   const pct = s.count > 0 ? Math.round((s.pass / s.count) * 100) : 0
                   return (
-                    <div key={i} style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 0', borderBottom: i < topSources.length-1 ? `1px solid ${D.border}` : 'none' }}>
+                    <div key={i} style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 0', borderBottom: i < topSources.length-1 ? '1px solid rgba(255,255,255,0.07)' : 'none' }}>
                       {s.threat && <AlertTriangle size={12} color="#ef4444" style={{ flexShrink:0 }}/>}
                       {!s.threat && <CheckCircle size={12} color="#10b981" style={{ flexShrink:0 }}/>}
                       <div style={{ flex:1, minWidth:0 }}>
@@ -399,7 +399,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
               <div style={cardHd}><span style={{ fontSize:12, fontWeight:600, color:D.text }}>Individual reports ({reports.length})</span></div>
               <div>
                 {reports.map((r, i) => (
-                  <div key={r.id} style={{ display:'flex', alignItems:'center', gap:12, padding:'10px 16px', borderBottom: i < reports.length-1 ? `1px solid ${D.border}` : 'none' }}>
+                  <div key={r.id} style={{ display:'flex', alignItems:'center', gap:12, padding:'10px 16px', borderBottom: i < reports.length-1 ? '1px solid rgba(255,255,255,0.07)' : 'none' }}>
                     <div style={{ flex:1, minWidth:0 }}>
                       <div style={{ fontSize:12, fontWeight:500, color:D.text }}>{r.org_name || 'Unknown'}</div>
                       <div style={{ fontSize:10, color:D.dim }}>{r.report_date} · {r.total_volume?.toLocaleString()} messages</div>
@@ -436,11 +436,11 @@ export default function DmarcReports({ user }) {
 
   return (
     <div style={{ background: D.bg, minHeight: '100%', fontFamily: "'DM Sans','Inter',system-ui,sans-serif" }}>
-      <div style={{ padding: '14px 20px', borderBottom: `1px solid ${D.border}`, background: D.surface, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+      <div style={{ padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,0.07)', background: D.surface, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
         <h2 style={{ fontSize: 16, fontWeight: 700, color: D.text, margin: 0 }}>DMARC Reports</h2>
         {domains.length > 0 && (
           <select value={selectedId || ''} onChange={e => setSelectedId(e.target.value)}
-            style={{ padding: '5px 10px', background: D.surface2, border: `1px solid ${D.border}`, borderRadius: 7, fontSize: 12, color: D.text, cursor: 'pointer', outline: 'none' }}>
+            style={{ padding: '5px 10px', background: D.surface2, border: '1px solid rgba(255,255,255,0.07)', borderRadius: 7, fontSize: 12, color: D.text, cursor: 'pointer', outline: 'none' }}>
             {domains.map(d => <option key={d.id} value={d.id}>{d.domain_name}</option>)}
           </select>
         )}

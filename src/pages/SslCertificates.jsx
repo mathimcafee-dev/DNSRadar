@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { Lock, RefreshCw, ChevronDown, ChevronUp, Search, Trash2, Plus } from 'lucide-react'
 
-const D = { bg:'#0a0e1a', surface:'#0f1525', surface2:'#141b2d', border:'rgba(255,255,255,0.07)', text:'#0a0e1a', muted:'rgba(255,255,255,0.45)', dim:'rgba(255,255,255,0.22)' }
+const D = { bg:'#0a0e1a', surface:'#0f1525', surface2:'#141b2d', border:'SAFE_BORDER', text:'#0a0e1a', muted:'rgba(255,255,255,0.45)', dim:'rgba(255,255,255,0.22)' }
 const card = { background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:12, overflow:'hidden' }
 
 function daysColor(days) {
@@ -73,7 +73,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
       </div>
 
       {open && (
-        <div style={{ borderTop:`1px solid ${D.border}`, padding:'14px 16px' }}>
+        <div style={{ borderTop:'1px solid rgba(255,255,255,0.07)', padding:'14px 16px' }}>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(170px,1fr))', gap:12, marginBottom:14 }}>
             <Field label="Subject CN" value={cert.subject_cn}/>
             <Field label="Valid from" value={cert.valid_from ? new Date(cert.valid_from).toLocaleDateString() : null}/>
@@ -100,7 +100,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
               <div style={{ fontSize:11, color:D.muted, marginBottom:6, fontWeight:500 }}>Subject alt names ({sans.length})</div>
               <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
                 {sans.slice(0,12).map(s => (
-                  <span key={s} style={{ fontSize:10, fontFamily:'monospace', padding:'2px 7px', borderRadius:5, background:'#0f1525', color:D.muted, border:`1px solid ${D.border}` }}>{s}</span>
+                  <span key={s} style={{ fontSize:10, fontFamily:'monospace', padding:'2px 7px', borderRadius:5, background:'#0f1525', color:D.muted, border:'1px solid rgba(255,255,255,0.07)' }}>{s}</span>
                 ))}
                 {sans.length > 12 && <span style={{ fontSize:10, color:D.dim }}>+{sans.length-12} more</span>}
               </div>
@@ -116,7 +116,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
 
 function SummaryCard({ label, value, color, onClick }) {
   return (
-    <div onClick={onClick} style={{ background:D.surface, border:`1px solid ${D.border}`, borderRadius:10, padding:'12px 14px', cursor:onClick?'pointer':'default' }}>
+    <div onClick={onClick} style={{ background:D.surface, border:'1px solid rgba(255,255,255,0.07)', borderRadius:10, padding:'12px 14px', cursor:onClick?'pointer':'default' }}>
       <div style={{ fontSize:22, fontWeight:700, color, marginBottom:2 }}>{value}</div>
       <div style={{ fontSize:11, color:D.muted }}>{label}</div>
     </div>
@@ -250,7 +250,7 @@ export default function SslCertificates({ user }) {
             onChange={e => setManualDomain(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && !manualScanning && scanManualDomain()}
             placeholder="Enter any domain — e.g. github.com"
-            style={{ flex:1, padding:'9px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:8, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
+            style={{ flex:1, padding:'9px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:8, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
           />
           <button
             onClick={scanManualDomain}
@@ -327,9 +327,9 @@ export default function SslCertificates({ user }) {
         <div style={{ marginTop:20 }}>
           <div style={{ fontSize:12, color:D.muted, marginBottom:10, fontWeight:500 }}>Tracked domains not yet scanned for SSL</div>
           {domains.filter(d=>d.verified&&!certs.find(c=>c.domain_name===d.domain_name)).map(d=>(
-            <div key={d.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', background:D.surface, border:`1px solid ${D.border}`, borderRadius:10, marginBottom:6 }}>
+            <div key={d.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', background:D.surface, border:'1px solid rgba(255,255,255,0.07)', borderRadius:10, marginBottom:6 }}>
               <span style={{ fontSize:13, color:D.muted }}>{d.domain_name}</span>
-              <button onClick={()=>scanDomain(d)} disabled={scanning} style={{ padding:'5px 14px', background:'#141b2d', border:`1px solid ${D.border}`, borderRadius:6, color:D.muted, fontSize:11, fontWeight:500, cursor:'pointer' }}>Scan now</button>
+              <button onClick={()=>scanDomain(d)} disabled={scanning} style={{ padding:'5px 14px', background:'#141b2d', border:'1px solid rgba(255,255,255,0.07)', borderRadius:6, color:D.muted, fontSize:11, fontWeight:500, cursor:'pointer' }}>Scan now</button>
             </div>
           ))}
         </div>

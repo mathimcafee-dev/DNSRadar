@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Shield, Plus, Trash2, CheckCircle, AlertTriangle, Zap, Eye, EyeOff, Info, RefreshCw } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
-const D = { bg:'#0a0e1a',surface:'#0f1525',surface2:'#141b2d',border:'rgba(255,255,255,0.07)',text:'#0a0e1a',muted:'rgba(255,255,255,0.45)',dim:'rgba(255,255,255,0.22)' }
+const D = { bg:'#0a0e1a',surface:'#0f1525',surface2:'#141b2d',border:'SAFE_BORDER',text:'#0a0e1a',muted:'rgba(255,255,255,0.45)',dim:'rgba(255,255,255,0.22)' }
 const card = { background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:12, overflow:'hidden' }
 
 const PROVIDERS = [
@@ -191,7 +191,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
             <div style={{ marginBottom:12 }}>
               <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:4 }}>Label (optional)</label>
               <input value={label} onChange={e => setLabel(e.target.value)} placeholder={`My ${selectedProvider} credentials`}
-                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
             </div>
 
             {/* Dynamic fields */}
@@ -204,7 +204,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                     placeholder={f.placeholder}
                     value={form[f.key] || ''}
                     onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
-                    style={{ width:'100%', padding:f.secret?'8px 36px 8px 12px':'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:f.mono?'monospace':'inherit', boxSizing:'border-box' }}/>
+                    style={{ width:'100%', padding:f.secret?'8px 36px 8px 12px':'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:f.mono?'monospace':'inherit', boxSizing:'border-box' }}/>
                   {f.secret && (
                     <button onClick={() => setShowSecrets(s => ({ ...s, [f.key]: !s[f.key] }))}
                       style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', color:D.dim }}>
@@ -220,7 +220,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                 style={{ padding:'8px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'#ffb547', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
                 {saving ? <><div style={{ width:12, height:12, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'#ffb547', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Saving…</> : <><Shield size={13}/> Save credentials</>}
               </button>
-              <button onClick={() => { setShowAdd(false); setForm({}) }} style={{ padding:'8px 14px', background:'transparent', border:`1px solid ${D.border}`, borderRadius:7, color:D.muted, fontSize:13, cursor:'pointer' }}>Cancel</button>
+              <button onClick={() => { setShowAdd(false); setForm({}) }} style={{ padding:'8px 14px', background:'transparent', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, color:D.muted, fontSize:13, cursor:'pointer' }}>Cancel</button>
             </div>
           </div>
         </div>

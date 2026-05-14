@@ -33,7 +33,7 @@ function RecordDisplay({ record, label }) {
         <span style={{ fontSize:11, fontWeight:600, color:D.muted, textTransform:'uppercase', letterSpacing:'0.07em' }}>{label}</span>
         <CopyBtn text={record}/>
       </div>
-      <div style={{ background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:8, padding:'10px 14px' }}>
+      <div style={{ background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:8, padding:'10px 14px' }}>
         <div style={{ fontFamily:'monospace', fontSize:12, color:'#4d9fff', wordBreak:'break-all', lineHeight:1.6 }}>
           {parts.map((p, i) => (
             <span key={i}>
@@ -96,7 +96,7 @@ function SPFGenerator() {
           <div style={{ marginBottom:12 }}>
             <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Your domain</label>
             <input type="text" placeholder="yourdomain.com" value={domain} onChange={e => setDomain(e.target.value)}
-              style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+              style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
           </div>
           <div style={{ marginBottom:12 }}>
             <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:8 }}>Email providers</label>
@@ -113,7 +113,7 @@ function SPFGenerator() {
           <div style={{ marginBottom:12 }}>
             <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Custom IPs (optional, one per line)</label>
             <textarea value={customIPs} onChange={e => setCustomIPs(e.target.value)} rows={2} placeholder="192.168.1.1&#10;10.0.0.0/24"
-              style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:12, color:D.text, outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
+              style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:12, color:D.text, outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
           </div>
           <div style={{ marginBottom:12 }}>
             <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:8 }}>Policy (how to handle failures)</label>
@@ -183,7 +183,7 @@ function DMARCGenerator({ presetPolicy }) {
             <div>
               <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Domain</label>
               <input type="text" placeholder="yourdomain.com" value={domain} onChange={e => setDomain(e.target.value)}
-                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div>
               <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Policy (p=)</label>
@@ -201,12 +201,12 @@ function DMARCGenerator({ presetPolicy }) {
             <div>
               <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>RUA email (aggregate reports)</label>
               <input type="email" placeholder={`dmarc@${domain || 'yourdomain.com'}`} value={rua} onChange={e => setRua(e.target.value)}
-                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:12, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:12, color:D.text, outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div>
               <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>RUF email (forensic reports)</label>
               <input type="email" placeholder={`forensic@${domain || 'yourdomain.com'}`} value={ruf} onChange={e => setRuf(e.target.value)}
-                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:12, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:12, color:D.text, outline:'none', fontFamily:'inherit' }}/>
             </div>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:12, marginBottom:12 }}>
@@ -301,7 +301,7 @@ function DKIMTool() {
           <div style={{ display:'flex', gap:8, marginBottom:12 }}>
             <input type="text" placeholder="yourdomain.com" value={domain} onChange={e => setDomain(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && scan()}
-              style={{ flex:1, padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+              style={{ flex:1, padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
             <button onClick={scan} disabled={loading || !domain}
               style={{ padding:'8px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'#ffb547', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !domain ? 0.5 : 1 }}>
               {loading ? <><div style={{ width:13, height:13, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'#ffb547', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Scanning {SELECTORS.length} selectors…</> : <><Zap size={13}/> Discover</>}
@@ -411,14 +411,14 @@ function EmailHeaderAnalyser() {
             </label>
             <textarea value={header} onChange={e => setHeader(e.target.value)} rows={6}
               placeholder="Delivered-To: user@example.com&#10;Received: from mail.example.com...&#10;Authentication-Results: mx.google.com;&#10;   dkim=pass header.i=@example.com;&#10;   spf=pass..."
-              style={{ width:'100%', padding:'10px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:11, color:D.muted, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
+              style={{ width:'100%', padding:'10px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:11, color:D.muted, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
           </div>
           <button onClick={analyse} disabled={!header}
             style={{ padding:'8px 20px', background:'rgba(167,139,250,0.15)', border:'1px solid rgba(167,139,250,0.3)', borderRadius:7, color:'#a78bfa', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !header ? 0.5 : 1, marginBottom:12 }}>
             <Zap size={13}/> Analyse header
           </button>
           {result && (
-            <div style={{ ...card, border:`1px solid ${D.border}` }}>
+            <div style={{ ...card, border:'1px solid rgba(255,255,255,0.07)' }}>
               <StatusDot pass={result.spfPass} fail={result.spfFail} label="SPF" value={result.spfLine}/>
               <StatusDot pass={result.dkimPass} fail={result.dkimFail} label="DKIM" value={result.dkimLine}/>
               <StatusDot pass={result.dmarcPass} fail={result.dmarcFail} label="DMARC" value={result.authResults}/>
@@ -504,7 +504,7 @@ function BulkScanner() {
             <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Domains (one per line, max 25)</label>
             <textarea value={input} onChange={e => setInput(e.target.value)} rows={5}
               placeholder="google.com&#10;microsoft.com&#10;digicert.com"
-              style={{ width:'100%', padding:'10px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:12, color:D.text, outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
+              style={{ width:'100%', padding:'10px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:12, color:D.text, outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
           </div>
           <div style={{ display:'flex', gap:8, marginBottom:12 }}>
             <button onClick={runBulk} disabled={scanning || !input}
@@ -513,7 +513,7 @@ function BulkScanner() {
             </button>
             {results.length > 0 && !scanning && (
               <button onClick={exportCSV}
-                style={{ padding:'8px 14px', border:`1px solid ${D.border}`, borderRadius:7, background:'transparent', color:D.muted, fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+                style={{ padding:'8px 14px', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, background:'transparent', color:D.muted, fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
                 <Upload size={12}/> Export CSV
               </button>
             )}
@@ -589,7 +589,7 @@ function SPFFlattener() {
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&flatten()}
-            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
           <button onClick={flatten} disabled={loading||!domain.trim()} style={{ padding:'8px 18px', background:'#00d97e', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
             {loading ? <div style={{ width:12, height:12, border:'2px solid #9ca3af', borderTopColor:'#fff', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> : <Zap size={13}/>}
             Flatten
@@ -600,7 +600,7 @@ function SPFFlattener() {
           <>
             <div style={{ display:'flex', gap:8, marginBottom:10, flexWrap:'wrap' }}>
               {[['IPs resolved', result.ip_count, '#00d97e'], ['Lookups after', result.lookup_count_after, result.lookup_count_after === 0 ? '#00d97e' : '#ffb547'], ['Original lookups', '10 limit', 'rgba(255,255,255,0.45)']].map(([l,v,c]) => (
-                <div key={l} style={{ background:'#0f1525', borderRadius:8, padding:'8px 12px', border:`1px solid ${D.border}` }}>
+                <div key={l} style={{ background:'#0f1525', borderRadius:8, padding:'8px 12px', border:'1px solid rgba(255,255,255,0.07)' }}>
                   <div style={{ fontSize:16, fontWeight:700, color:c }}>{v}</div>
                   <div style={{ fontSize:10, color:D.muted }}>{l}</div>
                 </div>
@@ -666,7 +666,7 @@ function DKIMRotation() {
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:14 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&checkSelectors()}
-            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
           <button onClick={checkSelectors} disabled={checking||!domain.trim()} style={{ padding:'8px 16px', background:'rgba(59,130,246,0.15)', border:'1px solid rgba(59,130,246,0.3)', borderRadius:7, color:'#3b82f6', fontSize:12, fontWeight:600, cursor:'pointer' }}>
             {checking ? 'Scanning…' : 'Find selectors'}
           </button>
@@ -677,7 +677,7 @@ function DKIMRotation() {
             <div style={{ marginBottom:14 }}>
               <div style={{ fontSize:11, color:D.muted, marginBottom:8, fontWeight:500, textTransform:'uppercase', letterSpacing:'0.06em' }}>Active DKIM selectors found</div>
               {selectors.map(s => (
-                <div key={s.selector} style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 12px', background:'#0f1525', borderRadius:8, border:`1px solid ${D.border}`, marginBottom:6 }}>
+                <div key={s.selector} style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 12px', background:'#0f1525', borderRadius:8, border:'1px solid rgba(255,255,255,0.07)', marginBottom:6 }}>
                   <code style={{ fontSize:12, color:'#a78bfa', fontWeight:600 }}>{s.selector}</code>
                   <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background: s.key_size >= 2048 ? 'rgba(16,185,129,0.12)' : 'rgba(245,158,11,0.12)', color: s.key_size >= 2048 ? '#00d97e' : '#ffb547', fontWeight:600 }}>{s.key_size || '?'}-bit</span>
                   <span style={{ fontSize:11, color:D.dim }}>TTL {s.ttl}s</span>
@@ -752,7 +752,7 @@ function BIMIChecker() {
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&check()}
-            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
           <button onClick={check} disabled={loading||!domain.trim()} style={{ padding:'8px 16px', background:'rgba(167,139,250,0.15)', border:'1px solid rgba(167,139,250,0.3)', borderRadius:7, color:'#a78bfa', fontSize:12, fontWeight:600, cursor:'pointer' }}>
             {loading ? 'Checking…' : 'Check BIMI'}
           </button>
@@ -779,7 +779,7 @@ function BIMIChecker() {
               </div>
             )}
             {result.logo_url && (
-              <div style={{ display:'flex', alignItems:'center', gap:12, padding:'10px 12px', background:'#0f1525', borderRadius:8, border:`1px solid ${D.border}` }}>
+              <div style={{ display:'flex', alignItems:'center', gap:12, padding:'10px 12px', background:'#0f1525', borderRadius:8, border:'1px solid rgba(255,255,255,0.07)' }}>
                 <img src={result.logo_url} alt="BIMI logo" style={{ width:40, height:40, objectFit:'contain', background:'#fff', borderRadius:6, padding:2 }} onError={e => e.target.style.display='none'}/>
                 <div>
                   <div style={{ fontSize:11, color:D.muted, marginBottom:2 }}>Logo URL</div>
@@ -851,7 +851,7 @@ function MTASTSChecker() {
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&check()}
-            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
           <button onClick={check} disabled={loading||!domain.trim()} style={{ padding:'8px 16px', background:'rgba(34,211,238,0.12)', border:'1px solid rgba(34,211,238,0.25)', borderRadius:7, color:'#22d3ee', fontSize:12, fontWeight:600, cursor:'pointer' }}>
             {loading ? 'Checking…' : 'Check'}
           </button>
@@ -865,7 +865,7 @@ function MTASTSChecker() {
                 { label:'MTA-STS policy file (mta-sts.'+result.domain+'/.well-known/mta-sts.txt)', ok:!!result.policy_file, val:result.policy_file ? `mode: ${result.policy_mode || '?'}` : null },
                 { label:'TLS-RPT record', ok:!!result.tls_rpt_record, val:result.tls_rpt_record },
               ].map(item => (
-                <div key={item.label} style={{ padding:'10px 12px', background:'#0f1525', borderRadius:8, border:`1px solid ${D.border}` }}>
+                <div key={item.label} style={{ padding:'10px 12px', background:'#0f1525', borderRadius:8, border:'1px solid rgba(255,255,255,0.07)' }}>
                   <div style={{ fontSize:12, color:D.text, marginBottom:item.val ? 5 : 0 }}>{statusDot(item.ok)}{item.label}</div>
                   {item.val && <div style={{ fontFamily:'monospace', fontSize:10, color:'rgba(255,255,255,0.45)', marginTop:3, wordBreak:'break-all' }}>{item.val.slice(0,200)}</div>}
                   {!item.ok && <div style={{ fontSize:11, color:'#ff5e5e', marginTop:3 }}>Not configured</div>}
@@ -921,7 +921,7 @@ function BulkDomainImport({ user }) {
       <div style={{ padding:16 }}>
         <div style={{ fontSize:12, color:D.muted, marginBottom:12 }}>Paste domains one per line, or comma/semicolon separated. URLs are automatically cleaned.</div>
         <textarea value={text} onChange={e => setText(e.target.value)} rows={6} placeholder={'example.com\ngoogle.com\nhttps://microsoft.com/\nyourdomain.org'}
-          style={{ width:'100%', padding:'10px 12px', background:'#0f1525', border:`1px solid ${D.border}`, borderRadius:8, fontSize:12, fontFamily:'monospace', color:D.text, outline:'none', resize:'vertical', boxSizing:'border-box', marginBottom:10 }}/>
+          style={{ width:'100%', padding:'10px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:8, fontSize:12, fontFamily:'monospace', color:D.text, outline:'none', resize:'vertical', boxSizing:'border-box', marginBottom:10 }}/>
         {!user && <div style={{ fontSize:11, color:'#ffb547', marginBottom:10 }}>⚠️ Sign in to import domains to your account</div>}
         <button onClick={importDomains} disabled={importing || !text.trim() || !user} style={{ padding:'8px 18px', background:'#00d97e', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', marginBottom: results.length ? 14 : 0 }}>
           {importing ? 'Importing…' : 'Import domains'}
