@@ -82,7 +82,7 @@ function Gauge({ score, size = 160 }) {
     return `M${x1} ${y1} A${rv} ${rv} 0 ${(a2-a1)>180?1:0} 1 ${x2} ${y2}`
   }
   const nx=cx+r*0.7*Math.cos(rad(ang)),ny=cy+r*0.7*Math.sin(rad(ang))
-  const c=score>=70?'#00e5a0':score>=50?'#ffb224':'#ff4d6a'
+  const c=score>=70?'#16a34a':score>=50?'#d97706':'#dc2626'
   const label=score>=90?'Excellent':score>=70?'Good':score>=50?'Fair':'Critical'
   return (
     <svg width={size} height={size*0.68} viewBox={`0 0 ${size} ${size*0.68}`}>
@@ -268,7 +268,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
             const critCount=s?.issues?.filter(i=>i.severity==='critical').length||0
             return (
               <div key={d.id} className="dsh-row" onClick={()=>{setSelected(d); onDomainSelect?.(d); setActiveTab('overview')}}
-                style={{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',cursor:'pointer',background:isActive?'rgba(0,229,160,0.08)':'transparent',borderLeft:`3px solid ${isActive?'#00e5a0':'transparent'}`,transition:'background 0.12s'}}>
+                style={{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',cursor:'pointer',background:isActive?'#f0fdf4':'transparent',borderLeft:`3px solid ${isActive?'#16a34a':'transparent'}`,transition:'background 0.12s'}}>
                 <div style={{width:7,height:7,borderRadius:'50%',background:d.paused?'#4a5470':!d.verified?'#ffb224':sc,flexShrink:0}}/>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:12,fontWeight:500,color:'#111827',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{d.domain_name}</div>
@@ -283,7 +283,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
         {domains.length>0&&(()=>{
           const scored=domains.filter(d=>d.scan_results?.[0])
           const avg=scored.length?Math.round(scored.reduce((a,d)=>a+(d.scan_results[0].health_score||0),0)/scored.length):0
-          const c=avg>=70?'#00e5a0':avg>=50?'#ffb224':'#ff4d6a'
+          const c=avg>=70?'#16a34a':avg>=50?'#d97706':'#dc2626'
           return (
             <div style={{padding:'12px 14px',borderTop:'1px solid #f0f2f5',background:'#fafafa'}}>
               <div style={{fontSize:10,color:'#374151',fontWeight:600,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:4}}>Fleet avg score</div>
@@ -336,7 +336,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 {/* Actions */}
                 <div style={{display:'flex',flexDirection:'column',gap:6,alignSelf:'flex-start'}}>
                   <button onClick={()=>triggerScan(selected)} disabled={scanning[selected.id]}
-                    style={{padding:'8px 18px',background:'#111827',color:'#ffffff',border:'none',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:600,display:'flex',alignItems:'center',gap:5}}>
+                    style={{padding:'8px 18px',background:'#111827',color:'#ffffff',letterSpacing:'-0.01em',border:'none',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:600,display:'flex',alignItems:'center',gap:5}}>
                     {scanning[selected.id]?<><div style={{width:12,height:12,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>Scanning…</>:<><RefreshCw size={12}/>Scan now</>}
                   </button>
                   <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
@@ -365,8 +365,8 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16}}>
                     {[
                       {label:'Health score',val:scan.health_score,color:getScoreColor(scan.health_score),sub:'out of 100',pct:scan.health_score},
-                      {label:'Critical issues',val:critical.length,color:critical.length>0?'#ff4d6a':'#00e5a0',sub:critical.length>0?'Fix immediately':'All clear',pct:Math.min(critical.length*25,100)},
-                      {label:'Blacklisted',val:`${scan.blacklists?.listed_count||0}/${scan.blacklists?.results?.length||0}`,color:(scan.blacklists?.listed_count||0)>0?'#ff4d6a':'#00e5a0',sub:'blacklists',pct:(scan.blacklists?.listed_count||0)>0?60:100},
+                      {label:'Critical issues',val:critical.length,color:critical.length>0?'#dc2626':'#16a34a',sub:critical.length>0?'Fix immediately':'All clear',pct:Math.min(critical.length*25,100)},
+                      {label:'Blacklisted',val:`${scan.blacklists?.listed_count||0}/${scan.blacklists?.results?.length||0}`,color:(scan.blacklists?.listed_count||0)>0?'#dc2626':'#16a34a',sub:'blacklists',pct:(scan.blacklists?.listed_count||0)>0?60:100},
                       {label:'DNS records',val:scan.dns_records?.length||0,color:'#3730a3',sub:'records found',pct:100},
                     ].map(k=>(
                       <div key={k.label} className="print-card" style={{background:'#ffffff',border:'1px solid #e4e7ec',borderTop:`2px solid ${k.color}`,borderRadius:12,padding:'16px 18px',boxShadow:'0 1px 4px rgba(0,0,0,0.06)',transition:'transform 0.15s,box-shadow 0.15s'}}
@@ -466,7 +466,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
                       {['1h','6h','24h','off'].map(iv=>(
                         <button key={iv} onClick={()=>updateInterval(selected.id,iv)}
-                          style={{padding:'7px 16px',background:selected.monitor_interval===iv?'rgba(16,185,129,0.15)':'rgba(255,255,255,0.04)',border:`1px solid ${selected.monitor_interval===iv?'rgba(16,185,129,0.4)':'#1e2535'}`,borderRadius:8,color:selected.monitor_interval===iv?'#00e5a0':'#8993ac',fontSize:12,fontWeight:500,cursor:'pointer'}}>
+                          style={{padding:'7px 16px',background:selected.monitor_interval===iv?'#f0fdf4':'#fff',border:`1px solid ${selected.monitor_interval===iv?'#16a34a':'#e5e7eb'}`,borderRadius:8,color:selected.monitor_interval===iv?'#166534':'#374151',fontSize:12,fontWeight:500,cursor:'pointer'}}>
                           {iv==='off'?'Off (manual)':iv==='1h'?'Every hour':iv==='6h'?'Every 6 hours':'Every 24 hours'}
                         </button>
                       ))}
@@ -495,7 +495,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       <div style={{flex:1}}>
                         {r.val&&<div style={{fontSize:12,fontFamily:'monospace',color:'#0f172a',marginBottom:4,wordBreak:'break-all',padding:'4px 8px',background:'rgba(255,255,255,0.03)',borderRadius:5}}>{r.val}</div>}
                         {r.note&&<div style={{fontSize:12,color:'#374151',lineHeight:1.5}}>{r.note}</div>}
-                        {r.suggest&&<div style={{marginTop:5,padding:'4px 8px',background:'rgba(16,185,129,0.06)',borderRadius:5,fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',wordBreak:'break-all'}}>✦ {r.suggest}</div>}
+                        {r.suggest&&<div style={{marginTop:5,padding:'4px 8px',background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:6,fontSize:12,fontFamily:'monospace',color:'#166534',wordBreak:'break-all',padding:'6px 10px'}}>✦ {r.suggest}</div>}
                       </div>
                       <SBadge status={r.status}/>
                     </div>
@@ -546,7 +546,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                           {scan.propagation.records?.map(rec=>(
                             <div key={rec.type} style={{display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:12,padding:'3px 0',borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
                               <span style={{fontFamily:'monospace',color:'#334155'}}>{rec.type}</span>
-                              <div style={{width:8,height:8,borderRadius:'50%',background:rec[reg.key]==='pass'?'#00e5a0':'#ffb224'}}/>
+                              <div style={{width:8,height:8,borderRadius:'50%',background:rec[reg.key]==='pass'?'#16a34a':'#d97706'}}/>
                             </div>
                           ))}
                         </div>
@@ -564,7 +564,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               {activeTab==='blacklists'&&scan?.blacklists&&(
                 <div style={{display:'flex',flexDirection:'column',gap:12}}>
                   <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10}}>
-                    {[{l:'IP address',v:scan.blacklists.ip||'–',c:'#a855f7'},{l:'Lists checked',v:scan.blacklists.results?.length||0,c:'#3d9bff'},{l:'Listed on',v:scan.blacklists.listed_count||0,c:(scan.blacklists.listed_count||0)>0?'#ff4d6a':'#00e5a0'}].map(s=>(
+                    {[{l:'IP address',v:scan.blacklists.ip||'–',c:'#a855f7'},{l:'Lists checked',v:scan.blacklists.results?.length||0,c:'#3d9bff'},{l:'Listed on',v:scan.blacklists.listed_count||0,c:(scan.blacklists.listed_count||0)>0?'#dc2626':'#16a34a'}].map(s=>(
                       <div key={s.l} style={{...card,padding:'14px 16px'}}>
                         <div style={{fontSize:12,color:'#374151',marginBottom:4}}>{s.l}</div>
                         <div style={{fontSize:24,fontWeight:700,color:s.c}}>{s.v}</div>
@@ -578,8 +578,8 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                         <div key={bl.name} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'9px 16px',borderBottom:`1px solid rgba(255,255,255,0.04)`,background:bl.listed?'rgba(239,68,68,0.04)':'transparent'}}>
                           <span style={{fontSize:12,fontFamily:'monospace',color:bl.listed?'#ff4d6a':'rgba(255,255,255,0.35)'}}>{bl.name}</span>
                           <div style={{display:'flex',alignItems:'center',gap:5}}>
-                            <div style={{width:6,height:6,borderRadius:'50%',background:bl.listed?'#ff4d6a':'#00e5a0'}}/>
-                            <span style={{fontSize:10,color:bl.listed?'#ff4d6a':'#00e5a0',fontWeight:500}}>{bl.listed?'Listed':'Clean'}</span>
+                            <div style={{width:6,height:6,borderRadius:'50%',background:bl.listed?'#dc2626':'#16a34a'}}/>
+                            <span style={{fontSize:10,color:bl.listed?'#dc2626':'#16a34a',fontWeight:500}}>{bl.listed?'Listed':'Clean'}</span>
                           </div>
                         </div>
                       ))}
