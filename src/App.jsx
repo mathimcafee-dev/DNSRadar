@@ -88,8 +88,8 @@ export default function App() {
   }, [user, page])
 
   if (loading) return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'#0b0f14' }}>
-      <div style={{ width:28, height:28, border:'3px solid rgba(16,185,129,0.2)', borderTopColor:'#10b981', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'#080c14' }}>
+      <div style={{ width:28, height:28, border:'3px solid rgba(16,185,129,0.2)', borderTopColor:'#22d9a0', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
@@ -105,7 +105,7 @@ export default function App() {
   const sharedDomainProps = { user, domains, selectedDomain, setSelectedDomain }
 
   return (
-    <div style={{ display:'flex', minHeight:'100vh', background:'#0b0f14' }}>
+    <div style={{ display:'flex', minHeight:'100vh', background:'#080c14' }}>
       <Sidebar page={page} setPage={setPage} alertCount={alertCount} user={user}/>
       <main style={{ flex:1, minWidth:0, overflowY:'auto', minHeight:'100vh' }}>
         {page === 'dashboard' && <Dashboard {...sharedDomainProps} setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>}
