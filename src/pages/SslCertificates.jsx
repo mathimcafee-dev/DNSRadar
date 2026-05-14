@@ -285,7 +285,7 @@ export default function SslCertificates({ user }) {
       {certs.length > 0 && (
         <div style={{ display:'flex', gap:6, marginBottom:14, flexWrap:'wrap' }}>
           {[['all','All'],['expiring','Expiring soon'],['issues','Issues']].map(([v,l])=>(
-            <button key={v} onClick={()=>setFilter(v)} style={{ padding:'5px 12px', background:filter===v?'rgba(16,185,129,0.12)':'#0f1525', border:`1px solid ${filter===v?'rgba(16,185,129,0.25)':rgba(255,255,255,0.07)}`, borderRadius:7, color:filter===v?'#00d97e':D.muted, fontSize:12, fontWeight:filter===v?600:400, cursor:'pointer' }}>{l}</button>
+            <button key={v} onClick={()=>setFilter(v)} style={{ padding:'5px 12px', background:filter===v?'rgba(16,185,129,0.12)':'#0f1525', border:`1px solid ${filter===v?'rgba(16,185,129,0.25)':'rgba(255,255,255,0.07)'}`, borderRadius:7, color:filter===v?'#00d97e':D.muted, fontSize:12, fontWeight:filter===v?600:400, cursor:'pointer' }}>{l}</button>
           ))}
         </div>
       )}
