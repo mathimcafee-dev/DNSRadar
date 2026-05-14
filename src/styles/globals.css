@@ -136,12 +136,12 @@ select option { background: var(--card); }
 }
 .stat-card:hover { border-color: var(--border-md); transform: translateY(-2px); }
 .stat-num { font-size: 30px; font-weight: 800; line-height: 1; letter-spacing: -0.04em; }
-.stat-lbl { font-size: 11px; color: var(--t3); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.09em; font-weight: 600; }
+.stat-lbl { font-size: 11px; color: #6b7280; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.09em; font-weight: 600; }
 
 /* Table */
 .table { width: 100%; border-collapse: collapse; }
 .table th { text-align: left; padding: 10px 16px; font-size: 10px; font-weight: 700; color: var(--t3); border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.09em; }
-.table td { padding: 11px 16px; border-bottom: 1px solid var(--border); font-size: 12px; vertical-align: middle; color: var(--t2); }
+.table td { padding: 11px 16px; border-bottom: 1px solid var(--border); font-size: 12px; vertical-align: middle; color: #374151; }
 .table tr:last-child td { border-bottom: none; }
 .table tr:hover td { background: rgba(255,255,255,0.025); color: var(--t1); }
 

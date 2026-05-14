@@ -3,7 +3,7 @@ import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { supabase } from '../lib/supabase'
 import { Shield, Mail, AlertTriangle, CheckCircle, Globe, Upload, Copy, Check, ChevronDown, ChevronUp, RefreshCw, Zap, Info, ExternalLink } from 'lucide-react'
 
-const D = { bg:'#f7f8fa', surface:'#ffffff', surface2:'#f9fafb', border:'#e5e7eb', text:'#111827', muted:'#6b7280', dim:'#9ca3af' }
+const D = { bg:'#f7f8fa', surface:'#ffffff', surface2:'#f9fafb', border:'#e5e7eb', text:'#111827', muted:'#374151', dim:'#6b7280' }
 const card = { background:'#ffffff', border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }
 const cardHd = { padding:'12px 16px', borderBottom:'1px solid #f0f2f5', display:'flex', alignItems:'center', justifyContent:'space-between', background:'#fafafa' }
 

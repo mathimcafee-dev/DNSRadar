@@ -3,7 +3,7 @@ import { Key, Plus, Trash2, Eye, EyeOff, Copy, Check, Users, Mail, Bell, LogOut,
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 
-const D = { bg:'#f7f8fa', surface:'#ffffff', surface2:'#f9fafb', border:'#e5e7eb', text:'#111827', muted:'#6b7280', dim:'#9ca3af' }
+const D = { bg:'#f7f8fa', surface:'#ffffff', surface2:'#f9fafb', border:'#e5e7eb', text:'#111827', muted:'#374151', dim:'#6b7280' }
 const card = { background:D.surface, border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden', marginBottom:16 }
 const cardHd = { padding:'12px 16px', borderBottom:'1px solid #f0f2f5', display:'flex', alignItems:'center', justifyContent:'space-between', background:'#fafafa' }
 
@@ -213,7 +213,7 @@ function TeamSection({ user }) {
   const [role, setRole] = useState('viewer')
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
-  const D = { surface:'#ffffff', surface2:'#f9fafb', border:'#e5e7eb', text:'#111827', muted:'#6b7280', dim:'#9ca3af' }
+  const D = { surface:'#ffffff', surface2:'#f9fafb', border:'#e5e7eb', text:'#111827', muted:'#374151', dim:'#6b7280' }
   const card = { background:'#ffffff', border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }
   const cardHd = { padding:'11px 16px', borderBottom:'1px solid #1e2535', display:'flex', alignItems:'center', gap:7, background:D.surface2, fontSize:13, fontWeight:600, color:D.text }
   const input = { width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit', boxSizing:'border-box' }

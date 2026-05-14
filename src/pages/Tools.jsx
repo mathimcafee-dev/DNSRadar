@@ -609,7 +609,7 @@ function SPFFlattener() {
             {result.warning && <div style={{ fontSize:11, color:'#ffb224', marginBottom:10, padding:'6px 10px', background:'rgba(245,158,11,0.08)', borderRadius:6 }}>⚠️ {result.warning}</div>}
             <div style={{ marginBottom:8 }}>
               <div style={{ fontSize:11, color:D.muted, marginBottom:5 }}>Original record</div>
-              <div style={{ fontFamily:'monospace', fontSize:11, color:'#6b7280', background:'rgba(0,0,0,0.2)', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.original}</div>
+              <div style={{ fontFamily:'monospace', fontSize:11, color:'#374151', background:'rgba(0,0,0,0.2)', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.original}</div>
             </div>
             <div>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:5 }}>
@@ -867,7 +867,7 @@ function MTASTSChecker() {
               ].map(item => (
                 <div key={item.label} style={{ padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid #e5e7eb' }}>
                   <div style={{ fontSize:12, color:D.text, marginBottom:item.val ? 5 : 0 }}>{statusDot(item.ok)}{item.label}</div>
-                  {item.val && <div style={{ fontFamily:'monospace', fontSize:10, color:'#6b7280', marginTop:3, wordBreak:'break-all' }}>{item.val.slice(0,200)}</div>}
+                  {item.val && <div style={{ fontFamily:'monospace', fontSize:10, color:'#374151', marginTop:3, wordBreak:'break-all' }}>{item.val.slice(0,200)}</div>}
                   {!item.ok && <div style={{ fontSize:11, color:'#ff4d6a', marginTop:3 }}>Not configured</div>}
                 </div>
               ))}

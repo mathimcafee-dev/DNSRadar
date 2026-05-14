@@ -49,7 +49,7 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
       {showConfirm && (
         <div style={{position:'absolute',right:16,zIndex:50,background:'#1d2330',border:'1px solid rgba(255,255,255,0.12)',borderRadius:10,padding:'12px 14px',width:260,boxShadow:'0 8px 32px rgba(0,0,0,0.4)'}}>
           <div style={{fontSize:12,fontWeight:600,color:'#fff',marginBottom:5}}>Push to {cred?.provider}?</div>
-          <div style={{fontSize:10,fontFamily:'monospace',color:'#8993ac',marginBottom:2}}>Type: {mapping.type} · Name: {typeof mapping.name==='function'?mapping.name(domainName):mapping.name}</div>
+          <div style={{fontSize:10,fontFamily:'monospace',color:'#374151',marginBottom:2}}>Type: {mapping.type} · Name: {typeof mapping.name==='function'?mapping.name(domainName):mapping.name}</div>
           <div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',background:'rgba(16,185,129,0.06)',padding:'4px 8px',borderRadius:5,marginBottom:10,wordBreak:'break-all'}}>{fixValue?.slice(0,80)}</div>
           <div style={{display:'flex',gap:6}}>
             <button onClick={execute} style={{flex:1,padding:'6px',background:'#00e5a0',color:'#fff',border:'none',borderRadius:6,cursor:'pointer',fontSize:11,fontWeight:600}}>Confirm push</button>
@@ -143,7 +143,7 @@ function DeleteModal({ domain, onConfirm, onCancel, loading }) {
       style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.7)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:2000,backdropFilter:'blur(4px)'}}>
       <div style={{background:'#ffffff',border:'1px solid #e4e7ec',borderRadius:16,maxWidth:400,width:'100%',margin:'0 16px',padding:24}}>
         <div style={{fontSize:16,fontWeight:700,color:'#111827',marginBottom:8}}>Delete domain?</div>
-        <div style={{fontSize:13,color:'#6b7280',marginBottom:20}}>
+        <div style={{fontSize:13,color:'#374151',marginBottom:20}}>
           Permanently delete <span style={{color:'#ff4d6a',fontFamily:'monospace'}}>{domain?.domain_name}</span> and all scan history.
         </div>
         <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
@@ -220,7 +220,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
   const critical=issues.filter(i=>i.severity==='critical')
   const warns=issues.filter(i=>i.severity==='warn')
 
-  const D={bg:'#f7f8fa',surface:'#ffffff',surface2:'#f7f8fa',border:'#e4e7ec',text:'#111827',muted:'#6b7280',dim:'#9ca3af'}
+  const D={bg:'#f7f8fa',surface:'#ffffff',surface2:'#f7f8fa',border:'#e4e7ec',text:'#111827',muted:'#374151',dim:'#6b7280'}
   const card={background:'#ffffff',border:'1px solid #e4e7ec',borderRadius:12,overflow:'hidden',boxShadow:'0 1px 4px rgba(0,0,0,0.06)'}
   const cardHd={padding:'12px 16px',borderBottom:'1px solid #f0f2f5',display:'flex',alignItems:'center',justifyContent:'space-between',background:'#fafafa'}
 
@@ -260,7 +260,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
           </button>
         </div>
         <div style={{flex:1,overflowY:'auto',padding:'6px 0'}}>
-          <div style={{fontSize:10,fontWeight:600,color:'#9ca3af',textTransform:'uppercase',letterSpacing:'0.09em',padding:'4px 14px 6px'}}>Domains</div>
+          <div style={{fontSize:10,fontWeight:600,color:'#374151',textTransform:'uppercase',letterSpacing:'0.09em',padding:'4px 14px 6px'}}>Domains</div>
           {loading?[1,2].map(i=><div key={i} style={{margin:'4px 10px',height:44,borderRadius:8,background:'rgba(255,255,255,0.04)'}}/>)
           :domains.map(d=>{
             const s=d.scan_results?.[0]; const score=s?.health_score; const isActive=selected?.id===d.id
@@ -275,7 +275,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   <div style={{fontSize:10,color:D.muted}}>{!d.verified?'Pending verification':d.paused?'Paused':`${critCount>0?`${critCount} critical · `:''}${d.monitor_interval}`}</div>
                 </div>
                 {score!=null&&<span style={{fontSize:13,fontWeight:700,color:sc}}>{score}</span>}
-                <div onClick={e=>{e.stopPropagation();setDeleteTarget(d)}} style={{color:'#4a5470',cursor:'pointer',padding:2}}><Trash2 size={11}/></div>
+                <div onClick={e=>{e.stopPropagation();setDeleteTarget(d)}} style={{color:'#374151',cursor:'pointer',padding:2}}><Trash2 size={11}/></div>
               </div>
             )
           })}
@@ -286,7 +286,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
           const c=avg>=70?'#00e5a0':avg>=50?'#ffb224':'#ff4d6a'
           return (
             <div style={{padding:'12px 14px',borderTop:'1px solid #f0f2f5',background:'#fafafa'}}>
-              <div style={{fontSize:10,color:'#9ca3af',fontWeight:600,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:4}}>Fleet avg score</div>
+              <div style={{fontSize:10,color:'#374151',fontWeight:600,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:4}}>Fleet avg score</div>
               <div style={{fontSize:22,fontWeight:700,color:c,lineHeight:1,marginBottom:5}}>{avg||'–'}</div>
               <AnimBar pct={avg} color={c} h={3}/>
               <div style={{fontSize:10,color:D.dim,marginTop:4}}>{domains.length} domain{domains.length>1?'s':''} · {domains.filter(d=>d.scan_results?.[0]?.issues?.some(i=>i.severity==='critical')).length} with critical issues</div>
@@ -300,7 +300,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
         {!selected?(
           <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',flexDirection:'column',gap:16}}>
             <Shield size={56} color="rgba(255,255,255,0.06)"/>
-            <div style={{fontSize:16,fontWeight:500,color:'#9ca3af'}}>Add a domain to get started</div>
+            <div style={{fontSize:16,fontWeight:500,color:'#374151'}}>Add a domain to get started</div>
             <button onClick={()=>setShowAdd(true)} style={{padding:'10px 22px',background:'#111827',color:'#ffffff',border:'none',borderRadius:8,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',gap:6}}><Plus size={15}/> Add your first domain</button>
           </div>
         ):(
@@ -312,12 +312,12 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4,flexWrap:'wrap'}}>
                     <h2 style={{fontSize:17,fontWeight:700,color:'#111827',margin:0,letterSpacing:'-0.02em'}}>{selected.domain_name}</h2>
                     {selected.verified&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#f0fdf4',color:'#16a34a',border:'1px solid #bbf7d0',fontWeight:600}}>Verified</span>}
-                    {selected.paused&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#f3f4f6',color:'#6b7280',border:'1px solid #e5e7eb',fontWeight:500}}>Paused</span>}
+                    {selected.paused&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#f3f4f6',color:'#374151',border:'1px solid #e5e7eb',fontWeight:500}}>Paused</span>}
                     {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#fef2f2',color:'#dc2626',border:'1px solid #fecaca',fontWeight:600}}>{critical.length} critical</span>}
                     {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#fffbeb',color:'#d97706',border:'1px solid #fde68a',fontWeight:600}}>{warns.length} warnings</span>}
                   </div>
-                  <div style={{fontSize:11,color:D.muted,display:'flex',gap:14,flexWrap:'wrap',marginBottom:10}}>
-                    {scan?.blacklists?.ip&&<span style={{fontFamily:'monospace',color:'#9ca3af'}}>{scan.blacklists.ip}</span>}
+                  <div style={{fontSize:12,color:D.muted,display:'flex',gap:14,flexWrap:'wrap',marginBottom:10}}>
+                    {scan?.blacklists?.ip&&<span style={{fontFamily:'monospace',color:'#374151'}}>{scan.blacklists.ip}</span>}
                     <span>{selected.monitor_interval} monitoring</span>
                     {scan?.scanned_at&&<span>Scanned {timeAgo(scan.scanned_at)}</span>}
                   </div>
@@ -372,9 +372,9 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       <div key={k.label} className="print-card" style={{background:'#ffffff',border:'1px solid #e4e7ec',borderTop:`2px solid ${k.color}`,borderRadius:12,padding:'16px 18px',boxShadow:'0 1px 4px rgba(0,0,0,0.06)',transition:'transform 0.15s,box-shadow 0.15s'}}
                         onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'}}
                         onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.06)'}}>
-                        <div style={{fontSize:10,fontWeight:700,color:'#9ca3af',marginBottom:10,textTransform:'uppercase',letterSpacing:'0.09em'}}>{k.label}</div>
+                        <div style={{fontSize:10,fontWeight:700,color:'#374151',marginBottom:10,textTransform:'uppercase',letterSpacing:'0.09em'}}>{k.label}</div>
                         <div style={{fontSize:32,fontWeight:800,color:k.color,lineHeight:1,letterSpacing:'-0.04em',marginBottom:4}}>{k.val}</div>
-                        <div style={{fontSize:11,color:'#9ca3af',marginBottom:12}}>{k.sub}</div>
+                        <div style={{fontSize:12,color:'#374151',marginBottom:12}}>{k.sub}</div>
                         <div style={{height:3,background:'#f0f2f5',borderRadius:2}}>
                           <div style={{height:'100%',width:`${k.pct}%`,borderRadius:2,background:k.color,transition:'width 0.8s cubic-bezier(.4,0,.2,1)'}}/>
                         </div>
@@ -393,7 +393,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     </div>
                     <div className="print-card" style={{...card}}>
                       <div style={{...cardHd}}>
-                        <span style={{fontSize:12,fontWeight:600,color:D.text}}>Score breakdown</span>
+                        <span style={{fontSize:12,fontWeight:700,color:D.text}}>Score breakdown</span>
                         <span style={{fontSize:10,color:D.dim}}>weighted 0–100</span>
                       </div>
                       <div style={{padding:'8px 16px'}}>
@@ -404,7 +404,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                             </div>
                             <div style={{flex:1}}>
                               <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
-                                <span style={{fontSize:11,color:D.muted}}>{c.label}</span>
+                                <span style={{fontSize:12,color:D.muted}}>{c.label}</span>
                                 <span style={{fontSize:11,fontWeight:700,color:c.color}}>{c.score}<span style={{fontSize:10,color:D.dim,fontWeight:400}}>/{c.max}</span></span>
                               </div>
                               <AnimBar pct={Math.round((c.score/c.max)*100)} color={c.color} delay={i*80} h={5}/>
@@ -418,7 +418,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   {/* DMARC Journey */}
                   <div className="print-card" style={{...card}}>
                     <div style={{...cardHd}}>
-                      <span style={{fontSize:12,fontWeight:600,color:D.text}}>DMARC enforcement journey</span>
+                      <span style={{fontSize:12,fontWeight:700,color:D.text}}>DMARC enforcement journey</span>
                       <span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(239,68,68,0.15)',color:'#ff4d6a'}}>
                         Currently: p={scan.email_auth?.dmarc_raw?.match(/p=(\w+)/)?.[1]||'none'}
                       </span>
@@ -432,7 +432,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   {/* Issues */}
                   <div className="print-card" style={{...card}}>
                     <div style={{...cardHd}}>
-                      <span style={{fontSize:12,fontWeight:600,color:D.text}}>Issues to fix</span>
+                      <span style={{fontSize:12,fontWeight:700,color:D.text}}>Issues to fix</span>
                       <div style={{display:'flex',gap:5}}>
                         {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(239,68,68,0.15)',color:'#ff4d6a'}}>{critical.length} critical</span>}
                         {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(245,158,11,0.15)',color:'#ffb224'}}>{warns.length} warnings</span>}
@@ -450,7 +450,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                             <span style={{fontSize:12,fontWeight:700,color:D.text,fontFamily:'monospace'}}>{iss.type}</span>
                             <span style={{fontSize:10,padding:'1px 6px',borderRadius:8,background:`rgba(${iss.severity==='critical'?'239,68,68':iss.severity==='warn'?'245,158,11':'96,165,250'},0.15)`,color:iss.severity==='critical'?'#ff4d6a':iss.severity==='warn'?'#ffb224':'#3d9bff'}}>{iss.severity}</span>
                           </div>
-                          <div style={{fontSize:11,color:D.muted,marginBottom:iss.fix?4:0}}>{iss.message}</div>
+                          <div style={{fontSize:12,color:D.muted,marginBottom:iss.fix?4:0}}>{iss.message}</div>
                           {iss.fix&&<div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',padding:'3px 8px',background:'rgba(16,185,129,0.06)',borderRadius:5,display:'inline-block',wordBreak:'break-all'}}>{iss.fix}</div>}
                         </div>
                         {iss.fix&&['SPF','DMARC','CAA'].includes(iss.type)&&(
@@ -462,7 +462,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
 
                   {/* Monitor interval */}
                   <div style={{...card,padding:'14px 16px'}}>
-                    <div style={{fontSize:12,fontWeight:600,color:D.text,marginBottom:10,display:'flex',alignItems:'center',gap:6}}><Clock size={13} color={D.muted}/> Monitor interval</div>
+                    <div style={{fontSize:12,fontWeight:700,color:D.text,marginBottom:10,display:'flex',alignItems:'center',gap:6}}><Clock size={13} color={D.muted}/> Monitor interval</div>
                     <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
                       {['1h','6h','24h','off'].map(iv=>(
                         <button key={iv} onClick={()=>updateInterval(selected.id,iv)}
@@ -478,7 +478,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               {/* ══ EMAIL AUTH ════════════════════════════════ */}
               {activeTab==='email'&&scan?.email_auth&&(
                 <div style={card}>
-                  <div style={cardHd}><span style={{fontSize:12,fontWeight:600,color:D.text,display:'flex',alignItems:'center',gap:6}}><Mail size={13} color="#a78bfa"/> Email authentication</span></div>
+                  <div style={cardHd}><span style={{fontSize:12,fontWeight:700,color:D.text,display:'flex',alignItems:'center',gap:6}}><Mail size={13} color="#a78bfa"/> Email authentication</span></div>
                   {[
                     {name:'SPF',status:scan.email_auth.spf_status,val:scan.email_auth.spf_raw,note:scan.email_auth.spf_fix,extra:scan.email_auth.spf_lookups!=null?`${scan.email_auth.spf_lookups}/10 lookups`:null},
                     {name:'DKIM',status:scan.email_auth.dkim_status,val:scan.email_auth.dkim_selector?`Selector: ${scan.email_auth.dkim_selector}`:null,note:scan.email_auth.dkim_note},
@@ -493,8 +493,8 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                         {r.extra&&<div style={{fontSize:10,color:D.dim,marginTop:3}}>{r.extra}</div>}
                       </div>
                       <div style={{flex:1}}>
-                        {r.val&&<div style={{fontSize:11,fontFamily:'monospace',color:'#8993ac',marginBottom:4,wordBreak:'break-all',padding:'4px 8px',background:'rgba(255,255,255,0.03)',borderRadius:5}}>{r.val}</div>}
-                        {r.note&&<div style={{fontSize:11,color:D.muted,lineHeight:1.5}}>{r.note}</div>}
+                        {r.val&&<div style={{fontSize:11,fontFamily:'monospace',color:'#374151',marginBottom:4,wordBreak:'break-all',padding:'4px 8px',background:'rgba(255,255,255,0.03)',borderRadius:5}}>{r.val}</div>}
+                        {r.note&&<div style={{fontSize:12,color:D.muted,lineHeight:1.5}}>{r.note}</div>}
                         {r.suggest&&<div style={{marginTop:5,padding:'4px 8px',background:'rgba(16,185,129,0.06)',borderRadius:5,fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',wordBreak:'break-all'}}>✦ {r.suggest}</div>}
                       </div>
                       <SBadge status={r.status}/>
@@ -507,7 +507,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               {activeTab==='ssl'&&scan?.ssl_info&&(
                 <div style={card}>
                   <div style={cardHd}>
-                    <span style={{fontSize:12,fontWeight:600,color:D.text,display:'flex',alignItems:'center',gap:6}}><Lock size={13} color="#10b981"/> SSL / TLS</span>
+                    <span style={{fontSize:12,fontWeight:700,color:D.text,display:'flex',alignItems:'center',gap:6}}><Lock size={13} color="#10b981"/> SSL / TLS</span>
                     <SBadge status={scan.ssl_info.overall_status}/>
                   </div>
                   {scan.ssl_info.certs?.map((cert,i)=>(
@@ -515,7 +515,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12,marginBottom:12}}>
                         {[{l:'Domain',v:cert.domain},{l:'Protocol',v:cert.protocol||'TLS'},{l:'Key size',v:`${cert.key_size||'?'}-bit`},{l:'Chain',v:cert.chain_valid?'✓ Valid':'✗ Invalid'},{l:'CT log',v:cert.ct_log?'✓ Verified':'Not found'},{l:'HSTS',v:cert.hsts||'Not configured'}].map(f=>(
                           <div key={f.l} style={{padding:'10px 12px',background:'rgba(255,255,255,0.03)',borderRadius:8,border:'1px solid #1e2535'}}>
-                            <div style={{fontSize:10,color:'#9ca3af',fontWeight:600,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:4}}>{f.l}</div>
+                            <div style={{fontSize:10,color:'#374151',fontWeight:600,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:4}}>{f.l}</div>
                             <div style={{fontSize:13,fontWeight:500,color:D.text}}>{f.v}</div>
                           </div>
                         ))}
@@ -532,7 +532,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               {activeTab==='propagation'&&scan?.propagation&&(
                 <div style={card}>
                   <div style={cardHd}>
-                    <span style={{fontSize:12,fontWeight:600,color:D.text,display:'flex',alignItems:'center',gap:6}}><Globe size={13} color="#3b82f6"/> Global propagation</span>
+                    <span style={{fontSize:12,fontWeight:700,color:D.text,display:'flex',alignItems:'center',gap:6}}><Globe size={13} color="#3b82f6"/> Global propagation</span>
                     <SBadge status={scan.propagation.consistent?'Consistent':'Inconsistent'}/>
                   </div>
                   <div style={{padding:16,display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12}}>
@@ -541,7 +541,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       return (
                         <div key={reg.key} style={{padding:14,background:'rgba(255,255,255,0.03)',borderRadius:10,border:`1px solid ${allPass?'rgba(16,185,129,0.2)':'rgba(245,158,11,0.2)'}`}}>
                           <div style={{fontSize:22,marginBottom:4}}>{reg.flag}</div>
-                          <div style={{fontSize:12,fontWeight:600,color:D.text}}>{reg.name}</div>
+                          <div style={{fontSize:12,fontWeight:700,color:D.text}}>{reg.name}</div>
                           <div style={{fontSize:10,color:D.dim,marginBottom:10}}>{reg.sub}</div>
                           {scan.propagation.records?.map(rec=>(
                             <div key={rec.type} style={{display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:11,padding:'3px 0',borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
@@ -553,7 +553,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       )
                     })}
                   </div>
-                  <div style={{display:'flex',gap:16,padding:'4px 16px 14px',fontSize:11,color:D.muted}}>
+                  <div style={{display:'flex',gap:16,padding:'4px 16px 14px',fontSize:12,color:D.muted}}>
                     <span style={{display:'flex',alignItems:'center',gap:5}}><div style={{width:7,height:7,borderRadius:'50%',background:'#00e5a0'}}/> Consistent</span>
                     <span style={{display:'flex',alignItems:'center',gap:5}}><div style={{width:7,height:7,borderRadius:'50%',background:'#ffb224'}}/> Inconsistent</span>
                   </div>
@@ -566,13 +566,13 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10}}>
                     {[{l:'IP address',v:scan.blacklists.ip||'–',c:'#a855f7'},{l:'Lists checked',v:scan.blacklists.results?.length||0,c:'#3d9bff'},{l:'Listed on',v:scan.blacklists.listed_count||0,c:(scan.blacklists.listed_count||0)>0?'#ff4d6a':'#00e5a0'}].map(s=>(
                       <div key={s.l} style={{...card,padding:'14px 16px'}}>
-                        <div style={{fontSize:11,color:D.muted,marginBottom:4}}>{s.l}</div>
+                        <div style={{fontSize:12,color:D.muted,marginBottom:4}}>{s.l}</div>
                         <div style={{fontSize:24,fontWeight:700,color:s.c}}>{s.v}</div>
                       </div>
                     ))}
                   </div>
                   <div style={card}>
-                    <div style={cardHd}><span style={{fontSize:12,fontWeight:600,color:D.text}}>Blacklist results</span></div>
+                    <div style={cardHd}><span style={{fontSize:12,fontWeight:700,color:D.text}}>Blacklist results</span></div>
                     <div style={{display:'grid',gridTemplateColumns:'1fr 1fr'}}>
                       {scan.blacklists.results?.map((bl,i)=>(
                         <div key={bl.name} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'9px 16px',borderBottom:`1px solid rgba(255,255,255,0.04)`,background:bl.listed?'rgba(239,68,68,0.04)':'transparent'}}>
@@ -592,8 +592,8 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               {activeTab==='dns'&&scan?.dns_records&&(
                 <div style={card}>
                   <div style={cardHd}>
-                    <span style={{fontSize:12,fontWeight:600,color:D.text}}>DNS records</span>
-                    <span style={{fontSize:11,color:D.muted}}>{scan.dns_records.length} found</span>
+                    <span style={{fontSize:12,fontWeight:700,color:D.text}}>DNS records</span>
+                    <span style={{fontSize:12,color:D.muted}}>{scan.dns_records.length} found</span>
                   </div>
                   <div style={{overflowX:'auto'}}>
                     <table style={{width:'100%',borderCollapse:'collapse',fontSize:12}}>
@@ -608,7 +608,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                         {scan.dns_records.map((r,i)=>(
                           <tr key={i} style={{borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
                             <td style={{padding:'9px 16px'}}><span style={{fontSize:10,padding:'2px 8px',borderRadius:5,background:'rgba(96,165,250,0.15)',color:'#3d9bff',fontFamily:'monospace',fontWeight:700}}>{r.type}</span></td>
-                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'#8993ac',fontSize:11,maxWidth:380,wordBreak:'break-all'}}>{r.value}</td>
+                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'#374151',fontSize:11,maxWidth:380,wordBreak:'break-all'}}>{r.value}</td>
                             <td style={{padding:'9px 16px',fontFamily:'monospace',color:D.muted,fontSize:11,whiteSpace:'nowrap'}}>{r.ttl}s</td>
                             <td style={{padding:'9px 16px'}}><SBadge status={r.status||'Pass'}/></td>
                           </tr>

@@ -11,7 +11,7 @@ const TTip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
   return (
     <div style={{ background:'#f9fafb', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'10px 14px', fontSize:11 }}>
-      <div style={{ color:'#6b7280', marginBottom:5 }}>{label}</div>
+      <div style={{ color:'#374151', marginBottom:5 }}>{label}</div>
       {payload.map((p,i) => <div key={i} style={{ color:p.color, marginBottom:2 }}>{p.name}: {p.value?.toLocaleString()}</div>)}
     </div>
   )
