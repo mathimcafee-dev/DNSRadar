@@ -369,14 +369,14 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       {label:'Blacklisted',val:`${scan.blacklists?.listed_count||0}/${scan.blacklists?.results?.length||0}`,color:(scan.blacklists?.listed_count||0)>0?'#dc2626':'#16a34a',sub:'blacklists',pct:(scan.blacklists?.listed_count||0)>0?60:100,tab:'blacklists'},
                       {label:'DNS records',val:scan.dns_records?.length||0,color:'#3730a3',sub:'records found',pct:100,tab:'dns'},
                     ].map(k=>(
-                      <div key={k.label} className="print-card" style={{background:'#ffffff',border:'1px solid #e4e7ec',borderTop:`2px solid ${k.color}`,borderRadius:12,padding:'16px 18px',boxShadow:'0 1px 4px rgba(0,0,0,0.06)',transition:'transform 0.15s,box-shadow 0.15s'}}
-                        onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'}}
+                      <div key={k.label} className="print-card" onClick={()=>setActiveTab(k.tab)} style={{background:'#ffffff',border:'1px solid #e4e7ec',borderTop:`3px solid ${k.color}`,borderRadius:12,padding:'16px 18px',boxShadow:'0 1px 4px rgba(0,0,0,0.06)',transition:'transform 0.15s,box-shadow 0.15s',cursor:'pointer'}}
+                        onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 6px 16px rgba(0,0,0,0.1)'}}
                         onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.06)'}}>
-                        <div style={{fontSize:10,fontWeight:700,color:'#374151',marginBottom:10,textTransform:'uppercase',letterSpacing:'0.09em'}}>{k.label}</div>
-                        <div style={{fontSize:32,fontWeight:800,color:k.color,lineHeight:1,letterSpacing:'-0.04em',marginBottom:4}}>{k.val}</div>
-                        <div style={{fontSize:12,color:'#374151',marginBottom:12}}>{k.sub}</div>
-                        <div style={{height:3,background:'#f0f2f5',borderRadius:2}}>
-                          <div style={{height:'100%',width:`${k.pct}%`,borderRadius:2,background:k.color,transition:'width 0.8s cubic-bezier(.4,0,.2,1)'}}/>
+                        <div style={{fontSize:10,fontWeight:700,color:'#6b7280',marginBottom:10,textTransform:'uppercase',letterSpacing:'0.09em'}}>{k.label}</div>
+                        <div style={{fontSize:34,fontWeight:800,color:'#111827',lineHeight:1,letterSpacing:'-0.04em',marginBottom:4}}>{k.val}</div>
+                        <div style={{fontSize:12,color:'#6b7280',marginBottom:12}}>{k.sub}</div>
+                        <div style={{height:4,background:'#f3f4f6',borderRadius:2}}>
+                          <div style={{height:'100%',width:`${k.pct}%`,borderRadius:2,background:k.color,transition:'width 0.9s cubic-bezier(.4,0,.2,1)'}}/>
                         </div>
                       </div>
                     ))}
@@ -398,7 +398,9 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       </div>
                       <div style={{padding:'8px 16px'}}>
                         {cats.map((c,i)=>(
-                          <div key={c.label} style={{display:'flex',alignItems:'center',gap:10,padding:'7px 0',borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
+                          <div key={c.label} onClick={()=>c.tab&&setActiveTab(c.tab)} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 6px',borderBottom:'1px solid #f3f4f6',cursor:'pointer',borderRadius:6,transition:'background 0.12s'}}
+                            onMouseEnter={e=>e.currentTarget.style.background='#f9fafb'}
+                            onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
                             <div style={{width:26,height:26,borderRadius:7,background:c.bg,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
                               <c.icon size={13} color={c.color}/>
                             </div>
