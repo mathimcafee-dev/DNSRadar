@@ -3,9 +3,9 @@ import { supabase } from '../lib/supabase'
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import { Upload, AlertTriangle, CheckCircle, ShieldOff, Globe, Mail } from 'lucide-react'
 
-const D = { bg:'#0a0e1a', s:'#0f1525', s2:'#141b2d', b:'rgba(255,255,255,0.07)', t:'#f0f4ff', m:'rgba(255,255,255,0.45)', d:'rgba(255,255,255,0.22)' }
-const card = { background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:12, overflow:'hidden' }
-const cardHd = { padding:'11px 16px', borderBottom:'1px solid rgba(255,255,255,0.07)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'#141b2d' }
+const D = { bg:'#0d1117', s:'#161b22', s2:'#1c2333', b:'rgba(255,255,255,0.08)', t:'#e6edf3', m:'rgba(255,255,255,0.5)', d:'rgba(255,255,255,0.25)' }
+const card = { background:D.s, border:`1px solid ${D.b}`, borderRadius:12, overflow:'hidden' }
+const cardHd = { padding:'11px 16px', borderBottom:`1px solid ${D.b}`, display:'flex', alignItems:'center', justifyContent:'space-between', background:D.s2 }
 
 const TTip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
@@ -110,7 +110,7 @@ export default function Reports({ user }) {
         <div style={{ display:'flex', gap:8 }}>
           {domains.length > 1 && (
             <select value={selectedDomain} onChange={e=>setSelectedDomain(e.target.value)}
-              style={{ padding:'7px 12px', background:D.s, border:'1px solid rgba(255,255,255,0.07)', borderRadius:8, fontSize:12, color:D.t, outline:'none' }}>
+              style={{ padding:'7px 12px', background:D.s, border:`1px solid ${D.b}`, borderRadius:8, fontSize:12, color:D.t, outline:'none' }}>
               {domains.map(d=><option key={d.id} value={d.id}>{d.domain_name}</option>)}
             </select>
           )}
@@ -130,14 +130,14 @@ export default function Reports({ user }) {
               Paste the raw XML content from a DMARC aggregate report. Mail servers (Google, Microsoft, Yahoo) send these to the <code style={{ fontFamily:'monospace', color:'#10b981' }}>rua=</code> address in your DMARC record. Add <code style={{ fontFamily:'monospace', color:'#10b981' }}>rua=mailto:reports@dnsradar.easysecurity.in</code> to your DMARC record to receive them automatically.
             </div>
             <textarea value={xmlInput} onChange={e=>setXmlInput(e.target.value)} rows={8} placeholder="<?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?><feedback>..."
-              style={{ width:'100%', padding:'10px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:11, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
+              style={{ width:'100%', padding:'10px 12px', background:'rgba(0,0,0,0.3)', border:`1px solid ${D.b}`, borderRadius:7, fontSize:11, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
             {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(16,185,129,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'#10b981':'#ef4444', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
             <div style={{ display:'flex', gap:8, marginTop:8 }}>
               <button onClick={uploadReport} disabled={uploading||!xmlInput}
                 style={{ padding:'7px 16px', background:'#10b981', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', opacity:!xmlInput?0.5:1 }}>
                 {uploading?'Parsing…':'Parse & import'}
               </button>
-              <button onClick={()=>{setUploadXML(false);setXmlInput('')}} style={{ padding:'7px 14px', background:'rgba(255,255,255,0.06)', color:D.m, border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:12, cursor:'pointer' }}>Cancel</button>
+              <button onClick={()=>{setUploadXML(false);setXmlInput('')}} style={{ padding:'7px 14px', background:'rgba(255,255,255,0.06)', color:D.m, border:`1px solid ${D.b}`, borderRadius:7, fontSize:12, cursor:'pointer' }}>Cancel</button>
             </div>
           </div>
         </div>
@@ -220,7 +220,7 @@ export default function Reports({ user }) {
               <table style={{ width:'100%', borderCollapse:'collapse', fontSize:12 }}>
                 <thead><tr style={{ background:'rgba(255,255,255,0.02)' }}>
                   {['Source','Volume','Compliant','Failing','Rate','Status'].map(h=>(
-                    <th key={h} style={{ textAlign:'left', padding:'7px 14px', fontSize:10, fontWeight:600, color:D.m, textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid rgba(255,255,255,0.07)' }}>{h}</th>
+                    <th key={h} style={{ textAlign:'left', padding:'7px 14px', fontSize:10, fontWeight:600, color:D.m, textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:`1px solid ${D.b}` }}>{h}</th>
                   ))}
                 </tr></thead>
                 <tbody>

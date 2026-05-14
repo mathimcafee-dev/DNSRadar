@@ -3,15 +3,15 @@ import { Key, Plus, Trash2, Eye, EyeOff, Copy, Check, Users, Mail, Bell, LogOut,
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 
-const D = { bg:'#0a0e1a',surface:'#0f1525',surface2:'#141b2d',border:'SAFE_BORDER',text:'#0a0e1a',muted:'rgba(255,255,255,0.45)',dim:'rgba(255,255,255,0.22)' }
-const card = { background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:12, overflow:'hidden', marginBottom:16 }
-const cardHd = { padding:'12px 16px', borderBottom:'1px solid rgba(255,255,255,0.07)', background:'#141b2d', fontSize:12, fontWeight:600, color:D.text, display:'flex', alignItems:'center', gap:7 }
+const D = { bg:'#0d1117',surface:'#161b22',surface2:'#1c2333',border:'rgba(255,255,255,0.08)',text:'#e6edf3',muted:'rgba(255,255,255,0.5)',dim:'rgba(255,255,255,0.25)' }
+const card = { background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, overflow:'hidden', marginBottom:16 }
+const cardHd = { padding:'12px 16px', borderBottom:`1px solid ${D.border}`, background:D.surface2, fontSize:12, fontWeight:600, color:D.text, display:'flex', alignItems:'center', gap:7 }
 
 function CopyBtn({ text }) {
   const [c,setC]=useState(false)
   return (
     <button onClick={() => { navigator.clipboard.writeText(text); setC(true); setTimeout(()=>setC(false),2000) }}
-      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:5, color:'#00d97e', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
+      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:5, color:'#10b981', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
       {c?<><Check size={11}/>Copied</>:<><Copy size={11}/>Copy</>}
     </button>
   )
@@ -78,10 +78,10 @@ export default function Settings({ user }) {
       <h2 style={{ fontSize:17, fontWeight:700, color:D.text, marginBottom:20 }}>Settings</h2>
 
       {/* Tabs */}
-      <div style={{ display:'flex', gap:0, borderBottom:'1px solid rgba(255,255,255,0.07)', marginBottom:20 }}>
+      <div style={{ display:'flex', gap:0, borderBottom:`1px solid ${D.border}`, marginBottom:20 }}>
         {['api','profile','notifications','team'].map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
-            style={{ padding:'8px 16px', background:'transparent', border:'none', borderBottom:`2px solid ${activeTab===t?'#00d97e':'transparent'}`, cursor:'pointer', fontSize:12, fontWeight:activeTab===t?600:400, color:activeTab===t?'#00d97e':D.muted, textTransform:'capitalize', transition:'all 0.15s', marginBottom:-1 }}>
+            style={{ padding:'8px 16px', background:'transparent', border:'none', borderBottom:`2px solid ${activeTab===t?'#10b981':'transparent'}`, cursor:'pointer', fontSize:12, fontWeight:activeTab===t?600:400, color:activeTab===t?'#10b981':D.muted, textTransform:'capitalize', transition:'all 0.15s', marginBottom:-1 }}>
             {t === 'api' ? 'API Keys' : t === 'notifications' ? 'Notifications' : t === 'team' ? 'Team' : 'Profile'}
           </button>
         ))}
@@ -93,7 +93,7 @@ export default function Settings({ user }) {
             <div style={{ ...cardHd }}><Key size={13} color="#10b981"/> API keys</div>
             <div style={{ padding:16 }}>
               <div style={{ fontSize:12, color:D.muted, marginBottom:12, lineHeight:1.6 }}>
-                Use API keys to access DomainRadar programmatically. Include as <code style={{ fontFamily:'monospace', background:'#141b2d', padding:'1px 6px', borderRadius:4 }}>Authorization: Bearer YOUR_KEY</code> header.
+                Use API keys to access DomainRadar programmatically. Include as <code style={{ fontFamily:'monospace', background:'rgba(255,255,255,0.06)', padding:'1px 6px', borderRadius:4 }}>Authorization: Bearer YOUR_KEY</code> header.
               </div>
               {/* Endpoint docs */}
               <div style={{ background:'rgba(0,0,0,0.25)', borderRadius:8, padding:'12px 14px', marginBottom:16, fontFamily:'monospace', fontSize:11 }}>
@@ -113,19 +113,19 @@ export default function Settings({ user }) {
               {/* Create new key */}
               <div style={{ display:'flex', gap:8, marginBottom:16 }}>
                 <input value={newKeyName} onChange={e => setNewKeyName(e.target.value)} placeholder="Key name (e.g. CI/CD pipeline)"
-                  style={{ flex:1, padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
+                  style={{ flex:1, padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
                   onKeyDown={e => e.key==='Enter'&&createApiKey()}/>
                 <button onClick={createApiKey} disabled={!newKeyName.trim()}
-                  style={{ padding:'8px 16px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'#00d97e', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
+                  style={{ padding:'8px 16px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'#10b981', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
                   <Plus size={13}/> Generate
                 </button>
               </div>
               {/* Show newly created key */}
               {createdKey && (
                 <div style={{ padding:'12px 14px', background:'rgba(16,185,129,0.06)', border:'1px solid rgba(16,185,129,0.2)', borderRadius:8, marginBottom:16 }}>
-                  <div style={{ fontSize:12, fontWeight:600, color:'#00d97e', marginBottom:6 }}>✓ Key created — copy it now, it won't be shown again</div>
+                  <div style={{ fontSize:12, fontWeight:600, color:'#10b981', marginBottom:6 }}>✓ Key created — copy it now, it won't be shown again</div>
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    <code style={{ flex:1, fontFamily:'monospace', fontSize:12, color:'#00d97e', background:'rgba(0,0,0,0.25)', padding:'6px 10px', borderRadius:6, wordBreak:'break-all' }}>{createdKey.key}</code>
+                    <code style={{ flex:1, fontFamily:'monospace', fontSize:12, color:'#10b981', background:'rgba(0,0,0,0.25)', padding:'6px 10px', borderRadius:6, wordBreak:'break-all' }}>{createdKey.key}</code>
                     <CopyBtn text={createdKey.key}/>
                     <button onClick={() => setCreatedKey(null)} style={{ background:'none', border:'none', cursor:'pointer', color:D.dim, fontSize:16 }}>✕</button>
                   </div>
@@ -133,14 +133,14 @@ export default function Settings({ user }) {
               )}
               {/* Keys list */}
               {apiKeys.map(k => (
-                <div key={k.id} style={{ display:'flex', alignItems:'center', gap:12, padding:'9px 0', borderBottom:`1px solid #f9fafb` }}>
-                  <Key size={13} color={k.revoked?D.dim:'#00d97e'}/>
+                <div key={k.id} style={{ display:'flex', alignItems:'center', gap:12, padding:'9px 0', borderBottom:`1px solid rgba(255,255,255,0.04)` }}>
+                  <Key size={13} color={k.revoked?D.dim:'#10b981'}/>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:12, fontWeight:500, color:k.revoked?D.dim:D.text }}>{k.name}</div>
                     <div style={{ fontSize:10, color:D.dim, fontFamily:'monospace' }}>{k.key_prefix}… · {k.request_count||0} requests · {k.last_used_at?`Last used ${new Date(k.last_used_at).toLocaleDateString()}`:'Never used'}</div>
                   </div>
-                  {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'#141b2d', color:D.dim }}>Revoked</span>
-                    : <button onClick={() => revokeKey(k.id)} style={{ padding:'4px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'#ff5e5e', fontSize:11, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}><Trash2 size={10}/> Revoke</button>}
+                  {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'rgba(255,255,255,0.06)', color:D.dim }}>Revoked</span>
+                    : <button onClick={() => revokeKey(k.id)} style={{ padding:'4px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'#ef4444', fontSize:11, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}><Trash2 size={10}/> Revoke</button>}
                 </div>
               ))}
             </div>
@@ -154,21 +154,21 @@ export default function Settings({ user }) {
           <div style={{ padding:16 }}>
             <div style={{ marginBottom:12 }}>
               <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Email</label>
-              <div style={{ padding:'8px 12px', background:'#0f1525', borderRadius:7, fontSize:13, color:D.dim, fontFamily:'monospace' }}>{user?.email}</div>
+              <div style={{ padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:7, fontSize:13, color:D.dim, fontFamily:'monospace' }}>{user?.email}</div>
             </div>
             <div style={{ marginBottom:16 }}>
               <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Display name</label>
               <input value={profile.full_name||''} onChange={e => setProfile(p => ({ ...p, full_name: e.target.value }))}
                 placeholder="Your name"
-                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={saveProfile} disabled={saving}
-                style={{ padding:'8px 18px', background:'#00d97e', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
+                style={{ padding:'8px 18px', background:'#10b981', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
                 {saving ? 'Saving…' : 'Save changes'}
               </button>
               <button onClick={() => { if(window.confirm('Sign out?')) signOut() }}
-                style={{ padding:'8px 14px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:7, color:'#ff5e5e', fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+                style={{ padding:'8px 14px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:7, color:'#ef4444', fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
                 <LogOut size={13}/> Sign out
               </button>
             </div>
@@ -181,7 +181,7 @@ export default function Settings({ user }) {
           <div style={{ ...cardHd }}><Bell size={13} color="#f59e0b"/> Notifications</div>
           <div style={{ padding:16 }}>
             <label style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16, cursor:'pointer' }}>
-              <input type="checkbox" checked={profile.alert_email||true} onChange={e => setProfile(p => ({ ...p, alert_email: e.target.checked }))} style={{ accentColor:'#00d97e', width:16, height:16 }}/>
+              <input type="checkbox" checked={profile.alert_email||true} onChange={e => setProfile(p => ({ ...p, alert_email: e.target.checked }))} style={{ accentColor:'#10b981', width:16, height:16 }}/>
               <div>
                 <div style={{ fontSize:13, fontWeight:500, color:D.text }}>Email alerts</div>
                 <div style={{ fontSize:11, color:D.muted }}>Get notified when a domain score changes or new issues are detected</div>
@@ -191,10 +191,10 @@ export default function Settings({ user }) {
               <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Webhook URL (Slack, Teams, custom)</label>
               <input value={profile.alert_webhook||''} onChange={e => setProfile(p => ({ ...p, alert_webhook: e.target.value }))}
                 placeholder="https://hooks.slack.com/services/..."
-                style={{ width:'100%', padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'monospace' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'monospace' }}/>
             </div>
             <button onClick={saveProfile} disabled={saving}
-              style={{ padding:'8px 18px', background:'#00d97e', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
+              style={{ padding:'8px 18px', background:'#10b981', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
               {saving ? 'Saving…' : 'Save'}
             </button>
           </div>
@@ -213,10 +213,10 @@ function TeamSection({ user }) {
   const [role, setRole] = useState('viewer')
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
-  const D = { surface:'#0f1525', surface2:'#141b2d', border:'SAFE_BORDER', text:'#0a0e1a', muted:'rgba(255,255,255,0.45)', dim:'rgba(255,255,255,0.22)' }
-  const card = { background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:12, overflow:'hidden' }
-  const cardHd = { padding:'11px 16px', borderBottom:'1px solid rgba(255,255,255,0.07)', display:'flex', alignItems:'center', gap:7, background:'#141b2d', fontSize:13, fontWeight:600, color:D.text }
-  const input = { width:'100%', padding:'8px 12px', background:'#0f1525', border:'1px solid rgba(255,255,255,0.07)', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
+  const D = { surface:'#161b22', surface2:'#1c2333', border:'rgba(255,255,255,0.08)', text:'#e6edf3', muted:'rgba(255,255,255,0.5)', dim:'rgba(255,255,255,0.25)' }
+  const card = { background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, overflow:'hidden' }
+  const cardHd = { padding:'11px 16px', borderBottom:`1px solid ${D.border}`, display:'flex', alignItems:'center', gap:7, background:D.surface2, fontSize:13, fontWeight:600, color:D.text }
+  const input = { width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:`1px solid ${D.border}`, borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
 
   useEffect(() => { load() }, [user.id])
 
@@ -239,8 +239,8 @@ function TeamSection({ user }) {
     setMembers(m => m.filter(x => x.id !== id))
   }
 
-  const statusColor = { pending:'#ffb547', active:'#00d97e', rejected:'#ff5e5e' }
-  const roleColor   = { admin:'#a78bfa', editor:'#3b82f6', viewer:'rgba(255,255,255,0.45)' }
+  const statusColor = { pending:'#f59e0b', active:'#10b981', rejected:'#ef4444' }
+  const roleColor   = { admin:'#a78bfa', editor:'#3b82f6', viewer:'#6b7280' }
 
   return (
     <div style={card}>
@@ -253,22 +253,22 @@ function TeamSection({ user }) {
             <option value="editor">Editor</option>
             <option value="admin">Admin</option>
           </select>
-          <button onClick={invite} disabled={saving||!email.trim()} style={{ padding:'8px 16px', background:'#00d97e', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap' }}>
+          <button onClick={invite} disabled={saving||!email.trim()} style={{ padding:'8px 16px', background:'#10b981', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap' }}>
             {saving ? 'Sending…' : 'Invite'}
           </button>
         </div>
-        {msg && <div style={{ fontSize:12, color:'#00d97e', marginBottom:12, padding:'6px 10px', background:'rgba(16,185,129,0.08)', borderRadius:6 }}>{msg}</div>}
+        {msg && <div style={{ fontSize:12, color:'#10b981', marginBottom:12, padding:'6px 10px', background:'rgba(16,185,129,0.08)', borderRadius:6 }}>{msg}</div>}
         {members.length === 0 ? (
           <div style={{ textAlign:'center', padding:'24px', color:D.dim, fontSize:12 }}>No team members yet. Invite someone above.</div>
         ) : members.map(m => (
-          <div key={m.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'#0f1525', borderRadius:8, border:'1px solid rgba(255,255,255,0.07)', marginBottom:6 }}>
+          <div key={m.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:`1px solid ${D.border}`, marginBottom:6 }}>
             <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(59,130,246,0.15)', color:'#3b82f6', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0 }}>{m.member_email?.[0]?.toUpperCase()}</div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontSize:12, fontWeight:500, color:D.text, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{m.member_email}</div>
               <div style={{ fontSize:10, color:D.dim }}>{m.accepted_at ? `Joined ${new Date(m.accepted_at).toLocaleDateString()}` : `Invited ${new Date(m.invited_at).toLocaleDateString()}`}</div>
             </div>
-            <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background:`${roleColor[m.role]||'rgba(255,255,255,0.45)'}18`, color:roleColor[m.role]||'rgba(255,255,255,0.45)', fontWeight:600, border:`1px solid ${roleColor[m.role]||'rgba(255,255,255,0.45)'}30` }}>{m.role}</span>
-            <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background:`${statusColor[m.status]||'rgba(255,255,255,0.45)'}18`, color:statusColor[m.status]||'rgba(255,255,255,0.45)', fontWeight:600 }}>{m.status}</span>
+            <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background:`${roleColor[m.role]||'#6b7280'}18`, color:roleColor[m.role]||'#6b7280', fontWeight:600, border:`1px solid ${roleColor[m.role]||'#6b7280'}30` }}>{m.role}</span>
+            <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background:`${statusColor[m.status]||'#6b7280'}18`, color:statusColor[m.status]||'#6b7280', fontWeight:600 }}>{m.status}</span>
             <button onClick={() => remove(m.id)} style={{ padding:4, background:'none', border:'none', cursor:'pointer', color:'rgba(239,68,68,0.6)', lineHeight:0, flexShrink:0 }}><Trash2 size={13}/></button>
           </div>
         ))}
