@@ -11,7 +11,7 @@ function CopyBtn({ text }) {
   const [c,setC]=useState(false)
   return (
     <button onClick={() => { navigator.clipboard.writeText(text); setC(true); setTimeout(()=>setC(false),2000) }}
-      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:5, color:'#16a34a', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
+      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:5, color:'#111827', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
       {c?<><Check size={11}/>Copied</>:<><Copy size={11}/>Copy</>}
     </button>
   )
@@ -97,16 +97,16 @@ export default function Settings({ user }) {
               </div>
               {/* Endpoint docs */}
               <div style={{ background:'rgba(0,0,0,0.25)', borderRadius:8, padding:'12px 14px', marginBottom:16, fontFamily:'monospace', fontSize:11 }}>
-                <div style={{ color:'#6b7280', marginBottom:6 }}>Base URL: https://kbfgnbhjczicpjqxbxjj.supabase.co/functions/v1/api-scan</div>
+                <div style={{ color:'#374151', marginBottom:6 }}>Base URL: https://kbfgnbhjczicpjqxbxjj.supabase.co/functions/v1/api-scan</div>
                 {[
                   ['GET','?action=scan&domain=example.com','Full DNS scan'],
                   ['GET','?action=domains','List your domains'],
                   ['GET','?action=history&domain=example.com','Scan history'],
                 ].map(([m,ep,desc]) => (
                   <div key={ep} style={{ display:'flex', gap:10, marginBottom:4 }}>
-                    <span style={{ color:'#3d9bff', width:30 }}>{m}</span>
+                    <span style={{ color:'#3730a3', width:30 }}>{m}</span>
                     <span style={{ color:'rgba(16,185,129,0.7)', flex:1 }}>{ep}</span>
-                    <span style={{ color:'#6b7280' }}>{desc}</span>
+                    <span style={{ color:'#374151' }}>{desc}</span>
                   </div>
                 ))}
               </div>
@@ -116,18 +116,18 @@ export default function Settings({ user }) {
                   style={{ flex:1, padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
                   onKeyDown={e => e.key==='Enter'&&createApiKey()}/>
                 <button onClick={createApiKey} disabled={!newKeyName.trim()}
-                  style={{ padding:'8px 16px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'#16a34a', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
+                  style={{ padding:'8px 16px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'#111827', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
                   <Plus size={13}/> Generate
                 </button>
               </div>
               {/* Show newly created key */}
               {createdKey && (
                 <div style={{ padding:'12px 14px', background:'rgba(16,185,129,0.06)', border:'1px solid rgba(16,185,129,0.2)', borderRadius:8, marginBottom:16 }}>
-                  <div style={{ fontSize:12, fontWeight:600, color:'#16a34a', marginBottom:6 }}>✓ Key created — copy it now, it won't be shown again</div>
+                  <div style={{ fontSize:12, fontWeight:600, color:'#111827', marginBottom:6 }}>✓ Key created — copy it now, it won't be shown again</div>
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    <code style={{ flex:1, fontFamily:'monospace', fontSize:12, color:'#16a34a', background:'rgba(0,0,0,0.25)', padding:'6px 10px', borderRadius:6, wordBreak:'break-all' }}>{createdKey.key}</code>
+                    <code style={{ flex:1, fontFamily:'monospace', fontSize:12, color:'#111827', background:'rgba(0,0,0,0.25)', padding:'6px 10px', borderRadius:6, wordBreak:'break-all' }}>{createdKey.key}</code>
                     <CopyBtn text={createdKey.key}/>
-                    <button onClick={() => setCreatedKey(null)} style={{ background:'none', border:'none', cursor:'pointer', color:'#6b7280', fontSize:16 }}>✕</button>
+                    <button onClick={() => setCreatedKey(null)} style={{ background:'none', border:'none', cursor:'pointer', color:'#374151', fontSize:16 }}>✕</button>
                   </div>
                 </div>
               )}
@@ -137,9 +137,9 @@ export default function Settings({ user }) {
                   <Key size={13} color={k.revoked?D.dim:'#00e5a0'}/>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:12, fontWeight:500, color:k.revoked?D.dim:D.text }}>{k.name}</div>
-                    <div style={{ fontSize:10, color:'#6b7280', fontFamily:'monospace' }}>{k.key_prefix}… · {k.request_count||0} requests · {k.last_used_at?`Last used ${new Date(k.last_used_at).toLocaleDateString()}`:'Never used'}</div>
+                    <div style={{ fontSize:10, color:'#374151', fontFamily:'monospace' }}>{k.key_prefix}… · {k.request_count||0} requests · {k.last_used_at?`Last used ${new Date(k.last_used_at).toLocaleDateString()}`:'Never used'}</div>
                   </div>
-                  {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'#e5e7eb', color:'#6b7280' }}>Revoked</span>
+                  {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'#e5e7eb', color:'#374151' }}>Revoked</span>
                     : <button onClick={() => revokeKey(k.id)} style={{ padding:'4px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'#ff4d6a', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}><Trash2 size={10}/> Revoke</button>}
                 </div>
               ))}
@@ -154,7 +154,7 @@ export default function Settings({ user }) {
           <div style={{ padding:16 }}>
             <div style={{ marginBottom:12 }}>
               <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Email</label>
-              <div style={{ padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:7, fontSize:13, color:'#6b7280', fontFamily:'monospace' }}>{user?.email}</div>
+              <div style={{ padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:7, fontSize:13, color:'#374151', fontFamily:'monospace' }}>{user?.email}</div>
             </div>
             <div style={{ marginBottom:16 }}>
               <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Display name</label>
@@ -257,15 +257,15 @@ function TeamSection({ user }) {
             {saving ? 'Sending…' : 'Invite'}
           </button>
         </div>
-        {msg && <div style={{ fontSize:12, color:'#16a34a', marginBottom:12, padding:'6px 10px', background:'rgba(16,185,129,0.08)', borderRadius:6 }}>{msg}</div>}
+        {msg && <div style={{ fontSize:12, color:'#111827', marginBottom:12, padding:'6px 10px', background:'rgba(16,185,129,0.08)', borderRadius:6 }}>{msg}</div>}
         {members.length === 0 ? (
-          <div style={{ textAlign:'center', padding:'24px', color:'#6b7280', fontSize:12 }}>No team members yet. Invite someone above.</div>
+          <div style={{ textAlign:'center', padding:'24px', color:'#374151', fontSize:12 }}>No team members yet. Invite someone above.</div>
         ) : members.map(m => (
           <div key={m.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid #e5e7eb', marginBottom:6 }}>
-            <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(59,130,246,0.15)', color:'#3d9bff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:700, flexShrink:0 }}>{m.member_email?.[0]?.toUpperCase()}</div>
+            <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(59,130,246,0.15)', color:'#3730a3', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:700, flexShrink:0 }}>{m.member_email?.[0]?.toUpperCase()}</div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontSize:12, fontWeight:500, color:D.text, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{m.member_email}</div>
-              <div style={{ fontSize:10, color:'#6b7280' }}>{m.accepted_at ? `Joined ${new Date(m.accepted_at).toLocaleDateString()}` : `Invited ${new Date(m.invited_at).toLocaleDateString()}`}</div>
+              <div style={{ fontSize:10, color:'#374151' }}>{m.accepted_at ? `Joined ${new Date(m.accepted_at).toLocaleDateString()}` : `Invited ${new Date(m.invited_at).toLocaleDateString()}`}</div>
             </div>
             <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background:`${roleColor[m.role]||'#6b7280'}18`, color:roleColor[m.role]||'#6b7280', fontWeight:600, border:`1px solid ${roleColor[m.role]||'#6b7280'}30` }}>{m.role}</span>
             <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background:`${statusColor[m.status]||'#6b7280'}18`, color:statusColor[m.status]||'#6b7280', fontWeight:600 }}>{m.status}</span>

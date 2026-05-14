@@ -26,7 +26,7 @@ function Field({ label, value, good }) {
   const color = good === true ? '#00e5a0' : good === false ? '#ff4d6a' : D.muted
   return (
     <div>
-      <div style={{ fontSize:10, color:'#6b7280', marginBottom:2, textTransform:'uppercase', letterSpacing:'0.05em' }}>{label}</div>
+      <div style={{ fontSize:10, color:'#374151', marginBottom:2, textTransform:'uppercase', letterSpacing:'0.05em' }}>{label}</div>
       <div style={{ fontSize:12, color, fontWeight:500 }}>{value || '–'}</div>
     </div>
   )
@@ -102,12 +102,12 @@ function CertCard({ cert, open, onToggle, onDelete }) {
                 {sans.slice(0,12).map(s => (
                   <span key={s} style={{ fontSize:10, fontFamily:'monospace', padding:'2px 7px', borderRadius:5, background:'#f9fafb', color:'#374151', border:'1px solid #e5e7eb' }}>{s}</span>
                 ))}
-                {sans.length > 12 && <span style={{ fontSize:10, color:'#6b7280' }}>+{sans.length-12} more</span>}
+                {sans.length > 12 && <span style={{ fontSize:10, color:'#374151' }}>+{sans.length-12} more</span>}
               </div>
             </div>
           )}
-          {cert.serial_number && <div style={{ fontSize:10, fontFamily:'monospace', color:'#6b7280', marginTop:4 }}>Serial: {cert.serial_number}</div>}
-          <div style={{ fontSize:10, color:'#6b7280', marginTop:6 }}>Last scanned {cert.scanned_at ? new Date(cert.scanned_at).toLocaleString() : '–'}</div>
+          {cert.serial_number && <div style={{ fontSize:10, fontFamily:'monospace', color:'#374151', marginTop:4 }}>Serial: {cert.serial_number}</div>}
+          <div style={{ fontSize:10, color:'#374151', marginTop:6 }}>Last scanned {cert.scanned_at ? new Date(cert.scanned_at).toLocaleString() : '–'}</div>
         </div>
       )}
     </div>
@@ -234,7 +234,7 @@ export default function SslCertificates({ user }) {
           <p style={{ fontSize:13, color:'#374151' }}>TLS certificate health across all monitored domains</p>
         </div>
         <button onClick={scanAll} disabled={scanning || !domains.some(d=>d.verified)}
-          style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'rgba(16,185,129,0.12)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:8, color:'#16a34a', fontSize:12, fontWeight:600, cursor:'pointer', opacity:scanning?0.6:1 }}>
+          style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'rgba(16,185,129,0.12)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:8, color:'#111827', fontSize:12, fontWeight:600, cursor:'pointer', opacity:scanning?0.6:1 }}>
           <RefreshCw size={13} style={{ animation:scanning?'sslspin 1s linear infinite':'none' }}/> Scan all
         </button>
       </div>
@@ -268,7 +268,7 @@ export default function SslCertificates({ user }) {
       </div>
 
       {/* Status messages */}
-      {scanMsg && <div style={{ padding:'9px 14px', background:'rgba(16,185,129,0.08)', border:'1px solid rgba(16,185,129,0.2)', borderRadius:8, color:'#16a34a', fontSize:12, marginBottom:14 }}>{scanMsg}</div>}
+      {scanMsg && <div style={{ padding:'9px 14px', background:'rgba(16,185,129,0.08)', border:'1px solid rgba(16,185,129,0.2)', borderRadius:8, color:'#111827', fontSize:12, marginBottom:14 }}>{scanMsg}</div>}
       {scanError && <div style={{ padding:'9px 14px', background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:8, color:'#ff4d6a', fontSize:12, marginBottom:14 }}>{scanError}</div>}
 
       {/* Summary cards */}

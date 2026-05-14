@@ -18,7 +18,7 @@ function CopyBtn({ text }) {
     setTimeout(() => setCopied(false), 2000)
   }
   return (
-    <button onClick={copy} style={{ padding:'5px 12px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:6, color:'#16a34a', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+    <button onClick={copy} style={{ padding:'5px 12px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:6, color:'#111827', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
       {copied ? <><Check size={12}/> Copied</> : <><Copy size={12}/> Copy</>}
     </button>
   )
@@ -37,7 +37,7 @@ function RecordDisplay({ record, label }) {
         <div style={{ fontFamily:'monospace', fontSize:12, color:'#7dd3fc', wordBreak:'break-all', lineHeight:1.6 }}>
           {parts.map((p, i) => (
             <span key={i}>
-              {i > 0 && <span style={{ color:'#6b7280' }}>; </span>}
+              {i > 0 && <span style={{ color:'#374151' }}>; </span>}
               <span style={{ color: p.startsWith('v=') ? '#f97316' : p.includes('include:') || p.includes('rua=') || p.includes('ruf=') ? '#a855f7' : '#7dd3fc' }}>{p}</span>
             </span>
           ))}
@@ -324,7 +324,7 @@ function DKIMTool() {
                         <span style={{ fontSize:12,color:'#374151' }}>._domainkey.{domain}</span>
                         {r.keySize && <span style={{ fontSize:12, padding:'2px 8px', borderRadius:8, background:r.keySize >= 2048 ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)', color:r.keySize >= 2048 ? '#00e5a0' : '#ffb224' }}>{r.keySize}-bit</span>}
                       </div>
-                      <div style={{ fontFamily:'monospace', fontSize:10, color:'#6b7280', wordBreak:'break-all', lineHeight:1.5 }}>{r.raw?.slice(0, 120)}…</div>
+                      <div style={{ fontFamily:'monospace', fontSize:10, color:'#374151', wordBreak:'break-all', lineHeight:1.5 }}>{r.raw?.slice(0, 120)}…</div>
                     </div>
                   ))}
                 </div>
@@ -387,7 +387,7 @@ function EmailHeaderAnalyser() {
             <span style={{ fontSize:12, fontWeight:700, color:D.text, fontFamily:'monospace' }}>{label}</span>
             <span style={{ fontSize:10, padding:'1px 7px', borderRadius:8, background:`rgba(${pass ? '16,185,129' : fail ? '239,68,68' : '245,158,11'},0.15)`, color }}>{status}</span>
           </div>
-          {value && <div style={{ fontSize:10, color:'#6b7280', fontFamily:'monospace', wordBreak:'break-all' }}>{value}</div>}
+          {value && <div style={{ fontSize:10, color:'#374151', fontFamily:'monospace', wordBreak:'break-all' }}>{value}</div>}
         </div>
       </div>
     )
@@ -429,7 +429,7 @@ function EmailHeaderAnalyser() {
                 { l:'Subject', v:result.subject },
               ].filter(f => f.v).map(f => (
                 <div key={f.l} style={{ display:'flex', gap:12, padding:'8px 14px', borderBottom:'1px solid #1e2535', fontSize:12 }}>
-                  <span style={{ color:'#6b7280', width:72, flexShrink:0 }}>{f.l}</span>
+                  <span style={{ color:'#374151', width:72, flexShrink:0 }}>{f.l}</span>
                   <span style={{ color:D.text, fontFamily: f.l === 'Sending IP' ? 'monospace' : 'inherit' }}>{f.v}</span>
                 </div>
               ))}
@@ -437,7 +437,7 @@ function EmailHeaderAnalyser() {
                 <div style={{ padding:'8px 14px' }}>
                   <div style={{ fontSize:12,color:'#374151', marginBottom:6 }}>Routing path ({result.receivedFrom.length} hops)</div>
                   {result.receivedFrom.map((r, i) => (
-                    <div key={i} style={{ fontSize:10, color:'#6b7280', fontFamily:'monospace', padding:'3px 0', borderBottom:`1px solid rgba(255,255,255,0.03)` }}>{r.slice(0, 100)}</div>
+                    <div key={i} style={{ fontSize:10, color:'#374151', fontFamily:'monospace', padding:'3px 0', borderBottom:`1px solid rgba(255,255,255,0.03)` }}>{r.slice(0, 100)}</div>
                   ))}
                 </div>
               )}
@@ -667,7 +667,7 @@ function DKIMRotation() {
         <div style={{ display:'flex', gap:8, marginBottom:14 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&checkSelectors()}
             placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
-          <button onClick={checkSelectors} disabled={checking||!domain.trim()} style={{ padding:'8px 16px', background:'rgba(59,130,246,0.15)', border:'1px solid rgba(59,130,246,0.3)', borderRadius:7, color:'#3d9bff', fontSize:12, fontWeight:600, cursor:'pointer' }}>
+          <button onClick={checkSelectors} disabled={checking||!domain.trim()} style={{ padding:'8px 16px', background:'rgba(59,130,246,0.15)', border:'1px solid rgba(59,130,246,0.3)', borderRadius:7, color:'#3730a3', fontSize:12, fontWeight:600, cursor:'pointer' }}>
             {checking ? 'Scanning…' : 'Find selectors'}
           </button>
         </div>
@@ -783,7 +783,7 @@ function BIMIChecker() {
                 <img src={result.logo_url} alt="BIMI logo" style={{ width:40, height:40, objectFit:'contain', background:'#fff', borderRadius:6, padding:2 }} onError={e => e.target.style.display='none'}/>
                 <div>
                   <div style={{ fontSize:12,color:'#374151', marginBottom:2 }}>Logo URL</div>
-                  <a href={result.logo_url} target="_blank" rel="noopener noreferrer" style={{ fontSize:12, color:'#3d9bff', wordBreak:'break-all' }}>{result.logo_url}</a>
+                  <a href={result.logo_url} target="_blank" rel="noopener noreferrer" style={{ fontSize:12, color:'#3730a3', wordBreak:'break-all' }}>{result.logo_url}</a>
                 </div>
               </div>
             )}
@@ -935,7 +935,7 @@ function BulkDomainImport({ user }) {
                 <span style={{ fontSize:10, color:'#374151' }}>{r.status}</span>
               </div>
             ))}
-            {done && <div style={{ fontSize:12, color:'#16a34a', marginTop:6 }}>Done. Go to Dashboard to verify and scan your new domains.</div>}
+            {done && <div style={{ fontSize:12, color:'#111827', marginTop:6 }}>Done. Go to Dashboard to verify and scan your new domains.</div>}
           </div>
         )}
       </div>
