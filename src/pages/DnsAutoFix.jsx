@@ -143,7 +143,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
 
       <div style={{ marginBottom:16, display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:14 }}>
         <div>
-          <h2 style={{ fontSize:17, fontWeight:700, color:D.text, margin:0, marginBottom:4 }}>DNS Auto-Fix</h2>
+          <h2 style={{ fontSize:17, fontWeight:700, color:'#111827', margin:0, marginBottom:4 }}>DNS Auto-Fix</h2>
           <p style={{ fontSize:13, color:'#374151', margin:0 }}>Connect your DNS provider. One click to push any missing record directly — no copy-pasting.</p>
         </div>
         <button onClick={() => setShowAdd(true)}
@@ -191,7 +191,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
             <div style={{ marginBottom:12 }}>
               <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:4 }}>Label (optional)</label>
               <input value={label} onChange={e => setLabel(e.target.value)} placeholder={`My ${selectedProvider} credentials`}
-                style={{ width:'100%', padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
             </div>
 
             {/* Dynamic fields */}
@@ -204,7 +204,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                     placeholder={f.placeholder}
                     value={form[f.key] || ''}
                     onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
-                    style={{ width:'100%', padding:f.secret?'8px 36px 8px 12px':'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:f.mono?'monospace':'inherit', boxSizing:'border-box' }}/>
+                    style={{ width:'100%', padding:f.secret?'8px 36px 8px 12px':'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:f.mono?'monospace':'inherit', boxSizing:'border-box' }}/>
                   {f.secret && (
                     <button onClick={() => setShowSecrets(s => ({ ...s, [f.key]: !s[f.key] }))}
                       style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', color:'#374151' }}>
@@ -247,7 +247,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                   <div style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 16px' }}>
                     <span style={{ fontSize:24 }}>{provider?.logo}</span>
                     <div style={{ flex:1 }}>
-                      <div style={{ fontSize:13, fontWeight:600, color:D.text }}>{cred.label || provider?.name}</div>
+                      <div style={{ fontSize:13, fontWeight:600, color:'#111827' }}>{cred.label || provider?.name}</div>
                       <div style={{ fontSize:12,color:'#374151', fontFamily:'monospace' }}>{cred.zone_id}</div>
                     </div>
                     <div style={{ display:'flex', gap:6 }}>
@@ -299,17 +299,17 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                         <AlertTriangle size={11} color="#ef4444"/>
                       </div>
                       <div style={{ flex:1 }}>
-                        <div style={{ fontSize:12, fontWeight:700, color:D.text, fontFamily:'monospace' }}>{issue.type}</div>
+                        <div style={{ fontSize:12, fontWeight:700, color:'#111827', fontFamily:'monospace' }}>{issue.type}</div>
                         <div style={{ fontSize:12,color:'#374151' }}>{issue.message}</div>
                       </div>
                       <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'rgba(239,68,68,0.15)', color:'#dc2626' }}>{issue.severity}</span>
                     </div>
                     <div style={{ padding:'12px 16px' }}>
                       <div style={{ fontSize:12,color:'#374151', marginBottom:6 }}>Will create this record:</div>
-                      <div style={{ display:'grid', gridTemplateColumns:'80px 120px 1fr', gap:8, padding:'8px 12px', background:'rgba(0,0,0,0.25)', borderRadius:7, fontFamily:'monospace', fontSize:12, marginBottom:12 }}>
+                      <div style={{ display:'grid', gridTemplateColumns:'80px 120px 1fr', gap:8, padding:'8px 12px', background:'#f1f5f9', borderRadius:7, fontFamily:'monospace', fontSize:12, marginBottom:12 }}>
                         <span style={{ color:'#3730a3',fontWeight:700 }}>{record.type}</span>
                         <span style={{ color:'#111827',fontWeight:500 }}>{record.name}</span>
-                        <span style={{ color:'#1e293b',wordBreak:'break-all' }}>{record.content}</span>
+                        <span style={{ color:'#111827',wordBreak:'break-all' }}>{record.content}</span>
                       </div>
                       {connectedCreds.length === 0 ? (
                         <div style={{ fontSize:12, color:'#ffb224', display:'flex', alignItems:'center', gap:6 }}>
@@ -353,8 +353,8 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
 
       {activeTab === 'audit log' && (
         <div style={card}>
-          <div style={{ padding:'11px 16px', borderBottom:'1px solid #f0f2f5', background:D.surface2, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-            <span style={{ fontSize:12, fontWeight:600, color:D.text }}>DNS change audit log</span>
+          <div style={{ padding:'11px 16px', borderBottom:'1px solid #f0f2f5', background:'#ffffff', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <span style={{ fontSize:12, fontWeight:600, color:'#111827' }}>DNS change audit log</span>
             <span style={{ fontSize:12,color:'#374151' }}>{changeLog.length} entries</span>
           </div>
           {changeLog.length === 0 ? (

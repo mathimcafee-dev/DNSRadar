@@ -5,7 +5,7 @@ import { Upload, AlertTriangle, CheckCircle, ShieldOff, Globe, Mail } from 'luci
 
 const D = { bg:'#f7f8fa', s:'#ffffff', s2:'#f9fafb', b:'#e5e7eb', t:'#111827', m:'#6b7280', d:'#9ca3af' }
 const card = { background:D.s, border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden' }
-const cardHd = { padding:'11px 16px', borderBottom:'1px solid #1e2535', display:'flex', alignItems:'center', justifyContent:'space-between', background:D.s2 }
+const cardHd = { padding:'11px 16px', borderBottom:'1px solid #e5e7eb', display:'flex', alignItems:'center', justifyContent:'space-between', background:D.s2 }
 
 const TTip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
@@ -130,7 +130,7 @@ export default function Reports({ user }) {
               Paste the raw XML content from a DMARC aggregate report. Mail servers (Google, Microsoft, Yahoo) send these to the <code style={{ fontFamily:'monospace', color:'#111827' }}>rua=</code> address in your DMARC record. Add <code style={{ fontFamily:'monospace', color:'#111827' }}>rua=mailto:reports@dnsradar.easysecurity.in</code> to your DMARC record to receive them automatically.
             </div>
             <textarea value={xmlInput} onChange={e=>setXmlInput(e.target.value)} rows={8} placeholder="<?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?><feedback>..."
-              style={{ width:'100%', padding:'10px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
+              style={{ width:'100%', padding:'10px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
             {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(16,185,129,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'#00e5a0':'#ff4d6a', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
             <div style={{ display:'flex', gap:8, marginTop:8 }}>
               <button onClick={uploadReport} disabled={uploading||!xmlInput}
@@ -152,7 +152,7 @@ export default function Reports({ user }) {
           <div style={{ fontSize:13, color:D.m, maxWidth:420, margin:'0 auto', lineHeight:1.7 }}>
             To receive aggregate reports automatically, add this to your DMARC record:
           </div>
-          <div style={{ fontFamily:'monospace', fontSize:12, color:'#111827', background:'rgba(16,185,129,0.08)', border:'1px solid rgba(16,185,129,0.2)', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
+          <div style={{ fontFamily:'monospace', fontSize:12, color:'#111827', background:'rgba(16,185,129,0.08)', border:'1px solid #d1d5db', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
             rua=mailto:reports@dnsradar.easysecurity.in
           </div>
           <div style={{ fontSize:12, color:D.d }}>Or upload an existing XML report above to get started immediately.</div>
@@ -220,7 +220,7 @@ export default function Reports({ user }) {
               <table style={{ width:'100%', borderCollapse:'collapse', fontSize:12 }}>
                 <thead><tr style={{ background:'rgba(255,255,255,0.02)' }}>
                   {['Source','Volume','Compliant','Failing','Rate','Status'].map(h=>(
-                    <th key={h} style={{ textAlign:'left', padding:'7px 14px', fontSize:10, fontWeight:600, color:D.m, textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid #1e2535' }}>{h}</th>
+                    <th key={h} style={{ textAlign:'left', padding:'7px 14px', fontSize:10, fontWeight:600, color:D.m, textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid #e5e7eb' }}>{h}</th>
                   ))}
                 </tr></thead>
                 <tbody>

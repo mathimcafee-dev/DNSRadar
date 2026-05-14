@@ -33,8 +33,8 @@ function RecordDisplay({ record, label }) {
         <span style={{ fontSize:12, fontWeight:600, color:'#374151', textTransform:'uppercase', letterSpacing:'0.07em' }}>{label}</span>
         <CopyBtn text={record}/>
       </div>
-      <div style={{ background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:8, padding:'10px 14px' }}>
-        <div style={{ fontFamily:'monospace', fontSize:12, color:'#7dd3fc', wordBreak:'break-all', lineHeight:1.6 }}>
+      <div style={{ background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:8, padding:'10px 14px' }}>
+        <div style={{ fontFamily:'monospace', fontSize:12, color:'#111827', wordBreak:'break-all', lineHeight:1.6 }}>
           {parts.map((p, i) => (
             <span key={i}>
               {i > 0 && <span style={{ color:'#374151' }}>; </span>}
@@ -84,7 +84,7 @@ function SPFGenerator() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:D.text, display:'flex', alignItems:'center', gap:7 }}>
+        <span style={{ fontSize:13, fontWeight:600, color:'#111827', display:'flex', alignItems:'center', gap:7 }}>
           <Wand2 size={14} color="#10b981"/> SPF record generator
         </span>
         <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'#374151' }}>
@@ -96,13 +96,13 @@ function SPFGenerator() {
           <div style={{ marginBottom:12 }}>
             <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Your domain</label>
             <input type="text" placeholder="yourdomain.com" value={domain} onChange={e => setDomain(e.target.value)}
-              style={{ width:'100%', padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+              style={{ width:'100%', padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
           </div>
           <div style={{ marginBottom:12 }}>
             <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:8 }}>Email providers</label>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6 }}>
               {PROVIDERS.map(p => (
-                <label key={p.key} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 10px', background:providers[p.key] ? 'rgba(16,185,129,0.08)' : 'rgba(255,255,255,0.03)', border:`1px solid ${providers[p.key] ? 'rgba(16,185,129,0.3)' : D.border}`, borderRadius:7, cursor:'pointer', fontSize:12, color:D.text }}>
+                <label key={p.key} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 10px', background:providers[p.key] ? 'rgba(16,185,129,0.08)' : 'rgba(255,255,255,0.03)', border:`1px solid ${providers[p.key] ? 'rgba(16,185,129,0.3)' : D.border}`, borderRadius:7, cursor:'pointer', fontSize:12, color:'#111827' }}>
                   <input type="checkbox" checked={providers[p.key]} onChange={e => setProviders(prev => ({ ...prev, [p.key]: e.target.checked }))}
                     style={{ accentColor:'#00e5a0', width:14, height:14 }}/>
                   {p.label}
@@ -113,7 +113,7 @@ function SPFGenerator() {
           <div style={{ marginBottom:12 }}>
             <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Custom IPs (optional, one per line)</label>
             <textarea value={customIPs} onChange={e => setCustomIPs(e.target.value)} rows={2} placeholder="192.168.1.1&#10;10.0.0.0/24"
-              style={{ width:'100%', padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:D.text, outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
+              style={{ width:'100%', padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:'#111827', outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
           </div>
           <div style={{ marginBottom:12 }}>
             <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:8 }}>Policy (how to handle failures)</label>
@@ -170,7 +170,7 @@ function DMARCGenerator({ presetPolicy }) {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:D.text, display:'flex', alignItems:'center', gap:7 }}>
+        <span style={{ fontSize:13, fontWeight:600, color:'#111827', display:'flex', alignItems:'center', gap:7 }}>
           <Shield size={14} color="#6366f1"/> DMARC record generator
         </span>
         <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'#374151' }}>
@@ -183,7 +183,7 @@ function DMARCGenerator({ presetPolicy }) {
             <div>
               <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Domain</label>
               <input type="text" placeholder="yourdomain.com" value={domain} onChange={e => setDomain(e.target.value)}
-                style={{ width:'100%', padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div>
               <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Policy (p=)</label>
@@ -201,12 +201,12 @@ function DMARCGenerator({ presetPolicy }) {
             <div>
               <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>RUA email (aggregate reports)</label>
               <input type="email" placeholder={`dmarc@${domain || 'yourdomain.com'}`} value={rua} onChange={e => setRua(e.target.value)}
-                style={{ width:'100%', padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div>
               <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>RUF email (forensic reports)</label>
               <input type="email" placeholder={`forensic@${domain || 'yourdomain.com'}`} value={ruf} onChange={e => setRuf(e.target.value)}
-                style={{ width:'100%', padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
             </div>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:12, marginBottom:12 }}>
@@ -289,7 +289,7 @@ function DKIMTool() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:D.text, display:'flex', alignItems:'center', gap:7 }}>
+        <span style={{ fontSize:13, fontWeight:600, color:'#111827', display:'flex', alignItems:'center', gap:7 }}>
           <Key size={14} color="#f59e0b"/> DKIM selector discovery
         </span>
         <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'#374151' }}>
@@ -301,7 +301,7 @@ function DKIMTool() {
           <div style={{ display:'flex', gap:8, marginBottom:12 }}>
             <input type="text" placeholder="yourdomain.com" value={domain} onChange={e => setDomain(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && scan()}
-              style={{ flex:1, padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+              style={{ flex:1, padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
             <button onClick={scan} disabled={loading || !domain}
               style={{ padding:'8px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'#ffb224', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !domain ? 0.5 : 1 }}>
               {loading ? <><div style={{ width:13, height:13, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'#ffb224', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Scanning {SELECTORS.length} selectors…</> : <><Zap size={13}/> Discover</>}
@@ -378,13 +378,13 @@ function EmailHeaderAnalyser() {
     const color = pass ? '#00e5a0' : fail ? '#ff4d6a' : '#ffb224'
     const status = pass ? 'Pass' : fail ? 'Fail' : 'Unknown'
     return (
-      <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'10px 14px', borderBottom:'1px solid #1e2535' }}>
+      <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'10px 14px', borderBottom:'1px solid #e5e7eb' }}>
         <div style={{ width:22, height:22, borderRadius:6, background:`rgba(${pass ? '16,185,129' : fail ? '239,68,68' : '245,158,11'},0.15)`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
           {pass ? <CheckCircle size={13} color="#10b981"/> : fail ? <AlertTriangle size={13} color="#ef4444"/> : <AlertTriangle size={13} color="#f59e0b"/>}
         </div>
         <div style={{ flex:1 }}>
           <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:2 }}>
-            <span style={{ fontSize:12, fontWeight:700, color:D.text, fontFamily:'monospace' }}>{label}</span>
+            <span style={{ fontSize:12, fontWeight:700, color:'#111827', fontFamily:'monospace' }}>{label}</span>
             <span style={{ fontSize:10, padding:'1px 7px', borderRadius:8, background:`rgba(${pass ? '16,185,129' : fail ? '239,68,68' : '245,158,11'},0.15)`, color }}>{status}</span>
           </div>
           {value && <div style={{ fontSize:10, color:'#374151', fontFamily:'monospace', wordBreak:'break-all' }}>{value}</div>}
@@ -396,7 +396,7 @@ function EmailHeaderAnalyser() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:D.text, display:'flex', alignItems:'center', gap:7 }}>
+        <span style={{ fontSize:13, fontWeight:600, color:'#111827', display:'flex', alignItems:'center', gap:7 }}>
           <Mail size={14} color="#a78bfa"/> Email header analyser
         </span>
         <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'#374151' }}>
@@ -411,7 +411,7 @@ function EmailHeaderAnalyser() {
             </label>
             <textarea value={header} onChange={e => setHeader(e.target.value)} rows={6}
               placeholder="Delivered-To: user@example.com&#10;Received: from mail.example.com...&#10;Authentication-Results: mx.google.com;&#10;   dkim=pass header.i=@example.com;&#10;   spf=pass..."
-              style={{ width:'100%', padding:'10px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12,color:'#374151', outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
+              style={{ width:'100%', padding:'10px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12,color:'#374151', outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
           </div>
           <button onClick={analyse} disabled={!header}
             style={{ padding:'8px 20px', background:'rgba(167,139,250,0.15)', border:'1px solid rgba(167,139,250,0.3)', borderRadius:7, color:'#a855f7', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !header ? 0.5 : 1, marginBottom:12 }}>
@@ -428,9 +428,9 @@ function EmailHeaderAnalyser() {
                 { l:'Date', v:result.date },
                 { l:'Subject', v:result.subject },
               ].filter(f => f.v).map(f => (
-                <div key={f.l} style={{ display:'flex', gap:12, padding:'8px 14px', borderBottom:'1px solid #1e2535', fontSize:12 }}>
+                <div key={f.l} style={{ display:'flex', gap:12, padding:'8px 14px', borderBottom:'1px solid #e5e7eb', fontSize:12 }}>
                   <span style={{ color:'#374151', width:72, flexShrink:0 }}>{f.l}</span>
-                  <span style={{ color:D.text, fontFamily: f.l === 'Sending IP' ? 'monospace' : 'inherit' }}>{f.v}</span>
+                  <span style={{ color:'#111827', fontFamily: f.l === 'Sending IP' ? 'monospace' : 'inherit' }}>{f.v}</span>
                 </div>
               ))}
               {result.receivedFrom.length > 0 && (
@@ -491,7 +491,7 @@ function BulkScanner() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:D.text, display:'flex', alignItems:'center', gap:7 }}>
+        <span style={{ fontSize:13, fontWeight:600, color:'#111827', display:'flex', alignItems:'center', gap:7 }}>
           <Upload size={14} color="#22d3ee"/> Bulk domain scanner
         </span>
         <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'#374151' }}>
@@ -504,7 +504,7 @@ function BulkScanner() {
             <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Domains (one per line, max 25)</label>
             <textarea value={input} onChange={e => setInput(e.target.value)} rows={5}
               placeholder="google.com&#10;microsoft.com&#10;digicert.com"
-              style={{ width:'100%', padding:'10px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:D.text, outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
+              style={{ width:'100%', padding:'10px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:'#111827', outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
           </div>
           <div style={{ display:'flex', gap:8, marginBottom:12 }}>
             <button onClick={runBulk} disabled={scanning || !input}
@@ -531,14 +531,14 @@ function BulkScanner() {
                 <thead>
                   <tr style={{ background:'rgba(255,255,255,0.03)' }}>
                     {['Domain','Score','SPF','DMARC','SSL','Critical'].map(h => (
-                      <th key={h} style={{ textAlign:'left', padding:'7px 12px', fontSize:10, fontWeight:600, color:'#374151', textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid #1e2535' }}>{h}</th>
+                      <th key={h} style={{ textAlign:'left', padding:'7px 12px', fontSize:10, fontWeight:600, color:'#374151', textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid #e5e7eb' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {results.map(r => (
                     <tr key={r.domain} style={{ borderBottom:`1px solid #f9fafb` }}>
-                      <td style={{ padding:'8px 12px', fontFamily:'monospace', color:D.text }}>{r.domain}</td>
+                      <td style={{ padding:'8px 12px', fontFamily:'monospace', color:'#111827' }}>{r.domain}</td>
                       <td style={{ padding:'8px 12px', fontWeight:700, color: r.score >= 70 ? '#00e5a0' : r.score >= 50 ? '#ffb224' : r.score ? '#ff4d6a' : D.dim }}>{r.score ?? '–'}</td>
                       {[r.spf, r.dmarc, r.ssl].map((v, i) => {
                         const p = ['pass','valid','pass'].includes(v?.toLowerCase())
@@ -581,7 +581,7 @@ function SPFFlattener() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:D.text }}>SPF flattening — resolve all includes to a single flat record</span>
+        <span style={{ fontSize:13, fontWeight:600, color:'#111827' }}>SPF flattening — resolve all includes to a single flat record</span>
       </div>
       <div style={{ padding:16 }}>
         <div style={{ fontSize:13,color:'#374151', marginBottom:12, lineHeight:1.6 }}>
@@ -589,7 +589,7 @@ function SPFFlattener() {
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&flatten()}
-            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
           <button onClick={flatten} disabled={loading||!domain.trim()} style={{ padding:'8px 18px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
             {loading ? <div style={{ width:12, height:12, border:'2px solid #9ca3af', borderTopColor:'#fff', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> : <Zap size={13}/>}
             Flatten
@@ -609,14 +609,14 @@ function SPFFlattener() {
             {result.warning && <div style={{ fontSize:12, color:'#ffb224', marginBottom:10, padding:'6px 10px', background:'rgba(245,158,11,0.08)', borderRadius:6 }}>⚠️ {result.warning}</div>}
             <div style={{ marginBottom:8 }}>
               <div style={{ fontSize:12,color:'#374151', marginBottom:5 }}>Original record</div>
-              <div style={{ fontFamily:'monospace', fontSize:12, color:'#374151', background:'rgba(0,0,0,0.2)', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.original}</div>
+              <div style={{ fontFamily:'monospace', fontSize:12, color:'#374151', background:'#f1f5f9', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.original}</div>
             </div>
             <div>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:5 }}>
                 <span style={{ fontSize:12,color:'#374151' }}>Flattened record (copy this into DNS)</span>
                 <CopyBtn text={result.flattened}/>
               </div>
-              <div style={{ fontFamily:'monospace', fontSize:12, color:'#7dd3fc', background:'#1e293b', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.flattened}</div>
+              <div style={{ fontFamily:'monospace', fontSize:12, color:'#111827', background:'#f1f5f9', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.flattened}</div>
             </div>
           </>
         )}
@@ -658,7 +658,7 @@ function DKIMRotation() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:D.text }}>DKIM key rotation wizard</span>
+        <span style={{ fontSize:13, fontWeight:600, color:'#111827' }}>DKIM key rotation wizard</span>
       </div>
       <div style={{ padding:16 }}>
         <div style={{ fontSize:13,color:'#374151', marginBottom:12, lineHeight:1.6 }}>
@@ -666,7 +666,7 @@ function DKIMRotation() {
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:14 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&checkSelectors()}
-            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
           <button onClick={checkSelectors} disabled={checking||!domain.trim()} style={{ padding:'8px 16px', background:'rgba(59,130,246,0.15)', border:'1px solid rgba(59,130,246,0.3)', borderRadius:7, color:'#3730a3', fontSize:12, fontWeight:600, cursor:'pointer' }}>
             {checking ? 'Scanning…' : 'Find selectors'}
           </button>
@@ -686,7 +686,7 @@ function DKIMRotation() {
               ))}
             </div>
             <div style={{ background:'rgba(59,130,246,0.06)', border:'1px solid rgba(59,130,246,0.2)', borderRadius:8, padding:'12px 14px' }}>
-              <div style={{ fontSize:12, fontWeight:600, color:D.text, marginBottom:8 }}>How to rotate safely (zero downtime)</div>
+              <div style={{ fontSize:12, fontWeight:600, color:'#111827', marginBottom:8 }}>How to rotate safely (zero downtime)</div>
               <ol style={{ fontSize:13,color:'#374151', margin:0, paddingLeft:20, lineHeight:2 }}>
                 <li>Generate a new 2048-bit RSA key pair in your email provider dashboard</li>
                 <li>Add the new public key as a TXT record: <code style={{ color:'#f97316' }}>{newSelector}._domainkey.{domain}</code></li>
@@ -744,7 +744,7 @@ function BIMIChecker() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:D.text }}>BIMI checker — Brand Indicators for Message Identification</span>
+        <span style={{ fontSize:13, fontWeight:600, color:'#111827' }}>BIMI checker — Brand Indicators for Message Identification</span>
       </div>
       <div style={{ padding:16 }}>
         <div style={{ fontSize:13,color:'#374151', marginBottom:12, lineHeight:1.6 }}>
@@ -752,7 +752,7 @@ function BIMIChecker() {
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&check()}
-            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
           <button onClick={check} disabled={loading||!domain.trim()} style={{ padding:'8px 16px', background:'rgba(167,139,250,0.15)', border:'1px solid rgba(167,139,250,0.3)', borderRadius:7, color:'#a855f7', fontSize:12, fontWeight:600, cursor:'pointer' }}>
             {loading ? 'Checking…' : 'Check BIMI'}
           </button>
@@ -775,7 +775,7 @@ function BIMIChecker() {
             {result.bimi_found && result.raw && (
               <div>
                 <div style={{ fontSize:12,color:'#374151', marginBottom:5 }}>BIMI record</div>
-                <div style={{ fontFamily:'monospace', fontSize:12, color:'#7dd3fc', background:'#1e293b', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.raw}</div>
+                <div style={{ fontFamily:'monospace', fontSize:12, color:'#111827', background:'#f1f5f9', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.raw}</div>
               </div>
             )}
             {result.logo_url && (
@@ -789,12 +789,12 @@ function BIMIChecker() {
             )}
             {!result.bimi_found && (
               <div style={{ background:'rgba(167,139,250,0.06)', border:'1px solid rgba(167,139,250,0.2)', borderRadius:8, padding:'12px 14px' }}>
-                <div style={{ fontSize:12, fontWeight:600, color:D.text, marginBottom:6 }}>How to set up BIMI</div>
+                <div style={{ fontSize:12, fontWeight:600, color:'#111827', marginBottom:6 }}>How to set up BIMI</div>
                 <ol style={{ fontSize:13,color:'#374151', margin:0, paddingLeft:20, lineHeight:2 }}>
                   <li>Ensure DMARC is at p=quarantine or p=reject</li>
                   <li>Create a square SVG logo (aspect ratio 1:1, &lt;32KB)</li>
                   <li>Host it at a public HTTPS URL</li>
-                  <li>Add TXT record: <code style={{ color:'#f97316' }}>default._bimi.{result.domain}</code> → <code style={{ color:'#7dd3fc' }}>v=BIMI1; l=https://yourdomain.com/logo.svg;</code></li>
+                  <li>Add TXT record: <code style={{ color:'#f97316' }}>default._bimi.{result.domain}</code> → <code style={{ color:'#111827' }}>v=BIMI1; l=https://yourdomain.com/logo.svg;</code></li>
                   <li>For Gmail display, get a VMC (Verified Mark Certificate) from DigiCert or Entrust</li>
                 </ol>
               </div>
@@ -843,7 +843,7 @@ function MTASTSChecker() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:D.text }}>MTA-STS + TLS-RPT checker</span>
+        <span style={{ fontSize:13, fontWeight:600, color:'#111827' }}>MTA-STS + TLS-RPT checker</span>
       </div>
       <div style={{ padding:16 }}>
         <div style={{ fontSize:13,color:'#374151', marginBottom:12, lineHeight:1.6 }}>
@@ -851,7 +851,7 @@ function MTASTSChecker() {
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&check()}
-            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
           <button onClick={check} disabled={loading||!domain.trim()} style={{ padding:'8px 16px', background:'rgba(34,211,238,0.12)', border:'1px solid rgba(34,211,238,0.25)', borderRadius:7, color:'#22d3ee', fontSize:12, fontWeight:600, cursor:'pointer' }}>
             {loading ? 'Checking…' : 'Check'}
           </button>
@@ -866,7 +866,7 @@ function MTASTSChecker() {
                 { label:'TLS-RPT record', ok:!!result.tls_rpt_record, val:result.tls_rpt_record },
               ].map(item => (
                 <div key={item.label} style={{ padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid #e5e7eb' }}>
-                  <div style={{ fontSize:12, color:D.text, marginBottom:item.val ? 5 : 0 }}>{statusDot(item.ok)}{item.label}</div>
+                  <div style={{ fontSize:12, color:'#111827', marginBottom:item.val ? 5 : 0 }}>{statusDot(item.ok)}{item.label}</div>
                   {item.val && <div style={{ fontFamily:'monospace', fontSize:10, color:'#374151', marginTop:3, wordBreak:'break-all' }}>{item.val.slice(0,200)}</div>}
                   {!item.ok && <div style={{ fontSize:12, color:'#ff4d6a', marginTop:3 }}>Not configured</div>}
                 </div>
@@ -874,12 +874,12 @@ function MTASTSChecker() {
             </div>
             {(!result.mta_sts_record || !result.policy_file) && (
               <div style={{ background:'rgba(34,211,238,0.06)', border:'1px solid rgba(34,211,238,0.2)', borderRadius:8, padding:'12px 14px' }}>
-                <div style={{ fontSize:12, fontWeight:600, color:D.text, marginBottom:6 }}>How to set up MTA-STS</div>
+                <div style={{ fontSize:12, fontWeight:600, color:'#111827', marginBottom:6 }}>How to set up MTA-STS</div>
                 <ol style={{ fontSize:13,color:'#374151', margin:0, paddingLeft:20, lineHeight:2 }}>
                   <li>Host a policy file at <code style={{ color:'#f97316' }}>https://mta-sts.{result.domain}/.well-known/mta-sts.txt</code></li>
-                  <li>Content: <code style={{ color:'#7dd3fc' }}>version: STSv1\nmode: enforce\nmx: mail.{result.domain}\nmax_age: 86400</code></li>
-                  <li>Add DNS TXT: <code style={{ color:'#f97316' }}>_mta-sts.{result.domain}</code> → <code style={{ color:'#7dd3fc' }}>v=STSv1; id=20240101000000Z;</code></li>
-                  <li>For TLS-RPT add: <code style={{ color:'#f97316' }}>_smtp._tls.{result.domain}</code> → <code style={{ color:'#7dd3fc' }}>v=TLSRPTv1; rua=mailto:tls@{result.domain};</code></li>
+                  <li>Content: <code style={{ color:'#111827' }}>version: STSv1\nmode: enforce\nmx: mail.{result.domain}\nmax_age: 86400</code></li>
+                  <li>Add DNS TXT: <code style={{ color:'#f97316' }}>_mta-sts.{result.domain}</code> → <code style={{ color:'#111827' }}>v=STSv1; id=20240101000000Z;</code></li>
+                  <li>For TLS-RPT add: <code style={{ color:'#f97316' }}>_smtp._tls.{result.domain}</code> → <code style={{ color:'#111827' }}>v=TLSRPTv1; rua=mailto:tls@{result.domain};</code></li>
                 </ol>
               </div>
             )}
@@ -916,12 +916,12 @@ function BulkDomainImport({ user }) {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:D.text }}>Bulk domain import — add up to 50 domains at once</span>
+        <span style={{ fontSize:13, fontWeight:600, color:'#111827' }}>Bulk domain import — add up to 50 domains at once</span>
       </div>
       <div style={{ padding:16 }}>
         <div style={{ fontSize:13,color:'#374151', marginBottom:12 }}>Paste domains one per line, or comma/semicolon separated. URLs are automatically cleaned.</div>
         <textarea value={text} onChange={e => setText(e.target.value)} rows={6} placeholder={'example.com\ngoogle.com\nhttps://microsoft.com/\nyourdomain.org'}
-          style={{ width:'100%', padding:'10px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:8, fontSize:12, fontFamily:'monospace', color:D.text, outline:'none', resize:'vertical', boxSizing:'border-box', marginBottom:10 }}/>
+          style={{ width:'100%', padding:'10px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:8, fontSize:12, fontFamily:'monospace', color:'#111827', outline:'none', resize:'vertical', boxSizing:'border-box', marginBottom:10 }}/>
         {!user && <div style={{ fontSize:12, color:'#ffb224', marginBottom:10 }}>⚠️ Sign in to import domains to your account</div>}
         <button onClick={importDomains} disabled={importing || !text.trim() || !user} style={{ padding:'8px 18px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', marginBottom: results.length ? 14 : 0 }}>
           {importing ? 'Importing…' : 'Import domains'}
@@ -931,7 +931,7 @@ function BulkDomainImport({ user }) {
             {results.map(r => (
               <div key={r.domain} style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 10px', background:`rgba(${r.ok ? '16,185,129' : '239,68,68'},0.06)`, borderRadius:6, border:`1px solid rgba(${r.ok ? '16,185,129' : '239,68,68'},0.15)` }}>
                 <span style={{ fontSize:12, color: r.ok ? '#00e5a0' : '#ffb224' }}>{r.ok ? '✓' : '—'}</span>
-                <span style={{ fontSize:12, fontFamily:'monospace', color:D.text, flex:1 }}>{r.domain}</span>
+                <span style={{ fontSize:12, fontFamily:'monospace', color:'#111827', flex:1 }}>{r.domain}</span>
                 <span style={{ fontSize:10, color:'#374151' }}>{r.status}</span>
               </div>
             ))}
@@ -956,8 +956,8 @@ export default function Tools({ user }) {
   return (
     <div style={{ background:'#f7f8fa', minHeight:'100%', fontFamily:"'DM Sans','Inter',system-ui,sans-serif" }}>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-      <div style={{ padding:'14px 20px', borderBottom:'1px solid #1e2535', background:D.surface }}>
-        <h2 style={{ fontSize:16, fontWeight:700, color:D.text, marginBottom:12 }}>Tools</h2>
+      <div style={{ padding:'14px 20px', borderBottom:'1px solid #e5e7eb', background:'#ffffff' }}>
+        <h2 style={{ fontSize:16, fontWeight:700, color:'#111827', marginBottom:12 }}>Tools</h2>
         <div style={{ display:'flex', gap:2, flexWrap:'wrap' }}>
           {tabs.map(t => (
             <button key={t.id} onClick={() => setActiveTab(t.id)}

@@ -54,7 +54,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
 
         {/* Domain + issuer */}
         <div style={{ flex:1, minWidth:0 }}>
-          <div style={{ fontSize:13, fontWeight:600, color:D.text, marginBottom:2 }}>{cert.domain_name}</div>
+          <div style={{ fontSize:13, fontWeight:600, color:'#111827', marginBottom:2 }}>{cert.domain_name}</div>
           <div style={{ fontSize:12,color:'#374151' }}>{cert.issuer_org || cert.issuer_cn || 'Unknown issuer'}</div>
         </div>
 
@@ -73,7 +73,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
       </div>
 
       {open && (
-        <div style={{ borderTop:'1px solid #1e2535', padding:'14px 16px' }}>
+        <div style={{ borderTop:'1px solid #e5e7eb', padding:'14px 16px' }}>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(170px,1fr))', gap:12, marginBottom:14 }}>
             <Field label="Subject CN" value={cert.subject_cn}/>
             <Field label="Valid from" value={cert.valid_from ? new Date(cert.valid_from).toLocaleDateString() : null}/>
@@ -116,7 +116,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
 
 function SummaryCard({ label, value, color, onClick }) {
   return (
-    <div onClick={onClick} style={{ background:D.surface, border:'1px solid #e5e7eb', borderRadius:10, padding:'12px 14px', cursor:onClick?'pointer':'default' }}>
+    <div onClick={onClick} style={{ background:'#ffffff', border:'1px solid #e5e7eb', borderRadius:10, padding:'12px 14px', cursor:onClick?'pointer':'default' }}>
       <div style={{ fontSize:22, fontWeight:700, color, marginBottom:2 }}>{value}</div>
       <div style={{ fontSize:12,color:'#374151' }}>{label}</div>
     </div>
@@ -230,7 +230,7 @@ export default function SslCertificates({ user }) {
       {/* Header */}
       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:20, flexWrap:'wrap', gap:12 }}>
         <div>
-          <h2 style={{ fontSize:18, fontWeight:700, color:D.text, marginBottom:4 }}>SSL Certificates</h2>
+          <h2 style={{ fontSize:18, fontWeight:700, color:'#111827', marginBottom:4 }}>SSL Certificates</h2>
           <p style={{ fontSize:13, color:'#374151' }}>TLS certificate health across all monitored domains</p>
         </div>
         <button onClick={scanAll} disabled={scanning || !domains.some(d=>d.verified)}
@@ -241,7 +241,7 @@ export default function SslCertificates({ user }) {
 
       {/* Manual domain input */}
       <div style={{ ...card, marginBottom:20, padding:'14px 16px' }}>
-        <div style={{ fontSize:12, fontWeight:600, color:D.text, marginBottom:10, display:'flex', alignItems:'center', gap:7 }}>
+        <div style={{ fontSize:12, fontWeight:600, color:'#111827', marginBottom:10, display:'flex', alignItems:'center', gap:7 }}>
           <Search size={13} color="#10b981"/> Check any domain
         </div>
         <div style={{ display:'flex', gap:8 }}>
@@ -250,7 +250,7 @@ export default function SslCertificates({ user }) {
             onChange={e => setManualDomain(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && !manualScanning && scanManualDomain()}
             placeholder="Enter any domain — e.g. github.com"
-            style={{ flex:1, padding:'9px 12px', background:'#1e293b', border:'1px solid #e5e7eb', borderRadius:8, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
+            style={{ flex:1, padding:'9px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:8, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}
           />
           <button
             onClick={scanManualDomain}
@@ -268,7 +268,7 @@ export default function SslCertificates({ user }) {
       </div>
 
       {/* Status messages */}
-      {scanMsg && <div style={{ padding:'9px 14px', background:'rgba(16,185,129,0.08)', border:'1px solid rgba(16,185,129,0.2)', borderRadius:8, color:'#111827', fontSize:12, marginBottom:14 }}>{scanMsg}</div>}
+      {scanMsg && <div style={{ padding:'9px 14px', background:'rgba(16,185,129,0.08)', border:'1px solid #d1d5db', borderRadius:8, color:'#111827', fontSize:12, marginBottom:14 }}>{scanMsg}</div>}
       {scanError && <div style={{ padding:'9px 14px', background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:8, color:'#ff4d6a', fontSize:12, marginBottom:14 }}>{scanError}</div>}
 
       {/* Summary cards */}
@@ -293,12 +293,12 @@ export default function SslCertificates({ user }) {
       {/* Content */}
       {loading ? (
         <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-          {[1,2,3].map(i=><div key={i} style={{ height:60, background:D.surface, borderRadius:12, opacity:0.4 }}/>)}
+          {[1,2,3].map(i=><div key={i} style={{ height:60, background:'#ffffff', borderRadius:12, opacity:0.4 }}/>)}
         </div>
       ) : certs.length === 0 ? (
         <div style={{ ...card, padding:'48px 24px', textAlign:'center' }}>
           <Lock size={36} color={D.dim} style={{ marginBottom:14 }}/>
-          <div style={{ fontSize:15, fontWeight:600, color:D.text, marginBottom:8 }}>No SSL data yet</div>
+          <div style={{ fontSize:15, fontWeight:600, color:'#111827', marginBottom:8 }}>No SSL data yet</div>
           <p style={{ fontSize:13, color:'#374151', maxWidth:420, margin:'0 auto 16px', lineHeight:1.6 }}>
             Enter a domain above to check its certificate, or scan all your tracked domains at once.
           </p>
@@ -327,7 +327,7 @@ export default function SslCertificates({ user }) {
         <div style={{ marginTop:20 }}>
           <div style={{ fontSize:13,color:'#374151', marginBottom:10, fontWeight:500 }}>Tracked domains not yet scanned for SSL</div>
           {domains.filter(d=>d.verified&&!certs.find(c=>c.domain_name===d.domain_name)).map(d=>(
-            <div key={d.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', background:D.surface, border:'1px solid #e5e7eb', borderRadius:10, marginBottom:6 }}>
+            <div key={d.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', background:'#ffffff', border:'1px solid #e5e7eb', borderRadius:10, marginBottom:6 }}>
               <span style={{ fontSize:13, color:'#374151' }}>{d.domain_name}</span>
               <button onClick={()=>scanDomain(d)} disabled={scanning} style={{ padding:'5px 14px', background:'#e5e7eb', border:'1px solid #e5e7eb', borderRadius:6, color:'#374151', fontSize:12, fontWeight:500, cursor:'pointer' }}>Scan now</button>
             </div>
