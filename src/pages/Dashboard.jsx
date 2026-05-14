@@ -220,26 +220,26 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
   const critical=issues.filter(i=>i.severity==='critical')
   const warns=issues.filter(i=>i.severity==='warn')
 
-  const D={bg:'#0a0d12',surface:'#161b23',surface2:'#1d2330',border:'#1e2535',text:'#f0f4ff',muted:'#8993ac',dim:'#4a5470'}
-  const card={background:D.surface,border:'1px solid #1e2535',borderRadius:12,overflow:'hidden'}
-  const cardHd={padding:'11px 16px',borderBottom:'1px solid #1e2535',display:'flex',alignItems:'center',justifyContent:'space-between',background:D.surface2}
+  const D={bg:'#0a0d14',surface:'#13181f',surface2:'#1a2030',border:'#252d3d',text:'#f0f4ff',muted:'#8b96b4',dim:'#4e5a7a'}
+  const card={background:D.surface,border:'1px solid #252d3d',borderRadius:14,overflow:'hidden',boxShadow:'0 1px 3px rgba(0,0,0,0.4)'}
+  const cardHd={padding:'13px 18px',borderBottom:'1px solid #252d3d',display:'flex',alignItems:'center',justifyContent:'space-between',background:'rgba(255,255,255,0.025)'}
 
   const cats=scan?[
-    {label:'DNS records',icon:Globe,color:'#3d9bff',bg:'#1e3a5f',score:scan.score_dns,max:25},
-    {label:'Email auth',icon:Mail,color:'#ff4d6a',bg:'#3d1515',score:scan.score_email,max:30},
-    {label:'SSL / TLS',icon:Lock,color:'#00e5a0',bg:'#0d2d23',score:scan.score_ssl,max:20},
-    {label:'Propagation',icon:Globe,color:'#ffb224',bg:'#3d2d0a',score:scan.score_propagation,max:10},
-    {label:'Security',icon:Shield,color:'#a855f7',bg:'#2d1f4d',score:scan.score_security,max:10},
-    {label:'Blacklists',icon:Ban,color:'#ff4d6a',bg:'#3d1515',score:scan.score_blacklist,max:5},
+    {label:'DNS records',icon:Globe,color:'#3d9bff',bg:'rgba(61,155,255,0.15)',score:scan.score_dns,max:25},
+    {label:'Email auth',icon:Mail,color:'#ff4d6a',bg:'rgba(255,77,106,0.15)',score:scan.score_email,max:30},
+    {label:'SSL / TLS',icon:Lock,color:'#00e5a0',bg:'rgba(0,229,160,0.15)',score:scan.score_ssl,max:20},
+    {label:'Propagation',icon:Globe,color:'#ffb224',bg:'rgba(255,178,36,0.15)',score:scan.score_propagation,max:10},
+    {label:'Security',icon:Shield,color:'#a855f7',bg:'rgba(168,85,247,0.15)',score:scan.score_security,max:10},
+    {label:'Blacklists',icon:Ban,color:'#ff4d6a',bg:'rgba(255,77,106,0.15)',score:scan.score_blacklist,max:5},
   ]:[]
 
   const tabs=['overview','email','ssl','propagation','blacklists','dns']
 
   return (
-    <div style={{display:'flex',height:'calc(100vh - 56px)',background:D.bg,fontFamily:"'DM Sans','Inter',system-ui,sans-serif"}}>
+    <div style={{display:'flex',height:'calc(100vh - 56px)',background:'#0a0d14',fontFamily:"'Plus Jakarta Sans','Inter',system-ui,sans-serif"}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
-        .dsh-row:hover{background:rgba(255,255,255,0.04)!important}
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        .dsh-row:hover{background:rgba(255,255,255,0.06)!important;transition:background 0.12s}
         .dsh-tab:hover{color:rgba(255,255,255,0.8)!important}
         .dsh-btn:hover{background:rgba(255,255,255,0.1)!important}
         .dsh-issue:hover{background:rgba(255,255,255,0.02)!important}
@@ -252,10 +252,10 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
       `}</style>
 
       {/* ── SIDEBAR ──────────────────────────────────────────── */}
-      <div className="no-print" style={{width:220,flexShrink:0,background:D.surface,borderRight:'1px solid #1e2535',display:'flex',flexDirection:'column'}}>
+      <div className="no-print" style={{width:220,flexShrink:0,background:'#0f141c',borderRight:'1px solid #252d3d',display:'flex',flexDirection:'column'}}>
         <div style={{padding:12,borderBottom:'1px solid #1e2535'}}>
           <button onClick={()=>setShowAdd(true)}
-            style={{width:'100%',padding:'8px 12px',background:'rgba(16,185,129,0.15)',border:'1px solid rgba(16,185,129,0.3)',borderRadius:8,color:'#00e5a0',fontSize:13,fontWeight:500,cursor:'pointer',display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}>
+            style={{width:'100%',padding:'8px 12px',background:'rgba(0,229,160,0.12)',border:'1px solid rgba(0,229,160,0.3)',borderRadius:9,color:'#00e5a0',fontSize:13,fontWeight:500,cursor:'pointer',display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}>
             <Plus size={14}/> Add domain
           </button>
         </div>
@@ -306,7 +306,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
         ):(
           <div>
             {/* ── DOMAIN HEADER ── */}
-            <div className="no-print" style={{padding:'14px 20px',borderBottom:'1px solid #1e2535',background:D.surface}}>
+            <div className="no-print" style={{padding:'16px 24px',borderBottom:'1px solid #252d3d',background:'#0f141c'}}>
               <div style={{display:'flex',alignItems:'flex-start',gap:16,flexWrap:'wrap'}}>
                 <div style={{flex:1}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4,flexWrap:'wrap'}}>
@@ -322,7 +322,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     {scan?.scanned_at&&<span>Scanned {timeAgo(scan.scanned_at)}</span>}
                   </div>
                   {/* Sub-nav tabs */}
-                  <div style={{display:'flex',gap:0,borderBottom:'1px solid #1e2535',marginBottom:-14}}>
+                  <div style={{display:'flex',gap:4,borderBottom:'1px solid #252d3d',marginBottom:-14,padding:'0 2px'}}>
                     {tabs.map(t=>(
                       <button key={t} className="dsh-tab" onClick={()=>setActiveTab(t)}
                         style={{padding:'8px 14px',background:'transparent',border:'none',borderBottom:`2px solid ${activeTab===t?'#00e5a0':'transparent'}`,cursor:'pointer',fontSize:12,fontWeight:activeTab===t?600:400,color:activeTab===t?'#00e5a0':'#8993ac',textTransform:'capitalize',transition:'all 0.15s',marginBottom:-1}}>
@@ -369,12 +369,12 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       {label:'Blacklisted',val:`${scan.blacklists?.listed_count||0}/${scan.blacklists?.results?.length||0}`,color:(scan.blacklists?.listed_count||0)>0?'#ff4d6a':'#00e5a0',sub:'blacklists',pct:(scan.blacklists?.listed_count||0)>0?60:100},
                       {label:'DNS records',val:scan.dns_records?.length||0,color:'#3d9bff',sub:'records found',pct:100},
                     ].map(k=>(
-                      <div key={k.label} className="print-card" style={{...card,padding:'13px 16px'}}>
-                        <div style={{fontSize:11,color:D.muted,marginBottom:4}}>{k.label}</div>
-                        <div style={{fontSize:24,fontWeight:700,color:k.color,lineHeight:1}}>{k.val}</div>
-                        <div style={{fontSize:10,color:D.dim,marginTop:4}}>{k.sub}</div>
-                        <div style={{height:3,background:'#1e2535',borderRadius:2,marginTop:8}}>
-                          <div style={{height:'100%',width:`${k.pct}%`,borderRadius:2,background:k.color,transition:'width 0.8s ease'}}/>
+                      <div key={k.label} className="print-card" style={{background:'#13181f',border:'1px solid #252d3d',borderRadius:14,padding:'18px 20px',borderTop:`2px solid ${k.color}`,boxShadow:'0 2px 8px rgba(0,0,0,0.35)'}}>
+                        <div style={{fontSize:11,fontWeight:600,color:D.muted,marginBottom:10,textTransform:'uppercase',letterSpacing:'0.07em'}}>{k.label}</div>
+                        <div style={{fontSize:34,fontWeight:800,color:k.color,lineHeight:1,letterSpacing:'-0.03em'}}>{k.val}</div>
+                        <div style={{fontSize:12,color:D.dim,marginTop:6}}>{k.sub}</div>
+                        <div style={{height:3,background:'#252d3d',borderRadius:2,marginTop:12}}>
+                          <div style={{height:'100%',width:`${k.pct}%`,borderRadius:2,background:k.color,transition:'width 0.8s ease',boxShadow:`0 0 8px ${k.color}50`}}/>
                         </div>
                       </div>
                     ))}
