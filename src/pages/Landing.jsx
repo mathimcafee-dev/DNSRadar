@@ -29,29 +29,29 @@ function ScanDemo() {
 
   const score = 71
 
-  const statusColors = { pass: '#10b981', warn: '#f59e0b', fail: '#ef4444' }
+  const statusColors = { pass: '#10e898', warn: '#ffad30', fail: '#ff5757' }
   const statusBg = { pass: 'rgba(16,185,129,0.1)', warn: 'rgba(245,158,11,0.1)', fail: 'rgba(239,68,68,0.1)' }
   const statusLabel = { pass: 'PASS', warn: 'WARN', fail: 'FAIL' }
 
   return (
     <div style={{
-      background: '#0d1117', border: '1px solid rgba(255,255,255,0.08)',
+      background: '#0f1117', border: '1px solid rgba(255,255,255,0.08)',
       borderRadius: 16, overflow: 'hidden', width: '100%', maxWidth: 480,
       boxShadow: '0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)',
     }}>
       {/* Window chrome */}
-      <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: 10, background: '#161b22' }}>
+      <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', gap: 10, background: '#16191f' }}>
         <div style={{ display: 'flex', gap: 6 }}>
           {['#ff5f57','#febc2e','#28c840'].map(c => <div key={c} style={{ width: 11, height: 11, borderRadius: '50%', background: c }} />)}
         </div>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.05)', borderRadius: 6, padding: '5px 10px', fontSize: 12, fontFamily: 'monospace', color: 'rgba(255,255,255,0.4)' }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.05)', borderRadius: 6, padding: '5px 10px', fontSize: 12, fontFamily: 'monospace', color: '#8b95b0' }}>
           <Globe size={11} color="rgba(255,255,255,0.3)" />
           digicert.com — DomainRadar scan
         </div>
       </div>
 
       {/* Score header */}
-      <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: 16 }}>
+      <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', gap: 16 }}>
         <div style={{ position: 'relative', width: 56, height: 56, flexShrink: 0 }}>
           <svg width="56" height="56" style={{ transform: 'rotate(-90deg)' }}>
             <circle cx="28" cy="28" r="22" fill="rgba(16,185,129,0.1)" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
@@ -59,13 +59,13 @@ function ScanDemo() {
               strokeDasharray={2 * Math.PI * 22} strokeDashoffset={2 * Math.PI * 22 * (1 - score/100)}
               strokeLinecap="round" style={{ transition: 'stroke-dashoffset 1.5s ease' }} />
           </svg>
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: '#10b981', fontFamily: 'monospace' }}>{score}</div>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: '#10e898', fontFamily: 'monospace' }}>{score}</div>
         </div>
         <div>
           <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', marginBottom: 2 }}>digicert.com</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>Health score · {checks.filter((_,i) => i < visible && checks[i].status === 'fail').length} critical issues</div>
+          <div style={{ fontSize: 11, color: '#8b95b0' }}>Health score · {checks.filter((_,i) => i < visible && checks[i].status === 'fail').length} critical issues</div>
           <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
-            {[{c:'#10b981',l:'Pass'},{c:'#f59e0b',l:'Warn'},{c:'#ef4444',l:'Fail'}].map(s => (
+            {[{c:'#10e898',l:'Pass'},{c:'#ffad30',l:'Warn'},{c:'#ff5757',l:'Fail'}].map(s => (
               <span key={s.l} style={{ fontSize: 10, padding: '1px 7px', borderRadius: 10, background: `${s.c}18`, color: s.c, fontWeight: 500 }}>{s.l}</span>
             ))}
           </div>
@@ -99,7 +99,7 @@ function ScanDemo() {
 
       {!scanning && (
         <div style={{ padding: '10px 20px 16px' }}>
-          <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)', borderRadius: 8, padding: '9px 12px', fontSize: 11, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)', borderRadius: 8, padding: '9px 12px', fontSize: 11, color: '#8b95b0', display: 'flex', alignItems: 'center', gap: 6 }}>
             <CheckCircle size={12} color="#10b981" />
             Scan complete · 8 checks · 2 issues found · 6 passing
           </div>
@@ -149,9 +149,9 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
 
   const features = [
     { icon: Mail, color: '#6366f1', title: 'Email authentication', items: ['SPF with lookup depth analysis', 'DKIM key validation (2048-bit check)', 'DMARC policy enforcement audit', 'BIMI + VMC detection', 'MTA-STS & TLS-RPT'] },
-    { icon: Shield, color: '#10b981', title: 'Security & trust', items: ['DNSSEC chain validation', 'CAA record audit', 'Zone transfer exposure (AXFR)', 'Open resolver detection', 'SSL/TLS chain & expiry'] },
-    { icon: Globe, color: '#f59e0b', title: 'DNS intelligence', items: ['All 10 record types (A to SRV)', 'Global propagation — 4 regions', 'TTL analysis & consistency', '50+ DNSBL blacklist checks', 'SOA & NS health validation'] },
-    { icon: Bell, color: '#ef4444', title: 'Continuous monitoring', items: ['1h / 6h / 24h scan intervals', 'Instant change alerts via email', 'Slack & Teams webhook support', 'DMARC policy downgrade alerts', 'SSL expiry countdown alerts'] },
+    { icon: Shield, color: '#10e898', title: 'Security & trust', items: ['DNSSEC chain validation', 'CAA record audit', 'Zone transfer exposure (AXFR)', 'Open resolver detection', 'SSL/TLS chain & expiry'] },
+    { icon: Globe, color: '#ffad30', title: 'DNS intelligence', items: ['All 10 record types (A to SRV)', 'Global propagation — 4 regions', 'TTL analysis & consistency', '50+ DNSBL blacklist checks', 'SOA & NS health validation'] },
+    { icon: Bell, color: '#ff5757', title: 'Continuous monitoring', items: ['1h / 6h / 24h scan intervals', 'Instant change alerts via email', 'Slack & Teams webhook support', 'DMARC policy downgrade alerts', 'SSL expiry countdown alerts'] },
   ]
 
   const checklist = [
@@ -192,15 +192,15 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 32px', height: 60,
         background: 'rgba(10,15,30,0.85)', backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
       }}>
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => window.scrollTo(0,0)}>
-          <div style={{ width: 28, height: 28, background: '#10b981', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 28, height: 28, background: '#10e898', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
           </div>
           <span style={{ fontSize: 15, fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>DomainRadar</span>
-          <span style={{ fontSize: 10, background: 'rgba(16,185,129,0.15)', color: '#10b981', padding: '1px 7px', borderRadius: 10, fontWeight: 600, border: '1px solid rgba(16,185,129,0.25)' }}>BETA</span>
+          <span style={{ fontSize: 10, background: 'rgba(16,185,129,0.15)', color: '#10e898', padding: '1px 7px', borderRadius: 10, fontWeight: 600, border: '1px solid rgba(16,185,129,0.25)' }}>BETA</span>
         </div>
         {/* Nav buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -209,7 +209,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
             Sign in
           </button>
           <button onClick={() => setPage('auth')}
-            style={{ padding: '7px 18px', background: '#10b981', color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            style={{ padding: '7px 18px', background: '#10e898', color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
             Start free
           </button>
         </div>
@@ -237,9 +237,9 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
               display: 'inline-flex', alignItems: 'center', gap: 8,
               padding: '6px 16px', borderRadius: 24,
               background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)',
-              fontSize: 12, fontWeight: 500, color: '#10b981',
+              fontSize: 12, fontWeight: 500, color: '#10e898',
             }}>
-              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', animation: 'pulse 2s ease infinite' }} />
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10e898', animation: 'pulse 2s ease infinite' }} />
               Built by a Certified PKI Specialist · Free during beta
             </div>
           </div>
@@ -253,7 +253,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
               letterSpacing: '-0.02em',
             }}>
               Complete DNS intelligence<br />
-              <span style={{ color: '#10b981' }}>for your entire domain fleet</span>
+              <span style={{ color: '#10e898' }}>for your entire domain fleet</span>
             </h1>
           </div>
 
@@ -269,7 +269,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
           <div className="fade-up fade-up-3" style={{ maxWidth: 560, margin: '0 auto 56px' }}>
             <div style={{ display: 'flex', gap: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: 6 }}>
               <div style={{ position: 'relative', flex: 1 }}>
-                <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.25)' }} />
+                <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.28)' }} />
                 <input
                   className="scan-input"
                   type="text" placeholder="Enter your domain — e.g. company.com"
@@ -284,7 +284,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
               </div>
               <button className="cta-btn" onClick={() => startScan()} disabled={scanLoading || !domain}
                 style={{
-                  padding: '11px 22px', background: '#10b981', color: '#fff',
+                  padding: '11px 22px', background: '#10e898', color: '#fff',
                   border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600,
                   cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7,
                   whiteSpace: 'nowrap', opacity: !domain ? 0.5 : 1,
@@ -306,15 +306,15 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
             {/* Left: scan type cards */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[
-                { icon: Globe, color: '#10b981', label: 'Website scan', desc: 'DNS records, SSL chain, DNSSEC, CAA, propagation across 4 global resolvers' },
+                { icon: Globe, color: '#10e898', label: 'Website scan', desc: 'DNS records, SSL chain, DNSSEC, CAA, propagation across 4 global resolvers' },
                 { icon: Mail, color: '#6366f1', label: 'Email auth scan', desc: 'SPF depth analysis, DKIM key validation, DMARC policy, BIMI, MTA-STS, TLS-RPT' },
-                { icon: Network, color: '#f59e0b', label: 'Connection scan', desc: 'IPv6 readiness, zone transfer exposure, open resolver check, blacklist reputation' },
+                { icon: Network, color: '#ffad30', label: 'Connection scan', desc: 'IPv6 readiness, zone transfer exposure, open resolver check, blacklist reputation' },
               ].map(s => (
                 <div key={s.label} className="hover-card"
                   onClick={() => { if (domain) { startScan(s.label.split(' ')[0].toLowerCase()) } }}
                   style={{
                     display: 'flex', alignItems: 'flex-start', gap: 14, padding: '16px 18px',
-                    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+                    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
                     borderRadius: 12, cursor: domain ? 'pointer' : 'default',
                   }}>
                   <div style={{ width: 38, height: 38, borderRadius: 10, background: `${s.color}18`, border: `1px solid ${s.color}25`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -322,7 +322,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
                   </div>
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', marginBottom: 4 }}>{s.label}</div>
-                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>{s.desc}</div>
+                    <div style={{ fontSize: 12, color: '#8b95b0', lineHeight: 1.5 }}>{s.desc}</div>
                   </div>
                   <ChevronRight size={14} color="rgba(255,255,255,0.2)" style={{ marginLeft: 'auto', marginTop: 10, flexShrink: 0 }} />
                 </div>
@@ -360,10 +360,10 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
       <section style={{ padding: '88px 24px', background: '#fff' }}>
         <div style={{ maxWidth: 1060, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 56 }}>
-            <div style={{ display: 'inline-block', fontSize: 12, fontWeight: 600, color: '#10b981', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 14, padding: '4px 14px', background: 'rgba(16,185,129,0.08)', borderRadius: 20 }}>
+            <div style={{ display: 'inline-block', fontSize: 12, fontWeight: 600, color: '#10e898', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 14, padding: '4px 14px', background: 'rgba(16,185,129,0.08)', borderRadius: 20 }}>
               What we check
             </div>
-            <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 40px)', fontFamily: "'DM Serif Display', serif", fontWeight: 400, color: '#0d1117', marginBottom: 14, lineHeight: 1.2 }}>
+            <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 40px)', fontFamily: "'DM Serif Display', serif", fontWeight: 400, color: '#0f1117', marginBottom: 14, lineHeight: 1.2 }}>
               Every layer of your domain's health
             </h2>
             <p style={{ fontSize: 15, color: '#6b7280', maxWidth: 480, margin: '0 auto', lineHeight: 1.7 }}>
@@ -397,7 +397,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
             <div style={{ display: 'inline-block', fontSize: 12, fontWeight: 600, color: '#6366f1', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 14, padding: '4px 14px', background: 'rgba(99,102,241,0.08)', borderRadius: 20 }}>
               How it works
             </div>
-            <h2 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontFamily: "'DM Serif Display', serif", fontWeight: 400, color: '#0d1117', lineHeight: 1.2 }}>
+            <h2 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontFamily: "'DM Serif Display', serif", fontWeight: 400, color: '#0f1117', lineHeight: 1.2 }}>
               From zero to fully monitored in 3 steps
             </h2>
           </div>
@@ -405,9 +405,9 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
             {/* Connector line */}
             <div style={{ position: 'absolute', top: 28, left: '16.6%', right: '16.6%', height: 1, background: 'linear-gradient(90deg, #10b981, #6366f1, #f59e0b)', opacity: 0.3, zIndex: 0 }} />
             {[
-              { n: '01', color: '#10b981', icon: Search, title: 'Run a free scan', desc: 'Enter any domain and get a full DNS health report in seconds. No account required for your first scan.' },
+              { n: '01', color: '#10e898', icon: Search, title: 'Run a free scan', desc: 'Enter any domain and get a full DNS health report in seconds. No account required for your first scan.' },
               { n: '02', color: '#6366f1', icon: Shield, title: 'Verify ownership', desc: 'Add a single TXT record to your DNS. Takes 30 seconds. Proves you own the domain for continuous monitoring.' },
-              { n: '03', color: '#f59e0b', icon: Bell, title: 'Get instant alerts', desc: 'We scan on your schedule — every hour, 6 hours, or daily. Email or webhook alert the moment anything changes.' },
+              { n: '03', color: '#ffad30', icon: Bell, title: 'Get instant alerts', desc: 'We scan on your schedule — every hour, 6 hours, or daily. Email or webhook alert the moment anything changes.' },
             ].map(s => (
               <div key={s.n} style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
                 <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#fff', border: `2px solid ${s.color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: `0 0 0 6px ${s.color}08` }}>
@@ -433,11 +433,11 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
             <h2 style={{ fontSize: 'clamp(24px, 3vw, 38px)', fontFamily: "'DM Serif Display', serif", fontWeight: 400, color: '#fff', lineHeight: 1.2, marginBottom: 18 }}>
               Your domain's security<br />deserves expert-level tooling
             </h2>
-            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, marginBottom: 28 }}>
+            <p style={{ fontSize: 14, color: '#8b95b0', lineHeight: 1.8, marginBottom: 28 }}>
               Built by a Certified PKI Specialist and Partner Account Manager at DigiCert. The same depth of analysis used by enterprise security teams — free for indie founders, SMBs, and non-profits.
             </p>
             <button className="cta-btn" onClick={() => setPage('auth')}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', background: '#10b981', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', background: '#10e898', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
               Start monitoring free <ArrowRight size={15} />
             </button>
           </div>
@@ -471,7 +471,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
           <div style={{ width: 56, height: 56, background: 'linear-gradient(135deg, #10b981, #059669)', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', boxShadow: '0 8px 24px rgba(16,185,129,0.25)' }}>
             <Shield size={26} color="#fff" />
           </div>
-          <h2 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontFamily: "'DM Serif Display', serif", fontWeight: 400, color: '#0d1117', marginBottom: 14, lineHeight: 1.2 }}>
+          <h2 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontFamily: "'DM Serif Display', serif", fontWeight: 400, color: '#0f1117', marginBottom: 14, lineHeight: 1.2 }}>
             Start monitoring your domains today
           </h2>
           <p style={{ fontSize: 15, color: '#6b7280', marginBottom: 32, lineHeight: 1.7 }}>
@@ -479,7 +479,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button className="cta-btn" onClick={() => setPage('auth')}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', background: '#10b981', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', background: '#10e898', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
               Create free account <ArrowRight size={15} />
             </button>
             <button className="ghost-btn" onClick={() => { setScanDomain('google.com'); setScanType('website'); setPage('scan') }}
@@ -494,21 +494,21 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
       </section>
 
       {/* ── FOOTER ───────────────────────────────────────────────── */}
-      <footer style={{ background: '#0d1117', padding: '32px 24px' }}>
+      <footer style={{ background: '#0f1117', padding: '32px 24px' }}>
         <div style={{ maxWidth: 1060, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 30, height: 30, background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Shield size={15} color="#10b981" />
             </div>
             <span style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>DomainRadar</span>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', padding: '1px 7px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10 }}>beta</span>
+            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', padding: '1px 7px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10 }}>beta</span>
           </div>
           <div style={{ display: 'flex', gap: 24 }}>
             {['Privacy', 'Terms', 'Contact'].map(l => (
               <span key={l} style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', cursor: 'pointer' }}>{l}</span>
             ))}
           </div>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)' }}>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.28)' }}>
             Built by a Certified PKI Specialist · DigiCert Partner
           </div>
         </div>

@@ -3,15 +3,15 @@ import { supabase } from '../lib/supabase'
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import { Upload, AlertTriangle, CheckCircle, ShieldOff, Globe, Mail } from 'lucide-react'
 
-const D = { bg:'#080c14', s:'#0d1220', s2:'#121929', b:'rgba(255,255,255,0.06)', t:'#eef2ff', m:'rgba(255,255,255,0.45)', d:'rgba(255,255,255,0.22)' }
-const card = { background:D.s, border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, overflow:'hidden' }
-const cardHd = { padding:'11px 16px', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', justifyContent:'space-between', background:D.s2 }
+const D = { bg:'#0f1117', s:'#16191f', s2:'#1c2028', b:'rgba(255,255,255,0.08)', t:'#f1f5ff', m:'#8b95b0', d:'rgba(255,255,255,0.28)' }
+const card = { background:D.s, border:'1px solid rgba(255,255,255,0.08)', borderRadius:12, overflow:'hidden' }
+const cardHd = { padding:'11px 16px', borderBottom:'1px solid rgba(255,255,255,0.08)', display:'flex', alignItems:'center', justifyContent:'space-between', background:D.s2 }
 
 const TTip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
   return (
-    <div style={{ background:'#121929', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'10px 14px', fontSize:11 }}>
-      <div style={{ color:'rgba(255,255,255,0.45)', marginBottom:5 }}>{label}</div>
+    <div style={{ background:'#1c2028', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'10px 14px', fontSize:11 }}>
+      <div style={{ color:'#8b95b0', marginBottom:5 }}>{label}</div>
       {payload.map((p,i) => <div key={i} style={{ color:p.color, marginBottom:2 }}>{p.name}: {p.value?.toLocaleString()}</div>)}
     </div>
   )
@@ -88,8 +88,8 @@ export default function Reports({ user }) {
   const serviceList = Object.values(byService).sort((a,b)=>b.count-a.count).slice(0,8)
 
   const pieData = [
-    { name:'Compliant', value:totalPass, color:'#22d9a0' },
-    { name:'Failing', value:totalFail, color:'#ff6b6b' },
+    { name:'Compliant', value:totalPass, color:'#10e898' },
+    { name:'Failing', value:totalFail, color:'#ff5757' },
   ].filter(d=>d.value>0)
 
   const chartData = dailyStats.map(d => ({
@@ -110,12 +110,12 @@ export default function Reports({ user }) {
         <div style={{ display:'flex', gap:8 }}>
           {domains.length > 1 && (
             <select value={selectedDomain} onChange={e=>setSelectedDomain(e.target.value)}
-              style={{ padding:'7px 12px', background:D.s, border:'1px solid rgba(255,255,255,0.06)', borderRadius:8, fontSize:12, color:D.t, outline:'none' }}>
+              style={{ padding:'7px 12px', background:D.s, border:'1px solid rgba(255,255,255,0.08)', borderRadius:8, fontSize:12, color:D.t, outline:'none' }}>
               {domains.map(d=><option key={d.id} value={d.id}>{d.domain_name}</option>)}
             </select>
           )}
           <button onClick={()=>setUploadXML(u=>!u)}
-            style={{ padding:'7px 14px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:8, color:'#22d9a0', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+            style={{ padding:'7px 14px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:8, color:'#10e898', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
             <Upload size={13}/> Upload XML report
           </button>
         </div>
@@ -127,17 +127,17 @@ export default function Reports({ user }) {
           <div style={{ ...cardHd }}><span style={{ fontSize:12, fontWeight:600, color:D.t }}>Upload DMARC aggregate report (XML)</span></div>
           <div style={{ padding:14 }}>
             <div style={{ fontSize:11, color:D.m, marginBottom:10, lineHeight:1.6 }}>
-              Paste the raw XML content from a DMARC aggregate report. Mail servers (Google, Microsoft, Yahoo) send these to the <code style={{ fontFamily:'monospace', color:'#22d9a0' }}>rua=</code> address in your DMARC record. Add <code style={{ fontFamily:'monospace', color:'#22d9a0' }}>rua=mailto:reports@dnsradar.easysecurity.in</code> to your DMARC record to receive them automatically.
+              Paste the raw XML content from a DMARC aggregate report. Mail servers (Google, Microsoft, Yahoo) send these to the <code style={{ fontFamily:'monospace', color:'#10e898' }}>rua=</code> address in your DMARC record. Add <code style={{ fontFamily:'monospace', color:'#10e898' }}>rua=mailto:reports@dnsradar.easysecurity.in</code> to your DMARC record to receive them automatically.
             </div>
             <textarea value={xmlInput} onChange={e=>setXmlInput(e.target.value)} rows={8} placeholder="<?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?><feedback>..."
-              style={{ width:'100%', padding:'10px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:7, fontSize:11, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
-            {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(16,185,129,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'#22d9a0':'#ff6b6b', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
+              style={{ width:'100%', padding:'10px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:7, fontSize:11, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
+            {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(16,185,129,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'#10e898':'#ff5757', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
             <div style={{ display:'flex', gap:8, marginTop:8 }}>
               <button onClick={uploadReport} disabled={uploading||!xmlInput}
-                style={{ padding:'7px 16px', background:'#22d9a0', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', opacity:!xmlInput?0.5:1 }}>
+                style={{ padding:'7px 16px', background:'#10e898', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', opacity:!xmlInput?0.5:1 }}>
                 {uploading?'Parsing…':'Parse & import'}
               </button>
-              <button onClick={()=>{setUploadXML(false);setXmlInput('')}} style={{ padding:'7px 14px', background:'rgba(255,255,255,0.06)', color:D.m, border:'1px solid rgba(255,255,255,0.06)', borderRadius:7, fontSize:12, cursor:'pointer' }}>Cancel</button>
+              <button onClick={()=>{setUploadXML(false);setXmlInput('')}} style={{ padding:'7px 14px', background:'rgba(255,255,255,0.08)', color:D.m, border:'1px solid rgba(255,255,255,0.08)', borderRadius:7, fontSize:12, cursor:'pointer' }}>Cancel</button>
             </div>
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function Reports({ user }) {
           <div style={{ fontSize:13, color:D.m, maxWidth:420, margin:'0 auto', lineHeight:1.7 }}>
             To receive aggregate reports automatically, add this to your DMARC record:
           </div>
-          <div style={{ fontFamily:'monospace', fontSize:12, color:'#22d9a0', background:'rgba(16,185,129,0.08)', border:'1px solid rgba(16,185,129,0.2)', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
+          <div style={{ fontFamily:'monospace', fontSize:12, color:'#10e898', background:'rgba(16,185,129,0.08)', border:'1px solid rgba(16,185,129,0.2)', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
             rua=mailto:reports@dnsradar.easysecurity.in
           </div>
           <div style={{ fontSize:12, color:D.d }}>Or upload an existing XML report above to get started immediately.</div>
@@ -163,9 +163,9 @@ export default function Reports({ user }) {
           <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12, marginBottom:14 }}>
             {[
               { l:'Total emails', v:totalVolume.toLocaleString(), c:D.t, sub:'across all reports' },
-              { l:'Compliance rate', v:`${complianceRate}%`, c:complianceRate>=90?'#22d9a0':complianceRate>=70?'#ffc45e':'#ff6b6b', sub:`${totalPass.toLocaleString()} passing` },
-              { l:'Failing', v:totalFail.toLocaleString(), c:totalFail>0?'#ff6b6b':'#22d9a0', sub:'emails failing DMARC' },
-              { l:'Threats detected', v:threats.length, c:threats.length>0?'#ff6b6b':'#22d9a0', sub:'unauthorised sources' },
+              { l:'Compliance rate', v:`${complianceRate}%`, c:complianceRate>=90?'#10e898':complianceRate>=70?'#ffad30':'#ff5757', sub:`${totalPass.toLocaleString()} passing` },
+              { l:'Failing', v:totalFail.toLocaleString(), c:totalFail>0?'#ff5757':'#10e898', sub:'emails failing DMARC' },
+              { l:'Threats detected', v:threats.length, c:threats.length>0?'#ff5757':'#10e898', sub:'unauthorised sources' },
             ].map(k=>(
               <div key={k.l} style={{ ...card, padding:'13px 16px' }}>
                 <div style={{ fontSize:11, color:D.m, marginBottom:4 }}>{k.l}</div>
@@ -220,7 +220,7 @@ export default function Reports({ user }) {
               <table style={{ width:'100%', borderCollapse:'collapse', fontSize:12 }}>
                 <thead><tr style={{ background:'rgba(255,255,255,0.02)' }}>
                   {['Source','Volume','Compliant','Failing','Rate','Status'].map(h=>(
-                    <th key={h} style={{ textAlign:'left', padding:'7px 14px', fontSize:10, fontWeight:600, color:D.m, textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>{h}</th>
+                    <th key={h} style={{ textAlign:'left', padding:'7px 14px', fontSize:10, fontWeight:600, color:D.m, textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid rgba(255,255,255,0.08)' }}>{h}</th>
                   ))}
                 </tr></thead>
                 <tbody>
@@ -233,18 +233,18 @@ export default function Reports({ user }) {
                           <div style={{ fontSize:12, fontWeight:500, color:D.t }}>{s.name}</div>
                         </td>
                         <td style={{ padding:'9px 14px', fontFamily:'monospace', color:D.t, fontWeight:600 }}>{s.count.toLocaleString()}</td>
-                        <td style={{ padding:'9px 14px', color:'#22d9a0', fontFamily:'monospace' }}>{s.pass.toLocaleString()}</td>
-                        <td style={{ padding:'9px 14px', color:s.fail>0?'#ff6b6b':D.d, fontFamily:'monospace' }}>{s.fail.toLocaleString()}</td>
+                        <td style={{ padding:'9px 14px', color:'#10e898', fontFamily:'monospace' }}>{s.pass.toLocaleString()}</td>
+                        <td style={{ padding:'9px 14px', color:s.fail>0?'#ff5757':D.d, fontFamily:'monospace' }}>{s.fail.toLocaleString()}</td>
                         <td style={{ padding:'9px 14px' }}>
                           <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                            <div style={{ height:5, width:60, background:'rgba(255,255,255,0.06)', borderRadius:3, overflow:'hidden' }}>
-                              <div style={{ height:'100%', width:`${rate}%`, background:rate>=90?'#22d9a0':rate>=70?'#ffc45e':'#ff6b6b', borderRadius:3 }}/>
+                            <div style={{ height:5, width:60, background:'rgba(255,255,255,0.08)', borderRadius:3, overflow:'hidden' }}>
+                              <div style={{ height:'100%', width:`${rate}%`, background:rate>=90?'#10e898':rate>=70?'#ffad30':'#ff5757', borderRadius:3 }}/>
                             </div>
-                            <span style={{ fontSize:11, color:rate>=90?'#22d9a0':rate>=70?'#ffc45e':'#ff6b6b', fontWeight:600 }}>{rate}%</span>
+                            <span style={{ fontSize:11, color:rate>=90?'#10e898':rate>=70?'#ffad30':'#ff5757', fontWeight:600 }}>{rate}%</span>
                           </div>
                         </td>
                         <td style={{ padding:'9px 14px' }}>
-                          <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${s.fail>0&&rate<50?'239,68,68':'16,185,129'},0.15)`, color:s.fail>0&&rate<50?'#ff6b6b':'#22d9a0' }}>
+                          <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${s.fail>0&&rate<50?'239,68,68':'16,185,129'},0.15)`, color:s.fail>0&&rate<50?'#ff5757':'#10e898' }}>
                             {s.fail>0&&rate<50?'Threat':'Legitimate'}
                           </span>
                         </td>
@@ -267,11 +267,11 @@ export default function Reports({ user }) {
                 </div>
                 <div style={{ textAlign:'right' }}>
                   <div style={{ fontSize:13, fontWeight:700, color:D.t }}>{(r.total_volume||0).toLocaleString()} emails</div>
-                  <div style={{ fontSize:10, color:r.fail_count>0?'#ff6b6b':'#22d9a0' }}>
+                  <div style={{ fontSize:10, color:r.fail_count>0?'#ff5757':'#10e898' }}>
                     {r.pass_count||0} pass · {r.fail_count||0} fail
                   </div>
                 </div>
-                <div style={{ width:48, textAlign:'right', fontSize:12, fontWeight:700, color:r.total_volume>0?Math.round((r.pass_count/r.total_volume)*100)>=90?'#22d9a0':'#ffc45e':D.d }}>
+                <div style={{ width:48, textAlign:'right', fontSize:12, fontWeight:700, color:r.total_volume>0?Math.round((r.pass_count/r.total_volume)*100)>=90?'#10e898':'#ffad30':D.d }}>
                   {r.total_volume > 0 ? Math.round((r.pass_count/r.total_volume)*100)+'%' : '–'}
                 </div>
               </div>
