@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Radar, LayoutDashboard, Shield, Zap, Lock, Wrench, Bell, FileText, Settings, LogOut, ChevronDown, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { Radar, LayoutDashboard, Shield, Zap, Lock, Wrench, Bell, FileText, Settings, LogOut, ChevronDown, ChevronRight } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
 const SECTIONS = [
@@ -13,152 +13,176 @@ const SECTIONS = [
   ]},
   { label:'Utilities', items: [
     { id:'tools',   icon:Wrench,   label:'Tools'         },
-    { id:'alerts',  icon:Bell,     label:'Alerts', badge:true },
+    { id:'alerts',  icon:Bell,     label:'Alerts', badge: true },
     { id:'reports', icon:FileText, label:'Daily Reports' },
   ]},
 ]
 
-const S = {
-  wrap:   { display:'flex', alignItems:'center', gap:9, cursor:'pointer' },
-  logo:   { width:30, height:30, background:'linear-gradient(135deg,#22d9a0,#16a878)', borderRadius:9, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, boxShadow:'0 0 16px rgba(34,217,160,0.25)' },
-  name:   { fontSize:14, fontWeight:800, color:'#f1f5ff', letterSpacing:'-0.03em', fontFamily:"'Syne',system-ui,sans-serif" },
-  beta:   { fontSize:9, color:'#10e898', fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', marginTop:-1 },
-}
-
 export default function Sidebar({ page, setPage, alertCount = 0, user }) {
   const { signOut } = useAuth()
-  const [collapsed, setCollapsed] = useState(false)
   const [userOpen, setUserOpen] = useState(false)
-  const w = collapsed ? 58 : 230
+  const [collapsed, setCollapsed] = useState(false)
 
-  function navBtn(item) {
-    const active = page === item.id
-    const hasBadge = item.badge && alertCount > 0
-    return (
-      <button key={item.id} onClick={() => setPage(item.id)} title={collapsed ? item.label : undefined}
-        style={{
-          width: collapsed ? '100%' : 'calc(100% - 12px)',
-          margin: collapsed ? 0 : '0 6px',
-          display:'flex', alignItems:'center', gap:9,
-          padding: collapsed ? '10px 0' : '8px 10px',
-          justifyContent: collapsed ? 'center' : 'flex-start',
-          background: active ? 'rgba(34,217,160,0.1)' : 'transparent',
-          border: active ? '1px solid rgba(34,217,160,0.18)' : '1px solid transparent',
-          borderRadius: 9,
-          color: active ? '#10e898' : '#8b95b0',
-          fontSize:13, fontWeight: active ? 600 : 400,
-          cursor:'pointer', transition:'all 0.12s',
-          position:'relative', textAlign:'left',
-          fontFamily:"'DM Sans',system-ui,sans-serif",
-        }}
-        onMouseEnter={e => { if(!active){ e.currentTarget.style.background='rgba(255,255,255,0.05)'; e.currentTarget.style.color='rgba(255,255,255,0.85)' }}}
-        onMouseLeave={e => { if(!active){ e.currentTarget.style.background='transparent'; e.currentTarget.style.color='#8b95b0' }}}>
-        {active && !collapsed && <span style={{ position:'absolute', left:0, top:'18%', bottom:'18%', width:3, borderRadius:'0 2px 2px 0', background:'#10e898', boxShadow:'0 0 8px rgba(34,217,160,0.7)' }}/>}
-        <item.icon size={15} style={{ flexShrink:0, color: active ? '#10e898' : 'rgba(255,255,255,0.3)', transition:'color 0.12s' }}/>
-        {!collapsed && <span style={{ flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{item.label}</span>}
-        {hasBadge && !collapsed && <span style={{ fontSize:10, padding:'1px 6px', borderRadius:10, background:'rgba(255,107,107,0.15)', color:'#ff5757', fontWeight:700, border:'1px solid rgba(255,107,107,0.2)' }}>{alertCount > 99 ? '99+' : alertCount}</span>}
-        {hasBadge && collapsed && <span style={{ position:'absolute', top:6, right:9, width:6, height:6, borderRadius:'50%', background:'#ff5757' }}/>}
-      </button>
-    )
-  }
+  const w = collapsed ? 60 : 232
 
   return (
-    <aside style={{ width:w, minWidth:w, height:'100vh', position:'sticky', top:0, background:'#16191f', borderRight:'1px solid rgba(255,255,255,0.08)', display:'flex', flexDirection:'column', transition:'width 0.2s cubic-bezier(.4,0,.2,1)', overflow:'hidden', zIndex:100, flexShrink:0 }}>
+    <aside style={{
+      width: w, minWidth: w, height: '100vh', position: 'sticky', top: 0,
+      background: '#0d1117',
+      borderRight: '1px solid #1e2535',
+      display: 'flex', flexDirection: 'column',
+      transition: 'width 0.22s cubic-bezier(.4,0,.2,1)',
+      overflow: 'hidden', zIndex: 100, flexShrink: 0,
+      fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+    }}>
 
-      {/* Logo row */}
-      <div style={{ height:56, padding:collapsed?'0':'0 10px 0 16px', display:'flex', alignItems:'center', justifyContent:collapsed?'center':'space-between', borderBottom:'1px solid rgba(255,255,255,0.08)', flexShrink:0 }}>
+      {/* Logo */}
+      <div style={{ height: 58, padding: collapsed ? '0' : '0 12px 0 18px', display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'space-between', borderBottom: '1px solid #1e2535', flexShrink: 0 }}>
         {!collapsed && (
-          <div style={S.wrap} onClick={() => setPage(user?'dashboard':'landing')}>
-            <div style={S.logo}><Radar size={15} color="#fff"/></div>
-            <div><div style={S.name}>DomainRadar</div><div style={S.beta}>Beta</div></div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => setPage(user ? 'dashboard' : 'landing')}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'linear-gradient(135deg, #00e5a0 0%, #00b87a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Radar size={16} color="#021812" strokeWidth={2.5}/>
+            </div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: '#f0f4ff', letterSpacing: '-0.03em', lineHeight: 1.2 }}>DomainRadar</div>
+              <div style={{ fontSize: 9, color: '#00e5a0', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>BETA</div>
+            </div>
           </div>
         )}
         {collapsed && (
-          <div style={{ ...S.logo, cursor:'pointer' }} onClick={() => setCollapsed(false)}>
-            <Radar size={15} color="#fff"/>
+          <div style={{ width: 32, height: 32, borderRadius: 9, background: 'linear-gradient(135deg, #00e5a0 0%, #00b87a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={() => setCollapsed(false)}>
+            <Radar size={16} color="#021812" strokeWidth={2.5}/>
           </div>
         )}
         {!collapsed && (
-          <button onClick={() => setCollapsed(true)} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.2)', padding:4, borderRadius:6, lineHeight:0, transition:'color 0.15s' }}
-            onMouseEnter={e => e.currentTarget.style.color='rgba(255,255,255,0.6)'}
-            onMouseLeave={e => e.currentTarget.style.color='rgba(255,255,255,0.2)'}>
-            <PanelLeftClose size={14}/>
+          <button onClick={() => setCollapsed(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#2a3347', padding: 4, borderRadius: 6, lineHeight: 0, transition: 'color 0.15s' }}
+            onMouseEnter={e => e.currentTarget.style.color = '#8993ac'}
+            onMouseLeave={e => e.currentTarget.style.color = '#2a3347'}>
+            <ChevronRight size={14}/>
           </button>
         )}
       </div>
 
       {/* Nav */}
-      <nav style={{ flex:1, overflowY:'auto', padding:'8px 0', scrollbarWidth:'none' }}>
+      <nav style={{ flex: 1, overflowY: 'auto', padding: '10px 0', scrollbarWidth: 'none' }}>
         {user && SECTIONS.map((section, si) => (
-          <div key={si} style={{ marginBottom:4 }}>
+          <div key={si} style={{ marginBottom: 2 }}>
             {section.label && !collapsed && (
-              <div style={{ padding:'12px 16px 3px', fontSize:10, fontWeight:600, color:'rgba(255,255,255,0.18)', textTransform:'uppercase', letterSpacing:'0.1em' }}>
+              <div style={{ padding: '10px 18px 4px', fontSize: 10, fontWeight: 700, color: '#2a3347', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
                 {section.label}
               </div>
             )}
-            {si > 0 && collapsed && <div style={{ height:1, background:'rgba(255,255,255,0.05)', margin:'8px 10px' }}/>}
-            {section.items.map(navBtn)}
+            {si > 0 && collapsed && (
+              <div style={{ height: '1px', background: '#1e2535', margin: '6px 10px' }}/>
+            )}
+            {section.items.map(item => {
+              const active = page === item.id
+              const hasBadge = item.badge && alertCount > 0
+              return (
+                <div key={item.id} style={{ padding: collapsed ? '2px 6px' : '2px 8px' }}>
+                  <button
+                    onClick={() => setPage(item.id)}
+                    title={collapsed ? item.label : undefined}
+                    style={{
+                      width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+                      padding: collapsed ? '9px 0' : '8px 12px',
+                      justifyContent: collapsed ? 'center' : 'flex-start',
+                      background: active ? 'rgba(0,229,160,0.1)' : 'transparent',
+                      border: `1px solid ${active ? 'rgba(0,229,160,0.2)' : 'transparent'}`,
+                      borderRadius: 8,
+                      color: active ? '#00e5a0' : '#8993ac',
+                      fontSize: 13, fontWeight: active ? 600 : 400,
+                      cursor: 'pointer', transition: 'all 0.13s', position: 'relative',
+                      fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                    }}
+                    onMouseEnter={e => { if (!active) { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#f0f4ff' }}}
+                    onMouseLeave={e => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#8993ac' }}}>
+                    {active && !collapsed && (
+                      <span style={{ position: 'absolute', left: -1, top: '22%', bottom: '22%', width: 3, borderRadius: '0 3px 3px 0', background: '#00e5a0' }}/>
+                    )}
+                    <item.icon size={15} style={{ flexShrink: 0, color: active ? '#00e5a0' : 'inherit' }}/>
+                    {!collapsed && <span style={{ flex: 1, textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.label}</span>}
+                    {hasBadge && !collapsed && (
+                      <span style={{ fontSize: 10, padding: '1px 6px', borderRadius: 10, background: 'rgba(255,77,106,0.15)', color: '#ff4d6a', fontWeight: 700, border: '1px solid rgba(255,77,106,0.25)' }}>
+                        {alertCount > 99 ? '99+' : alertCount}
+                      </span>
+                    )}
+                    {hasBadge && collapsed && (
+                      <span style={{ position: 'absolute', top: 7, right: 8, width: 6, height: 6, borderRadius: '50%', background: '#ff4d6a' }}/>
+                    )}
+                  </button>
+                </div>
+              )
+            })}
           </div>
         ))}
         {!user && (
-          <div style={{ padding:'16px 8px', display:'flex', flexDirection:'column', gap:6 }}>
-            <button onClick={() => setPage('auth')} style={{ padding:'9px', background:'#10e898', color:'#021a10', border:'none', borderRadius:9, fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:"'DM Sans',system-ui,sans-serif" }}>Start free</button>
-            <button onClick={() => setPage('auth')} style={{ padding:'9px', background:'rgba(255,255,255,0.05)', color:'rgba(255,255,255,0.6)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:9, fontSize:13, cursor:'pointer', fontFamily:"'DM Sans',system-ui,sans-serif" }}>Sign in</button>
+          <div style={{ padding: '16px 10px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <button onClick={() => setPage('auth')} style={{ padding: '10px', background: '#00e5a0', color: '#021812', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', system-ui" }}>
+              Start free
+            </button>
+            <button onClick={() => setPage('auth')} style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', color: '#8993ac', border: '1px solid #1e2535', borderRadius: 9, fontSize: 13, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', system-ui" }}>
+              Sign in
+            </button>
           </div>
         )}
       </nav>
 
       {/* Bottom */}
       {user && (
-        <div style={{ borderTop:'1px solid rgba(255,255,255,0.08)', padding:collapsed?'6px 0':'6px', flexShrink:0 }}>
-          <button onClick={() => setPage('settings')} title={collapsed?'Settings':undefined}
-            style={{ width:'100%', display:'flex', alignItems:'center', gap:9, padding:collapsed?'9px 0':'7px 10px', justifyContent:collapsed?'center':'flex-start', background:page==='settings'?'rgba(34,217,160,0.1)':'transparent', border:page==='settings'?'1px solid rgba(34,217,160,0.18)':'1px solid transparent', borderRadius:9, cursor:'pointer', color:page==='settings'?'#10e898':'#8b95b0', fontSize:13, marginBottom:4, fontFamily:"'DM Sans',system-ui,sans-serif", transition:'all 0.12s' }}
-            onMouseEnter={e => { if(page!=='settings'){e.currentTarget.style.background='rgba(255,255,255,0.05)';e.currentTarget.style.color='rgba(255,255,255,0.85)'}}}
-            onMouseLeave={e => { if(page!=='settings'){e.currentTarget.style.background='transparent';e.currentTarget.style.color='#8b95b0'}}}>
-            <Settings size={15} style={{ color:page==='settings'?'#10e898':'rgba(255,255,255,0.3)', flexShrink:0 }}/>
-            {!collapsed && 'Settings'}
-          </button>
+        <div style={{ borderTop: '1px solid #1e2535', padding: collapsed ? '8px 0' : '8px', flexShrink: 0 }}>
+          <div style={{ padding: collapsed ? '2px 6px' : '2px 0', marginBottom: 4 }}>
+            <button onClick={() => setPage('settings')} title={collapsed ? 'Settings' : undefined}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: collapsed ? '9px 0' : '8px 12px', justifyContent: collapsed ? 'center' : 'flex-start', background: page === 'settings' ? 'rgba(0,229,160,0.1)' : 'transparent', border: `1px solid ${page === 'settings' ? 'rgba(0,229,160,0.2)' : 'transparent'}`, borderRadius: 8, cursor: 'pointer', color: page === 'settings' ? '#00e5a0' : '#8993ac', fontSize: 13, fontFamily: "'Plus Jakarta Sans', system-ui", transition: 'all 0.13s' }}
+              onMouseEnter={e => { if (page !== 'settings') { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#f0f4ff' }}}
+              onMouseLeave={e => { if (page !== 'settings') { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#8993ac' }}}>
+              <Settings size={15} style={{ flexShrink: 0, color: page === 'settings' ? '#00e5a0' : 'inherit' }}/>
+              {!collapsed && 'Settings'}
+            </button>
+          </div>
 
-          <div style={{ position:'relative' }}>
-            <button onClick={() => setUserOpen(o=>!o)}
-              style={{ width:'100%', display:'flex', alignItems:'center', gap:9, padding:collapsed?'7px 0':'8px 10px', justifyContent:collapsed?'center':'flex-start', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:9, cursor:'pointer', transition:'background 0.12s' }}
-              onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.08)'}
-              onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.04)'}>
-              <div style={{ width:26, height:26, borderRadius:'50%', background:'linear-gradient(135deg,rgba(34,217,160,0.3),rgba(34,217,160,0.1))', color:'#10e898', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0, border:'1px solid rgba(34,217,160,0.2)', fontFamily:"'DM Sans',system-ui,sans-serif" }}>
+          <div style={{ position: 'relative' }}>
+            <button onClick={() => setUserOpen(o => !o)}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 9, padding: collapsed ? '8px 0' : '9px 12px', justifyContent: collapsed ? 'center' : 'flex-start', background: '#161b23', border: '1px solid #1e2535', borderRadius: 10, cursor: 'pointer', transition: 'background 0.13s' }}
+              onMouseEnter={e => e.currentTarget.style.background = '#1d2330'}
+              onMouseLeave={e => e.currentTarget.style.background = '#161b23'}>
+              <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg, rgba(0,229,160,0.25), rgba(0,229,160,0.08))', color: '#00e5a0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, flexShrink: 0, border: '1px solid rgba(0,229,160,0.2)', fontFamily: "'Plus Jakarta Sans', system-ui" }}>
                 {user.email?.[0]?.toUpperCase()}
               </div>
               {!collapsed && (
                 <>
-                  <div style={{ flex:1, minWidth:0, textAlign:'left' }}>
-                    <div style={{ fontSize:12, fontWeight:600, color:'#f1f5ff', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', letterSpacing:'-0.02em' }}>{user.email?.split('@')[0]}</div>
-                    <div style={{ fontSize:10, color:'rgba(255,255,255,0.28)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{user.email}</div>
+                  <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: '#f0f4ff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', letterSpacing: '-0.02em' }}>{user.email?.split('@')[0]}</div>
+                    <div style={{ fontSize: 10, color: '#4a5470', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</div>
                   </div>
-                  <ChevronDown size={12} color="rgba(255,255,255,0.25)" style={{ transform:userOpen?'rotate(180deg)':'none', transition:'transform 0.15s', flexShrink:0 }}/>
+                  <ChevronDown size={12} color="#2a3347" style={{ flexShrink: 0, transform: userOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}/>
                 </>
               )}
             </button>
+
             {userOpen && (
-              <div style={{ position:'absolute', bottom:'calc(100% + 6px)', left:0, right:0, background:'#1c2028', border:'1px solid rgba(255,255,255,0.1)', borderRadius:10, boxShadow:'0 -12px 32px rgba(0,0,0,0.6)', padding:'4px', zIndex:200, minWidth:180 }}>
-                <div style={{ padding:'8px 10px 6px', fontSize:11, color:'rgba(255,255,255,0.28)', borderBottom:'1px solid rgba(255,255,255,0.08)', marginBottom:4 }}>{user.email}</div>
+              <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', left: 0, right: 0, background: '#161b23', border: '1px solid #2a3347', borderRadius: 12, boxShadow: '0 -16px 40px rgba(0,0,0,0.6)', padding: '6px', zIndex: 200, minWidth: 190 }}>
+                <div style={{ padding: '8px 12px 8px', fontSize: 11, color: '#4a5470', borderBottom: '1px solid #1e2535', marginBottom: 4 }}>{user.email}</div>
                 {[
-                  { label:'Settings', icon:Settings, action:() => { setPage('settings'); setUserOpen(false) }, color:'rgba(255,255,255,0.7)' },
-                  { label:'Sign out', icon:LogOut, action:() => { signOut(); setUserOpen(false) }, color:'#ff5757' },
+                  { label: 'Settings', icon: Settings, fn: () => { setPage('settings'); setUserOpen(false) }, color: '#8993ac' },
+                  { label: 'Sign out', icon: LogOut, fn: () => { signOut(); setUserOpen(false) }, color: '#ff4d6a' },
                 ].map(item => (
-                  <button key={item.label} onClick={item.action}
-                    style={{ width:'100%', display:'flex', alignItems:'center', gap:8, padding:'7px 10px', background:'none', border:'none', cursor:'pointer', fontSize:12, color:item.color, borderRadius:7, fontFamily:"'DM Sans',system-ui,sans-serif" }}
-                    onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.05)'}
-                    onMouseLeave={e => e.currentTarget.style.background='none'}>
-                    <item.icon size={13}/> {item.label}
+                  <button key={item.label} onClick={item.fn}
+                    style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 9, padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: item.color, borderRadius: 8, fontFamily: "'Plus Jakarta Sans', system-ui", fontWeight: 500 }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'none'}>
+                    <item.icon size={14}/> {item.label}
                   </button>
                 ))}
               </div>
             )}
           </div>
+
           {collapsed && (
-            <button onClick={() => setCollapsed(false)} style={{ width:'100%', display:'flex', justifyContent:'center', padding:'8px 0', background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,0.18)', marginTop:4 }}
-              onMouseEnter={e => e.currentTarget.style.color='#8b95b0'}
-              onMouseLeave={e => e.currentTarget.style.color='rgba(255,255,255,0.18)'}>
-              <PanelLeftOpen size={14}/>
+            <button onClick={() => setCollapsed(false)} style={{ width: '100%', marginTop: 6, display: 'flex', justifyContent: 'center', padding: '8px 0', background: 'none', border: 'none', cursor: 'pointer', color: '#2a3347' }}
+              onMouseEnter={e => e.currentTarget.style.color = '#8993ac'}
+              onMouseLeave={e => e.currentTarget.style.color = '#2a3347'}>
+              <ChevronRight size={14} style={{ transform: 'rotate(180deg)' }}/>
             </button>
           )}
         </div>

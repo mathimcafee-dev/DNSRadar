@@ -18,15 +18,15 @@ function Alerts({ user }) {
   useEffect(() => {
     supabase.from('alerts').select('*, domains(domain_name)').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50).then(({ data }) => setAlerts(data || []))
   }, [user])
-  const D = { bg:'#0b0f14',surface:'#111827',border:'rgba(255,255,255,0.08)',text:'#e2e8f0',muted:'#8b95b0' }
+  const D = { bg:'#0b0f14',surface:'#111827',border:'#1e2535',text:'#e2e8f0',muted:'#8993ac' }
   return (
     <div style={{ background:D.bg, minHeight:'100%', padding:24, fontFamily:"'DM Sans',system-ui,sans-serif" }}>
       <h2 style={{ fontSize:17, fontWeight:700, color:D.text, marginBottom:16 }}>Alerts</h2>
       {alerts.length === 0 ? (
-        <div style={{ background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, padding:'48px', textAlign:'center', color:D.muted, fontSize:13 }}>No alerts yet — we'll notify you when anything changes</div>
+        <div style={{ background:D.surface, border:'1px solid #1e2535', borderRadius:12, padding:'48px', textAlign:'center', color:D.muted, fontSize:13 }}>No alerts yet — we'll notify you when anything changes</div>
       ) : alerts.map(a => (
-        <div key={a.id} style={{ background:D.surface, border:`1px solid ${D.border}`, borderRadius:10, padding:'12px 16px', marginBottom:8, display:'flex', alignItems:'flex-start', gap:12 }}>
-          <div style={{ width:8, height:8, borderRadius:'50%', background:a.severity==='critical'?'#ff5757':a.severity==='warn'?'#ffad30':'#4d9cff', flexShrink:0, marginTop:4 }}/>
+        <div key={a.id} style={{ background:D.surface, border:'1px solid #1e2535', borderRadius:10, padding:'12px 16px', marginBottom:8, display:'flex', alignItems:'flex-start', gap:12 }}>
+          <div style={{ width:8, height:8, borderRadius:'50%', background:a.severity==='critical'?'#ff4d6a':a.severity==='warn'?'#ffb224':'#3d9bff', flexShrink:0, marginTop:4 }}/>
           <div style={{ flex:1 }}>
             <div style={{ fontSize:12, fontWeight:600, color:D.text, marginBottom:2 }}>{a.domains?.domain_name} — {a.alert_type}</div>
             <div style={{ fontSize:11, color:D.muted }}>{a.message}</div>
@@ -39,12 +39,12 @@ function Alerts({ user }) {
 }
 
 function Reports({ user }) {
-  const D = { bg:'#0b0f14',surface:'#111827',border:'rgba(255,255,255,0.08)',text:'#e2e8f0',muted:'#8b95b0' }
+  const D = { bg:'#0b0f14',surface:'#111827',border:'#1e2535',text:'#e2e8f0',muted:'#8993ac' }
   return (
     <div style={{ background:D.bg, minHeight:'100%', padding:24, fontFamily:"'DM Sans',system-ui,sans-serif" }}>
       <h2 style={{ fontSize:17, fontWeight:700, color:D.text, marginBottom:8 }}>Daily Reports</h2>
       <p style={{ fontSize:13, color:D.muted, marginBottom:20 }}>Automated daily email reports will appear here.</p>
-      <div style={{ background:D.surface, border:`1px solid ${D.border}`, borderRadius:12, padding:'48px', textAlign:'center', color:D.muted, fontSize:13 }}>No reports generated yet</div>
+      <div style={{ background:D.surface, border:'1px solid #1e2535', borderRadius:12, padding:'48px', textAlign:'center', color:D.muted, fontSize:13 }}>No reports generated yet</div>
     </div>
   )
 }
@@ -88,8 +88,8 @@ export default function App() {
   }, [user, page])
 
   if (loading) return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'#0f1117' }}>
-      <div style={{ width:28, height:28, border:'3px solid rgba(16,185,129,0.2)', borderTopColor:'#10e898', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'#0a0d12' }}>
+      <div style={{ width:28, height:28, border:'3px solid rgba(16,185,129,0.2)', borderTopColor:'#00e5a0', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
@@ -105,7 +105,7 @@ export default function App() {
   const sharedDomainProps = { user, domains, selectedDomain, setSelectedDomain }
 
   return (
-    <div style={{ display:'flex', minHeight:'100vh', background:'#0f1117' }}>
+    <div style={{ display:'flex', minHeight:'100vh', background:'#0a0d12' }}>
       <Sidebar page={page} setPage={setPage} alertCount={alertCount} user={user}/>
       <main style={{ flex:1, minWidth:0, overflowY:'auto', minHeight:'100vh' }}>
         {page === 'dashboard' && <Dashboard {...sharedDomainProps} setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>}

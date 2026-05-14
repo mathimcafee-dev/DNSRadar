@@ -39,7 +39,7 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
   }
 
   if (state === 'no-cred') return (
-    <a href="#" onClick={e=>{e.preventDefault();setState('idle')}} style={{fontSize:10,color:'#ffad30',textDecoration:'none',whiteSpace:'nowrap'}}>
+    <a href="#" onClick={e=>{e.preventDefault();setState('idle')}} style={{fontSize:10,color:'#ffb224',textDecoration:'none',whiteSpace:'nowrap'}}>
       Add DNS credentials in Settings →
     </a>
   )
@@ -47,19 +47,19 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
   return (
     <div style={{flexShrink:0}}>
       {showConfirm && (
-        <div style={{position:'absolute',right:16,zIndex:50,background:'#1c2028',border:'1px solid rgba(255,255,255,0.12)',borderRadius:10,padding:'12px 14px',width:260,boxShadow:'0 8px 32px rgba(0,0,0,0.4)'}}>
+        <div style={{position:'absolute',right:16,zIndex:50,background:'#1d2330',border:'1px solid rgba(255,255,255,0.12)',borderRadius:10,padding:'12px 14px',width:260,boxShadow:'0 8px 32px rgba(0,0,0,0.4)'}}>
           <div style={{fontSize:12,fontWeight:600,color:'#fff',marginBottom:5}}>Push to {cred?.provider}?</div>
-          <div style={{fontSize:10,fontFamily:'monospace',color:'#8b95b0',marginBottom:2}}>Type: {mapping.type} · Name: {typeof mapping.name==='function'?mapping.name(domainName):mapping.name}</div>
+          <div style={{fontSize:10,fontFamily:'monospace',color:'#8993ac',marginBottom:2}}>Type: {mapping.type} · Name: {typeof mapping.name==='function'?mapping.name(domainName):mapping.name}</div>
           <div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',background:'rgba(16,185,129,0.06)',padding:'4px 8px',borderRadius:5,marginBottom:10,wordBreak:'break-all'}}>{fixValue?.slice(0,80)}</div>
           <div style={{display:'flex',gap:6}}>
-            <button onClick={execute} style={{flex:1,padding:'6px',background:'#10e898',color:'#fff',border:'none',borderRadius:6,cursor:'pointer',fontSize:11,fontWeight:600}}>Confirm push</button>
-            <button onClick={()=>setShowConfirm(false)} style={{padding:'6px 10px',background:'rgba(255,255,255,0.08)',color:'rgba(255,255,255,0.6)',border:'none',borderRadius:6,cursor:'pointer',fontSize:11}}>Cancel</button>
+            <button onClick={execute} style={{flex:1,padding:'6px',background:'#00e5a0',color:'#fff',border:'none',borderRadius:6,cursor:'pointer',fontSize:11,fontWeight:600}}>Confirm push</button>
+            <button onClick={()=>setShowConfirm(false)} style={{padding:'6px 10px',background:'#1e2535',color:'rgba(255,255,255,0.6)',border:'none',borderRadius:6,cursor:'pointer',fontSize:11}}>Cancel</button>
           </div>
         </div>
       )}
       <button onClick={state==='idle'?loadCred:undefined} disabled={state==='loading'||state==='success'}
-        style={{padding:'4px 10px',background:state==='success'?'rgba(16,185,129,0.15)':state==='error'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.12)',border:`1px solid ${state==='success'?'rgba(16,185,129,0.3)':state==='error'?'rgba(239,68,68,0.3)':'rgba(245,158,11,0.3)'}`,borderRadius:6,color:state==='success'?'#10e898':state==='error'?'#ff5757':'#ffad30',fontSize:10,fontWeight:600,cursor:state==='idle'?'pointer':'default',whiteSpace:'nowrap',display:'flex',alignItems:'center',gap:4}}>
-        {state==='loading'&&<div style={{width:10,height:10,border:'2px solid rgba(245,158,11,0.3)',borderTopColor:'#ffad30',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>}
+        style={{padding:'4px 10px',background:state==='success'?'rgba(16,185,129,0.15)':state==='error'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.12)',border:`1px solid ${state==='success'?'rgba(16,185,129,0.3)':state==='error'?'rgba(239,68,68,0.3)':'rgba(245,158,11,0.3)'}`,borderRadius:6,color:state==='success'?'#00e5a0':state==='error'?'#ff4d6a':'#ffb224',fontSize:10,fontWeight:600,cursor:state==='idle'?'pointer':'default',whiteSpace:'nowrap',display:'flex',alignItems:'center',gap:4}}>
+        {state==='loading'&&<div style={{width:10,height:10,border:'2px solid rgba(245,158,11,0.3)',borderTopColor:'#ffb224',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>}
         {state==='idle'&&'⚡ Fix auto'}
         {state==='loading'&&'Pushing…'}
         {state==='success'&&'✓ Pushed!'}
@@ -82,7 +82,7 @@ function Gauge({ score, size = 160 }) {
     return `M${x1} ${y1} A${rv} ${rv} 0 ${(a2-a1)>180?1:0} 1 ${x2} ${y2}`
   }
   const nx=cx+r*0.7*Math.cos(rad(ang)),ny=cy+r*0.7*Math.sin(rad(ang))
-  const c=score>=70?'#10e898':score>=50?'#ffad30':'#ff5757'
+  const c=score>=70?'#00e5a0':score>=50?'#ffb224':'#ff4d6a'
   const label=score>=90?'Excellent':score>=70?'Good':score>=50?'Fair':'Critical'
   return (
     <svg width={size} height={size*0.68} viewBox={`0 0 ${size} ${size*0.68}`}>
@@ -109,7 +109,7 @@ function AnimBar({ pct, color, delay=0, h=6 }) {
   const [w,setW]=useState(0)
   useEffect(()=>{const t=setTimeout(()=>setW(pct),100+delay);return()=>clearTimeout(t)},[pct])
   return (
-    <div style={{height:h,background:'rgba(255,255,255,0.08)',borderRadius:h/2,overflow:'hidden'}}>
+    <div style={{height:h,background:'#1e2535',borderRadius:h/2,overflow:'hidden'}}>
       <div style={{height:'100%',borderRadius:h/2,width:`${w}%`,background:color,transition:'width 1s cubic-bezier(.4,0,.2,1)'}}/>
     </div>
   )
@@ -130,7 +130,7 @@ function ShareButton({ domain, scanId }) {
   }
   return (
     <button onClick={share}
-      style={{padding:'6px 14px',background:'rgba(255,255,255,0.08)',color:'rgba(255,255,255,0.7)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:500,display:'flex',alignItems:'center',gap:5}}>
+      style={{padding:'6px 14px',background:'#1e2535',color:'rgba(255,255,255,0.7)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:500,display:'flex',alignItems:'center',gap:5}}>
       {copied?<><Check size={12} color="#10b981"/>Copied!</>:<><Share2 size={12}/>Share</>}
     </button>
   )
@@ -141,14 +141,14 @@ function DeleteModal({ domain, onConfirm, onCancel, loading }) {
   return (
     <div onClick={e=>e.target===e.currentTarget&&onCancel()}
       style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.7)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:2000,backdropFilter:'blur(4px)'}}>
-      <div style={{background:'#1c2028',border:'1px solid rgba(255,255,255,0.1)',borderRadius:16,maxWidth:400,width:'100%',margin:'0 16px',padding:24}}>
+      <div style={{background:'#1d2330',border:'1px solid rgba(255,255,255,0.1)',borderRadius:16,maxWidth:400,width:'100%',margin:'0 16px',padding:24}}>
         <div style={{fontSize:16,fontWeight:700,color:'#fff',marginBottom:8}}>Delete domain?</div>
-        <div style={{fontSize:13,color:'#8b95b0',marginBottom:20}}>
-          Permanently delete <span style={{color:'#ff5757',fontFamily:'monospace'}}>{domain?.domain_name}</span> and all scan history.
+        <div style={{fontSize:13,color:'#8993ac',marginBottom:20}}>
+          Permanently delete <span style={{color:'#ff4d6a',fontFamily:'monospace'}}>{domain?.domain_name}</span> and all scan history.
         </div>
         <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
-          <button onClick={onCancel} style={{padding:'8px 16px',background:'rgba(255,255,255,0.08)',color:'rgba(255,255,255,0.7)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:8,cursor:'pointer',fontSize:13}}>Cancel</button>
-          <button onClick={onConfirm} disabled={loading} style={{padding:'8px 16px',background:'#ff5757',color:'#fff',border:'none',borderRadius:8,cursor:'pointer',fontSize:13,fontWeight:500}}>
+          <button onClick={onCancel} style={{padding:'8px 16px',background:'#1e2535',color:'rgba(255,255,255,0.7)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:8,cursor:'pointer',fontSize:13}}>Cancel</button>
+          <button onClick={onConfirm} disabled={loading} style={{padding:'8px 16px',background:'#ff4d6a',color:'#fff',border:'none',borderRadius:8,cursor:'pointer',fontSize:13,fontWeight:500}}>
             {loading?'Deleting…':'Delete forever'}
           </button>
         </div>
@@ -164,7 +164,7 @@ function SBadge({ status }) {
   const fail=['missing','fail','error','listed','not signed','not configured'].some(p=>s.includes(p))
   const warn=!pass&&!fail
   return (
-    <span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:`rgba(${pass?'16,185,129':fail?'239,68,68':'245,158,11'},0.15)`,color:pass?'#10e898':fail?'#ff5757':'#ffad30',fontWeight:500,whiteSpace:'nowrap'}}>
+    <span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:`rgba(${pass?'16,185,129':fail?'239,68,68':'245,158,11'},0.15)`,color:pass?'#00e5a0':fail?'#ff4d6a':'#ffb224',fontWeight:500,whiteSpace:'nowrap'}}>
       {status||'–'}
     </span>
   )
@@ -220,17 +220,17 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
   const critical=issues.filter(i=>i.severity==='critical')
   const warns=issues.filter(i=>i.severity==='warn')
 
-  const D={bg:'#0f1117',surface:'#16191f',surface2:'#1c2028',border:'rgba(255,255,255,0.08)',text:'#f1f5ff',muted:'#8b95b0',dim:'rgba(255,255,255,0.28)'}
-  const card={background:D.surface,border:'1px solid rgba(255,255,255,0.08)',borderRadius:12,overflow:'hidden'}
-  const cardHd={padding:'11px 16px',borderBottom:'1px solid rgba(255,255,255,0.08)',display:'flex',alignItems:'center',justifyContent:'space-between',background:D.surface2}
+  const D={bg:'#0a0d12',surface:'#161b23',surface2:'#1d2330',border:'#1e2535',text:'#f0f4ff',muted:'#8993ac',dim:'#4a5470'}
+  const card={background:D.surface,border:'1px solid #1e2535',borderRadius:12,overflow:'hidden'}
+  const cardHd={padding:'11px 16px',borderBottom:'1px solid #1e2535',display:'flex',alignItems:'center',justifyContent:'space-between',background:D.surface2}
 
   const cats=scan?[
-    {label:'DNS records',icon:Globe,color:'#4d9cff',bg:'#1e3a5f',score:scan.score_dns,max:25},
-    {label:'Email auth',icon:Mail,color:'#ff5757',bg:'#3d1515',score:scan.score_email,max:30},
-    {label:'SSL / TLS',icon:Lock,color:'#10e898',bg:'#0d2d23',score:scan.score_ssl,max:20},
-    {label:'Propagation',icon:Globe,color:'#ffad30',bg:'#3d2d0a',score:scan.score_propagation,max:10},
-    {label:'Security',icon:Shield,color:'#b57bff',bg:'#2d1f4d',score:scan.score_security,max:10},
-    {label:'Blacklists',icon:Ban,color:'#ff5757',bg:'#3d1515',score:scan.score_blacklist,max:5},
+    {label:'DNS records',icon:Globe,color:'#3d9bff',bg:'#1e3a5f',score:scan.score_dns,max:25},
+    {label:'Email auth',icon:Mail,color:'#ff4d6a',bg:'#3d1515',score:scan.score_email,max:30},
+    {label:'SSL / TLS',icon:Lock,color:'#00e5a0',bg:'#0d2d23',score:scan.score_ssl,max:20},
+    {label:'Propagation',icon:Globe,color:'#ffb224',bg:'#3d2d0a',score:scan.score_propagation,max:10},
+    {label:'Security',icon:Shield,color:'#a855f7',bg:'#2d1f4d',score:scan.score_security,max:10},
+    {label:'Blacklists',icon:Ban,color:'#ff4d6a',bg:'#3d1515',score:scan.score_blacklist,max:5},
   ]:[]
 
   const tabs=['overview','email','ssl','propagation','blacklists','dns']
@@ -252,10 +252,10 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
       `}</style>
 
       {/* ── SIDEBAR ──────────────────────────────────────────── */}
-      <div className="no-print" style={{width:220,flexShrink:0,background:D.surface,borderRight:'1px solid rgba(255,255,255,0.08)',display:'flex',flexDirection:'column'}}>
-        <div style={{padding:12,borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
+      <div className="no-print" style={{width:220,flexShrink:0,background:D.surface,borderRight:'1px solid #1e2535',display:'flex',flexDirection:'column'}}>
+        <div style={{padding:12,borderBottom:'1px solid #1e2535'}}>
           <button onClick={()=>setShowAdd(true)}
-            style={{width:'100%',padding:'8px 12px',background:'rgba(16,185,129,0.15)',border:'1px solid rgba(16,185,129,0.3)',borderRadius:8,color:'#10e898',fontSize:13,fontWeight:500,cursor:'pointer',display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}>
+            style={{width:'100%',padding:'8px 12px',background:'rgba(16,185,129,0.15)',border:'1px solid rgba(16,185,129,0.3)',borderRadius:8,color:'#00e5a0',fontSize:13,fontWeight:500,cursor:'pointer',display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}>
             <Plus size={14}/> Add domain
           </button>
         </div>
@@ -264,18 +264,18 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
           {loading?[1,2].map(i=><div key={i} style={{margin:'4px 10px',height:44,borderRadius:8,background:'rgba(255,255,255,0.04)'}}/>)
           :domains.map(d=>{
             const s=d.scan_results?.[0]; const score=s?.health_score; const isActive=selected?.id===d.id
-            const sc=score>=70?'#10e898':score>=50?'#ffad30':'#ff5757'
+            const sc=score>=70?'#00e5a0':score>=50?'#ffb224':'#ff4d6a'
             const critCount=s?.issues?.filter(i=>i.severity==='critical').length||0
             return (
               <div key={d.id} className="dsh-row" onClick={()=>{setSelected(d); onDomainSelect?.(d); setActiveTab('overview')}}
-                style={{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',cursor:'pointer',background:isActive?'rgba(16,185,129,0.07)':'transparent',borderLeft:`2px solid ${isActive?'#10e898':'transparent'}`}}>
-                <div style={{width:7,height:7,borderRadius:'50%',background:d.paused?'rgba(255,255,255,0.28)':!d.verified?'#ffad30':sc,flexShrink:0}}/>
+                style={{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',cursor:'pointer',background:isActive?'rgba(16,185,129,0.07)':'transparent',borderLeft:`2px solid ${isActive?'#00e5a0':'transparent'}`}}>
+                <div style={{width:7,height:7,borderRadius:'50%',background:d.paused?'#4a5470':!d.verified?'#ffb224':sc,flexShrink:0}}/>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:12,fontWeight:500,color:D.text,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{d.domain_name}</div>
                   <div style={{fontSize:10,color:D.muted}}>{!d.verified?'Pending verification':d.paused?'Paused':`${critCount>0?`${critCount} critical · `:''}${d.monitor_interval}`}</div>
                 </div>
                 {score!=null&&<span style={{fontSize:13,fontWeight:700,color:sc}}>{score}</span>}
-                <div onClick={e=>{e.stopPropagation();setDeleteTarget(d)}} style={{color:'rgba(255,255,255,0.28)',cursor:'pointer',padding:2}}><Trash2 size={11}/></div>
+                <div onClick={e=>{e.stopPropagation();setDeleteTarget(d)}} style={{color:'#4a5470',cursor:'pointer',padding:2}}><Trash2 size={11}/></div>
               </div>
             )
           })}
@@ -283,9 +283,9 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
         {domains.length>0&&(()=>{
           const scored=domains.filter(d=>d.scan_results?.[0])
           const avg=scored.length?Math.round(scored.reduce((a,d)=>a+(d.scan_results[0].health_score||0),0)/scored.length):0
-          const c=avg>=70?'#10e898':avg>=50?'#ffad30':'#ff5757'
+          const c=avg>=70?'#00e5a0':avg>=50?'#ffb224':'#ff4d6a'
           return (
-            <div style={{padding:'10px 14px',borderTop:'1px solid rgba(255,255,255,0.08)'}}>
+            <div style={{padding:'10px 14px',borderTop:'1px solid #1e2535'}}>
               <div style={{fontSize:10,color:D.dim,marginBottom:4}}>Fleet avg score</div>
               <div style={{fontSize:22,fontWeight:700,color:c,lineHeight:1,marginBottom:5}}>{avg||'–'}</div>
               <AnimBar pct={avg} color={c} h={3}/>
@@ -300,21 +300,21 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
         {!selected?(
           <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',flexDirection:'column',gap:16}}>
             <Shield size={56} color="rgba(255,255,255,0.06)"/>
-            <div style={{fontSize:18,fontWeight:500,color:'rgba(255,255,255,0.28)'}}>Add a domain to get started</div>
-            <button onClick={()=>setShowAdd(true)} style={{padding:'10px 24px',background:'#10e898',color:'#fff',border:'none',borderRadius:9,fontSize:14,fontWeight:500,cursor:'pointer',display:'flex',alignItems:'center',gap:7}}><Plus size={15}/> Add your first domain</button>
+            <div style={{fontSize:18,fontWeight:500,color:'#4a5470'}}>Add a domain to get started</div>
+            <button onClick={()=>setShowAdd(true)} style={{padding:'10px 24px',background:'#00e5a0',color:'#fff',border:'none',borderRadius:9,fontSize:14,fontWeight:500,cursor:'pointer',display:'flex',alignItems:'center',gap:7}}><Plus size={15}/> Add your first domain</button>
           </div>
         ):(
           <div>
             {/* ── DOMAIN HEADER ── */}
-            <div className="no-print" style={{padding:'14px 20px',borderBottom:'1px solid rgba(255,255,255,0.08)',background:D.surface}}>
+            <div className="no-print" style={{padding:'14px 20px',borderBottom:'1px solid #1e2535',background:D.surface}}>
               <div style={{display:'flex',alignItems:'flex-start',gap:16,flexWrap:'wrap'}}>
                 <div style={{flex:1}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4,flexWrap:'wrap'}}>
                     <h2 style={{fontSize:17,fontWeight:700,color:D.text,margin:0}}>{selected.domain_name}</h2>
-                    {selected.verified&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'rgba(16,185,129,0.15)',color:'#10e898',border:'1px solid rgba(16,185,129,0.25)',fontWeight:500}}>Verified</span>}
-                    {selected.paused&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'rgba(255,255,255,0.08)',color:D.muted,fontWeight:500}}>Paused</span>}
-                    {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'rgba(239,68,68,0.15)',color:'#ff5757',border:'1px solid rgba(239,68,68,0.2)',fontWeight:500}}>{critical.length} critical</span>}
-                    {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'rgba(245,158,11,0.15)',color:'#ffad30',fontWeight:500}}>{warns.length} warnings</span>}
+                    {selected.verified&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'rgba(16,185,129,0.15)',color:'#00e5a0',border:'1px solid rgba(16,185,129,0.25)',fontWeight:500}}>Verified</span>}
+                    {selected.paused&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#1e2535',color:D.muted,fontWeight:500}}>Paused</span>}
+                    {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'rgba(239,68,68,0.15)',color:'#ff4d6a',border:'1px solid rgba(239,68,68,0.2)',fontWeight:500}}>{critical.length} critical</span>}
+                    {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'rgba(245,158,11,0.15)',color:'#ffb224',fontWeight:500}}>{warns.length} warnings</span>}
                   </div>
                   <div style={{fontSize:11,color:D.muted,display:'flex',gap:14,flexWrap:'wrap',marginBottom:10}}>
                     {scan?.blacklists?.ip&&<span style={{fontFamily:'monospace',color:'rgba(255,255,255,0.3)'}}>{scan.blacklists.ip}</span>}
@@ -322,10 +322,10 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     {scan?.scanned_at&&<span>Scanned {timeAgo(scan.scanned_at)}</span>}
                   </div>
                   {/* Sub-nav tabs */}
-                  <div style={{display:'flex',gap:0,borderBottom:'1px solid rgba(255,255,255,0.08)',marginBottom:-14}}>
+                  <div style={{display:'flex',gap:0,borderBottom:'1px solid #1e2535',marginBottom:-14}}>
                     {tabs.map(t=>(
                       <button key={t} className="dsh-tab" onClick={()=>setActiveTab(t)}
-                        style={{padding:'8px 14px',background:'transparent',border:'none',borderBottom:`2px solid ${activeTab===t?'#10e898':'transparent'}`,cursor:'pointer',fontSize:12,fontWeight:activeTab===t?600:400,color:activeTab===t?'#10e898':'#8b95b0',textTransform:'capitalize',transition:'all 0.15s',marginBottom:-1}}>
+                        style={{padding:'8px 14px',background:'transparent',border:'none',borderBottom:`2px solid ${activeTab===t?'#00e5a0':'transparent'}`,cursor:'pointer',fontSize:12,fontWeight:activeTab===t?600:400,color:activeTab===t?'#00e5a0':'#8993ac',textTransform:'capitalize',transition:'all 0.15s',marginBottom:-1}}>
                         {t==='ssl'?'SSL/TLS':t==='dns'?'DNS Records':t.charAt(0).toUpperCase()+t.slice(1)}
                       </button>
                     ))}
@@ -336,7 +336,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 {/* Actions */}
                 <div style={{display:'flex',flexDirection:'column',gap:6,alignSelf:'flex-start'}}>
                   <button onClick={()=>triggerScan(selected)} disabled={scanning[selected.id]}
-                    style={{padding:'6px 14px',background:'#10e898',color:'#fff',border:'none',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:600,display:'flex',alignItems:'center',gap:5}}>
+                    style={{padding:'6px 14px',background:'#00e5a0',color:'#fff',border:'none',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:600,display:'flex',alignItems:'center',gap:5}}>
                     {scanning[selected.id]?<><div style={{width:12,height:12,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>Scanning…</>:<><RefreshCw size={12}/>Scan now</>}
                   </button>
                   <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
@@ -346,7 +346,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       {icon:FileDown,label:'PDF',fn:()=>window.print()},
                     ].map(b=>(
                       <button key={b.label} className="dsh-btn" onClick={b.fn}
-                        style={{padding:'5px 10px',background:'rgba(255,255,255,0.08)',color:'rgba(255,255,255,0.65)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:7,cursor:'pointer',fontSize:11,fontWeight:500,display:'flex',alignItems:'center',gap:4,transition:'background 0.15s'}}>
+                        style={{padding:'5px 10px',background:'#1e2535',color:'rgba(255,255,255,0.65)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:7,cursor:'pointer',fontSize:11,fontWeight:500,display:'flex',alignItems:'center',gap:4,transition:'background 0.15s'}}>
                         <b.icon size={11}/>{b.label}
                       </button>
                     ))}
@@ -365,15 +365,15 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:10}}>
                     {[
                       {label:'Health score',val:scan.health_score,color:getScoreColor(scan.health_score),sub:'out of 100',pct:scan.health_score},
-                      {label:'Critical issues',val:critical.length,color:critical.length>0?'#ff5757':'#10e898',sub:critical.length>0?'Fix immediately':'All clear',pct:Math.min(critical.length*25,100)},
-                      {label:'Blacklisted',val:`${scan.blacklists?.listed_count||0}/${scan.blacklists?.results?.length||0}`,color:(scan.blacklists?.listed_count||0)>0?'#ff5757':'#10e898',sub:'blacklists',pct:(scan.blacklists?.listed_count||0)>0?60:100},
-                      {label:'DNS records',val:scan.dns_records?.length||0,color:'#4d9cff',sub:'records found',pct:100},
+                      {label:'Critical issues',val:critical.length,color:critical.length>0?'#ff4d6a':'#00e5a0',sub:critical.length>0?'Fix immediately':'All clear',pct:Math.min(critical.length*25,100)},
+                      {label:'Blacklisted',val:`${scan.blacklists?.listed_count||0}/${scan.blacklists?.results?.length||0}`,color:(scan.blacklists?.listed_count||0)>0?'#ff4d6a':'#00e5a0',sub:'blacklists',pct:(scan.blacklists?.listed_count||0)>0?60:100},
+                      {label:'DNS records',val:scan.dns_records?.length||0,color:'#3d9bff',sub:'records found',pct:100},
                     ].map(k=>(
                       <div key={k.label} className="print-card" style={{...card,padding:'13px 16px'}}>
                         <div style={{fontSize:11,color:D.muted,marginBottom:4}}>{k.label}</div>
                         <div style={{fontSize:24,fontWeight:700,color:k.color,lineHeight:1}}>{k.val}</div>
                         <div style={{fontSize:10,color:D.dim,marginTop:4}}>{k.sub}</div>
-                        <div style={{height:3,background:'rgba(255,255,255,0.08)',borderRadius:2,marginTop:8}}>
+                        <div style={{height:3,background:'#1e2535',borderRadius:2,marginTop:8}}>
                           <div style={{height:'100%',width:`${k.pct}%`,borderRadius:2,background:k.color,transition:'width 0.8s ease'}}/>
                         </div>
                       </div>
@@ -384,7 +384,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
                     <div className="print-card" style={{...card,padding:'14px 16px'}}>
                       <div style={{fontSize:12,fontWeight:600,color:D.text,marginBottom:12,display:'flex',alignItems:'center',gap:6}}>
-                        <span style={{width:3,height:14,background:'#10e898',borderRadius:2,display:'inline-block'}}/>
+                        <span style={{width:3,height:14,background:'#00e5a0',borderRadius:2,display:'inline-block'}}/>
                         Score history
                       </div>
                       <ScoreHistoryChart domainId={selected.id}/>
@@ -417,7 +417,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   <div className="print-card" style={{...card}}>
                     <div style={{...cardHd}}>
                       <span style={{fontSize:12,fontWeight:600,color:D.text}}>DMARC enforcement journey</span>
-                      <span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(239,68,68,0.15)',color:'#ff5757'}}>
+                      <span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(239,68,68,0.15)',color:'#ff4d6a'}}>
                         Currently: p={scan.email_auth?.dmarc_raw?.match(/p=(\w+)/)?.[1]||'none'}
                       </span>
                     </div>
@@ -432,8 +432,8 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     <div style={{...cardHd}}>
                       <span style={{fontSize:12,fontWeight:600,color:D.text}}>Issues to fix</span>
                       <div style={{display:'flex',gap:5}}>
-                        {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(239,68,68,0.15)',color:'#ff5757'}}>{critical.length} critical</span>}
-                        {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(245,158,11,0.15)',color:'#ffad30'}}>{warns.length} warnings</span>}
+                        {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(239,68,68,0.15)',color:'#ff4d6a'}}>{critical.length} critical</span>}
+                        {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(245,158,11,0.15)',color:'#ffb224'}}>{warns.length} warnings</span>}
                       </div>
                     </div>
                     {issues.length===0?(
@@ -441,12 +441,12 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     ):issues.map((iss,i)=>(
                       <div key={i} className="dsh-issue" style={{display:'flex',alignItems:'flex-start',gap:12,padding:'10px 16px',borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
                         <div style={{width:22,height:22,borderRadius:6,background:`rgba(${iss.severity==='critical'?'239,68,68':iss.severity==='warn'?'245,158,11':'96,165,250'},0.15)`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1}}>
-                          <AlertTriangle size={11} color={iss.severity==='critical'?'#ff5757':iss.severity==='warn'?'#ffad30':'#4d9cff'}/>
+                          <AlertTriangle size={11} color={iss.severity==='critical'?'#ff4d6a':iss.severity==='warn'?'#ffb224':'#3d9bff'}/>
                         </div>
                         <div style={{flex:1}}>
                           <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
                             <span style={{fontSize:12,fontWeight:700,color:D.text,fontFamily:'monospace'}}>{iss.type}</span>
-                            <span style={{fontSize:10,padding:'1px 6px',borderRadius:8,background:`rgba(${iss.severity==='critical'?'239,68,68':iss.severity==='warn'?'245,158,11':'96,165,250'},0.15)`,color:iss.severity==='critical'?'#ff5757':iss.severity==='warn'?'#ffad30':'#4d9cff'}}>{iss.severity}</span>
+                            <span style={{fontSize:10,padding:'1px 6px',borderRadius:8,background:`rgba(${iss.severity==='critical'?'239,68,68':iss.severity==='warn'?'245,158,11':'96,165,250'},0.15)`,color:iss.severity==='critical'?'#ff4d6a':iss.severity==='warn'?'#ffb224':'#3d9bff'}}>{iss.severity}</span>
                           </div>
                           <div style={{fontSize:11,color:D.muted,marginBottom:iss.fix?4:0}}>{iss.message}</div>
                           {iss.fix&&<div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',padding:'3px 8px',background:'rgba(16,185,129,0.06)',borderRadius:5,display:'inline-block',wordBreak:'break-all'}}>{iss.fix}</div>}
@@ -464,7 +464,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
                       {['1h','6h','24h','off'].map(iv=>(
                         <button key={iv} onClick={()=>updateInterval(selected.id,iv)}
-                          style={{padding:'7px 16px',background:selected.monitor_interval===iv?'rgba(16,185,129,0.15)':'rgba(255,255,255,0.04)',border:`1px solid ${selected.monitor_interval===iv?'rgba(16,185,129,0.4)':'rgba(255,255,255,0.08)'}`,borderRadius:8,color:selected.monitor_interval===iv?'#10e898':'#8b95b0',fontSize:12,fontWeight:500,cursor:'pointer'}}>
+                          style={{padding:'7px 16px',background:selected.monitor_interval===iv?'rgba(16,185,129,0.15)':'rgba(255,255,255,0.04)',border:`1px solid ${selected.monitor_interval===iv?'rgba(16,185,129,0.4)':'#1e2535'}`,borderRadius:8,color:selected.monitor_interval===iv?'#00e5a0':'#8993ac',fontSize:12,fontWeight:500,cursor:'pointer'}}>
                           {iv==='off'?'Off (manual)':iv==='1h'?'Every hour':iv==='6h'?'Every 6 hours':'Every 24 hours'}
                         </button>
                       ))}
@@ -491,7 +491,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                         {r.extra&&<div style={{fontSize:10,color:D.dim,marginTop:3}}>{r.extra}</div>}
                       </div>
                       <div style={{flex:1}}>
-                        {r.val&&<div style={{fontSize:11,fontFamily:'monospace',color:'#8b95b0',marginBottom:4,wordBreak:'break-all',padding:'4px 8px',background:'rgba(255,255,255,0.03)',borderRadius:5}}>{r.val}</div>}
+                        {r.val&&<div style={{fontSize:11,fontFamily:'monospace',color:'#8993ac',marginBottom:4,wordBreak:'break-all',padding:'4px 8px',background:'rgba(255,255,255,0.03)',borderRadius:5}}>{r.val}</div>}
                         {r.note&&<div style={{fontSize:11,color:D.muted,lineHeight:1.5}}>{r.note}</div>}
                         {r.suggest&&<div style={{marginTop:5,padding:'4px 8px',background:'rgba(16,185,129,0.06)',borderRadius:5,fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',wordBreak:'break-all'}}>✦ {r.suggest}</div>}
                       </div>
@@ -512,7 +512,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     <div key={i} style={{padding:'16px'}}>
                       <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12,marginBottom:12}}>
                         {[{l:'Domain',v:cert.domain},{l:'Protocol',v:cert.protocol||'TLS'},{l:'Key size',v:`${cert.key_size||'?'}-bit`},{l:'Chain',v:cert.chain_valid?'✓ Valid':'✗ Invalid'},{l:'CT log',v:cert.ct_log?'✓ Verified':'Not found'},{l:'HSTS',v:cert.hsts||'Not configured'}].map(f=>(
-                          <div key={f.l} style={{padding:'10px 12px',background:'rgba(255,255,255,0.03)',borderRadius:8,border:'1px solid rgba(255,255,255,0.08)'}}>
+                          <div key={f.l} style={{padding:'10px 12px',background:'rgba(255,255,255,0.03)',borderRadius:8,border:'1px solid #1e2535'}}>
                             <div style={{fontSize:10,color:D.dim,marginBottom:4}}>{f.l}</div>
                             <div style={{fontSize:13,fontWeight:500,color:D.text}}>{f.v}</div>
                           </div>
@@ -544,7 +544,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                           {scan.propagation.records?.map(rec=>(
                             <div key={rec.type} style={{display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:11,padding:'3px 0',borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
                               <span style={{fontFamily:'monospace',color:D.muted}}>{rec.type}</span>
-                              <div style={{width:8,height:8,borderRadius:'50%',background:rec[reg.key]==='pass'?'#10e898':'#ffad30'}}/>
+                              <div style={{width:8,height:8,borderRadius:'50%',background:rec[reg.key]==='pass'?'#00e5a0':'#ffb224'}}/>
                             </div>
                           ))}
                         </div>
@@ -552,8 +552,8 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     })}
                   </div>
                   <div style={{display:'flex',gap:16,padding:'4px 16px 14px',fontSize:11,color:D.muted}}>
-                    <span style={{display:'flex',alignItems:'center',gap:5}}><div style={{width:7,height:7,borderRadius:'50%',background:'#10e898'}}/> Consistent</span>
-                    <span style={{display:'flex',alignItems:'center',gap:5}}><div style={{width:7,height:7,borderRadius:'50%',background:'#ffad30'}}/> Inconsistent</span>
+                    <span style={{display:'flex',alignItems:'center',gap:5}}><div style={{width:7,height:7,borderRadius:'50%',background:'#00e5a0'}}/> Consistent</span>
+                    <span style={{display:'flex',alignItems:'center',gap:5}}><div style={{width:7,height:7,borderRadius:'50%',background:'#ffb224'}}/> Inconsistent</span>
                   </div>
                 </div>
               )}
@@ -562,7 +562,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               {activeTab==='blacklists'&&scan?.blacklists&&(
                 <div style={{display:'flex',flexDirection:'column',gap:12}}>
                   <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10}}>
-                    {[{l:'IP address',v:scan.blacklists.ip||'–',c:'#b57bff'},{l:'Lists checked',v:scan.blacklists.results?.length||0,c:'#4d9cff'},{l:'Listed on',v:scan.blacklists.listed_count||0,c:(scan.blacklists.listed_count||0)>0?'#ff5757':'#10e898'}].map(s=>(
+                    {[{l:'IP address',v:scan.blacklists.ip||'–',c:'#a855f7'},{l:'Lists checked',v:scan.blacklists.results?.length||0,c:'#3d9bff'},{l:'Listed on',v:scan.blacklists.listed_count||0,c:(scan.blacklists.listed_count||0)>0?'#ff4d6a':'#00e5a0'}].map(s=>(
                       <div key={s.l} style={{...card,padding:'14px 16px'}}>
                         <div style={{fontSize:11,color:D.muted,marginBottom:4}}>{s.l}</div>
                         <div style={{fontSize:24,fontWeight:700,color:s.c}}>{s.v}</div>
@@ -574,10 +574,10 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     <div style={{display:'grid',gridTemplateColumns:'1fr 1fr'}}>
                       {scan.blacklists.results?.map((bl,i)=>(
                         <div key={bl.name} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'9px 16px',borderBottom:`1px solid rgba(255,255,255,0.04)`,background:bl.listed?'rgba(239,68,68,0.04)':'transparent'}}>
-                          <span style={{fontSize:11,fontFamily:'monospace',color:bl.listed?'#ff5757':'rgba(255,255,255,0.35)'}}>{bl.name}</span>
+                          <span style={{fontSize:11,fontFamily:'monospace',color:bl.listed?'#ff4d6a':'rgba(255,255,255,0.35)'}}>{bl.name}</span>
                           <div style={{display:'flex',alignItems:'center',gap:5}}>
-                            <div style={{width:6,height:6,borderRadius:'50%',background:bl.listed?'#ff5757':'#10e898'}}/>
-                            <span style={{fontSize:10,color:bl.listed?'#ff5757':'#10e898',fontWeight:500}}>{bl.listed?'Listed':'Clean'}</span>
+                            <div style={{width:6,height:6,borderRadius:'50%',background:bl.listed?'#ff4d6a':'#00e5a0'}}/>
+                            <span style={{fontSize:10,color:bl.listed?'#ff4d6a':'#00e5a0',fontWeight:500}}>{bl.listed?'Listed':'Clean'}</span>
                           </div>
                         </div>
                       ))}
@@ -598,15 +598,15 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       <thead>
                         <tr style={{background:'rgba(255,255,255,0.02)'}}>
                           {['Type','Value','TTL','Status'].map(h=>(
-                            <th key={h} style={{textAlign:'left',padding:'8px 16px',fontSize:10,fontWeight:600,color:D.muted,textTransform:'uppercase',letterSpacing:'0.06em',borderBottom:'1px solid rgba(255,255,255,0.08)'}}>{h}</th>
+                            <th key={h} style={{textAlign:'left',padding:'8px 16px',fontSize:10,fontWeight:600,color:D.muted,textTransform:'uppercase',letterSpacing:'0.06em',borderBottom:'1px solid #1e2535'}}>{h}</th>
                           ))}
                         </tr>
                       </thead>
                       <tbody>
                         {scan.dns_records.map((r,i)=>(
                           <tr key={i} style={{borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
-                            <td style={{padding:'9px 16px'}}><span style={{fontSize:10,padding:'2px 8px',borderRadius:5,background:'rgba(96,165,250,0.15)',color:'#4d9cff',fontFamily:'monospace',fontWeight:700}}>{r.type}</span></td>
-                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'#8b95b0',fontSize:11,maxWidth:380,wordBreak:'break-all'}}>{r.value}</td>
+                            <td style={{padding:'9px 16px'}}><span style={{fontSize:10,padding:'2px 8px',borderRadius:5,background:'rgba(96,165,250,0.15)',color:'#3d9bff',fontFamily:'monospace',fontWeight:700}}>{r.type}</span></td>
+                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'#8993ac',fontSize:11,maxWidth:380,wordBreak:'break-all'}}>{r.value}</td>
                             <td style={{padding:'9px 16px',fontFamily:'monospace',color:D.muted,fontSize:11,whiteSpace:'nowrap'}}>{r.ttl}s</td>
                             <td style={{padding:'9px 16px'}}><SBadge status={r.status||'Pass'}/></td>
                           </tr>
