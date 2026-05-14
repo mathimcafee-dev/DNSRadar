@@ -414,7 +414,7 @@ function EmailHeaderAnalyser() {
               style={{ width:'100%', padding:'10px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12,color:'#374151', outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
           </div>
           <button onClick={analyse} disabled={!header}
-            style={{ padding:'8px 20px', background:'#ede9fe', border:'1px solid #c4b5fd', borderRadius:7, color:'#4338ca', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !header ? 0.5 : 1, marginBottom:12 }}>
+            style={{ padding:'8px 20px', background:'#ede9fe', border:'1px solid #c4b5fd', borderRadius:7, color:'#1e1b4b', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !header ? 0.5 : 1, marginBottom:12 }}>
             <Zap size={13}/> Analyse header
           </button>
           {result && (
@@ -678,7 +678,7 @@ function DKIMRotation() {
               <div style={{ fontSize:12,color:'#374151', marginBottom:8, fontWeight:500, textTransform:'uppercase', letterSpacing:'0.06em' }}>Active DKIM selectors found</div>
               {selectors.map(s => (
                 <div key={s.selector} style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid #e5e7eb', marginBottom:6 }}>
-                  <code style={{ fontSize:12, color:'#4338ca', fontWeight:600 }}>{s.selector}</code>
+                  <code style={{ fontSize:12, color:'#1e1b4b', fontWeight:600 }}>{s.selector}</code>
                   <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background: s.key_size >= 2048 ? '#dcfce7' : 'rgba(245,158,11,0.12)', color: s.key_size >= 2048 ? '#00e5a0' : '#ffb224', fontWeight:600 }}>{s.key_size || '?'}-bit</span>
                   <span style={{ fontSize:12,color:'#374151' }}>TTL {s.ttl}s</span>
                   {s.key_size < 2048 && <span style={{ fontSize:10, color:'#92400e', marginLeft:'auto' }}>⚠️ Upgrade to 2048-bit</span>}
@@ -753,7 +753,7 @@ function BIMIChecker() {
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&check()}
             placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
-          <button onClick={check} disabled={loading||!domain.trim()} style={{ padding:'8px 16px', background:'#ede9fe', border:'1px solid #c4b5fd', borderRadius:7, color:'#4338ca', fontSize:12, fontWeight:600, cursor:'pointer' }}>
+          <button onClick={check} disabled={loading||!domain.trim()} style={{ padding:'8px 16px', background:'#ede9fe', border:'1px solid #c4b5fd', borderRadius:7, color:'#1e1b4b', fontSize:12, fontWeight:600, cursor:'pointer' }}>
             {loading ? 'Checking…' : 'Check BIMI'}
           </button>
         </div>

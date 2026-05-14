@@ -105,7 +105,7 @@ export default function Settings({ user }) {
                 ].map(([m,ep,desc]) => (
                   <div key={ep} style={{ display:'flex', gap:10, marginBottom:4 }}>
                     <span style={{ color:'#3730a3', width:30 }}>{m}</span>
-                    <span style={{ color:'rgba(16,185,129,0.7)', flex:1 }}>{ep}</span>
+                    <span style={{ color:'#15803d', flex:1 }}>{ep}</span>
                     <span style={{ color:'#374151' }}>{desc}</span>
                   </div>
                 ))}

@@ -41,7 +41,7 @@ export default function DmarcJourney({ currentPolicy, onGenerate }) {
                 <div style={{ fontSize:12, fontWeight:active ? 600 : 400, color: active ? step.color : done ? '#10b981' : 'rgba(255,255,255,0.3)' }}>
                   {step.label}
                 </div>
-                <div style={{ fontSize:10, color:'rgba(255,255,255,0.25)', marginTop:2 }}>{step.risk}</div>
+                <div style={{ fontSize:10, color:'#9ca3af', marginTop:2 }}>{step.risk}</div>
               </div>
               {i < STEPS.length - 1 && (
                 <div style={{ flex:1, height:2, background: i < currentIdx ? 'rgba(16,185,129,0.4)' : 'rgba(255,255,255,0.08)', margin:'0 8px', marginBottom:28 }}/>
@@ -58,9 +58,9 @@ export default function DmarcJourney({ currentPolicy, onGenerate }) {
             <div style={{ fontSize:12, fontWeight:600, color:current.color, marginBottom:3 }}>
               Current: p={current.key} — {current.risk}
             </div>
-            <div style={{ fontSize:11, color:'rgba(255,255,255,0.5)' }}>{current.desc}</div>
+            <div style={{ fontSize:11, color:'#6b7280' }}>{current.desc}</div>
             {next && (
-              <div style={{ fontSize:11, color:'rgba(255,255,255,0.4)', marginTop:4, display:'flex', alignItems:'center', gap:4 }}>
+              <div style={{ fontSize:11, color:'#6b7280', marginTop:4, display:'flex', alignItems:'center', gap:4 }}>
                 <ArrowRight size={10}/>
                 Next: upgrade to <strong style={{ color:next.color }}>p={next.key}</strong> for {next.risk.toLowerCase()}
               </div>
@@ -68,12 +68,12 @@ export default function DmarcJourney({ currentPolicy, onGenerate }) {
           </div>
           {next && (
             <button onClick={() => onGenerate && onGenerate(next.key)}
-              style={{ padding:'7px 14px', background:'rgba(16,185,129,0.15)', color:'#10b981', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, whiteSpace:'nowrap', flexShrink:0 }}>
+              style={{ padding:'7px 14px', background:'rgba(16,185,129,0.15)', color:'#15803d', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, whiteSpace:'nowrap', flexShrink:0 }}>
               <Wand2 size={12}/> Generate p={next.key}
             </button>
           )}
           {!next && (
-            <div style={{ fontSize:12, color:'#10b981', display:'flex', alignItems:'center', gap:5, fontWeight:500 }}>
+            <div style={{ fontSize:12, color:'#15803d', display:'flex', alignItems:'center', gap:5, fontWeight:500 }}>
               <CheckCircle size={14}/> Fully enforced
             </div>
           )}

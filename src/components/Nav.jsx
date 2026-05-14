@@ -36,7 +36,7 @@ export default function Nav({ page, setPage, alertCount = 0 }) {
             </button>
             {menuOpen && (
               <div style={{ position:'absolute',right:0,top:'110%',width:200,background:'#1a2035',border:'1px solid rgba(255,255,255,0.1)',borderRadius:10,boxShadow:'0 12px 32px rgba(0,0,0,0.4)',padding:'4px 0',zIndex:200 }}>
-                <div style={{ padding:'8px 14px 6px',fontSize:11,color:'rgba(255,255,255,0.4)' }}>{user.email}</div>
+                <div style={{ padding:'8px 14px 6px',fontSize:11,color:'#374151' }}>{user.email}</div>
                 <hr style={{ border:'none',borderTop:'1px solid rgba(255,255,255,0.08)',margin:'4px 0' }}/>
                 <button onClick={() => { setPage('settings');setMenuOpen(false) }} style={{ width:'100%',display:'flex',alignItems:'center',gap:8,padding:'8px 14px',background:'none',border:'none',cursor:'pointer',fontSize:13,color:'rgba(255,255,255,0.7)' }}><Settings size={13}/> Settings</button>
                 <button onClick={() => { signOut();setMenuOpen(false) }} style={{ width:'100%',display:'flex',alignItems:'center',gap:8,padding:'8px 14px',background:'none',border:'none',cursor:'pointer',fontSize:13,color:'#ef4444' }}><LogOut size={13}/> Sign out</button>
