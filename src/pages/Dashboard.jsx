@@ -425,7 +425,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     </div>
                     <DmarcJourney
                       currentPolicy={scan.email_auth?.dmarc_raw?.match(/p=(\w+)/)?.[1]||'none'}
-                      onGenerate={()=>setPage('tools')}
+                      onGenerate={()=>setPage('dmarc')}
                     />
                   </div>
 

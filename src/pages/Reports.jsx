@@ -3,15 +3,15 @@ import { supabase } from '../lib/supabase'
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import { Upload, AlertTriangle, CheckCircle, ShieldOff, Globe, Mail } from 'lucide-react'
 
-const D = { bg:'#0a0d12', s:'#161b23', s2:'#1d2330', b:'#1e2535', t:'#f0f4ff', m:'#8993ac', d:'#4a5470' }
-const card = { background:D.s, border:'1px solid #1e2535', borderRadius:12, overflow:'hidden' }
+const D = { bg:'#f7f8fa', s:'#ffffff', s2:'#f9fafb', b:'#e5e7eb', t:'#111827', m:'#6b7280', d:'#9ca3af' }
+const card = { background:D.s, border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden' }
 const cardHd = { padding:'11px 16px', borderBottom:'1px solid #1e2535', display:'flex', alignItems:'center', justifyContent:'space-between', background:D.s2 }
 
 const TTip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
   return (
-    <div style={{ background:'#1d2330', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'10px 14px', fontSize:11 }}>
-      <div style={{ color:'#8993ac', marginBottom:5 }}>{label}</div>
+    <div style={{ background:'#f9fafb', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'10px 14px', fontSize:11 }}>
+      <div style={{ color:'#6b7280', marginBottom:5 }}>{label}</div>
       {payload.map((p,i) => <div key={i} style={{ color:p.color, marginBottom:2 }}>{p.name}: {p.value?.toLocaleString()}</div>)}
     </div>
   )
@@ -100,7 +100,7 @@ export default function Reports({ user }) {
   }))
 
   return (
-    <div style={{ background:D.bg, minHeight:'100%', padding:20, fontFamily:"'DM Sans','Inter',system-ui,sans-serif" }}>
+    <div style={{ background:'#f7f8fa', minHeight:'100%', padding:20, fontFamily:"'DM Sans','Inter',system-ui,sans-serif" }}>
       {/* Header */}
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
         <div>
@@ -110,7 +110,7 @@ export default function Reports({ user }) {
         <div style={{ display:'flex', gap:8 }}>
           {domains.length > 1 && (
             <select value={selectedDomain} onChange={e=>setSelectedDomain(e.target.value)}
-              style={{ padding:'7px 12px', background:D.s, border:'1px solid #1e2535', borderRadius:8, fontSize:12, color:D.t, outline:'none' }}>
+              style={{ padding:'7px 12px', background:D.s, border:'1px solid #e5e7eb', borderRadius:8, fontSize:12, color:D.t, outline:'none' }}>
               {domains.map(d=><option key={d.id} value={d.id}>{d.domain_name}</option>)}
             </select>
           )}
@@ -130,14 +130,14 @@ export default function Reports({ user }) {
               Paste the raw XML content from a DMARC aggregate report. Mail servers (Google, Microsoft, Yahoo) send these to the <code style={{ fontFamily:'monospace', color:'#00e5a0' }}>rua=</code> address in your DMARC record. Add <code style={{ fontFamily:'monospace', color:'#00e5a0' }}>rua=mailto:reports@dnsradar.easysecurity.in</code> to your DMARC record to receive them automatically.
             </div>
             <textarea value={xmlInput} onChange={e=>setXmlInput(e.target.value)} rows={8} placeholder="<?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?><feedback>..."
-              style={{ width:'100%', padding:'10px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #1e2535', borderRadius:7, fontSize:11, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
+              style={{ width:'100%', padding:'10px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:11, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
             {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(16,185,129,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'#00e5a0':'#ff4d6a', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
             <div style={{ display:'flex', gap:8, marginTop:8 }}>
               <button onClick={uploadReport} disabled={uploading||!xmlInput}
                 style={{ padding:'7px 16px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', opacity:!xmlInput?0.5:1 }}>
                 {uploading?'Parsing…':'Parse & import'}
               </button>
-              <button onClick={()=>{setUploadXML(false);setXmlInput('')}} style={{ padding:'7px 14px', background:'#1e2535', color:D.m, border:'1px solid #1e2535', borderRadius:7, fontSize:12, cursor:'pointer' }}>Cancel</button>
+              <button onClick={()=>{setUploadXML(false);setXmlInput('')}} style={{ padding:'7px 14px', background:'#e5e7eb', color:D.m, border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, cursor:'pointer' }}>Cancel</button>
             </div>
           </div>
         </div>
@@ -186,8 +186,8 @@ export default function Reports({ user }) {
                     <linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#ef4444" stopOpacity={0.15}/><stop offset="95%" stopColor="#ef4444" stopOpacity={0}/></linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false}/>
-                  <XAxis dataKey="date" tick={{ fill:'rgba(255,255,255,0.3)', fontSize:9 }} axisLine={false} tickLine={false}/>
-                  <YAxis tick={{ fill:'rgba(255,255,255,0.3)', fontSize:9 }} axisLine={false} tickLine={false}/>
+                  <XAxis dataKey="date" tick={{ fill:'#9ca3af', fontSize:9 }} axisLine={false} tickLine={false}/>
+                  <YAxis tick={{ fill:'#9ca3af', fontSize:9 }} axisLine={false} tickLine={false}/>
                   <Tooltip content={<TTip/>}/>
                   <Area type="monotone" dataKey="compliant" name="Compliant" stroke="#10b981" strokeWidth={2} fill="url(#gc)"/>
                   <Area type="monotone" dataKey="failing" name="Failing" stroke="#ef4444" strokeWidth={2} fill="url(#gf)"/>
@@ -228,7 +228,7 @@ export default function Reports({ user }) {
                     const rate = s.count > 0 ? Math.round((s.pass/s.count)*100) : 0
                     const isKnown = s.name !== sources.find(src=>src.source_ip===s.name)?.source_ip
                     return (
-                      <tr key={i} style={{ borderBottom:`1px solid rgba(255,255,255,0.04)` }}>
+                      <tr key={i} style={{ borderBottom:`1px solid #f9fafb` }}>
                         <td style={{ padding:'9px 14px' }}>
                           <div style={{ fontSize:12, fontWeight:500, color:D.t }}>{s.name}</div>
                         </td>
@@ -237,7 +237,7 @@ export default function Reports({ user }) {
                         <td style={{ padding:'9px 14px', color:s.fail>0?'#ff4d6a':D.d, fontFamily:'monospace' }}>{s.fail.toLocaleString()}</td>
                         <td style={{ padding:'9px 14px' }}>
                           <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                            <div style={{ height:5, width:60, background:'#1e2535', borderRadius:3, overflow:'hidden' }}>
+                            <div style={{ height:5, width:60, background:'#e5e7eb', borderRadius:3, overflow:'hidden' }}>
                               <div style={{ height:'100%', width:`${rate}%`, background:rate>=90?'#00e5a0':rate>=70?'#ffb224':'#ff4d6a', borderRadius:3 }}/>
                             </div>
                             <span style={{ fontSize:11, color:rate>=90?'#00e5a0':rate>=70?'#ffb224':'#ff4d6a', fontWeight:600 }}>{rate}%</span>
@@ -260,7 +260,7 @@ export default function Reports({ user }) {
           <div style={card}>
             <div style={{ ...cardHd }}><span style={{ fontSize:12, fontWeight:600, color:D.t }}>Individual reports ({reports.length})</span></div>
             {reports.map(r=>(
-              <div key={r.id} style={{ display:'flex', alignItems:'center', gap:14, padding:'10px 16px', borderBottom:`1px solid rgba(255,255,255,0.04)` }}>
+              <div key={r.id} style={{ display:'flex', alignItems:'center', gap:14, padding:'10px 16px', borderBottom:`1px solid #f9fafb` }}>
                 <div style={{ flex:1 }}>
                   <div style={{ fontSize:12, fontWeight:500, color:D.t }}>{r.org_name || 'Unknown sender'}</div>
                   <div style={{ fontSize:10, color:D.d }}>{r.report_date} · {r.email}</div>

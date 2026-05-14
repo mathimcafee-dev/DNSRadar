@@ -3,9 +3,9 @@ import { Key, Plus, Trash2, Eye, EyeOff, Copy, Check, Users, Mail, Bell, LogOut,
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 
-const D = { bg:'#0a0d12',surface:'#161b23',surface2:'#1d2330',border:'#1e2535',text:'#f0f4ff',muted:'#8993ac',dim:'#4a5470' }
-const card = { background:D.surface, border:'1px solid #1e2535', borderRadius:12, overflow:'hidden', marginBottom:16 }
-const cardHd = { padding:'12px 16px', borderBottom:'1px solid #1e2535', background:D.surface2, fontSize:12, fontWeight:600, color:D.text, display:'flex', alignItems:'center', gap:7 }
+const D = { bg:'#f7f8fa', surface:'#ffffff', surface2:'#f9fafb', border:'#e5e7eb', text:'#111827', muted:'#6b7280', dim:'#9ca3af' }
+const card = { background:D.surface, border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden', marginBottom:16 }
+const cardHd = { padding:'12px 16px', borderBottom:'1px solid #f0f2f5', display:'flex', alignItems:'center', justifyContent:'space-between', background:'#fafafa' }
 
 function CopyBtn({ text }) {
   const [c,setC]=useState(false)
@@ -74,7 +74,7 @@ export default function Settings({ user }) {
   }
 
   return (
-    <div style={{ background:D.bg, minHeight:'100%', padding:20, fontFamily:"'DM Sans','Inter',system-ui,sans-serif", maxWidth:800 }}>
+    <div style={{ background:'#f7f8fa', minHeight:'100%', padding:20, fontFamily:"'DM Sans','Inter',system-ui,sans-serif", maxWidth:800 }}>
       <h2 style={{ fontSize:17, fontWeight:700, color:D.text, marginBottom:20 }}>Settings</h2>
 
       {/* Tabs */}
@@ -93,7 +93,7 @@ export default function Settings({ user }) {
             <div style={{ ...cardHd }}><Key size={13} color="#10b981"/> API keys</div>
             <div style={{ padding:16 }}>
               <div style={{ fontSize:12, color:D.muted, marginBottom:12, lineHeight:1.6 }}>
-                Use API keys to access DomainRadar programmatically. Include as <code style={{ fontFamily:'monospace', background:'#1e2535', padding:'1px 6px', borderRadius:4 }}>Authorization: Bearer YOUR_KEY</code> header.
+                Use API keys to access DomainRadar programmatically. Include as <code style={{ fontFamily:'monospace', background:'#e5e7eb', padding:'1px 6px', borderRadius:4 }}>Authorization: Bearer YOUR_KEY</code> header.
               </div>
               {/* Endpoint docs */}
               <div style={{ background:'rgba(0,0,0,0.25)', borderRadius:8, padding:'12px 14px', marginBottom:16, fontFamily:'monospace', fontSize:11 }}>
@@ -113,7 +113,7 @@ export default function Settings({ user }) {
               {/* Create new key */}
               <div style={{ display:'flex', gap:8, marginBottom:16 }}>
                 <input value={newKeyName} onChange={e => setNewKeyName(e.target.value)} placeholder="Key name (e.g. CI/CD pipeline)"
-                  style={{ flex:1, padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #1e2535', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
+                  style={{ flex:1, padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
                   onKeyDown={e => e.key==='Enter'&&createApiKey()}/>
                 <button onClick={createApiKey} disabled={!newKeyName.trim()}
                   style={{ padding:'8px 16px', background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'#00e5a0', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
@@ -133,13 +133,13 @@ export default function Settings({ user }) {
               )}
               {/* Keys list */}
               {apiKeys.map(k => (
-                <div key={k.id} style={{ display:'flex', alignItems:'center', gap:12, padding:'9px 0', borderBottom:`1px solid rgba(255,255,255,0.04)` }}>
+                <div key={k.id} style={{ display:'flex', alignItems:'center', gap:12, padding:'9px 0', borderBottom:`1px solid #f9fafb` }}>
                   <Key size={13} color={k.revoked?D.dim:'#00e5a0'}/>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:12, fontWeight:500, color:k.revoked?D.dim:D.text }}>{k.name}</div>
                     <div style={{ fontSize:10, color:D.dim, fontFamily:'monospace' }}>{k.key_prefix}… · {k.request_count||0} requests · {k.last_used_at?`Last used ${new Date(k.last_used_at).toLocaleDateString()}`:'Never used'}</div>
                   </div>
-                  {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'#1e2535', color:D.dim }}>Revoked</span>
+                  {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'#e5e7eb', color:D.dim }}>Revoked</span>
                     : <button onClick={() => revokeKey(k.id)} style={{ padding:'4px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'#ff4d6a', fontSize:11, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}><Trash2 size={10}/> Revoke</button>}
                 </div>
               ))}
@@ -160,7 +160,7 @@ export default function Settings({ user }) {
               <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Display name</label>
               <input value={profile.full_name||''} onChange={e => setProfile(p => ({ ...p, full_name: e.target.value }))}
                 placeholder="Your name"
-                style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #1e2535', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={saveProfile} disabled={saving}
@@ -191,7 +191,7 @@ export default function Settings({ user }) {
               <label style={{ fontSize:11, color:D.muted, display:'block', marginBottom:5 }}>Webhook URL (Slack, Teams, custom)</label>
               <input value={profile.alert_webhook||''} onChange={e => setProfile(p => ({ ...p, alert_webhook: e.target.value }))}
                 placeholder="https://hooks.slack.com/services/..."
-                style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #1e2535', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'monospace' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'monospace' }}/>
             </div>
             <button onClick={saveProfile} disabled={saving}
               style={{ padding:'8px 18px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
@@ -213,10 +213,10 @@ function TeamSection({ user }) {
   const [role, setRole] = useState('viewer')
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
-  const D = { surface:'#161b23', surface2:'#1d2330', border:'#1e2535', text:'#f0f4ff', muted:'#8993ac', dim:'#4a5470' }
-  const card = { background:D.surface, border:'1px solid #1e2535', borderRadius:12, overflow:'hidden' }
+  const D = { surface:'#ffffff', surface2:'#f9fafb', border:'#e5e7eb', text:'#111827', muted:'#6b7280', dim:'#9ca3af' }
+  const card = { background:'#ffffff', border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }
   const cardHd = { padding:'11px 16px', borderBottom:'1px solid #1e2535', display:'flex', alignItems:'center', gap:7, background:D.surface2, fontSize:13, fontWeight:600, color:D.text }
-  const input = { width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #1e2535', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
+  const input = { width:'100%', padding:'8px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
 
   useEffect(() => { load() }, [user.id])
 
@@ -261,7 +261,7 @@ function TeamSection({ user }) {
         {members.length === 0 ? (
           <div style={{ textAlign:'center', padding:'24px', color:D.dim, fontSize:12 }}>No team members yet. Invite someone above.</div>
         ) : members.map(m => (
-          <div key={m.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid #1e2535', marginBottom:6 }}>
+          <div key={m.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid #e5e7eb', marginBottom:6 }}>
             <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(59,130,246,0.15)', color:'#3d9bff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0 }}>{m.member_email?.[0]?.toUpperCase()}</div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontSize:12, fontWeight:500, color:D.text, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{m.member_email}</div>

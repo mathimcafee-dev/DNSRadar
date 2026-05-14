@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { Lock, RefreshCw, ChevronDown, ChevronUp, Search, Trash2, Plus } from 'lucide-react'
 
-const D = { bg:'#0a0d12', surface:'#0a0d12', surface2:'#1d2330', border:'#1e2535', text:'#f0f4ff', muted:'#8993ac', dim:'#4a5470' }
-const card = { background:D.surface, border:'1px solid #1e2535', borderRadius:12, overflow:'hidden' }
+const D = { bg:'#f7f8fa', surface:'#ffffff', surface2:'#f9fafb', border:'#e5e7eb', text:'#111827', muted:'#6b7280', dim:'#9ca3af' }
+const card = { background:'#ffffff', border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }
 
 function daysColor(days) {
   if (days == null) return '#6b7280'
@@ -100,7 +100,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
               <div style={{ fontSize:11, color:D.muted, marginBottom:6, fontWeight:500 }}>Subject alt names ({sans.length})</div>
               <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
                 {sans.slice(0,12).map(s => (
-                  <span key={s} style={{ fontSize:10, fontFamily:'monospace', padding:'2px 7px', borderRadius:5, background:'rgba(255,255,255,0.04)', color:D.muted, border:'1px solid #1e2535' }}>{s}</span>
+                  <span key={s} style={{ fontSize:10, fontFamily:'monospace', padding:'2px 7px', borderRadius:5, background:'#f9fafb', color:D.muted, border:'1px solid #e5e7eb' }}>{s}</span>
                 ))}
                 {sans.length > 12 && <span style={{ fontSize:10, color:D.dim }}>+{sans.length-12} more</span>}
               </div>
@@ -116,7 +116,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
 
 function SummaryCard({ label, value, color, onClick }) {
   return (
-    <div onClick={onClick} style={{ background:D.surface, border:'1px solid #1e2535', borderRadius:10, padding:'12px 14px', cursor:onClick?'pointer':'default' }}>
+    <div onClick={onClick} style={{ background:D.surface, border:'1px solid #e5e7eb', borderRadius:10, padding:'12px 14px', cursor:onClick?'pointer':'default' }}>
       <div style={{ fontSize:22, fontWeight:700, color, marginBottom:2 }}>{value}</div>
       <div style={{ fontSize:11, color:D.muted }}>{label}</div>
     </div>
@@ -250,14 +250,14 @@ export default function SslCertificates({ user }) {
             onChange={e => setManualDomain(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && !manualScanning && scanManualDomain()}
             placeholder="Enter any domain — e.g. github.com"
-            style={{ flex:1, padding:'9px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #1e2535', borderRadius:8, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
+            style={{ flex:1, padding:'9px 12px', background:'rgba(0,0,0,0.3)', border:'1px solid #e5e7eb', borderRadius:8, fontSize:13, color:D.text, outline:'none', fontFamily:'inherit' }}
           />
           <button
             onClick={scanManualDomain}
             disabled={manualScanning || !manualDomain.trim()}
             style={{ padding:'9px 18px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:7, opacity: manualScanning || !manualDomain.trim() ? 0.6 : 1 }}>
             {manualScanning
-              ? <><div style={{ width:13, height:13, border:'2px solid rgba(255,255,255,0.3)', borderTopColor:'#fff', borderRadius:'50%', animation:'sslspin 0.7s linear infinite' }}/> Scanning…</>
+              ? <><div style={{ width:13, height:13, border:'2px solid #9ca3af', borderTopColor:'#fff', borderRadius:'50%', animation:'sslspin 0.7s linear infinite' }}/> Scanning…</>
               : <><Plus size={13}/> Check SSL</>
             }
           </button>
@@ -285,7 +285,7 @@ export default function SslCertificates({ user }) {
       {certs.length > 0 && (
         <div style={{ display:'flex', gap:6, marginBottom:14, flexWrap:'wrap' }}>
           {[['all','All'],['expiring','Expiring soon'],['issues','Issues']].map(([v,l])=>(
-            <button key={v} onClick={()=>setFilter(v)} style={{ padding:'5px 12px', background:filter===v?'rgba(16,185,129,0.12)':'rgba(255,255,255,0.04)', border:`1px solid ${filter===v?'rgba(16,185,129,0.25)':'#1e2535'}`, borderRadius:7, color:filter===v?'#00e5a0':D.muted, fontSize:12, fontWeight:filter===v?600:400, cursor:'pointer' }}>{l}</button>
+            <button key={v} onClick={()=>setFilter(v)} style={{ padding:'5px 12px', background:filter===v?'rgba(16,185,129,0.12)':'#f9fafb', border:`1px solid ${filter===v?'rgba(16,185,129,0.25)':'#e5e7eb'}`, borderRadius:7, color:filter===v?'#00e5a0':D.muted, fontSize:12, fontWeight:filter===v?600:400, cursor:'pointer' }}>{l}</button>
           ))}
         </div>
       )}
@@ -327,9 +327,9 @@ export default function SslCertificates({ user }) {
         <div style={{ marginTop:20 }}>
           <div style={{ fontSize:12, color:D.muted, marginBottom:10, fontWeight:500 }}>Tracked domains not yet scanned for SSL</div>
           {domains.filter(d=>d.verified&&!certs.find(c=>c.domain_name===d.domain_name)).map(d=>(
-            <div key={d.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', background:D.surface, border:'1px solid #1e2535', borderRadius:10, marginBottom:6 }}>
+            <div key={d.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', background:D.surface, border:'1px solid #e5e7eb', borderRadius:10, marginBottom:6 }}>
               <span style={{ fontSize:13, color:D.muted }}>{d.domain_name}</span>
-              <button onClick={()=>scanDomain(d)} disabled={scanning} style={{ padding:'5px 14px', background:'#1e2535', border:'1px solid #1e2535', borderRadius:6, color:D.muted, fontSize:11, fontWeight:500, cursor:'pointer' }}>Scan now</button>
+              <button onClick={()=>scanDomain(d)} disabled={scanning} style={{ padding:'5px 14px', background:'#e5e7eb', border:'1px solid #e5e7eb', borderRadius:6, color:D.muted, fontSize:11, fontWeight:500, cursor:'pointer' }}>Scan now</button>
             </div>
           ))}
         </div>
