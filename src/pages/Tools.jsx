@@ -102,9 +102,9 @@ function SPFGenerator() {
             <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:8 }}>Email providers</label>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6 }}>
               {PROVIDERS.map(p => (
-                <label key={p.key} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 10px', background:providers[p.key] ? 'rgba(16,185,129,0.08)' : 'rgba(255,255,255,0.03)', border:`1px solid ${providers[p.key] ? 'rgba(16,185,129,0.3)' : D.border}`, borderRadius:7, cursor:'pointer', fontSize:12, color:'#111827' }}>
+                <label key={p.key} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 10px', background:providers[p.key] ? '#f0fdf4' : '#f9fafb', border:`1px solid ${providers[p.key] ? '#86efac' : '#e5e7eb'}`, borderRadius:7, cursor:'pointer', fontSize:12, color:'#111827' }}>
                   <input type="checkbox" checked={providers[p.key]} onChange={e => setProviders(prev => ({ ...prev, [p.key]: e.target.checked }))}
-                    style={{ accentColor:'#00e5a0', width:14, height:14 }}/>
+                    style={{ accentColor:'#16a34a', width:14, height:14 }}/>
                   {p.label}
                 </label>
               ))}
@@ -120,16 +120,16 @@ function SPFGenerator() {
             <div style={{ display:'flex', gap:6 }}>
               {[['~all','SoftFail (recommended)'],['−all','HardFail (strict)'],['?all','Neutral']].map(([v, l]) => (
                 <button key={v} onClick={() => setQualifier(v)}
-                  style={{ padding:'6px 12px', background:qualifier === v ? 'rgba(16,185,129,0.15)' : '#f9fafb', border:`1px solid ${qualifier === v ? 'rgba(16,185,129,0.4)' : D.border}`, borderRadius:6, color:qualifier === v ? '#00e5a0' : D.muted, fontSize:12, cursor:'pointer', fontFamily:'monospace' }}>
+                  style={{ padding:'6px 12px', background:qualifier === v ? '#f0fdf4' : '#f9fafb', border:`1px solid ${qualifier === v ? '#16a34a' : '#e5e7eb'}`, borderRadius:6, color:qualifier === v ? '#15803d' : '#374151', fontSize:12, cursor:'pointer', fontFamily:'monospace' }}>
                   {v} <span style={{ fontFamily:'inherit', fontSize:10, opacity:0.7 }}>— {l}</span>
                 </button>
               ))}
             </div>
           </div>
           {/* Lookup counter */}
-          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12, padding:'8px 12px', background:`rgba(${lookupCount >= 8 ? '239,68,68' : lookupCount >= 6 ? '245,158,11' : '16,185,129'},0.08)`, borderRadius:7, border:`1px solid rgba(${lookupCount >= 8 ? '239,68,68' : lookupCount >= 6 ? '245,158,11' : '16,185,129'},0.2)` }}>
-            <AlertTriangle size={13} color={lookupCount >= 8 ? '#ff4d6a' : lookupCount >= 6 ? '#ffb224' : '#00e5a0'}/>
-            <span style={{ fontSize:12, color: lookupCount >= 8 ? '#ff4d6a' : lookupCount >= 6 ? '#ffb224' : '#00e5a0' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12, padding:'8px 12px', background:`lookupCount >= 8 ? '#fef2f2' : lookupCount >= 6 ? '#fffbeb' : '#f0fdf4'`, borderRadius:7, border:`1px solid lookupCount >= 8 ? '#fecaca' : lookupCount >= 6 ? '#fde68a' : '#86efac'` }}>
+            <AlertTriangle size={13} color={lookupCount >= 8 ? '#dc2626' : lookupCount >= 6 ? '#d97706' : '#15803d'}/>
+            <span style={{ fontSize:12, color: lookupCount >= 8 ? '#dc2626' : lookupCount >= 6 ? '#d97706' : '#15803d' }}>
               DNS lookups: {lookupCount}/10 {lookupCount >= 8 ? '— near limit! Consider SPF flattening' : lookupCount >= 6 ? '— getting close to RFC 7208 limit' : '— well within limit'}
             </span>
           </div>
@@ -165,7 +165,7 @@ function DMARCGenerator({ presetPolicy }) {
   }
 
   const record = build()
-  const policyColor = policy === 'reject' ? '#00e5a0' : policy === 'quarantine' ? '#ffb224' : '#ff4d6a'
+  const policyColor = policy === 'reject' ? '#16a34a' : policy === 'quarantine' ? '#d97706' : '#dc2626'
 
   return (
     <div style={card}>
@@ -190,7 +190,7 @@ function DMARCGenerator({ presetPolicy }) {
               <div style={{ display:'flex', gap:5 }}>
                 {['none','quarantine','reject'].map(p => (
                   <button key={p} onClick={() => setPolicy(p)}
-                    style={{ flex:1, padding:'7px 4px', background:policy === p ? `rgba(${p === 'reject' ? '16,185,129' : p === 'quarantine' ? '245,158,11' : '239,68,68'},0.15)` : '#f9fafb', border:`1px solid ${policy === p ? policyColor : D.border}`, borderRadius:6, color:policy === p ? policyColor : D.muted, fontSize:12, cursor:'pointer', fontWeight:policy === p ? 600 : 400 }}>
+                    style={{ flex:1, padding:'7px 4px', background:policy === p ? `rgba(${p === 'reject' ? '16,185,129' : p === 'quarantine' ? '245,158,11' : '239,68,68'},0.15)` : '#f9fafb', border:`1px solid ${policy === p ? policyColor : D.border}`, borderRadius:6, color:policy === p ? policyColor : '#374151', fontSize:12, cursor:'pointer', fontWeight:policy === p ? 600 : 400 }}>
                     {p}
                   </button>
                 ))}
@@ -304,7 +304,7 @@ function DKIMTool() {
               style={{ flex:1, padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
             <button onClick={scan} disabled={loading || !domain}
               style={{ padding:'8px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'#92400e', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !domain ? 0.5 : 1 }}>
-              {loading ? <><div style={{ width:13, height:13, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'#ffb224', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Scanning {SELECTORS.length} selectors…</> : <><Zap size={13}/> Discover</>}
+              {loading ? <><div style={{ width:13, height:13, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'#d97706', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Scanning {SELECTORS.length} selectors…</> : <><Zap size={13}/> Discover</>}
             </button>
           </div>
           <div style={{ fontSize:12,color:'#374151', marginBottom:12 }}>Checks {SELECTORS.length} known selectors via Cloudflare DoH</div>
@@ -322,7 +322,7 @@ function DKIMTool() {
                         <CheckCircle size={14} color="#10b981"/>
                         <span style={{ fontFamily:'monospace', fontSize:13, fontWeight:600, color:'#92400e' }}>{r.selector}</span>
                         <span style={{ fontSize:12,color:'#374151' }}>._domainkey.{domain}</span>
-                        {r.keySize && <span style={{ fontSize:12, padding:'2px 8px', borderRadius:8, background:r.keySize >= 2048 ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)', color:r.keySize >= 2048 ? '#00e5a0' : '#ffb224' }}>{r.keySize}-bit</span>}
+                        {r.keySize && <span style={{ fontSize:12, padding:'2px 8px', borderRadius:8, background:r.keySize >= 2048 ? '#f0fdf4' : '#fffbeb', color:r.keySize >= 2048 ? '#15803d' : '#92400e' }}>{r.keySize}-bit</span>}
                       </div>
                       <div style={{ fontFamily:'monospace', fontSize:10, color:'#374151', wordBreak:'break-all', lineHeight:1.5 }}>{r.raw?.slice(0, 120)}…</div>
                     </div>
@@ -375,7 +375,7 @@ function EmailHeaderAnalyser() {
   }
 
   const StatusDot = ({ pass, fail, label, value }) => {
-    const color = pass ? '#00e5a0' : fail ? '#ff4d6a' : '#ffb224'
+    const color = pass ? '#15803d' : fail ? '#dc2626' : '#d97706'
     const status = pass ? 'Pass' : fail ? 'Fail' : 'Unknown'
     return (
       <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'10px 14px', borderBottom:'1px solid #e5e7eb' }}>
@@ -539,13 +539,13 @@ function BulkScanner() {
                   {results.map(r => (
                     <tr key={r.domain} style={{ borderBottom:`1px solid #f9fafb` }}>
                       <td style={{ padding:'8px 12px', fontFamily:'monospace', color:'#111827' }}>{r.domain}</td>
-                      <td style={{ padding:'8px 12px', fontWeight:700, color: r.score >= 70 ? '#00e5a0' : r.score >= 50 ? '#ffb224' : r.score ? '#ff4d6a' : D.dim }}>{r.score ?? '–'}</td>
+                      <td style={{ padding:'8px 12px', fontWeight:700, color: r.score >= 70 ? '#15803d' : r.score >= 50 ? '#92400e' : r.score ? '#dc2626' : '#6b7280' }}>{r.score ?? '–'}</td>
                       {[r.spf, r.dmarc, r.ssl].map((v, i) => {
                         const p = ['pass','valid','pass'].includes(v?.toLowerCase())
                         const f = ['missing','fail','fail'].includes(v?.toLowerCase())
-                        return <td key={i} style={{ padding:'8px 12px' }}><span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${p ? '16,185,129' : f ? '239,68,68' : '245,158,11'},0.12)`, color: p ? '#00e5a0' : f ? '#ff4d6a' : '#ffb224' }}>{v ?? '–'}</span></td>
+                        return <td key={i} style={{ padding:'8px 12px' }}><span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${p ? '16,185,129' : f ? '239,68,68' : '245,158,11'},0.12)`, color: p ? '#15803d' : f ? '#dc2626' : '#92400e' }}>{v ?? '–'}</span></td>
                       })}
-                      <td style={{ padding:'8px 12px', color: r.issues > 0 ? '#ff4d6a' : '#00e5a0', fontWeight:600 }}>{r.issues ?? '–'}</td>
+                      <td style={{ padding:'8px 12px', color: r.issues > 0 ? '#dc2626' : '#15803d', fontWeight:600 }}>{r.issues ?? '–'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -590,16 +590,16 @@ function SPFFlattener() {
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&flatten()}
             placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
-          <button onClick={flatten} disabled={loading||!domain.trim()} style={{ padding:'8px 18px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
+          <button onClick={flatten} disabled={loading||!domain.trim()} style={{ padding:'8px 18px', background:'#15803d', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
             {loading ? <div style={{ width:12, height:12, border:'2px solid #9ca3af', borderTopColor:'#fff', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> : <Zap size={13}/>}
             Flatten
           </button>
         </div>
-        {error && <div style={{ fontSize:12, color:'#ff4d6a', marginBottom:10 }}>{error}</div>}
+        {error && <div style={{ fontSize:12, color:'#dc2626', marginBottom:10 }}>{error}</div>}
         {result && (
           <>
             <div style={{ display:'flex', gap:8, marginBottom:10, flexWrap:'wrap' }}>
-              {[['IPs resolved', result.ip_count, '#00e5a0'], ['Lookups after', result.lookup_count_after, result.lookup_count_after === 0 ? '#00e5a0' : '#ffb224'], ['Original lookups', '10 limit', '#6b7280']].map(([l,v,c]) => (
+              {[['IPs resolved', result.ip_count, '#15803d'], ['Lookups after', result.lookup_count_after, result.lookup_count_after === 0 ? '#15803d' : '#d97706'], ['Original lookups', '10 limit', '#6b7280']].map(([l,v,c]) => (
                 <div key={l} style={{ background:'#f9fafb', borderRadius:8, padding:'8px 12px', border:'1px solid #e5e7eb' }}>
                   <div style={{ fontSize:16, fontWeight:700, color:c }}>{v}</div>
                   <div style={{ fontSize:10, color:'#374151' }}>{l}</div>
@@ -671,7 +671,7 @@ function DKIMRotation() {
             {checking ? 'Scanning…' : 'Find selectors'}
           </button>
         </div>
-        {error && <div style={{ fontSize:12, color:'#ff4d6a', marginBottom:10 }}>{error}</div>}
+        {error && <div style={{ fontSize:12, color:'#dc2626', marginBottom:10 }}>{error}</div>}
         {selectors.length > 0 && (
           <>
             <div style={{ marginBottom:14 }}>
@@ -679,7 +679,7 @@ function DKIMRotation() {
               {selectors.map(s => (
                 <div key={s.selector} style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid #e5e7eb', marginBottom:6 }}>
                   <code style={{ fontSize:12, color:'#1e1b4b', fontWeight:600 }}>{s.selector}</code>
-                  <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background: s.key_size >= 2048 ? '#dcfce7' : 'rgba(245,158,11,0.12)', color: s.key_size >= 2048 ? '#00e5a0' : '#ffb224', fontWeight:600 }}>{s.key_size || '?'}-bit</span>
+                  <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background: s.key_size >= 2048 ? '#f0fdf4' : '#fffbeb', color: s.key_size >= 2048 ? '#15803d' : '#92400e', fontWeight:600 }}>{s.key_size || '?'}-bit</span>
                   <span style={{ fontSize:12,color:'#374151' }}>TTL {s.ttl}s</span>
                   {s.key_size < 2048 && <span style={{ fontSize:10, color:'#92400e', marginLeft:'auto' }}>⚠️ Upgrade to 2048-bit</span>}
                 </div>
@@ -757,7 +757,7 @@ function BIMIChecker() {
             {loading ? 'Checking…' : 'Check BIMI'}
           </button>
         </div>
-        {error && <div style={{ fontSize:12, color:'#ff4d6a', marginBottom:10 }}>{error}</div>}
+        {error && <div style={{ fontSize:12, color:'#dc2626', marginBottom:10 }}>{error}</div>}
         {result && (
           <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
             <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
@@ -768,7 +768,7 @@ function BIMIChecker() {
               ].map(s => (
                 <div key={s.label} style={{ flex:1, minWidth:140, padding:'10px 12px', borderRadius:8, background: s.ok ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)', border:`1px solid ${s.ok ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}` }}>
                   <div style={{ fontSize:10, color:'#374151', marginBottom:3 }}>{s.label}</div>
-                  <div style={{ fontSize:12, fontWeight:600, color: s.ok ? '#00e5a0' : '#ff4d6a' }}>{s.ok ? s.yes : s.no}</div>
+                  <div style={{ fontSize:12, fontWeight:600, color: s.ok ? '#15803d' : '#dc2626' }}>{s.ok ? s.yes : s.no}</div>
                 </div>
               ))}
             </div>
@@ -838,7 +838,7 @@ function MTASTSChecker() {
     setLoading(false)
   }
 
-  const statusDot = (ok) => <span style={{ display:'inline-block', width:8, height:8, borderRadius:'50%', background: ok ? '#00e5a0' : '#ff4d6a', marginRight:6 }}/>
+  const statusDot = (ok) => <span style={{ display:'inline-block', width:8, height:8, borderRadius:'50%', background: ok ? '#15803d' : '#dc2626', marginRight:6 }}/>
 
   return (
     <div style={card}>
@@ -856,7 +856,7 @@ function MTASTSChecker() {
             {loading ? 'Checking…' : 'Check'}
           </button>
         </div>
-        {error && <div style={{ fontSize:12, color:'#ff4d6a', marginBottom:10 }}>{error}</div>}
+        {error && <div style={{ fontSize:12, color:'#dc2626', marginBottom:10 }}>{error}</div>}
         {result && (
           <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
             <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
@@ -868,7 +868,7 @@ function MTASTSChecker() {
                 <div key={item.label} style={{ padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid #e5e7eb' }}>
                   <div style={{ fontSize:12, color:'#111827', marginBottom:item.val ? 5 : 0 }}>{statusDot(item.ok)}{item.label}</div>
                   {item.val && <div style={{ fontFamily:'monospace', fontSize:10, color:'#374151', marginTop:3, wordBreak:'break-all' }}>{item.val.slice(0,200)}</div>}
-                  {!item.ok && <div style={{ fontSize:12, color:'#ff4d6a', marginTop:3 }}>Not configured</div>}
+                  {!item.ok && <div style={{ fontSize:12, color:'#dc2626', marginTop:3 }}>Not configured</div>}
                 </div>
               ))}
             </div>
@@ -923,14 +923,14 @@ function BulkDomainImport({ user }) {
         <textarea value={text} onChange={e => setText(e.target.value)} rows={6} placeholder={'example.com\ngoogle.com\nhttps://microsoft.com/\nyourdomain.org'}
           style={{ width:'100%', padding:'10px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:8, fontSize:12, fontFamily:'monospace', color:'#111827', outline:'none', resize:'vertical', boxSizing:'border-box', marginBottom:10 }}/>
         {!user && <div style={{ fontSize:12, color:'#92400e', marginBottom:10 }}>⚠️ Sign in to import domains to your account</div>}
-        <button onClick={importDomains} disabled={importing || !text.trim() || !user} style={{ padding:'8px 18px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', marginBottom: results.length ? 14 : 0 }}>
+        <button onClick={importDomains} disabled={importing || !text.trim() || !user} style={{ padding:'8px 18px', background:'#15803d', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', marginBottom: results.length ? 14 : 0 }}>
           {importing ? 'Importing…' : 'Import domains'}
         </button>
         {results.length > 0 && (
           <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
             {results.map(r => (
               <div key={r.domain} style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 10px', background:`rgba(${r.ok ? '16,185,129' : '239,68,68'},0.06)`, borderRadius:6, border:`1px solid rgba(${r.ok ? '16,185,129' : '239,68,68'},0.15)` }}>
-                <span style={{ fontSize:12, color: r.ok ? '#00e5a0' : '#ffb224' }}>{r.ok ? '✓' : '—'}</span>
+                <span style={{ fontSize:12, color: r.ok ? '#15803d' : '#d97706' }}>{r.ok ? '✓' : '—'}</span>
                 <span style={{ fontSize:12, fontFamily:'monospace', color:'#111827', flex:1 }}>{r.domain}</span>
                 <span style={{ fontSize:10, color:'#374151' }}>{r.status}</span>
               </div>
@@ -961,7 +961,7 @@ export default function Tools({ user }) {
         <div style={{ display:'flex', gap:2, flexWrap:'wrap' }}>
           {tabs.map(t => (
             <button key={t.id} onClick={() => setActiveTab(t.id)}
-              style={{ padding:'7px 16px', background:activeTab===t.id?'#dcfce7':'transparent', border:`1px solid ${activeTab===t.id?'rgba(16,185,129,0.25)':'transparent'}`, borderRadius:8, color:activeTab===t.id?'#00e5a0':'#6b7280', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+              style={{ padding:'7px 16px', background:activeTab===t.id?'#f0fdf4':'transparent', border:`1px solid ${activeTab===t.id?'#86efac':'transparent'}`, borderRadius:8, color:activeTab===t.id?'#15803d':'#374151', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
               {t.label}
             </button>
           ))}

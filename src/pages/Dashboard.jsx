@@ -117,21 +117,33 @@ function AnimBar({ pct, color, delay=0, h=6 }) {
 
 // ─── Share button ─────────────────────────────────────────────────────
 function ShareButton({ domain, scanId }) {
-  const [copied,setCopied]=useState(false)
+  const [copied, setCopied] = useState(false)
+  const [loading, setLoading] = useState(false)
   async function share() {
-    if (!scanId) return
-    const { data } = await supabase.from('public_scan_shares')
-      .insert({ scan_result_id: scanId, domain_name: domain })
-      .select('id').single()
-    if (data?.id) {
-      await navigator.clipboard.writeText(`${window.location.origin}/share/${data.id}`)
-      setCopied(true); setTimeout(()=>setCopied(false),2500)
-    }
+    if (!scanId || loading) return
+    setLoading(true)
+    try {
+      // Reuse existing share if available
+      const { data: existing } = await supabase.from('public_scan_shares').select('id').eq('scan_result_id', scanId).maybeSingle()
+      let shareId = existing?.id
+      if (!shareId) {
+        const { data } = await supabase.from('public_scan_shares').insert({ scan_result_id: scanId, domain_name: domain }).select('id').single()
+        shareId = data?.id
+      }
+      if (shareId) {
+        const url = `${window.location.origin}?share=${shareId}`
+        try { await navigator.clipboard.writeText(url) } catch {
+          const el = document.createElement('textarea'); el.value = url
+          document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el)
+        }
+        setCopied(true); setTimeout(() => setCopied(false), 2500)
+      }
+    } finally { setLoading(false) }
   }
   return (
-    <button onClick={share}
-      style={{padding:'6px 14px',background:'#f1f5f9',color:'rgba(255,255,255,0.7)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:500,display:'flex',alignItems:'center',gap:5}}>
-      {copied?<><Check size={12} color="#10b981"/>Copied!</>:<><Share2 size={12}/>Share</>}
+    <button onClick={share} disabled={loading}
+      style={{padding:'6px 12px',background:copied?'#f0fdf4':'#ffffff',color:copied?'#15803d':'#374151',border:`1px solid ${copied?'#86efac':'#e4e7ec'}`,borderRadius:7,cursor:'pointer',fontSize:11,fontWeight:500,display:'flex',alignItems:'center',gap:5,transition:'all 0.15s',minWidth:80,justifyContent:'center'}}>
+      {copied ? <><Check size={12}/>Copied!</> : loading ? <div style={{width:10,height:10,border:'2px solid #d1d5db',borderTopColor:'#374151',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/> : <><Share2 size={12}/>Share</>}
     </button>
   )
 }
@@ -532,32 +544,108 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
 
               {/* ══ PROPAGATION ══════════════════════════════ */}
               {activeTab==='propagation'&&scan?.propagation&&(
-                <div style={card}>
-                  <div style={cardHd}>
-                    <span style={{fontSize:12,fontWeight:700,color:'#111827',display:'flex',alignItems:'center',gap:6}}><Globe size={13} color="#3b82f6"/> Global propagation</span>
-                    <SBadge status={scan.propagation.consistent?'Consistent':'Inconsistent'}/>
-                  </div>
-                  <div style={{padding:16,display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12}}>
-                    {[{key:'us',flag:'🇺🇸',name:'US West',sub:'1.1.1.1'},{key:'eu',flag:'🇪🇺',name:'EU',sub:'8.8.8.8'},{key:'apac',flag:'🌏',name:'APAC',sub:'OpenDNS'},{key:'au',flag:'🇦🇺',name:'AU',sub:'Quad9'}].map(reg=>{
-                      const allPass=scan.propagation.records?.every(r=>r[reg.key]==='pass')
-                      return (
-                        <div key={reg.key} style={{padding:14,background:'rgba(255,255,255,0.03)',borderRadius:10,border:`1px solid ${allPass?'rgba(16,185,129,0.2)':'rgba(245,158,11,0.2)'}`}}>
-                          <div style={{fontSize:22,marginBottom:4}}>{reg.flag}</div>
-                          <div style={{fontSize:12,fontWeight:700,color:'#111827'}}>{reg.name}</div>
-                          <div style={{fontSize:10,color:'#374151',marginBottom:10}}>{reg.sub}</div>
-                          {scan.propagation.records?.map(rec=>(
-                            <div key={rec.type} style={{display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:12,padding:'3px 0',borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
-                              <span style={{fontFamily:'monospace',color:'#334155'}}>{rec.type}</span>
-                              <div style={{width:8,height:8,borderRadius:'50%',background:rec[reg.key]==='pass'?'#16a34a':'#d97706'}}/>
+                <div style={{display:'flex',flexDirection:'column',gap:14}}>
+                  {/* ── Visual propagation map ── */}
+                  <div style={card}>
+                    <div style={cardHd}>
+                      <span style={{fontSize:12,fontWeight:700,color:'#111827',display:'flex',alignItems:'center',gap:6}}><Globe size={13} color='#1d4ed8'/> Global propagation status</span>
+                      <SBadge status={scan.propagation.consistent?'Consistent':'Inconsistent'}/>
+                    </div>
+                    <div style={{padding:'20px 24px'}}>
+                      {/* World map SVG */}
+                      <div style={{position:'relative',background:'#f8fafc',borderRadius:10,border:'1px solid #e5e7eb',overflow:'hidden',marginBottom:16}}>
+                        <svg viewBox='0 0 800 380' style={{width:'100%',display:'block'}}>
+                          {/* Ocean bg */}
+                          <rect width='800' height='380' fill='#EFF6FF'/>
+                          {/* Simple continent shapes */}
+                          {/* North America */}
+                          <path d='M 100 60 L 210 55 L 230 80 L 225 140 L 200 180 L 175 200 L 160 195 L 140 170 L 110 160 L 90 120 L 85 90 Z' fill='#DBEAFE' stroke='#93C5FD' strokeWidth='1'/>
+                          {/* South America */}
+                          <path d='M 155 220 L 195 215 L 210 250 L 215 300 L 200 340 L 175 355 L 155 340 L 140 300 L 140 255 Z' fill='#DBEAFE' stroke='#93C5FD' strokeWidth='1'/>
+                          {/* Europe */}
+                          <path d='M 340 50 L 400 45 L 420 65 L 415 100 L 390 115 L 365 110 L 340 95 L 330 70 Z' fill='#DBEAFE' stroke='#93C5FD' strokeWidth='1'/>
+                          {/* Africa */}
+                          <path d='M 345 125 L 400 120 L 420 145 L 425 200 L 410 260 L 385 290 L 355 285 L 335 250 L 330 200 L 335 150 Z' fill='#DBEAFE' stroke='#93C5FD' strokeWidth='1'/>
+                          {/* Asia */}
+                          <path d='M 430 40 L 620 35 L 650 70 L 640 130 L 600 160 L 540 170 L 480 155 L 440 120 L 425 80 Z' fill='#DBEAFE' stroke='#93C5FD' strokeWidth='1'/>
+                          {/* Australia */}
+                          <path d='M 580 250 L 660 240 L 680 265 L 680 310 L 650 325 L 600 320 L 570 300 L 565 270 Z' fill='#DBEAFE' stroke='#93C5FD' strokeWidth='1'/>
+
+                          {/* Region nodes — positions on map */}
+                          {[
+                            {key:'us',   name:'North America', x:155, y:130, resolver:'1.1.1.1 (Cloudflare)'},
+                            {key:'eu',   name:'Europe',        x:375, y: 80, resolver:'8.8.8.8 (Google)'},
+                            {key:'apac', name:'Asia Pacific',  x:560, y:110, resolver:'208.67.222.222 (OpenDNS)'},
+                            {key:'au',   name:'Australia',     x:625, y:285, resolver:'9.9.9.9 (Quad9)'},
+                          ].map(reg => {
+                            const allPass = scan.propagation.records?.every(r => r[reg.key]==='pass')
+                            const nodeColor = allPass ? '#16a34a' : '#d97706'
+                            const nodeBg = allPass ? '#dcfce7' : '#fef3c7'
+                            const nodeBorder = allPass ? '#86efac' : '#fde68a'
+                            return (
+                              <g key={reg.key}>
+                                {/* Pulse ring */}
+                                <circle cx={reg.x} cy={reg.y} r='18' fill={nodeBg} stroke={nodeBorder} strokeWidth='1.5' opacity='0.8'/>
+                                {/* Center dot */}
+                                <circle cx={reg.x} cy={reg.y} r='7' fill={nodeColor}/>
+                                {/* Check/warning icon */}
+                                {allPass
+                                  ? <path d={`M ${reg.x-4} ${reg.y} l 3 3 l 5 -5`} stroke='white' strokeWidth='1.8' fill='none' strokeLinecap='round'/>
+                                  : <text x={reg.x} y={reg.y+4} textAnchor='middle' fill='white' fontSize='9' fontWeight='bold'>!</text>
+                                }
+                                {/* Label */}
+                                <text x={reg.x} y={reg.y+30} textAnchor='middle' fill='#374151' fontSize='9' fontWeight='600'>{reg.name}</text>
+                                <text x={reg.x} y={reg.y+41} textAnchor='middle' fill='#6b7280' fontSize='8'>{allPass ? 'Propagated' : 'Inconsistent'}</text>
+                              </g>
+                            )
+                          })}
+
+                          {/* Legend */}
+                          <g>
+                            <circle cx='20' cy='360' r='5' fill='#16a34a'/>
+                            <text x='30' y='364' fill='#374151' fontSize='10'>Propagated</text>
+                            <circle cx='110' cy='360' r='5' fill='#d97706'/>
+                            <text x='120' y='364' fill='#374151' fontSize='10'>Inconsistent</text>
+                          </g>
+                        </svg>
+                      </div>
+
+                      {/* Resolver detail rows */}
+                      <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:8}}>
+                        {[
+                          {key:'us',   flag:'🇺🇸', name:'North America', resolver:'1.1.1.1 · Cloudflare'},
+                          {key:'eu',   flag:'🇪🇺', name:'Europe',        resolver:'8.8.8.8 · Google'},
+                          {key:'apac', flag:'🌏', name:'Asia Pacific',   resolver:'208.67.222.222 · OpenDNS'},
+                          {key:'au',   flag:'🇦🇺', name:'Australia',     resolver:'9.9.9.9 · Quad9'},
+                        ].map(reg => {
+                          const allPass = scan.propagation.records?.every(r => r[reg.key]==='pass')
+                          return (
+                            <div key={reg.key} style={{background:allPass?'#f0fdf4':'#fffbeb',borderRadius:10,padding:'12px 14px',border:`1px solid ${allPass?'#bbf7d0':'#fde68a'}`}}>
+                              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+                                <div style={{display:'flex',alignItems:'center',gap:7}}>
+                                  <span style={{fontSize:18}}>{reg.flag}</span>
+                                  <div>
+                                    <div style={{fontSize:12,fontWeight:700,color:'#111827'}}>{reg.name}</div>
+                                    <div style={{fontSize:10,color:'#6b7280',fontFamily:'monospace'}}>{reg.resolver}</div>
+                                  </div>
+                                </div>
+                                <span style={{fontSize:10,fontWeight:700,padding:'2px 8px',borderRadius:8,background:allPass?'#dcfce7':'#fef3c7',color:allPass?'#15803d':'#92400e'}}>
+                                  {allPass?'✓ Consistent':'⚠ Inconsistent'}
+                                </span>
+                              </div>
+                              <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+                                {scan.propagation.records?.map(rec => (
+                                  <div key={rec.type} style={{display:'flex',alignItems:'center',gap:4,padding:'2px 8px',background:'rgba(255,255,255,0.7)',borderRadius:6,border:'1px solid rgba(0,0,0,0.06)'}}>
+                                    <div style={{width:6,height:6,borderRadius:'50%',background:rec[reg.key]==='pass'?'#16a34a':'#d97706',flexShrink:0}}/>
+                                    <span style={{fontSize:10,fontFamily:'monospace',color:'#374151',fontWeight:600}}>{rec.type}</span>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                          ))}
-                        </div>
-                      )
-                    })}
-                  </div>
-                  <div style={{display:'flex',gap:16,padding:'4px 16px 14px',fontSize:12,color:'#374151'}}>
-                    <span style={{display:'flex',alignItems:'center',gap:5}}><div style={{width:7,height:7,borderRadius:'50%',background:'#00e5a0'}}/> Consistent</span>
-                    <span style={{display:'flex',alignItems:'center',gap:5}}><div style={{width:7,height:7,borderRadius:'50%',background:'#ffb224'}}/> Inconsistent</span>
+                          )
+                        })}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

@@ -8,15 +8,15 @@ import { getPillClass, getScoreColor, formatTTL, expiryPill, getDaysUntilExpiry 
 function SectionCard({ icon: Icon, title, status, statusClass, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="card" style={{ marginBottom: 12 }}>
-      <div className="card-header" style={{ cursor: 'pointer' }} onClick={() => setOpen(o => !o)}>
-        <span className="card-title">
-          <Icon size={14} color="var(--gray-600)" />
+    <div style={{background:"#fff",border:"1px solid #e5e7eb",borderRadius:12,overflow:"hidden",marginBottom:12,boxShadow:"0 1px 3px rgba(0,0,0,0.06)"}} style={{ marginBottom: 12 }}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px",borderBottom:"1px solid #f0f2f5",background:"#fafafa",cursor:"pointer"}} style={{ cursor: 'pointer' }} onClick={() => setOpen(o => !o)}>
+        <span style={{fontSize:11,fontWeight:700,color:"#6b7280",display:"flex",alignItems:"center",gap:6,textTransform:"uppercase",letterSpacing:"0.08em"}}>
+          <Icon size={14} color="#374151" />
           {title}
         </span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {status && <span className={`pill ${statusClass}`}>{status}</span>}
-          {open ? <ChevronUp size={14} color="var(--gray-400)" /> : <ChevronDown size={14} color="var(--gray-400)" />}
+          {open ? <ChevronUp size={14} color="#9ca3af" /> : <ChevronDown size={14} color="#9ca3af" />}
         </div>
       </div>
       {open && <div>{children}</div>}
@@ -26,15 +26,15 @@ function SectionCard({ icon: Icon, title, status, statusClass, children, default
 
 function SpfMeter({ count }) {
   const pct = Math.min((count / 10) * 100, 100)
-  const color = pct >= 80 ? '#854F0B' : pct >= 60 ? '#3B6D11' : 'var(--green)'
+  const color = pct >= 80 ? '#854F0B' : pct >= 60 ? '#3B6D11' : '#16a34a'
   return (
     <div style={{ marginTop: 6 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: 'var(--gray-500)', marginBottom: 3 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#6b7280', marginBottom: 3 }}>
         <span>DNS lookup count</span>
         <span style={{ fontWeight: 500, color }}>{count} / 10</span>
       </div>
-      <div className="progress">
-        <div className="progress-fill" style={{ width: `${pct}%`, background: color }} />
+      <div style={{height:4,background:"#f3f4f6",borderRadius:2,overflow:"hidden"}}>
+        <div style={{height:"100%",borderRadius:2,transition:"width 0.6s ease"}} style={{ width: `${pct}%`, background: color }} />
       </div>
     </div>
   )
@@ -70,9 +70,9 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
 
   if (loading) return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: 16 }}>
-      <div style={{ width: 48, height: 48, border: '3px solid var(--gray-200)', borderTopColor: 'var(--green)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-      <div style={{ fontSize: 14, color: 'var(--gray-600)' }}>Scanning {domain}…</div>
-      <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>Checking DNS, email auth, SSL, propagation and blacklists</div>
+      <div style={{ width: 48, height: 48, border: '3px solid #e5e7eb', borderTopColor: '#16a34a', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <div style={{ fontSize: 14, color: '#374151' }}>Scanning {domain}…</div>
+      <div style={{ fontSize: 12, color: '#9ca3af' }}>Checking DNS, email auth, SSL, propagation and blacklists</div>
     </div>
   )
 
@@ -80,7 +80,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
     <div style={{ maxWidth: 520, margin: '80px auto', padding: 24, textAlign: 'center' }}>
       <div style={{ fontSize: 32, marginBottom: 12 }}>⚠</div>
       <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>Scan failed</div>
-      <div style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 24 }}>{error}</div>
+      <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 24 }}>{error}</div>
       <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
         <button className="btn btn-outline" onClick={() => setPage('landing')}><ArrowLeft size={13} /> Back</button>
         <button className="btn btn-primary" onClick={runScan}><RefreshCw size={13} /> Try again</button>
@@ -102,14 +102,14 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
   return (
     <div>
       {/* Results header */}
-      <div style={{ background: '#fff', borderBottom: '1px solid var(--gray-200)', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+      <div style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button className="btn btn-ghost btn-sm" onClick={() => setPage('landing')}><ArrowLeft size={13} /> Back</button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 12px', background: 'var(--gray-50)', border: '1px solid var(--gray-200)', borderRadius: 20 }}>
-            <Globe size={12} color="var(--green)" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 20 }}>
+            <Globe size={12} color="#16a34a" />
             <span className="mono" style={{ fontSize: 13, fontWeight: 500 }}>{domain}</span>
           </div>
-          <span style={{ fontSize:12, color: 'var(--gray-400)' }}>Scanned just now</span>
+          <span style={{ fontSize:12, color: '#9ca3af' }}>Scanned just now</span>
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <button className="btn btn-ghost btn-sm" onClick={runScan}><RefreshCw size={12} /> Re-scan</button>
@@ -126,19 +126,19 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
       </div>
 
       {/* Score hero */}
-      <div style={{ background: '#fff', borderBottom: '1px solid var(--gray-200)', padding: '24px' }}>
+      <div style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
           <ScoreRing score={r.health_score} size={96} />
           <div style={{ flex: 1, minWidth: 280 }}>
-            <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--gray-700)', marginBottom: 12 }}>Score breakdown</div>
+            <div style={{ fontSize: 13, fontWeight: 500, color: '#374151', marginBottom: 12 }}>Score breakdown</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
               {cats.map(c => (
-                <div key={c.id} style={{ background: 'var(--gray-50)', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '8px 12px', cursor: 'pointer' }} onClick={() => setActiveSection(c.id)}>
-                  <div style={{ fontSize: 10, color: 'var(--gray-500)', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 3 }}>
+                <div key={c.id} style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 8, padding: '8px 12px', cursor: 'pointer' }} onClick={() => setActiveSection(c.id)}>
+                  <div style={{ fontSize: 10, color: '#6b7280', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 3 }}>
                     <c.icon size={10} /> {c.label}
                   </div>
                   <div style={{ fontSize: 16, fontWeight: 600, color: getScoreColor(c.score) }}>{c.score ?? '–'}</div>
-                  <div style={{ height: 3, background: 'var(--gray-200)', borderRadius: 2, marginTop: 4 }}>
+                  <div style={{ height: 3, background: '#e5e7eb', borderRadius: 2, marginTop: 4 }}>
                     <div style={{ height: 3, borderRadius: 2, width: `${c.score ?? 0}%`, background: getScoreColor(c.score), transition: 'width 0.8s ease' }} />
                   </div>
                 </div>
@@ -148,15 +148,15 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
         </div>
         {/* Issues summary */}
         {r.issues?.length > 0 && (
-          <div style={{ marginTop: 20, padding: '12px 16px', background: 'var(--gray-50)', borderRadius: 10, border: '1px solid var(--gray-200)' }}>
-            <div style={{ fontSize: 12, fontWeight: 500, marginBottom: 8, color: 'var(--gray-700)' }}>Issues found ({r.issues.length})</div>
+          <div style={{ marginTop: 20, padding: '12px 16px', background: '#f9fafb', borderRadius: 10, border: '1px solid #e5e7eb' }}>
+            <div style={{ fontSize: 12, fontWeight: 500, marginBottom: 8, color: '#374151' }}>Issues found ({r.issues.length})</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {r.issues.slice(0, 5).map((iss, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 12 }}>
                   <span className={`pill ${iss.severity === 'critical' ? 'pill-fail' : iss.severity === 'warn' ? 'pill-warn' : 'pill-info'}`} style={{ flexShrink: 0 }}>
                     {iss.severity}
                   </span>
-                  <span style={{ color: 'var(--gray-600)' }}>{iss.message}</span>
+                  <span style={{ color: '#374151' }}>{iss.message}</span>
                 </div>
               ))}
             </div>
@@ -169,10 +169,10 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
         {/* DNS Records */}
         <SectionCard icon={Globe} title="DNS records" status={`${r.dns_records?.length || 0} records`} statusClass="pill-pass">
           {r.dns_records?.map((rec, i) => (
-            <div key={i} style={{ display: 'grid', gridTemplateColumns: '80px 60px 1fr 80px', gap: 8, padding: '8px 16px', borderBottom: '1px solid var(--gray-50)', alignItems: 'start', fontSize: 12 }}>
-              <span className="mono" style={{ fontWeight: 500, color: 'var(--gray-800)' }}>{rec.type}</span>
-              <span style={{ color: 'var(--gray-400)' }}>{formatTTL(rec.ttl)}</span>
-              <span className="mono" style={{ fontSize:12, color: 'var(--gray-600)', wordBreak: 'break-all' }}>{rec.value}</span>
+            <div key={i} style={{ display: 'grid', gridTemplateColumns: '80px 60px 1fr 80px', gap: 8, padding: '8px 16px', borderBottom: '1px solid #f9fafb', alignItems: 'start', fontSize: 12 }}>
+              <span className="mono" style={{ fontWeight: 500, color: '#1f2937' }}>{rec.type}</span>
+              <span style={{ color: '#9ca3af' }}>{formatTTL(rec.ttl)}</span>
+              <span className="mono" style={{ fontSize:12, color: '#374151', wordBreak: 'break-all' }}>{rec.value}</span>
               <span className={`pill ${getPillClass(rec.status)}`} style={{ justifySelf: 'end' }}>{rec.status || 'Present'}</span>
             </div>
           ))}
@@ -273,8 +273,8 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
           statusClass={r.blacklists?.listed_count > 0 ? 'pill-fail' : 'pill-pass'}>
           <div style={{ padding: '12px 16px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 6 }}>
             {r.blacklists?.results?.map((bl, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 10px', background: 'var(--gray-50)', borderRadius: 6, fontSize: 11 }}>
-                <span className="mono" style={{ color: 'var(--gray-700)' }}>{bl.name}</span>
+              <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 10px', background: '#f9fafb', borderRadius: 6, fontSize: 11 }}>
+                <span className="mono" style={{ color: '#374151' }}>{bl.name}</span>
                 <span className={`pill ${bl.listed ? 'pill-fail' : 'pill-pass'}`}>{bl.listed ? 'Listed' : 'Clean'}</span>
               </div>
             ))}
@@ -283,10 +283,10 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
 
         {/* CTA if not logged in */}
         {!user && (
-          <div style={{ textAlign: 'center', padding: '32px 24px', background: '#fff', border: '1px solid var(--gray-200)', borderRadius: 16, marginTop: 8 }}>
-            <Bell size={28} color="var(--green)" style={{ marginBottom: 12 }} />
+          <div style={{ textAlign: 'center', padding: '32px 24px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: 16, marginTop: 8 }}>
+            <Bell size={28} color="#16a34a" style={{ marginBottom: 12 }} />
             <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>Monitor {domain} continuously</div>
-            <div style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 20, maxWidth: 400, margin: '0 auto 20px' }}>
+            <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 20, maxWidth: 400, margin: '0 auto 20px' }}>
               Get instant alerts when DNS records change, DMARC policy weakens, or SSL certificates near expiry. Free during beta.
             </div>
             <button className="btn btn-primary btn-lg" onClick={() => setPage('auth')}>
