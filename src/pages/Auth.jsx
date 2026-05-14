@@ -14,7 +14,7 @@ export default function Auth({ setPage }) {
     setLoading(true)
     const { error: err } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: window.location.origin + '/?page=dashboard' }
+      options: { emailRedirectTo: 'https://dnsradar.easysecurity.in/?page=dashboard' }
     })
     setLoading(false)
     if (err) { setError(err.message); return }
