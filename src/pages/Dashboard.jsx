@@ -220,9 +220,9 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
   const critical=issues.filter(i=>i.severity==='critical')
   const warns=issues.filter(i=>i.severity==='warn')
 
-  const D={bg:'#0a0d14',surface:'#13181f',surface2:'#1a2030',border:'#252d3d',text:'#f0f4ff',muted:'#8b96b4',dim:'#4e5a7a'}
-  const card={background:D.surface,border:'1px solid #252d3d',borderRadius:14,overflow:'hidden',boxShadow:'0 1px 3px rgba(0,0,0,0.4)'}
-  const cardHd={padding:'13px 18px',borderBottom:'1px solid #252d3d',display:'flex',alignItems:'center',justifyContent:'space-between',background:'rgba(255,255,255,0.025)'}
+  const D={bg:'#0d0f17',surface:'#151922',surface2:'#1c2130',border:'#232b3e',text:'#eef2ff',muted:'#8892b0',dim:'#4a526e'}
+  const card={background:'#151922',border:'1px solid #232b3e',borderRadius:16,overflow:'hidden',boxShadow:'0 4px 20px rgba(0,0,0,0.5)'}
+  const cardHd={padding:'14px 20px',borderBottom:'1px solid #232b3e',display:'flex',alignItems:'center',justifyContent:'space-between',background:'rgba(255,255,255,0.03)'}
 
   const cats=scan?[
     {label:'DNS records',icon:Globe,color:'#3d9bff',bg:'rgba(61,155,255,0.15)',score:scan.score_dns,max:25},
@@ -236,7 +236,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
   const tabs=['overview','email','ssl','propagation','blacklists','dns']
 
   return (
-    <div style={{display:'flex',height:'calc(100vh - 56px)',background:'#0a0d14',fontFamily:"'Plus Jakarta Sans','Inter',system-ui,sans-serif"}}>
+    <div style={{display:'flex',height:'calc(100vh - 56px)',background:'#0d0f17',fontFamily:"'Plus Jakarta Sans',system-ui,sans-serif"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         .dsh-row:hover{background:rgba(255,255,255,0.06)!important;transition:background 0.12s}
@@ -252,10 +252,10 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
       `}</style>
 
       {/* ── SIDEBAR ──────────────────────────────────────────── */}
-      <div className="no-print" style={{width:220,flexShrink:0,background:'#0f141c',borderRight:'1px solid #252d3d',display:'flex',flexDirection:'column'}}>
+      <div className="no-print" style={{width:220,flexShrink:0,background:'#0a0c13',borderRight:'1px solid #1e2538',display:'flex',flexDirection:'column'}}>
         <div style={{padding:12,borderBottom:'1px solid #1e2535'}}>
           <button onClick={()=>setShowAdd(true)}
-            style={{width:'100%',padding:'8px 12px',background:'rgba(0,229,160,0.12)',border:'1px solid rgba(0,229,160,0.3)',borderRadius:9,color:'#00e5a0',fontSize:13,fontWeight:500,cursor:'pointer',display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}>
+            style={{width:'100%',padding:'8px 12px',background:'linear-gradient(135deg,rgba(0,229,160,0.18),rgba(0,229,160,0.08))',border:'1px solid rgba(0,229,160,0.35)',borderRadius:10,color:'#00e5a0',fontSize:13,fontWeight:500,cursor:'pointer',display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}>
             <Plus size={14}/> Add domain
           </button>
         </div>
@@ -268,7 +268,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
             const critCount=s?.issues?.filter(i=>i.severity==='critical').length||0
             return (
               <div key={d.id} className="dsh-row" onClick={()=>{setSelected(d); onDomainSelect?.(d); setActiveTab('overview')}}
-                style={{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',cursor:'pointer',background:isActive?'rgba(16,185,129,0.07)':'transparent',borderLeft:`2px solid ${isActive?'#00e5a0':'transparent'}`}}>
+                style={{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',cursor:'pointer',background:isActive?'rgba(0,229,160,0.08)':'transparent',borderLeft:`3px solid ${isActive?'#00e5a0':'transparent'}`,transition:'background 0.12s'}}>
                 <div style={{width:7,height:7,borderRadius:'50%',background:d.paused?'#4a5470':!d.verified?'#ffb224':sc,flexShrink:0}}/>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:12,fontWeight:500,color:D.text,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{d.domain_name}</div>
@@ -285,7 +285,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
           const avg=scored.length?Math.round(scored.reduce((a,d)=>a+(d.scan_results[0].health_score||0),0)/scored.length):0
           const c=avg>=70?'#00e5a0':avg>=50?'#ffb224':'#ff4d6a'
           return (
-            <div style={{padding:'10px 14px',borderTop:'1px solid #1e2535'}}>
+            <div style={{padding:'14px 16px',borderTop:'1px solid #1e2538',background:'rgba(0,0,0,0.2)'}}>
               <div style={{fontSize:10,color:D.dim,marginBottom:4}}>Fleet avg score</div>
               <div style={{fontSize:22,fontWeight:700,color:c,lineHeight:1,marginBottom:5}}>{avg||'–'}</div>
               <AnimBar pct={avg} color={c} h={3}/>
@@ -306,11 +306,11 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
         ):(
           <div>
             {/* ── DOMAIN HEADER ── */}
-            <div className="no-print" style={{padding:'16px 24px',borderBottom:'1px solid #252d3d',background:'#0f141c'}}>
+            <div className="no-print" style={{padding:'18px 28px',borderBottom:'1px solid #1e2538',background:'#0a0c13'}}>
               <div style={{display:'flex',alignItems:'flex-start',gap:16,flexWrap:'wrap'}}>
                 <div style={{flex:1}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4,flexWrap:'wrap'}}>
-                    <h2 style={{fontSize:17,fontWeight:700,color:D.text,margin:0}}>{selected.domain_name}</h2>
+                    <h2 style={{fontSize:18,fontWeight:800,color:'#eef2ff',margin:0,letterSpacing:'-0.02em'}}>{selected.domain_name}</h2>
                     {selected.verified&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'rgba(16,185,129,0.15)',color:'#00e5a0',border:'1px solid rgba(16,185,129,0.25)',fontWeight:500}}>Verified</span>}
                     {selected.paused&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#1e2535',color:D.muted,fontWeight:500}}>Paused</span>}
                     {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'rgba(239,68,68,0.15)',color:'#ff4d6a',border:'1px solid rgba(239,68,68,0.2)',fontWeight:500}}>{critical.length} critical</span>}
@@ -325,7 +325,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   <div style={{display:'flex',gap:4,borderBottom:'1px solid #252d3d',marginBottom:-14,padding:'0 2px'}}>
                     {tabs.map(t=>(
                       <button key={t} className="dsh-tab" onClick={()=>setActiveTab(t)}
-                        style={{padding:'8px 14px',background:'transparent',border:'none',borderBottom:`2px solid ${activeTab===t?'#00e5a0':'transparent'}`,cursor:'pointer',fontSize:12,fontWeight:activeTab===t?600:400,color:activeTab===t?'#00e5a0':'#8993ac',textTransform:'capitalize',transition:'all 0.15s',marginBottom:-1}}>
+                        style={{padding:'9px 16px',background:'transparent',border:'none',borderBottom:`2px solid ${activeTab===t?'#00e5a0':'transparent'}`,cursor:'pointer',fontSize:13,fontWeight:activeTab===t?600:400,color:activeTab===t?'#00e5a0':'#4a526e',textTransform:'capitalize',transition:'all 0.15s',marginBottom:-1,letterSpacing:'-0.01em'}}>
                         {t==='ssl'?'SSL/TLS':t==='dns'?'DNS Records':t.charAt(0).toUpperCase()+t.slice(1)}
                       </button>
                     ))}
@@ -336,7 +336,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 {/* Actions */}
                 <div style={{display:'flex',flexDirection:'column',gap:6,alignSelf:'flex-start'}}>
                   <button onClick={()=>triggerScan(selected)} disabled={scanning[selected.id]}
-                    style={{padding:'6px 14px',background:'#00e5a0',color:'#fff',border:'none',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:600,display:'flex',alignItems:'center',gap:5}}>
+                    style={{padding:'8px 18px',background:'linear-gradient(135deg,#00e5a0,#00c48a)',color:'#021812',border:'none',borderRadius:9,cursor:'pointer',fontSize:12,fontWeight:700,boxShadow:'0 0 20px rgba(0,229,160,0.25)',display:'flex',alignItems:'center',gap:5}}>
                     {scanning[selected.id]?<><div style={{width:12,height:12,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>Scanning…</>:<><RefreshCw size={12}/>Scan now</>}
                   </button>
                   <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
@@ -362,29 +362,33 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               {activeTab==='overview'&&scan&&(
                 <>
                   {/* KPI row */}
-                  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:10}}>
+                  <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16}}>
                     {[
                       {label:'Health score',val:scan.health_score,color:getScoreColor(scan.health_score),sub:'out of 100',pct:scan.health_score},
                       {label:'Critical issues',val:critical.length,color:critical.length>0?'#ff4d6a':'#00e5a0',sub:critical.length>0?'Fix immediately':'All clear',pct:Math.min(critical.length*25,100)},
                       {label:'Blacklisted',val:`${scan.blacklists?.listed_count||0}/${scan.blacklists?.results?.length||0}`,color:(scan.blacklists?.listed_count||0)>0?'#ff4d6a':'#00e5a0',sub:'blacklists',pct:(scan.blacklists?.listed_count||0)>0?60:100},
                       {label:'DNS records',val:scan.dns_records?.length||0,color:'#3d9bff',sub:'records found',pct:100},
                     ].map(k=>(
-                      <div key={k.label} className="print-card" style={{background:'#13181f',border:'1px solid #252d3d',borderRadius:14,padding:'18px 20px',borderTop:`2px solid ${k.color}`,boxShadow:'0 2px 8px rgba(0,0,0,0.35)'}}>
-                        <div style={{fontSize:11,fontWeight:600,color:D.muted,marginBottom:10,textTransform:'uppercase',letterSpacing:'0.07em'}}>{k.label}</div>
-                        <div style={{fontSize:34,fontWeight:800,color:k.color,lineHeight:1,letterSpacing:'-0.03em'}}>{k.val}</div>
-                        <div style={{fontSize:12,color:D.dim,marginTop:6}}>{k.sub}</div>
-                        <div style={{height:3,background:'#252d3d',borderRadius:2,marginTop:12}}>
-                          <div style={{height:'100%',width:`${k.pct}%`,borderRadius:2,background:k.color,transition:'width 0.8s ease',boxShadow:`0 0 8px ${k.color}50`}}/>
+                      <div key={k.label} className="print-card" style={{background:'#151922',border:'1px solid #232b3e',borderRadius:16,padding:'20px 22px',position:'relative',overflow:'hidden',boxShadow:'0 4px 24px rgba(0,0,0,0.5)',transition:'transform 0.2s',cursor:'default'}}
+                        onMouseEnter={e=>e.currentTarget.style.transform='translateY(-2px)'}
+                        onMouseLeave={e=>e.currentTarget.style.transform='translateY(0)'}>
+                        <div style={{position:'absolute',top:0,left:0,right:0,height:3,background:`linear-gradient(90deg,${k.color},${k.color}80)`}}/>
+                        <div style={{position:'absolute',top:-20,right:-20,width:80,height:80,borderRadius:'50%',background:k.color,opacity:0.05}}/>
+                        <div style={{fontSize:10,fontWeight:700,color:'#4a526e',marginBottom:14,textTransform:'uppercase',letterSpacing:'0.1em'}}>{k.label}</div>
+                        <div style={{fontSize:36,fontWeight:800,color:k.color,lineHeight:1,letterSpacing:'-0.04em',marginBottom:6}}>{k.val}</div>
+                        <div style={{fontSize:12,color:'#8892b0',marginBottom:14}}>{k.sub}</div>
+                        <div style={{height:4,background:'#1c2130',borderRadius:4}}>
+                          <div style={{height:'100%',width:`${k.pct}%`,borderRadius:4,background:`linear-gradient(90deg,${k.color},${k.color}cc)`,transition:'width 0.9s cubic-bezier(.4,0,.2,1)',boxShadow:`0 0 12px ${k.color}60`}}/>
                         </div>
                       </div>
                     ))}
                   </div>
 
                   {/* Score history + Category breakdown */}
-                  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
+                  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:18}}>
                     <div className="print-card" style={{...card,padding:'14px 16px'}}>
-                      <div style={{fontSize:12,fontWeight:600,color:D.text,marginBottom:12,display:'flex',alignItems:'center',gap:6}}>
-                        <span style={{width:3,height:14,background:'#00e5a0',borderRadius:2,display:'inline-block'}}/>
+                      <div style={{fontSize:13,fontWeight:700,color:'#eef2ff',marginBottom:14,display:'flex',alignItems:'center',gap:8,letterSpacing:'-0.01em'}}>
+                        <span style={{width:3,height:16,background:'linear-gradient(180deg,#00e5a0,#00a870)',borderRadius:2,display:'inline-block'}}/>
                         Score history
                       </div>
                       <ScoreHistoryChart domainId={selected.id}/>
