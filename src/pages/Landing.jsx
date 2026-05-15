@@ -51,36 +51,19 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
   const [domain, setDomain] = useState('')
   const [scrolled, setScrolled] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
-  const [recentScans, setRecentScans] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('dr_recent_scans') || '[]') } catch { return [] }
-  })
-
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', fn)
     return () => window.removeEventListener('scroll', fn)
   }, [])
 
-  function saveToHistory(d) {
-    try {
-      const prev = JSON.parse(localStorage.getItem('dr_recent_scans') || '[]')
-      const updated = [d, ...prev.filter(x => x !== d)].slice(0, 8)
-      localStorage.setItem('dr_recent_scans', JSON.stringify(updated))
-      setRecentScans(updated)
-    } catch {}
-  }
-
   function scan(e) {
     e.preventDefault()
     if (!domain.trim()) return
     const d = domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].toLowerCase()
-    saveToHistory(d)
     setScanDomain(d); setScanType('website'); setPage('scan')
   }
 
-  function quickScan(d) {
-    saveToHistory(d); setScanDomain(d); setScanType('website'); setPage('scan')
-  }
 
   const navBg = scrolled ? 'rgba(255,255,255,0.95)' : 'transparent'
   const navBd = scrolled ? '1px solid #e5e7eb' : '1px solid transparent'
@@ -148,20 +131,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
           <p style={{ fontSize:12, color:'#9ca3af', marginTop:8 }}>No credit card · No signup required · Results in 90 seconds</p>
         </div>
 
-        {/* Recent scans */}
-        {recentScans.length > 0 && (
-          <div className="fade-up" style={{ animationDelay:'0.25s', display:'flex', flexWrap:'wrap', gap:6, justifyContent:'center', marginBottom:16 }}>
-            <span style={{ fontSize:11, color:'#9ca3af', alignSelf:'center' }}>Recent:</span>
-            {recentScans.map(d => (
-              <button key={d} onClick={() => quickScan(d)} style={{ fontSize:12, color:'#374151', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:7, padding:'4px 11px', cursor:'pointer', fontFamily:MONO, transition:'all 0.12s' }}
-                onMouseEnter={e=>{e.currentTarget.style.background='#f0fdf4';e.currentTarget.style.borderColor='#86efac';e.currentTarget.style.color='#16a34a'}}
-                onMouseLeave={e=>{e.currentTarget.style.background='#f9fafb';e.currentTarget.style.borderColor='#e5e7eb';e.currentTarget.style.color='#374151'}}>
-                {d}
-              </button>
-            ))}
-            <button onClick={() => { localStorage.removeItem('dr_recent_scans'); setRecentScans([]) }} style={{ fontSize:11, color:'#d1d5db', background:'transparent', border:'none', cursor:'pointer' }}>clear</button>
-          </div>
-        )}
+
 
 
 
