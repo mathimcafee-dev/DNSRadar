@@ -7,21 +7,56 @@ import DmarcJourney from '../components/DmarcJourney'
 import { timeAgo, getScoreColor } from '../lib/scoreEngine'
 
 // ─── Auto-fix button ──────────────────────────────────────────────────
+function AutoFixBanner({ userId, setPage }) {
+  const [hasCred, setHasCred] = useState(null) // null=loading, true, false
+  useEffect(() => {
+    if (!userId) return
+    supabase.from('dns_credentials').select('id', { count:'exact', head:true }).eq('user_id', userId)
+      .then(({ count }) => setHasCred((count||0) > 0))
+  }, [userId])
+
+  if (hasCred === null) return null // loading — show nothing
+  if (hasCred) return (
+    <div style={{margin:'0 16px 4px',padding:'9px 12px',background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:8,display:'flex',alignItems:'center',gap:8,fontSize:12}}>
+      <span style={{fontSize:16}}>⚡</span>
+      <span style={{color:'#166534',fontWeight:500}}>DNS credentials connected — click <strong>Auto-fix</strong> on any issue to push the record directly to your DNS provider.</span>
+    </div>
+  )
+  return (
+    <div style={{margin:'0 16px 4px',padding:'9px 12px',background:'#fffbeb',border:'1px solid #fde68a',borderRadius:8,display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,fontSize:12}}>
+      <div style={{display:'flex',alignItems:'center',gap:8}}>
+        <span style={{fontSize:16}}>🔑</span>
+        <span style={{color:'#92400e'}}>Connect Cloudflare or GoDaddy to enable <strong>one-click auto-fix</strong> for DNS issues.</span>
+      </div>
+      <button onClick={()=>setPage('autofix')} style={{padding:'5px 12px',background:'#111827',color:'#fff',border:'none',borderRadius:7,fontSize:11,fontWeight:600,cursor:'pointer',whiteSpace:'nowrap',fontFamily:'inherit'}}>
+        Add credentials →
+      </button>
+    </div>
+  )
+}
+
 function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
   const [state, setState] = useState('idle') // idle | loading | success | error | no-cred
   const [cred, setCred] = useState(null)
   const [showConfirm, setShowConfirm] = useState(false)
 
+  // Map issue types to the DNS record they create/update
   const RECORD_MAP = {
-    SPF:  { type:'TXT', name:'@', getValue:(v,d)=>v },
-    DMARC:{ type:'TXT', name:(d)=>`_dmarc.${d}`, getValue:(v,d)=>v },
-    CAA:  { type:'CAA', name:'@', getValue:(v,d)=>v },
+    SPF:   { type:'TXT', name:'@',                    label:'SPF record' },
+    DMARC: { type:'TXT', name:d=>`_dmarc.${d}`,       label:'DMARC record' },
+    CAA:   { type:'CAA', name:'@',                    label:'CAA record' },
+    DKIM:  { type:'TXT', name:d=>`default._domainkey.${d}`, label:'DKIM record' },
   }
   const mapping = RECORD_MAP[issueType]
-  if (!mapping) return null
+  if (!mapping || !fixValue) return null
 
   async function loadCred() {
-    const { data } = await supabase.from('dns_credentials').select('id,provider,label,verified').eq('user_id', (await supabase.auth.getUser()).data.user?.id).limit(1)
+    const { data: { user } } = await supabase.auth.getUser()
+    const { data } = await supabase.from('dns_credentials')
+      .select('id,provider,label,verified')
+      .eq('user_id', user?.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
     if (!data?.length) { setState('no-cred'); return }
     setCred(data[0]); setShowConfirm(true)
   }
@@ -29,41 +64,55 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
   async function execute() {
     setState('loading'); setShowConfirm(false)
     const { data: { session } } = await supabase.auth.getSession()
-    const recordName = typeof mapping.name === 'function' ? mapping.name(domainName) : `${mapping.name === '@' ? domainName : mapping.name}`
+    const recordName = typeof mapping.name === 'function' ? mapping.name(domainName) : domainName
     const res = await supabase.functions.invoke('dns-autofix', {
-      body: { credential_id: cred.id, domain_id: domainId, action:'create', record_type:mapping.type, record_name:recordName, record_content:fixValue, record_ttl:300 },
+      body: { credential_id: cred.id, domain_id: domainId, action:'create', record_type: mapping.type, record_name: recordName, record_content: fixValue, record_ttl: 300 },
       headers: { Authorization: `Bearer ${session?.access_token}` }
     })
     setState(res.data?.success ? 'success' : 'error')
-    if (res.data?.success) setTimeout(() => setState('idle'), 4000)
+    if (res.data?.success) setTimeout(() => setState('idle'), 5000)
   }
 
   if (state === 'no-cred') return (
-    <a href="#" onClick={e=>{e.preventDefault();setState('idle')}} style={{fontSize:10,color:'#92400e',textDecoration:'none',whiteSpace:'nowrap'}}>
-      Add DNS credentials in Settings →
-    </a>
+    <button onClick={()=>{setState('idle')}} style={{fontSize:11,color:'#d97706',background:'#fffbeb',border:'1px solid #fde68a',borderRadius:6,padding:'3px 9px',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
+      Add DNS credentials first
+    </button>
   )
 
   return (
-    <div style={{flexShrink:0}}>
+    <div style={{flexShrink:0,position:'relative'}}>
       {showConfirm && (
-        <div style={{position:'absolute',right:16,zIndex:50,background:'#1d2330',border:'1px solid rgba(255,255,255,0.12)',borderRadius:10,padding:'12px 14px',width:260,boxShadow:'0 8px 32px rgba(0,0,0,0.4)'}}>
-          <div style={{fontSize:12,fontWeight:600,color:'#fff',marginBottom:5}}>Push to {cred?.provider}?</div>
-          <div style={{fontSize:10,fontFamily:'monospace',color:'#0f172a',marginBottom:2}}>Type: {mapping.type} · Name: {typeof mapping.name==='function'?mapping.name(domainName):mapping.name}</div>
-          <div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',background:'#f0fdf4',padding:'4px 8px',borderRadius:5,marginBottom:10,wordBreak:'break-all'}}>{fixValue?.slice(0,80)}</div>
+        <div style={{position:'absolute',right:0,bottom:'calc(100% + 8px)',zIndex:100,background:'#fff',border:'1px solid #e5e7eb',borderRadius:12,padding:'14px 16px',width:290,boxShadow:'0 8px 24px rgba(0,0,0,0.12)'}}>
+          <div style={{fontSize:13,fontWeight:700,color:'#111827',marginBottom:6}}>Push to {cred?.provider}?</div>
+          <div style={{fontSize:11,color:'#6b7280',marginBottom:8}}>This will create/update the <strong>{mapping.label}</strong> on your DNS provider.</div>
+          <div style={{fontSize:11,fontFamily:'monospace',color:'#1e293b',background:'#f8fafc',border:'1px solid #e2e8f0',padding:'6px 8px',borderRadius:7,marginBottom:12,wordBreak:'break-all',lineHeight:1.5}}>{fixValue?.slice(0,120)}{fixValue?.length > 120 ? '…' : ''}</div>
           <div style={{display:'flex',gap:6}}>
-            <button onClick={execute} style={{flex:1,padding:'6px',background:'#00e5a0',color:'#fff',border:'none',borderRadius:6,cursor:'pointer',fontSize:12,fontWeight:600}}>Confirm push</button>
-            <button onClick={()=>setShowConfirm(false)} style={{padding:'6px 10px',background:'#f1f5f9',color:'rgba(255,255,255,0.6)',border:'none',borderRadius:6,cursor:'pointer',fontSize:11}}>Cancel</button>
+            <button onClick={execute} style={{flex:1,padding:'7px',background:'#111827',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontSize:12,fontWeight:600,fontFamily:'inherit'}}>
+              ⚡ Confirm push
+            </button>
+            <button onClick={()=>setShowConfirm(false)} style={{padding:'7px 12px',background:'#f9fafb',color:'#374151',border:'1px solid #e5e7eb',borderRadius:7,cursor:'pointer',fontSize:12,fontFamily:'inherit'}}>
+              Cancel
+            </button>
           </div>
         </div>
       )}
       <button onClick={state==='idle'?loadCred:undefined} disabled={state==='loading'||state==='success'}
-        style={{padding:'4px 10px',background:state==='success'?'rgba(16,185,129,0.15)':state==='error'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.12)',border:`1px solid ${state==='success'?'rgba(16,185,129,0.3)':state==='error'?'rgba(239,68,68,0.3)':'rgba(245,158,11,0.3)'}`,borderRadius:6,color:state==='success'?'#00e5a0':state==='error'?'#ff4d6a':'#ffb224',fontSize:10,fontWeight:600,cursor:state==='idle'?'pointer':'default',whiteSpace:'nowrap',display:'flex',alignItems:'center',gap:4}}>
-        {state==='loading'&&<div style={{width:10,height:10,border:'2px solid rgba(245,158,11,0.3)',borderTopColor:'#ffb224',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>}
-        {state==='idle'&&'⚡ Fix auto'}
-        {state==='loading'&&'Pushing…'}
-        {state==='success'&&'✓ Pushed!'}
-        {state==='error'&&'✗ Failed'}
+        style={{
+          padding:'5px 12px',
+          background: state==='success'?'#f0fdf4' : state==='error'?'#fef2f2' : '#f0fdf4',
+          border: `1px solid ${state==='success'?'#86efac' : state==='error'?'#fecaca' : '#86efac'}`,
+          borderRadius:7, color: state==='success'?'#16a34a' : state==='error'?'#dc2626' : '#15803d',
+          fontSize:11, fontWeight:600, cursor:state==='idle'?'pointer':'default',
+          whiteSpace:'nowrap', display:'flex', alignItems:'center', gap:5, fontFamily:'inherit',
+          transition:'all 0.15s',
+        }}
+        onMouseEnter={e=>{ if(state==='idle') e.currentTarget.style.background='#dcfce7' }}
+        onMouseLeave={e=>{ if(state==='idle') e.currentTarget.style.background='#f0fdf4' }}>
+        {state==='loading' && <div style={{width:10,height:10,border:'2px solid #d1d5db',borderTopColor:'#16a34a',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>}
+        {state==='idle'    && '⚡ Auto-fix'}
+        {state==='loading' && 'Pushing…'}
+        {state==='success' && '✓ Pushed!'}
+        {state==='error'   && '✗ Failed — retry'}
       </button>
     </div>
   )
@@ -464,30 +513,61 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     <div style={{...cardHd}}>
                       <span style={{fontSize:12,fontWeight:700,color:'#111827'}}>Issues to fix</span>
                       <div style={{display:'flex',gap:5}}>
-                        {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(239,68,68,0.15)',color:'#ff4d6a'}}>{critical.length} critical</span>}
-                        {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'rgba(245,158,11,0.15)',color:'#92400e'}}>{warns.length} warnings</span>}
+                        {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'#fef2f2',color:'#dc2626',border:'1px solid #fecaca',fontWeight:600}}>{critical.length} critical</span>}
+                        {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'#fffbeb',color:'#d97706',border:'1px solid #fde68a',fontWeight:600}}>{warns.length} warnings</span>}
                       </div>
                     </div>
+
+                    {/* DNS credentials prompt — shown when there are fixable issues */}
+                    {issues.some(i=>['SPF','DMARC','CAA','DKIM'].includes(i.type))&&(
+                      <AutoFixBanner userId={user?.id} setPage={setPage}/>
+                    )}
+
                     {issues.length===0?(
-                      <div style={{padding:'32px',textAlign:'center'}}><CheckCircle size={32} color="#10b981" style={{marginBottom:8}}/><div style={{fontSize:13,color:'#374151'}}>All checks passing</div></div>
-                    ):issues.map((iss,i)=>(
-                      <div key={i} className="dsh-issue" style={{display:'flex',alignItems:'flex-start',gap:12,padding:'10px 16px',borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
-                        <div style={{width:22,height:22,borderRadius:6,background:`rgba(${iss.severity==='critical'?'239,68,68':iss.severity==='warn'?'245,158,11':'96,165,250'},0.15)`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1}}>
-                          <AlertTriangle size={11} color={iss.severity==='critical'?'#ff4d6a':iss.severity==='warn'?'#ffb224':'#3d9bff'}/>
-                        </div>
-                        <div style={{flex:1}}>
-                          <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
-                            <span style={{fontSize:12,fontWeight:700,color:'#111827',fontFamily:'monospace'}}>{iss.type}</span>
-                            <span style={{fontSize:10,padding:'1px 6px',borderRadius:8,background:`rgba(${iss.severity==='critical'?'239,68,68':iss.severity==='warn'?'245,158,11':'96,165,250'},0.15)`,color:iss.severity==='critical'?'#ff4d6a':iss.severity==='warn'?'#ffb224':'#3d9bff'}}>{iss.severity}</span>
-                          </div>
-                          <div style={{fontSize:12,color:'#374151',marginBottom:iss.fix?4:0}}>{iss.message}</div>
-                          {iss.fix&&<div style={{fontSize:10,fontFamily:'monospace',color:'rgba(16,185,129,0.8)',padding:'3px 8px',background:'#f0fdf4',borderRadius:5,display:'inline-block',wordBreak:'break-all'}}>{iss.fix}</div>}
-                        </div>
-                        {iss.fix&&['SPF','DMARC','CAA'].includes(iss.type)&&(
-                          <AutoFixButton domainId={selected.id} issueType={iss.type} fixValue={iss.fix} domainName={selected.domain_name}/>
-                        )}
+                      <div style={{padding:'32px',textAlign:'center'}}>
+                        <CheckCircle size={32} color="#16a34a" style={{marginBottom:8}}/>
+                        <div style={{fontSize:13,fontWeight:600,color:'#111827'}}>All checks passing</div>
+                        <div style={{fontSize:12,color:'#6b7280',marginTop:4}}>No issues detected on {selected?.domain_name}</div>
                       </div>
-                    ))}
+                    ):issues.map((iss,i)=>{
+                      // Derive the best fix value for auto-push
+                      const fixVal = iss.type==='SPF'   ? (scan.email_auth?.spf_raw || 'v=spf1 include:_spf.google.com ~all')
+                                   : iss.type==='DMARC' ? (scan.email_auth?.dmarc_suggestion || scan.email_auth?.dmarc_raw || `v=DMARC1; p=quarantine; rua=mailto:dmarc@${selected?.domain_name}; adkim=s; aspf=s`)
+                                   : iss.type==='CAA'   ? '0 issue "letsencrypt.org"'
+                                   : iss.fix
+                      const canAutoFix = ['SPF','DMARC','CAA'].includes(iss.type) && fixVal
+                      const sevColor = iss.severity==='critical'?'#dc2626':iss.severity==='warn'?'#d97706':'#2563eb'
+                      const sevBg    = iss.severity==='critical'?'#fef2f2':iss.severity==='warn'?'#fffbeb':'#eff6ff'
+                      const sevBd    = iss.severity==='critical'?'#fecaca':iss.severity==='warn'?'#fde68a':'#bfdbfe'
+                      return (
+                        <div key={i} style={{display:'flex',alignItems:'flex-start',gap:12,padding:'12px 16px',borderBottom:'1px solid #f3f4f6',background: iss.severity==='critical'?'#fefafa':'transparent'}}>
+                          {/* Severity icon */}
+                          <div style={{width:28,height:28,borderRadius:8,background:sevBg,border:`1px solid ${sevBd}`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1}}>
+                            <AlertTriangle size={13} color={sevColor}/>
+                          </div>
+                          {/* Content */}
+                          <div style={{flex:1,minWidth:0}}>
+                            <div style={{display:'flex',alignItems:'center',gap:7,marginBottom:3,flexWrap:'wrap'}}>
+                              <span style={{fontSize:13,fontWeight:700,color:'#111827'}}>{iss.type}</span>
+                              <span style={{fontSize:10,padding:'2px 7px',borderRadius:8,background:sevBg,color:sevColor,border:`1px solid ${sevBd}`,fontWeight:600}}>{iss.severity}</span>
+                            </div>
+                            <div style={{fontSize:12,color:'#374151',lineHeight:1.6,marginBottom:canAutoFix?6:0}}>{iss.message}</div>
+                            {canAutoFix&&(
+                              <div style={{fontSize:11,fontFamily:'monospace',color:'#1e293b',background:'#f8fafc',border:'1px solid #e2e8f0',padding:'4px 9px',borderRadius:6,display:'inline-block',wordBreak:'break-all',marginTop:2,maxWidth:'100%',lineHeight:1.5}}>
+                                {fixVal?.slice(0,120)}{fixVal?.length>120?'…':''}
+                              </div>
+                            )}
+                            {!canAutoFix&&iss.fix&&(
+                              <div style={{fontSize:11,color:'#6b7280',marginTop:3,lineHeight:1.5}}>{iss.fix}</div>
+                            )}
+                          </div>
+                          {/* Auto-fix button */}
+                          {canAutoFix&&(
+                            <AutoFixButton domainId={selected.id} issueType={iss.type} fixValue={fixVal} domainName={selected?.domain_name}/>
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
 
                   {/* Monitor interval */}
