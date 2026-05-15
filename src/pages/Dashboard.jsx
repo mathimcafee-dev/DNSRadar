@@ -313,6 +313,114 @@ function SBadge({ status }) {
 
 // ─── Main ─────────────────────────────────────────────────────────────
 
+// ─── Issues panel (collapsible) ──────────────────────────────────────
+function IssuesPanel({ issues, critical, warns, scan, selected, user, setPage }) {
+  const [expanded, setExpanded] = useState(critical.length > 0) // auto-open if critical
+
+  const allClear = issues.length === 0
+  const headerBg = allClear ? '#f0fdf4' : critical.length > 0 ? '#fef2f2' : '#fffbeb'
+  const headerBd = allClear ? '#bbf7d0' : critical.length > 0 ? '#fecaca' : '#fde68a'
+  const headerColor = allClear ? '#15803d' : critical.length > 0 ? '#dc2626' : '#d97706'
+
+  return (
+    <div className="print-card" style={{background:'#fff', border:`1px solid ${expanded ? '#e5e7eb' : headerBd}`, borderRadius:12, overflow:'hidden', boxShadow:'0 1px 3px rgba(0,0,0,0.05)'}}>
+
+      {/* Collapsed header */}
+      <div onClick={() => setExpanded(e => !e)}
+        style={{padding:'11px 16px', display:'flex', alignItems:'center', gap:10, cursor:'pointer', userSelect:'none',
+          background: expanded ? '#fafafa' : headerBg, borderBottom: expanded ? '1px solid #f0f2f5' : 'none'}}>
+
+        {/* Icon */}
+        <div style={{width:30, height:30, borderRadius:8, flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center',
+          background: allClear ? '#dcfce7' : critical.length > 0 ? '#fecaca' : '#fde68a',
+          border: `1px solid ${headerBd}`}}>
+          {allClear
+            ? <CheckCircle size={15} color="#16a34a"/>
+            : <AlertTriangle size={15} color={headerColor}/>
+          }
+        </div>
+
+        <div style={{flex:1}}>
+          <div style={{fontSize:13, fontWeight:700, color:'#111827'}}>
+            {allClear ? 'All checks passing' : `${issues.length} issue${issues.length!==1?'s':''} to fix`}
+          </div>
+          <div style={{fontSize:11, color:'#6b7280', marginTop:1}}>
+            {allClear
+              ? `No issues detected on ${selected?.domain_name}`
+              : [
+                  critical.length > 0 && `${critical.length} critical`,
+                  warns.length > 0 && `${warns.length} warning${warns.length!==1?'s':''}`,
+                  issues.filter(i=>i.severity==='info').length > 0 && `${issues.filter(i=>i.severity==='info').length} info`,
+                ].filter(Boolean).join(' · ')
+            }
+          </div>
+        </div>
+
+        {/* Badge pills */}
+        <div style={{display:'flex', gap:5, alignItems:'center'}}>
+          {critical.length > 0 && <span style={{fontSize:10, padding:'2px 7px', borderRadius:8, background:'#fef2f2', color:'#dc2626', border:'1px solid #fecaca', fontWeight:600}}>{critical.length} critical</span>}
+          {warns.length > 0    && <span style={{fontSize:10, padding:'2px 7px', borderRadius:8, background:'#fffbeb', color:'#d97706', border:'1px solid #fde68a', fontWeight:600}}>{warns.length} warn</span>}
+          <span style={{fontSize:12, color:'#9ca3af', transform: expanded?'rotate(180deg)':'none', transition:'transform 0.2s', display:'inline-block', marginLeft:4}}>▼</span>
+        </div>
+      </div>
+
+      {/* Expanded content */}
+      {expanded && (
+        <>
+          {/* Auto-fix banner */}
+          {issues.some(i=>['SPF','DMARC','CAA','DKIM'].includes(i.type)) && (
+            <AutoFixBanner userId={user?.id} setPage={setPage}/>
+          )}
+
+          {allClear ? (
+            <div style={{padding:'28px', textAlign:'center'}}>
+              <CheckCircle size={28} color="#16a34a" style={{marginBottom:8}}/>
+              <div style={{fontSize:13, fontWeight:600, color:'#111827'}}>All checks passing</div>
+              <div style={{fontSize:12, color:'#6b7280', marginTop:4}}>No issues detected on {selected?.domain_name}</div>
+            </div>
+          ) : issues.map((iss, i) => {
+            const fixVal = iss.type==='SPF'   ? (scan.email_auth?.spf_raw || 'v=spf1 include:_spf.google.com ~all')
+                         : iss.type==='DMARC' ? (scan.email_auth?.dmarc_suggestion || scan.email_auth?.dmarc_raw || `v=DMARC1; p=quarantine; rua=mailto:dmarc@${selected?.domain_name}; adkim=s; aspf=s`)
+                         : iss.type==='CAA'   ? '0 issue "letsencrypt.org"'
+                         : iss.fix
+            const canAutoFix = ['SPF','DMARC','CAA'].includes(iss.type) && fixVal
+            const sevColor = iss.severity==='critical'?'#dc2626':iss.severity==='warn'?'#d97706':'#2563eb'
+            const sevBg    = iss.severity==='critical'?'#fef2f2':iss.severity==='warn'?'#fffbeb':'#eff6ff'
+            const sevBd    = iss.severity==='critical'?'#fecaca':iss.severity==='warn'?'#fde68a':'#bfdbfe'
+            return (
+              <div key={i} style={{display:'flex', alignItems:'flex-start', gap:12, padding:'12px 16px',
+                borderBottom: i < issues.length-1 ? '1px solid #f3f4f6' : 'none',
+                background: iss.severity==='critical' ? '#fefafa' : 'transparent'}}>
+                <div style={{width:28, height:28, borderRadius:8, background:sevBg, border:`1px solid ${sevBd}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, marginTop:1}}>
+                  <AlertTriangle size={13} color={sevColor}/>
+                </div>
+                <div style={{flex:1, minWidth:0}}>
+                  <div style={{display:'flex', alignItems:'center', gap:7, marginBottom:3, flexWrap:'wrap'}}>
+                    <span style={{fontSize:13, fontWeight:700, color:'#111827'}}>{iss.type}</span>
+                    <span style={{fontSize:10, padding:'2px 7px', borderRadius:8, background:sevBg, color:sevColor, border:`1px solid ${sevBd}`, fontWeight:600}}>{iss.severity}</span>
+                  </div>
+                  <div style={{fontSize:12, color:'#374151', lineHeight:1.6, marginBottom:canAutoFix?6:0}}>{iss.message}</div>
+                  {canAutoFix && (
+                    <div style={{fontSize:11, fontFamily:'monospace', color:'#1e293b', background:'#f8fafc', border:'1px solid #e2e8f0', padding:'4px 9px', borderRadius:6, display:'inline-block', wordBreak:'break-all', marginTop:2, maxWidth:'100%', lineHeight:1.5}}>
+                      {fixVal?.slice(0,120)}{fixVal?.length>120?'…':''}
+                    </div>
+                  )}
+                  {!canAutoFix && iss.fix && (
+                    <div style={{fontSize:11, color:'#6b7280', marginTop:3, lineHeight:1.5}}>{iss.fix}</div>
+                  )}
+                </div>
+                {canAutoFix && (
+                  <AutoFixButton domainId={selected.id} issueType={iss.type} fixValue={fixVal} domainName={selected?.domain_name}/>
+                )}
+              </div>
+            )
+          })}
+        </>
+      )}
+    </div>
+  )
+}
+
 // ─── Onboarding checklist ────────────────────────────────────────────
 function OnboardingChecklist({ scan, domain, setPage, setActiveTab }) {
   const ea = scan?.email_auth || {}
@@ -695,66 +803,15 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   </div>
 
                   {/* Issues */}
-                  <div className="print-card" style={{...card}}>
-                    <div style={{...cardHd}}>
-                      <span style={{fontSize:12,fontWeight:700,color:'#111827'}}>Issues to fix</span>
-                      <div style={{display:'flex',gap:5}}>
-                        {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'#fef2f2',color:'#dc2626',border:'1px solid #fecaca',fontWeight:600}}>{critical.length} critical</span>}
-                        {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:'#fffbeb',color:'#d97706',border:'1px solid #fde68a',fontWeight:600}}>{warns.length} warnings</span>}
-                      </div>
-                    </div>
-
-                    {/* DNS credentials prompt — shown when there are fixable issues */}
-                    {issues.some(i=>['SPF','DMARC','CAA','DKIM'].includes(i.type))&&(
-                      <AutoFixBanner userId={user?.id} setPage={setPage}/>
-                    )}
-
-                    {issues.length===0?(
-                      <div style={{padding:'32px',textAlign:'center'}}>
-                        <CheckCircle size={32} color="#16a34a" style={{marginBottom:8}}/>
-                        <div style={{fontSize:13,fontWeight:600,color:'#111827'}}>All checks passing</div>
-                        <div style={{fontSize:12,color:'#6b7280',marginTop:4}}>No issues detected on {selected?.domain_name}</div>
-                      </div>
-                    ):issues.map((iss,i)=>{
-                      // Derive the best fix value for auto-push
-                      const fixVal = iss.type==='SPF'   ? (scan.email_auth?.spf_raw || 'v=spf1 include:_spf.google.com ~all')
-                                   : iss.type==='DMARC' ? (scan.email_auth?.dmarc_suggestion || scan.email_auth?.dmarc_raw || `v=DMARC1; p=quarantine; rua=mailto:dmarc@${selected?.domain_name}; adkim=s; aspf=s`)
-                                   : iss.type==='CAA'   ? '0 issue "letsencrypt.org"'
-                                   : iss.fix
-                      const canAutoFix = ['SPF','DMARC','CAA'].includes(iss.type) && fixVal
-                      const sevColor = iss.severity==='critical'?'#dc2626':iss.severity==='warn'?'#d97706':'#2563eb'
-                      const sevBg    = iss.severity==='critical'?'#fef2f2':iss.severity==='warn'?'#fffbeb':'#eff6ff'
-                      const sevBd    = iss.severity==='critical'?'#fecaca':iss.severity==='warn'?'#fde68a':'#bfdbfe'
-                      return (
-                        <div key={i} style={{display:'flex',alignItems:'flex-start',gap:12,padding:'12px 16px',borderBottom:'1px solid #f3f4f6',background: iss.severity==='critical'?'#fefafa':'transparent'}}>
-                          {/* Severity icon */}
-                          <div style={{width:28,height:28,borderRadius:8,background:sevBg,border:`1px solid ${sevBd}`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1}}>
-                            <AlertTriangle size={13} color={sevColor}/>
-                          </div>
-                          {/* Content */}
-                          <div style={{flex:1,minWidth:0}}>
-                            <div style={{display:'flex',alignItems:'center',gap:7,marginBottom:3,flexWrap:'wrap'}}>
-                              <span style={{fontSize:13,fontWeight:700,color:'#111827'}}>{iss.type}</span>
-                              <span style={{fontSize:10,padding:'2px 7px',borderRadius:8,background:sevBg,color:sevColor,border:`1px solid ${sevBd}`,fontWeight:600}}>{iss.severity}</span>
-                            </div>
-                            <div style={{fontSize:12,color:'#374151',lineHeight:1.6,marginBottom:canAutoFix?6:0}}>{iss.message}</div>
-                            {canAutoFix&&(
-                              <div style={{fontSize:11,fontFamily:'monospace',color:'#1e293b',background:'#f8fafc',border:'1px solid #e2e8f0',padding:'4px 9px',borderRadius:6,display:'inline-block',wordBreak:'break-all',marginTop:2,maxWidth:'100%',lineHeight:1.5}}>
-                                {fixVal?.slice(0,120)}{fixVal?.length>120?'…':''}
-                              </div>
-                            )}
-                            {!canAutoFix&&iss.fix&&(
-                              <div style={{fontSize:11,color:'#6b7280',marginTop:3,lineHeight:1.5}}>{iss.fix}</div>
-                            )}
-                          </div>
-                          {/* Auto-fix button */}
-                          {canAutoFix&&(
-                            <AutoFixButton domainId={selected.id} issueType={iss.type} fixValue={fixVal} domainName={selected?.domain_name}/>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
+                  <IssuesPanel
+                    issues={issues}
+                    critical={critical}
+                    warns={warns}
+                    scan={scan}
+                    selected={selected}
+                    user={user}
+                    setPage={setPage}
+                  />
 
                   {/* Monitor interval */}
                   <div style={{...card,padding:'14px 16px'}}>
