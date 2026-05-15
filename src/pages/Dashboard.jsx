@@ -209,9 +209,25 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
   async function triggerScan(domain) {
     setScanning(s=>({...s,[domain.id]:true}))
     try {
-      await supabase.functions.invoke('dns-scan',{body:{domain:domain.domain_name,scan_type:'website',save_to_db:true,domain_id:domain.id}})
+      const { data, error } = await supabase.functions.invoke('dns-scan', {
+        body: { domain: domain.domain_name, scan_type:'website', save_to_db:true, domain_id:domain.id }
+      })
+      if (error) {
+        console.error('Scan failed:', error)
+        alert(`Scan failed for ${domain.domain_name}: ${error.message || 'Unknown error'}. Please try again.`)
+        return
+      }
+      if (data?.error) {
+        alert(`Scan error for ${domain.domain_name}: ${data.error}`)
+        return
+      }
       await fetchDomains()
-    } finally {setScanning(s=>({...s,[domain.id]:false}))}
+    } catch (e) {
+      console.error('Scan exception:', e)
+      alert(`Scan failed: ${e.message}`)
+    } finally {
+      setScanning(s=>({...s,[domain.id]:false}))
+    }
   }
 
   async function confirmDelete() {

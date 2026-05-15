@@ -18,20 +18,19 @@ function Alerts({ user }) {
   useEffect(() => {
     supabase.from('alerts').select('*, domains(domain_name)').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50).then(({ data }) => setAlerts(data || []))
   }, [user])
-  const D = { bg:'#0b0f14',surface:'#111827',border:'#1e2535',text:'#e2e8f0',muted:'#8993ac' }
   return (
-    <div style={{ background:D.bg, minHeight:'100%', padding:24, fontFamily:"'DM Sans',system-ui,sans-serif" }}>
-      <h2 style={{ fontSize:17, fontWeight:700, color:D.text, marginBottom:16 }}>Alerts</h2>
+    <div style={{ background:'#f7f8fa', minHeight:'100%', padding:28, fontFamily:"'Inter',system-ui,sans-serif" }}>
+      <h2 style={{ fontSize:18, fontWeight:700, color:'#111827', marginBottom:20, letterSpacing:'-0.02em' }}>Alerts</h2>
       {alerts.length === 0 ? (
-        <div style={{ background:D.surface, border:'1px solid #1e2535', borderRadius:12, padding:'48px', textAlign:'center', color:D.muted, fontSize:13 }}>No alerts yet — we'll notify you when anything changes</div>
+        <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:12, padding:'48px', textAlign:'center', color:'#6b7280', fontSize:13 }}>No alerts yet — we'll notify you when anything changes.</div>
       ) : alerts.map(a => (
-        <div key={a.id} style={{ background:D.surface, border:'1px solid #1e2535', borderRadius:10, padding:'12px 16px', marginBottom:8, display:'flex', alignItems:'flex-start', gap:12 }}>
-          <div style={{ width:8, height:8, borderRadius:'50%', background:a.severity==='critical'?'#ff4d6a':a.severity==='warn'?'#ffb224':'#3d9bff', flexShrink:0, marginTop:4 }}/>
+        <div key={a.id} style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:10, padding:'12px 16px', marginBottom:8, display:'flex', alignItems:'flex-start', gap:12, boxShadow:'0 1px 3px rgba(0,0,0,0.04)' }}>
+          <div style={{ width:8, height:8, borderRadius:'50%', background:a.severity==='critical'?'#dc2626':a.severity==='warn'?'#d97706':'#2563eb', flexShrink:0, marginTop:5 }}/>
           <div style={{ flex:1 }}>
-            <div style={{ fontSize:12, fontWeight:600, color:D.text, marginBottom:2 }}>{a.domains?.domain_name} — {a.alert_type}</div>
-            <div style={{ fontSize:11, color:D.muted }}>{a.message}</div>
+            <div style={{ fontSize:13, fontWeight:600, color:'#111827', marginBottom:2 }}>{a.domains?.domain_name} — {a.alert_type}</div>
+            <div style={{ fontSize:12, color:'#374151' }}>{a.message}</div>
           </div>
-          <div style={{ fontSize:10, color:'rgba(255,255,255,0.2)' }}>{new Date(a.created_at).toLocaleDateString()}</div>
+          <div style={{ fontSize:11, color:'#9ca3af', flexShrink:0 }}>{new Date(a.created_at).toLocaleDateString()}</div>
         </div>
       ))}
     </div>
@@ -39,12 +38,11 @@ function Alerts({ user }) {
 }
 
 function Reports({ user }) {
-  const D = { bg:'#0b0f14',surface:'#111827',border:'#1e2535',text:'#e2e8f0',muted:'#8993ac' }
   return (
-    <div style={{ background:D.bg, minHeight:'100%', padding:24, fontFamily:"'DM Sans',system-ui,sans-serif" }}>
-      <h2 style={{ fontSize:17, fontWeight:700, color:D.text, marginBottom:8 }}>Daily Reports</h2>
-      <p style={{ fontSize:13, color:D.muted, marginBottom:20 }}>Automated daily email reports will appear here.</p>
-      <div style={{ background:D.surface, border:'1px solid #1e2535', borderRadius:12, padding:'48px', textAlign:'center', color:D.muted, fontSize:13 }}>No reports generated yet</div>
+    <div style={{ background:'#f7f8fa', minHeight:'100%', padding:28, fontFamily:"'Inter',system-ui,sans-serif" }}>
+      <h2 style={{ fontSize:18, fontWeight:700, color:'#111827', marginBottom:8, letterSpacing:'-0.02em' }}>Daily Reports</h2>
+      <p style={{ fontSize:13, color:'#374151', marginBottom:20 }}>Automated daily email reports will appear here.</p>
+      <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:12, padding:'48px', textAlign:'center', color:'#6b7280', fontSize:13 }}>No reports generated yet</div>
     </div>
   )
 }
@@ -96,11 +94,11 @@ export default function App() {
 
   useEffect(() => {
     if (!user) return
-    supabase.from('domains').select(`*, scan_results(id,health_score,score_dns,score_email,score_ssl,score_propagation,score_security,score_blacklist,email_auth,ssl_info,security,propagation,blacklists,issues,dns_records,scanned_at)`).eq('user_id', user.id).order('created_at', { ascending: false }).then(({ data }) => {
+    supabase.from('domains').select(`*, scan_results(id,health_score,score_dns,score_email,score_ssl,score_propagation,score_security,score_blacklist,email_auth,ssl_info,security,propagation,blacklists,issues,dns_records,scanned_at):scanned_at.desc.limit(1)`).eq('user_id', user.id).order('created_at', { ascending: false }).then(({ data }) => {
       setDomains(data || [])
       if (data?.length && !selectedDomain) setSelectedDomain(data[0])
     })
-  }, [user, page])
+  }, [user])
 
   if (loading) return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'#f7f8fa' }}>
@@ -110,7 +108,7 @@ export default function App() {
   )
 
   const needsAuth = ['dashboard','tools','dmarc','autofix','ssl','alerts','reports','settings'].includes(page)
-  if (needsAuth && !user) { setPage('auth'); return null }
+  useEffect(() => { if (needsAuth && !user && !loading) setPage('auth') }, [needsAuth, user, loading])
 
   // Public pages — no sidebar
   if (page === 'landing') return <Landing setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>

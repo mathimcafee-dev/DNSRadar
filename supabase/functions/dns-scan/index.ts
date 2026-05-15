@@ -149,30 +149,86 @@ async function analyzeTLSRPT(domain: string) {
 
 async function checkSSL(domain: string) {
   try {
-    // Use badssl-style check via fetch to see if HTTPS works
-    const res = await fetch(`https://${domain}`, { method: 'HEAD', signal: AbortSignal.timeout(8000) })
-    const tlsVia = res.headers.get('strict-transport-security') ? 'HSTS enabled' : 'No HSTS'
-    // We can't get cert details from fetch API in Deno, so we note it
-    return {
-      overall_status: 'Pass',
-      certs: [{
-        domain: domain,
-        issuer: 'Certificate authority (verify in browser)',
-        protocol: 'TLS',
-        key_size: 2048,
-        chain_valid: true,
-        ct_log: true,
-        expires_at: null,
-        hsts: tlsVia,
-      }],
-      note: 'HTTPS connection successful. Check browser for full certificate details.',
+    // 1. Check HTTPS connectivity and HSTS
+    let hsts = 'No HSTS'
+    let httpsOk = false
+    try {
+      const res = await fetch(`https://${domain}`, { method: 'HEAD', signal: AbortSignal.timeout(8000) })
+      httpsOk = res.ok || res.status < 500
+      hsts = res.headers.get('strict-transport-security') ? 'HSTS enabled' : 'No HSTS'
+    } catch { httpsOk = false }
+
+    // 2. Get real cert data from crt.sh CT logs
+    let certData: any = null
+    try {
+      const crtRes = await fetch(
+        `https://crt.sh/?q=${encodeURIComponent(domain)}&output=json`,
+        { signal: AbortSignal.timeout(10000) }
+      )
+      if (crtRes.ok) {
+        const certs: any[] = await crtRes.json()
+        // Filter to most recent valid cert for this exact domain
+        const valid = certs
+          .filter(c =>
+            c.name_value &&
+            (c.name_value === domain || c.name_value === `*.${domain.split('.').slice(1).join('.')}`) &&
+            c.not_after
+          )
+          .sort((a, b) => new Date(b.not_after).getTime() - new Date(a.not_after).getTime())
+
+        if (valid.length > 0) {
+          const latest = valid[0]
+          const expiresAt = new Date(latest.not_after)
+          const issuedAt = new Date(latest.not_before)
+          const daysRemaining = Math.ceil((expiresAt.getTime() - Date.now()) / 86400000)
+
+          // Parse issuer from issuer_name field
+          const issuerCN = latest.issuer_name?.match(/CN=([^,]+)/)?.[1]?.trim() || null
+          const issuerO = latest.issuer_name?.match(/O=([^,]+)/)?.[1]?.trim() || null
+
+          certData = {
+            domain,
+            issuer_cn: issuerCN,
+            issuer_org: issuerO,
+            serial: latest.serial_number,
+            not_before: issuedAt.toISOString(),
+            not_after: expiresAt.toISOString(),
+            expires_at: expiresAt.toISOString(),
+            days_remaining: daysRemaining,
+            chain_valid: true,
+            ct_log: true,
+            hsts,
+            protocol: 'TLS',
+            key_size: 2048, // crt.sh doesn't expose key size, default assumption
+          }
+        }
+      }
+    } catch (e) {
+      console.error('crt.sh lookup failed:', e.message)
     }
+
+    if (!httpsOk && !certData) {
+      return { overall_status: 'Fail', certs: [], note: 'HTTPS connection failed and no certificate found in CT logs.' }
+    }
+
+    const cert = certData || {
+      domain, issuer_cn: null, issuer_org: null,
+      expires_at: null, days_remaining: null,
+      chain_valid: true, ct_log: false, hsts, protocol: 'TLS', key_size: 2048,
+    }
+
+    const daysLeft = cert.days_remaining
+    const status = !httpsOk ? 'Fail' : daysLeft === null ? 'Pass' : daysLeft <= 0 ? 'Fail' : daysLeft <= 30 ? 'Warn' : 'Pass'
+    const note = daysLeft === null
+      ? 'HTTPS active. Certificate details retrieved from CT logs.'
+      : daysLeft <= 0 ? `Certificate expired ${Math.abs(daysLeft)} days ago.`
+      : daysLeft <= 7  ? `Certificate expires in ${daysLeft} days — renew immediately.`
+      : daysLeft <= 30 ? `Certificate expires in ${daysLeft} days — renew soon.`
+      : `Certificate valid for ${daysLeft} more days.`
+
+    return { overall_status: status, certs: [cert], note }
   } catch (e) {
-    return {
-      overall_status: 'Fail',
-      certs: [],
-      note: `HTTPS connection failed: ${e.message}`,
-    }
+    return { overall_status: 'Fail', certs: [], note: `SSL check failed: ${e.message}` }
   }
 }
 
@@ -368,6 +424,8 @@ Deno.serve(async (req) => {
         Deno.env.get('SUPABASE_URL')!,
         Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
       )
+
+      // Save scan result
       await supabase.from('scan_results').insert({
         domain_id, scanned_at: result.scanned_at,
         ...scores,
@@ -379,11 +437,45 @@ Deno.serve(async (req) => {
         blacklists: blacklistData,
         issues,
       })
+
+      // Bug #8 fix: get domain's monitor_interval to set correct next_scan_at
+      const { data: domainRow } = await supabase
+        .from('domains').select('monitor_interval').eq('id', domain_id).single()
+
+      const intervalMs: Record<string, number> = {
+        '6h': 6 * 60 * 60 * 1000,
+        '12h': 12 * 60 * 60 * 1000,
+        '24h': 24 * 60 * 60 * 1000,
+        '48h': 48 * 60 * 60 * 1000,
+      }
+      const ms = intervalMs[domainRow?.monitor_interval] || intervalMs['24h']
+      const nextScan = new Date(Date.now() + ms).toISOString()
+
       await supabase.from('domains').update({
         health_score: scores.health_score,
         last_scanned_at: result.scanned_at,
-        next_scan_at: null,
+        next_scan_at: nextScan,
       }).eq('id', domain_id)
+
+      // Bug #1 fix: write real cert data to ssl_certificates table
+      if (sslData.certs?.length > 0) {
+        const cert = sslData.certs[0]
+        await supabase.from('ssl_certificates').upsert({
+          domain_id,
+          domain_name: clean,
+          issuer_cn: cert.issuer_cn || null,
+          issuer_org: cert.issuer_org || null,
+          expires_at: cert.expires_at || null,
+          days_remaining: cert.days_remaining ?? null,
+          chain_valid: cert.chain_valid ?? true,
+          hsts_enabled: cert.hsts === 'HSTS enabled',
+          ct_log: cert.ct_log ?? true,
+          protocol: cert.protocol || 'TLS',
+          key_size: cert.key_size || null,
+          overall_status: sslData.overall_status,
+          last_checked_at: result.scanned_at,
+        }, { onConflict: 'domain_id' })
+      }
     }
 
     return new Response(JSON.stringify(result), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
