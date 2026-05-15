@@ -1,63 +1,65 @@
 import { useState, useEffect } from 'react'
-import { Radar, Shield, Globe, Lock, Mail, Zap, CheckCircle, ArrowRight, ChevronRight, AlertTriangle, Activity } from 'lucide-react'
+import { Radar, Shield, Globe, Lock, Mail, Zap, CheckCircle, ArrowRight, AlertTriangle, Activity, Search, FileText, Bell, Wrench, BarChart2, ChevronDown, ChevronUp, Star } from 'lucide-react'
 
 const F = "'Inter',-apple-system,BlinkMacSystemFont,sans-serif"
 const MONO = "'JetBrains Mono','Fira Code',monospace"
 
-const NAV_ITEMS = ['Features','How it works','Pricing']
-
-const STATS = [
-  { val: '< 2 min', label: 'First scan' },
-  { val: '6 checks', label: 'Per domain' },
-  { val: '10/10', label: 'Blacklists' },
-  { val: 'Free', label: 'To start' },
+const FEATURES_LIVE = [
+  { icon: Mail,     color:'#6366f1', bg:'#eef2ff', label:'Email Authentication',   desc:'SPF, DKIM, DMARC, BIMI, MTA-STS — full audit with fix suggestions and DMARC journey wizard.' },
+  { icon: Lock,     color:'#0ea5e9', bg:'#e0f2fe', label:'SSL Certificates',       desc:'Expiry countdown, issuer, chain validity, HSTS, CT logs — from crt.sh and Certspotter.' },
+  { icon: Globe,    color:'#10b981', bg:'#ecfdf5', label:'DNS Propagation',        desc:'Global propagation status across 4 resolvers — US, EU, APAC, AU. Inconsistency alerts.' },
+  { icon: Shield,   color:'#f59e0b', bg:'#fffbeb', label:'Blacklist Monitoring',   desc:'Checks 52 DNSBL lists in real time. One-click delist links for each flagged list.' },
+  { icon: Zap,      color:'#ef4444', bg:'#fef2f2', label:'DNS Auto-Fix',          desc:'Cloudflare API integration. Push correct SPF, DMARC, CAA records with one click. Logged.' },
+  { icon: Activity, color:'#8b5cf6', bg:'#f5f3ff', label:'Health Score',          desc:'Weighted 0–100 score across 6 categories. Delta vs last scan. Score history chart.' },
+  { icon: Search,   color:'#0891b2', bg:'#ecfeff', label:'Instant Audit',         desc:'Scan any domain without an account. Export a full compliance PDF — PCI DSS, CISA, Google/Yahoo.' },
+  { icon: Bell,     color:'#d97706', bg:'#fffbeb', label:'Alerts & Reports',      desc:'Email alerts on any DNS change. Webhook to Slack or Teams. Daily digest reports.' },
+  { icon: Wrench,   color:'#059669', bg:'#ecfdf5', label:'Tools & Generators',    desc:'SPF generator, DMARC wizard, DKIM checker, deliverability test, SPF flattener, bulk importer.' },
 ]
 
-const CHECKS = [
-  { icon: Mail,   color: '#6366f1', label: 'SPF · DKIM · DMARC', sub: 'Full email auth audit with policy enforcement grading' },
-  { icon: Lock,   color: '#0ea5e9', label: 'SSL / TLS',           sub: 'Certificate validity, expiry, chain and cipher check' },
-  { icon: Globe,  color: '#10b981', label: 'DNS Propagation',     sub: 'Global propagation status across 20+ resolvers' },
-  { icon: Shield, color: '#f59e0b', label: 'Blacklist monitoring', sub: 'Real-time checks across 10 major blocklists' },
-  { icon: Activity,color:'#8b5cf6', label: 'Security headers',    sub: 'HSTS, CSP, X-Frame-Options and 6 more' },
-  { icon: Zap,    color: '#ef4444', label: 'Auto-fix',            sub: 'One-click DNS fixes via Cloudflare and GoDaddy APIs' },
+const COMING_SOON = [
+  { label:'DMARC aggregate reports',  desc:'Inbound DMARC XML parsing, sender IP identification, daily stats charts.' },
+  { label:'Geographic threat map',    desc:'Visualise where unauthorised senders are located on a world map.' },
+  { label:'BIMI validator',           desc:'Full VMC and SVG logo validation with inbox preview across Gmail, Apple Mail, Yahoo.' },
+  { label:'Compliance PDF',           desc:'One-click downloadable report for auditors — PCI DSS v4, CISA BOD 18-01, ISO 27001.' },
+  { label:'White-label reports',      desc:'Agency-branded PDF and HTML reports with your logo and colour scheme.' },
+  { label:'API access',               desc:'RESTful API with key auth. Scan any domain programmatically and get full JSON results.' },
 ]
 
 const STEPS = [
-  { n:'01', title:'Add your domain',     body:'Paste any domain name. No ownership verification needed to run your first scan. Results in under 90 seconds.' },
-  { n:'02', title:'Read the full report', body:'SPF depth analysis, DKIM key validation, DMARC policy grading, SSL chain, propagation, blacklists — all in one page.' },
-  { n:'03', title:'Fix what is broken',  body:'For Cloudflare and GoDaddy users, DomainRadar pushes the correct DNS records with a single click. No cPanel required.' },
-  { n:'04', title:'Monitor it forever',  body:'Set a 6 or 24 hour scan interval and get email alerts the moment anything changes or a certificate nears expiry.' },
-]
-
-const FEATURES = [
-  { label:'Scanning', items:['SPF include depth analysis','DKIM 2048-bit key validation','DMARC policy enforcement grading','BIMI + VMC detection','MTA-STS and TLS-RPT','SSL certificate chain check'] },
-  { label:'Monitoring', items:['6h / 24h automatic rescans','Email alerts on any change','Certificate expiry warnings','Blacklist entry detection','Score history over time','Fleet dashboard for all domains'] },
-  { label:'Auto-fix', items:['Cloudflare DNS record push','GoDaddy DNS record push','One-click SPF correction','DMARC policy upgrade wizard','DKIM rotation assistant','Bulk domain import via CSV'] },
+  { n:'01', title:'Paste your domain',   body:'No account needed for your first scan. Results in under 90 seconds — DNS, email auth, SSL, propagation, blacklists all at once.' },
+  { n:'02', title:'Read the audit',      body:'Every finding explained in plain English. Health score, critical issues highlighted, fix instructions included inline.' },
+  { n:'03', title:'Fix with one click',  body:'Connect Cloudflare or GoDaddy once. DomainRadar pushes the correct record via API. You approve, it applies. Change logged forever.' },
+  { n:'04', title:'Monitor forever',     body:'6h or 24h rescans. Email alerts when anything changes. Certificate expiry warnings at 30, 7 and 1 day. Score history chart.' },
 ]
 
 const FAQS = [
-  { q:'Does it work on any domain?',            a:'Yes. You can scan any publicly reachable domain — yours, a competitor\'s, a client\'s. No ownership proof required for a basic scan. Monitoring and auto-fix require you to add the domain to your account.' },
-  { q:'What does the health score mean?',        a:'It is a weighted 0–100 score across DNS records (25 pts), email authentication (30 pts), SSL/TLS (20 pts), propagation (10 pts), security headers (10 pts), and blacklists (5 pts). A score below 60 means real deliverability or security risk.' },
-  { q:'How does auto-fix actually work?',        a:'You paste your Cloudflare or GoDaddy API credentials once. DomainRadar reads the issue, builds the correct DNS record, and creates or updates it via their API. You approve before anything changes.' },
-  { q:'Is this only for developers?',            a:'No. The report is designed for domain owners who have never opened a DNS panel. Every finding has a plain-English explanation and a numbered fix list. The auto-fix feature means many issues resolve with a single click.' },
-  { q:'What is the free plan?',                  a:'Free gives you unlimited manual scans and one monitored domain. Paid plans add more monitored domains, faster scan intervals, team seats, and API access.' },
+  { q:'Does it work on any domain?',       a:'Yes — scan any publicly reachable domain, yours or anyone else\'s. No ownership proof for a basic scan. Monitoring and auto-fix require adding to your account.' },
+  { q:'What does the health score mean?',  a:'A weighted 0–100 across DNS (25pts), email auth (30pts), SSL (20pts), propagation (10pts), security (10pts), blacklists (5pts). Below 60 means real deliverability or security risk.' },
+  { q:'How does auto-fix work?',           a:'You add Cloudflare or GoDaddy API credentials once in Settings. DomainRadar reads the issue, builds the correct record, and pushes it via their API. You see a confirm dialog before anything changes.' },
+  { q:'Is this only for developers?',      a:'No. Every finding has a plain-English explanation and step-by-step fix. Auto-fix means most issues resolve in one click with zero DNS knowledge.' },
+  { q:'How is the PDF export generated?',  a:'Client-side HTML generation — no server involved. The report includes your domain, score, compliance checklist (PCI DSS, CISA, Google/Yahoo), all check results, and issues to fix.' },
+  { q:'What is on the free plan?',         a:'Unlimited manual scans, one monitored domain, full scan results, PDF export, and all tools. Paid plans add more monitored domains, faster intervals, team seats, and API access.' },
+]
+
+const TESTIMONIALS = [
+  { name:'Marcus B.', role:'SaaS founder', text:'Found out our DMARC was on p=none for two years. One click to fix. Took 4 minutes total.' },
+  { name:'Priya K.',  role:'Agency owner', text:'We run this on every client domain before onboarding. The PDF report goes straight into the proposal.' },
+  { name:'Tom H.',    role:'Dev lead',     text:'The blacklist alert saved us from a support nightmare. Got the delist done before customers noticed.' },
 ]
 
 export default function Landing({ setPage, setScanDomain, setScanType }) {
   const [domain, setDomain] = useState('')
   const [scrolled, setScrolled] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
+  const [recentScans, setRecentScans] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('dr_recent_scans') || '[]') } catch { return [] }
+  })
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', fn)
     return () => window.removeEventListener('scroll', fn)
   }, [])
-
-  // Load and save recent scans from localStorage
-  const [recentScans, setRecentScans] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('dr_recent_scans') || '[]') } catch { return [] }
-  })
 
   function saveToHistory(d) {
     try {
@@ -73,239 +75,266 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
     if (!domain.trim()) return
     const d = domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].toLowerCase()
     saveToHistory(d)
-    setScanDomain(d)
-    setScanType('website')
-    setPage('scan')
+    setScanDomain(d); setScanType('website'); setPage('scan')
   }
 
-  // ── styles ──────────────────────────────────────────
-  const page  = { fontFamily:F, background:'#fafafa', color:'#111', lineHeight:1.6 }
-  const nav   = { position:'fixed', top:0, left:0, right:0, zIndex:100, height:56, display:'flex', alignItems:'center', padding:'0 32px', justifyContent:'space-between', background: scrolled ? 'rgba(250,250,250,0.92)' : 'transparent', backdropFilter: scrolled ? 'blur(12px)' : 'none', borderBottom: scrolled ? '1px solid #e5e7eb' : '1px solid transparent', transition:'all 0.2s' }
-  const btn1  = { display:'inline-flex', alignItems:'center', gap:6, padding:'9px 20px', background:'#111', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }
-  const btn2  = { display:'inline-flex', alignItems:'center', gap:6, padding:'9px 18px', background:'transparent', color:'#555', border:'1px solid #e5e7eb', borderRadius:8, fontSize:13, fontWeight:500, cursor:'pointer', fontFamily:F }
-  const input = { flex:1, padding:'12px 16px', background:'#fff', border:'1px solid #e5e7eb', borderRadius:9, fontSize:14, fontFamily:MONO, color:'#111', outline:'none', boxShadow:'inset 0 1px 2px rgba(0,0,0,0.04)' }
+  function quickScan(d) {
+    saveToHistory(d); setScanDomain(d); setScanType('website'); setPage('scan')
+  }
+
+  const navBg = scrolled ? 'rgba(255,255,255,0.95)' : 'transparent'
+  const navBd = scrolled ? '1px solid #e5e7eb' : '1px solid transparent'
 
   return (
-    <div style={page}>
+    <div style={{ fontFamily:F, background:'#fff', color:'#111', lineHeight:1.6 }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        * { box-sizing: border-box; }
-        ::placeholder { color: #9ca3af; font-family: ${MONO}; }
-        a { text-decoration: none; color: inherit; }
-        .faq-q:hover { color: #111 !important; }
-        .nav-link { font-size:13px; color:#555; font-weight:500; cursor:pointer; padding:4px 0; border-bottom:1px solid transparent; transition:color 0.15s; }
-        .nav-link:hover { color:#111; }
-        .check-card:hover { border-color:#d1d5db !important; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.06) !important; }
-        .step-num { font-size:11px; font-weight:700; color:#9ca3af; letter-spacing:0.1em; font-family:${MONO}; margin-bottom:10px; }
-        @media(max-width:640px){ .hero-form { flex-direction:column !important; } .stat-grid { grid-template-columns:1fr 1fr !important; } .check-grid { grid-template-columns:1fr !important; } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes scan-line { 0%,100% { top:0 } 50% { top:calc(100% - 2px) } }
+        .fade-up { animation: fadeUp 0.6s ease both; }
+        .hover-lift { transition: transform 0.15s, box-shadow 0.15s; }
+        .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        .nav-link { font-size:13px; color:#555; cursor:pointer; padding:5px 10px; border-radius:7px; font-family:${F}; background:none; border:none; transition:color 0.15s,background 0.15s; }
+        .nav-link:hover { color:#111; background:#f3f4f6; }
       `}</style>
 
       {/* ── NAV ── */}
-      <nav style={nav}>
-        <div style={{ display:'flex', alignItems:'center', gap:8, cursor:'pointer' }} onClick={() => window.scrollTo({top:0,behavior:'smooth'})}>
-          <div style={{ width:28, height:28, background:'#111', borderRadius:7, display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <Radar size={14} color="#fff"/>
+      <nav style={{ position:'fixed', top:0, left:0, right:0, zIndex:200, height:56, display:'flex', alignItems:'center', padding:'0 32px', justifyContent:'space-between', background:navBg, backdropFilter:scrolled?'blur(12px)':'none', borderBottom:navBd, transition:'all 0.2s' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }} onClick={() => window.scrollTo({top:0,behavior:'smooth'})}>
+          <div style={{ width:30, height:30, background:'#16a34a', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <Radar size={16} color="#fff" strokeWidth={2.5}/>
           </div>
-          <span style={{ fontSize:14, fontWeight:700, color:'#111', letterSpacing:'-0.02em' }}>DomainRadar</span>
+          <span style={{ fontSize:15, fontWeight:800, letterSpacing:'-0.03em' }}>DomainRadar</span>
+          <span style={{ fontSize:9, background:'#dcfce7', color:'#16a34a', padding:'2px 7px', borderRadius:8, fontWeight:700, border:'1px solid #bbf7d0' }}>beta</span>
         </div>
-        <div style={{ display:'flex', alignItems:'center', gap:28 }}>
-          {NAV_ITEMS.map(n => <span key={n} className="nav-link">{n}</span>)}
-        </div>
-        <div style={{ display:'flex', gap:8 }}>
-          <button onClick={() => setPage('audit')} style={{ padding:'7px 16px', background:'rgba(22,163,74,0.12)', color:'#4ade80', border:'1px solid rgba(74,222,128,0.2)', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>📄 Free Audit</button>
-          <button style={btn2} onClick={() => setPage('auth')}>Sign in</button>
-          <button style={btn1} onClick={() => setPage('auth')}>Start free <ArrowRight size={13}/></button>
+        <div style={{ display:'flex', alignItems:'center', gap:4 }}>
+          <button className="nav-link" onClick={() => document.getElementById('features')?.scrollIntoView({behavior:'smooth'})}>Features</button>
+          <button className="nav-link" onClick={() => document.getElementById('how')?.scrollIntoView({behavior:'smooth'})}>How it works</button>
+          <button className="nav-link" onClick={() => setPage('pricing')}>Pricing</button>
+          <button className="nav-link" onClick={() => setPage('about')}>About</button>
+          <div style={{ width:1, height:20, background:'#e5e7eb', margin:'0 6px' }}/>
+          <button onClick={() => setPage('audit')} style={{ padding:'6px 13px', background:'#dcfce7', color:'#16a34a', border:'1px solid #bbf7d0', borderRadius:8, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:F }}>📄 Free Audit</button>
+          <button onClick={() => setPage('auth')} style={{ padding:'6px 13px', background:'transparent', color:'#555', border:'1px solid #e5e7eb', borderRadius:8, fontSize:13, fontWeight:500, cursor:'pointer', fontFamily:F }}>Sign in</button>
+          <button onClick={() => setPage('auth')} style={{ padding:'7px 16px', background:'#111', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Start free →</button>
         </div>
       </nav>
 
       {/* ── HERO ── */}
-      <section style={{ paddingTop:130, paddingBottom:90, paddingLeft:32, paddingRight:32, maxWidth:780, margin:'0 auto', textAlign:'center' }}>
-
-        <div style={{ display:'inline-flex', alignItems:'center', gap:6, background:'#fff', border:'1px solid #e5e7eb', borderRadius:20, padding:'4px 12px 4px 6px', fontSize:12, fontWeight:500, color:'#555', marginBottom:32, boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }}>
-          <span style={{ background:'#dcfce7', color:'#15803d', fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:10, letterSpacing:'0.05em' }}>NEW</span>
-          Auto-fix now supports GoDaddy DNS
+      <section style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'100px 24px 80px', background:'linear-gradient(180deg,#f0fdf4 0%,#fff 60%)', textAlign:'center' }}>
+        <div className="fade-up" style={{ animationDelay:'0.05s', marginBottom:20 }}>
+          <span style={{ display:'inline-flex', alignItems:'center', gap:6, background:'#dcfce7', color:'#15803d', border:'1px solid #bbf7d0', borderRadius:20, padding:'5px 14px', fontSize:12, fontWeight:600 }}>
+            <span style={{ width:6, height:6, borderRadius:'50%', background:'#16a34a', display:'inline-block' }}/>
+            Free DNS audit — no account needed
+          </span>
         </div>
-
-        <h1 style={{ fontSize:52, fontWeight:800, color:'#111', letterSpacing:'-0.04em', lineHeight:1.1, marginBottom:20 }}>
-          Your domain is probably<br/>
-          <span style={{ color:'#dc2626' }}>broken in ways you can't see.</span>
+        <h1 className="fade-up" style={{ animationDelay:'0.1s', fontSize:'clamp(36px,6vw,68px)', fontWeight:900, letterSpacing:'-0.04em', lineHeight:1.05, marginBottom:20, maxWidth:820 }}>
+          Your domain's security,<br/><span style={{ color:'#16a34a' }}>explained and fixed.</span>
         </h1>
-
-        <p style={{ fontSize:17, color:'#6b7280', lineHeight:1.7, marginBottom:40, maxWidth:560, margin:'0 auto 40px' }}>
-          DomainRadar runs a full DNS and email security audit in 90 seconds.
-          SPF, DKIM, DMARC, SSL, blacklists, propagation — every check that matters for deliverability and uptime.
+        <p className="fade-up" style={{ animationDelay:'0.15s', fontSize:'clamp(15px,2vw,19px)', color:'#555', maxWidth:560, marginBottom:40, lineHeight:1.7 }}>
+          Full DNS audit — SPF, DKIM, DMARC, SSL, blacklists, propagation — in 90 seconds. One-click auto-fix via Cloudflare. Continuous monitoring with email alerts.
         </p>
 
-        {/* Scan form */}
-        <form onSubmit={scan} style={{ display:'flex', gap:8, maxWidth:520, margin:'0 auto 16px', flexWrap:'nowrap' }} className="hero-form">
-          <input
-            style={input}
-            placeholder="yourdomain.com"
-            value={domain}
-            onChange={e => setDomain(e.target.value)}
-          />
-          <button type="submit" style={{ ...btn1, padding:'12px 22px', fontSize:14, borderRadius:9, flexShrink:0 }}>
-            Scan free
+        {/* Scan box */}
+        <div className="fade-up" style={{ animationDelay:'0.2s', width:'100%', maxWidth:540, marginBottom:16 }}>
+          <form onSubmit={scan} style={{ display:'flex', gap:8 }}>
+            <div style={{ flex:1, position:'relative' }}>
+              <Search size={14} color="#9ca3af" style={{ position:'absolute', left:13, top:'50%', transform:'translateY(-50%)', pointerEvents:'none' }}/>
+              <input value={domain} onChange={e=>setDomain(e.target.value)} placeholder="yourdomain.com"
+                style={{ width:'100%', padding:'13px 14px 13px 36px', background:'#fff', border:'1.5px solid #e5e7eb', borderRadius:10, fontSize:15, fontFamily:MONO, color:'#111', outline:'none', boxSizing:'border-box', boxShadow:'0 2px 8px rgba(0,0,0,0.06)' }}
+                onFocus={e=>e.target.style.borderColor='#16a34a'} onBlur={e=>e.target.style.borderColor='#e5e7eb'}/>
+            </div>
+            <button type="submit" style={{ padding:'13px 24px', background:'#16a34a', color:'#fff', border:'none', borderRadius:10, fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:F, whiteSpace:'nowrap', boxShadow:'0 2px 8px rgba(22,163,74,0.3)' }}>
+              Scan free
+            </button>
+          </form>
+          <p style={{ fontSize:12, color:'#9ca3af', marginTop:8 }}>No credit card · No signup required · Results in 90 seconds</p>
+        </div>
+
+        {/* Recent scans */}
+        {recentScans.length > 0 && (
+          <div className="fade-up" style={{ animationDelay:'0.25s', display:'flex', flexWrap:'wrap', gap:6, justifyContent:'center', marginBottom:16 }}>
+            <span style={{ fontSize:11, color:'#9ca3af', alignSelf:'center' }}>Recent:</span>
+            {recentScans.map(d => (
+              <button key={d} onClick={() => quickScan(d)} style={{ fontSize:12, color:'#374151', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:7, padding:'4px 11px', cursor:'pointer', fontFamily:MONO, transition:'all 0.12s' }}
+                onMouseEnter={e=>{e.currentTarget.style.background='#f0fdf4';e.currentTarget.style.borderColor='#86efac';e.currentTarget.style.color='#16a34a'}}
+                onMouseLeave={e=>{e.currentTarget.style.background='#f9fafb';e.currentTarget.style.borderColor='#e5e7eb';e.currentTarget.style.color='#374151'}}>
+                {d}
+              </button>
+            ))}
+            <button onClick={() => { localStorage.removeItem('dr_recent_scans'); setRecentScans([]) }} style={{ fontSize:11, color:'#d1d5db', background:'transparent', border:'none', cursor:'pointer' }}>clear</button>
+          </div>
+        )}
+
+        {/* Or get audit */}
+        <div className="fade-up" style={{ animationDelay:'0.3s' }}>
+          <button onClick={() => setPage('audit')} style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'10px 20px', background:'transparent', color:'#374151', border:'1px solid #e5e7eb', borderRadius:9, fontSize:13, fontWeight:500, cursor:'pointer', fontFamily:F }}>
+            <FileText size={14} color="#6b7280"/> Export full audit PDF report
           </button>
-        </form>
-        <p style={{ fontSize:12, color:'#9ca3af' }}>No account needed · Results in 90 seconds · Free forever</p>
-      </section>
+        </div>
 
-      {/* ── STATS ROW ── */}
-      <section style={{ borderTop:'1px solid #e5e7eb', borderBottom:'1px solid #e5e7eb', background:'#fff', padding:'28px 32px' }}>
-        <div style={{ maxWidth:780, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:0 }} className="stat-grid">
-          {STATS.map((s, i) => (
-            <div key={s.label} style={{ textAlign:'center', borderRight: i < 3 ? '1px solid #f0f0f0' : 'none', padding:'8px 16px' }}>
-              <div style={{ fontSize:24, fontWeight:800, color:'#111', letterSpacing:'-0.03em', fontFamily:MONO }}>{s.val}</div>
-              <div style={{ fontSize:12, color:'#9ca3af', marginTop:3, fontWeight:500 }}>{s.label}</div>
+        {/* Stats */}
+        <div className="fade-up" style={{ animationDelay:'0.35s', display:'flex', gap:32, marginTop:56, flexWrap:'wrap', justifyContent:'center' }}>
+          {[['52','blacklists checked'],['4','global resolvers'],['6','auth checks'],['< 90s','full scan']].map(([v,l]) => (
+            <div key={l} style={{ textAlign:'center' }}>
+              <div style={{ fontSize:28, fontWeight:900, letterSpacing:'-0.04em', color:'#111' }}>{v}</div>
+              <div style={{ fontSize:12, color:'#9ca3af', marginTop:2 }}>{l}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── WHAT WE CHECK ── */}
-      <section style={{ padding:'80px 32px', maxWidth:860, margin:'0 auto' }}>
-        <div style={{ marginBottom:48 }}>
-          <div style={{ fontSize:11, fontWeight:700, color:'#9ca3af', letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:12 }}>What we check</div>
-          <h2 style={{ fontSize:34, fontWeight:800, color:'#111', letterSpacing:'-0.03em', lineHeight:1.2, maxWidth:500 }}>
-            Every check that affects deliverability, trust, and uptime.
-          </h2>
-        </div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:12 }} className="check-grid">
-          {CHECKS.map(c => (
-            <div key={c.label} className="check-card" style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:12, padding:'20px 20px', transition:'all 0.15s', boxShadow:'0 1px 3px rgba(0,0,0,0.04)', cursor:'default' }}>
-              <div style={{ width:34, height:34, borderRadius:9, background:c.color+'18', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:14 }}>
-                <c.icon size={16} color={c.color}/>
+      {/* ── FEATURES ── */}
+      <section id="features" style={{ padding:'80px 24px', background:'#fafafa' }}>
+        <div style={{ maxWidth:960, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:56 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'#16a34a', textTransform:'uppercase', letterSpacing:'0.12em', marginBottom:10 }}>What we check</div>
+            <h2 style={{ fontSize:'clamp(28px,4vw,42px)', fontWeight:900, letterSpacing:'-0.03em', marginBottom:14 }}>Everything your domain needs</h2>
+            <p style={{ fontSize:15, color:'#555', maxWidth:520, margin:'0 auto' }}>Nine categories of checks. All live, all in parallel, all explained.</p>
+          </div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))', gap:16 }}>
+            {FEATURES_LIVE.map(f => (
+              <div key={f.label} className="hover-lift" style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:14, padding:'20px 22px', cursor:'default' }}>
+                <div style={{ width:38, height:38, borderRadius:10, background:f.bg, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:14 }}>
+                  <f.icon size={18} color={f.color}/>
+                </div>
+                <div style={{ fontSize:14, fontWeight:700, color:'#111', marginBottom:6 }}>{f.label}</div>
+                <div style={{ fontSize:13, color:'#6b7280', lineHeight:1.6 }}>{f.desc}</div>
               </div>
-              <div style={{ fontSize:13, fontWeight:700, color:'#111', marginBottom:5, letterSpacing:'-0.01em' }}>{c.label}</div>
-              <div style={{ fontSize:12, color:'#6b7280', lineHeight:1.6 }}>{c.sub}</div>
+            ))}
+          </div>
+
+          {/* Coming soon */}
+          <div style={{ marginTop:48, background:'#f0fdf4', border:'1px solid #bbf7d0', borderRadius:16, padding:'28px 32px' }}>
+            <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:20 }}>
+              <span style={{ fontSize:13, fontWeight:700, color:'#15803d' }}>Coming soon</span>
+              <span style={{ fontSize:10, background:'#dcfce7', color:'#16a34a', padding:'2px 8px', borderRadius:8, fontWeight:600, border:'1px solid #86efac' }}>In development</span>
             </div>
-          ))}
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:14 }}>
+              {COMING_SOON.map(f => (
+                <div key={f.label} style={{ display:'flex', gap:10, alignItems:'flex-start' }}>
+                  <div style={{ width:6, height:6, borderRadius:'50%', background:'#86efac', flexShrink:0, marginTop:6 }}/>
+                  <div>
+                    <div style={{ fontSize:13, fontWeight:600, color:'#166534' }}>{f.label}</div>
+                    <div style={{ fontSize:12, color:'#4ade80', opacity:0.8, lineHeight:1.5 }}>{f.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section style={{ background:'#fff', borderTop:'1px solid #e5e7eb', borderBottom:'1px solid #e5e7eb', padding:'80px 32px' }}>
+      <section id="how" style={{ padding:'80px 24px', background:'#fff' }}>
         <div style={{ maxWidth:860, margin:'0 auto' }}>
-          <div style={{ marginBottom:56 }}>
-            <div style={{ fontSize:11, fontWeight:700, color:'#9ca3af', letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:12 }}>How it works</div>
-            <h2 style={{ fontSize:34, fontWeight:800, color:'#111', letterSpacing:'-0.03em', lineHeight:1.2, maxWidth:480 }}>
-              From first scan to fully monitored in four steps.
-            </h2>
+          <div style={{ textAlign:'center', marginBottom:56 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'#16a34a', textTransform:'uppercase', letterSpacing:'0.12em', marginBottom:10 }}>Process</div>
+            <h2 style={{ fontSize:'clamp(28px,4vw,42px)', fontWeight:900, letterSpacing:'-0.03em' }}>From scan to fixed in minutes</h2>
           </div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:40 }}>
-            {STEPS.map(s => (
-              <div key={s.n}>
-                <div className="step-num">{s.n}</div>
-                <div style={{ fontSize:16, fontWeight:700, color:'#111', letterSpacing:'-0.02em', marginBottom:8 }}>{s.title}</div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))', gap:24 }}>
+            {STEPS.map((s, i) => (
+              <div key={s.n} style={{ position:'relative' }}>
+                <div style={{ fontSize:11, fontWeight:700, color:'#16a34a', fontFamily:MONO, marginBottom:12, letterSpacing:'0.05em' }}>{s.n}</div>
+                <div style={{ fontSize:16, fontWeight:700, color:'#111', marginBottom:8 }}>{s.title}</div>
                 <div style={{ fontSize:13, color:'#6b7280', lineHeight:1.7 }}>{s.body}</div>
+                {i < STEPS.length - 1 && (
+                  <ArrowRight size={16} color="#d1d5db" style={{ position:'absolute', right:-20, top:12, display:'none' }}/>
+                )}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── FEATURE LIST ── */}
-      <section style={{ padding:'80px 32px', maxWidth:860, margin:'0 auto' }}>
-        <div style={{ marginBottom:48 }}>
-          <div style={{ fontSize:11, fontWeight:700, color:'#9ca3af', letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:12 }}>Everything in the box</div>
-          <h2 style={{ fontSize:34, fontWeight:800, color:'#111', letterSpacing:'-0.03em', lineHeight:1.2 }}>
-            Not a feature teaser.<br/>The full suite, on day one.
-          </h2>
-        </div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:32 }}>
-          {FEATURES.map(f => (
-            <div key={f.label}>
-              <div style={{ fontSize:11, fontWeight:700, color:'#9ca3af', letterSpacing:'0.1em', textTransform:'uppercase', marginBottom:16, borderBottom:'1px solid #f0f0f0', paddingBottom:10 }}>{f.label}</div>
-              {f.items.map(item => (
-                <div key={item} style={{ display:'flex', alignItems:'flex-start', gap:8, marginBottom:10 }}>
-                  <CheckCircle size={13} color="#16a34a" style={{ flexShrink:0, marginTop:2 }}/>
-                  <span style={{ fontSize:13, color:'#444', lineHeight:1.5 }}>{item}</span>
+      {/* ── TESTIMONIALS ── */}
+      <section style={{ padding:'72px 24px', background:'#fafafa' }}>
+        <div style={{ maxWidth:860, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:44 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'#16a34a', textTransform:'uppercase', letterSpacing:'0.12em', marginBottom:10 }}>Feedback</div>
+            <h2 style={{ fontSize:'clamp(24px,3.5vw,36px)', fontWeight:900, letterSpacing:'-0.03em' }}>What people say</h2>
+          </div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:18 }}>
+            {TESTIMONIALS.map(t => (
+              <div key={t.name} className="hover-lift" style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:14, padding:'20px 22px' }}>
+                <div style={{ display:'flex', gap:3, marginBottom:12 }}>
+                  {[1,2,3,4,5].map(i => <Star key={i} size={13} color="#f59e0b" fill="#f59e0b"/>)}
                 </div>
-              ))}
-            </div>
-          ))}
+                <p style={{ fontSize:13, color:'#374151', lineHeight:1.7, marginBottom:16, fontStyle:'italic' }}>"{t.text}"</p>
+                <div style={{ fontSize:12, fontWeight:600, color:'#111' }}>{t.name}</div>
+                <div style={{ fontSize:11, color:'#9ca3af' }}>{t.role}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ── FOUNDER NOTE ── */}
-      <section style={{ background:'#fff', borderTop:'1px solid #e5e7eb', borderBottom:'1px solid #e5e7eb', padding:'64px 32px' }}>
-        <div style={{ maxWidth:580, margin:'0 auto' }}>
-          <div style={{ fontSize:20, fontWeight:700, color:'#111', lineHeight:1.6, letterSpacing:'-0.02em', marginBottom:28 }}>
-            "DNS and email auth failures are invisible until they cost you — a blacklisting that kills deliverability, an expired cert that takes down trust, an SPFAIL that bounces every email you send. DomainRadar makes that invisible layer visible, and fixable, for anyone who runs a domain."
-          </div>
-          <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-            <div style={{ width:40, height:40, borderRadius:'50%', background:'#f0fdf4', border:'1px solid #bbf7d0', display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, fontWeight:700, color:'#16a34a' }}>M</div>
-            <div>
-              <div style={{ fontSize:13, fontWeight:600, color:'#111' }}>Mathi</div>
-              <div style={{ fontSize:12, color:'#9ca3af' }}>Founder · DomainRadar · Certified PKI Specialist at DigiCert</div>
-            </div>
+      {/* ── PRICING TEASER ── */}
+      <section style={{ padding:'72px 24px', background:'#fff' }}>
+        <div style={{ maxWidth:680, margin:'0 auto', textAlign:'center' }}>
+          <div style={{ fontSize:11, fontWeight:700, color:'#16a34a', textTransform:'uppercase', letterSpacing:'0.12em', marginBottom:10 }}>Pricing</div>
+          <h2 style={{ fontSize:'clamp(26px,4vw,40px)', fontWeight:900, letterSpacing:'-0.03em', marginBottom:14 }}>Free to start. Pay when you scale.</h2>
+          <p style={{ fontSize:15, color:'#555', marginBottom:32, lineHeight:1.7 }}>Unlimited manual scans forever. Monitoring, auto-fix, team seats and API access on paid plans.</p>
+          <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap' }}>
+            <button onClick={() => setPage('auth')} style={{ padding:'12px 28px', background:'#16a34a', color:'#fff', border:'none', borderRadius:10, fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:F }}>Start free →</button>
+            <button onClick={() => setPage('pricing')} style={{ padding:'12px 24px', background:'transparent', color:'#374151', border:'1px solid #e5e7eb', borderRadius:10, fontSize:14, fontWeight:500, cursor:'pointer', fontFamily:F }}>See pricing</button>
           </div>
         </div>
       </section>
 
       {/* ── FAQ ── */}
-      <section style={{ padding:'80px 32px', maxWidth:680, margin:'0 auto' }}>
-        <div style={{ marginBottom:48 }}>
-          <div style={{ fontSize:11, fontWeight:700, color:'#9ca3af', letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:12 }}>Questions</div>
-          <h2 style={{ fontSize:34, fontWeight:800, color:'#111', letterSpacing:'-0.03em' }}>The things every user asks us.</h2>
-        </div>
-        {FAQS.map((f, i) => (
-          <div key={i} style={{ borderBottom:'1px solid #f0f0f0' }}>
-            <button className="faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)}
-              style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'18px 0', background:'none', border:'none', cursor:'pointer', fontSize:14, fontWeight:600, color: openFaq === i ? '#111' : '#444', textAlign:'left', fontFamily:F, gap:12, letterSpacing:'-0.01em' }}>
-              {f.q}
-              <ChevronRight size={16} color="#9ca3af" style={{ flexShrink:0, transform: openFaq === i ? 'rotate(90deg)' : 'none', transition:'transform 0.15s' }}/>
-            </button>
-            {openFaq === i && (
-              <div style={{ paddingBottom:18, fontSize:13, color:'#6b7280', lineHeight:1.8 }}>{f.a}</div>
-            )}
+      <section style={{ padding:'72px 24px', background:'#fafafa' }}>
+        <div style={{ maxWidth:680, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:44 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'#16a34a', textTransform:'uppercase', letterSpacing:'0.12em', marginBottom:10 }}>FAQ</div>
+            <h2 style={{ fontSize:'clamp(24px,3.5vw,36px)', fontWeight:900, letterSpacing:'-0.03em' }}>Common questions</h2>
           </div>
-        ))}
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            {FAQS.map((f, i) => (
+              <div key={i} style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden' }}>
+                <button onClick={() => setOpenFaq(openFaq===i?null:i)}
+                  style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 18px', background:'none', border:'none', cursor:'pointer', fontFamily:F, textAlign:'left', gap:12 }}>
+                  <span style={{ fontSize:14, fontWeight:600, color:'#111' }}>{f.q}</span>
+                  {openFaq===i ? <ChevronUp size={16} color="#9ca3af"/> : <ChevronDown size={16} color="#9ca3af"/>}
+                </button>
+                {openFaq===i && (
+                  <div style={{ padding:'0 18px 16px', fontSize:13, color:'#6b7280', lineHeight:1.7 }}>{f.a}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* ── FINAL CTA ── */}
-      <section style={{ background:'#111', padding:'80px 32px', textAlign:'center' }}>
-        <div style={{ maxWidth:540, margin:'0 auto' }}>
-          <h2 style={{ fontSize:36, fontWeight:800, color:'#fff', letterSpacing:'-0.04em', lineHeight:1.2, marginBottom:16 }}>
-            Scan your domain.<br/>Free, right now.
+      <section style={{ padding:'80px 24px', background:'#111', textAlign:'center' }}>
+        <div style={{ maxWidth:520, margin:'0 auto' }}>
+          <h2 style={{ fontSize:'clamp(28px,5vw,48px)', fontWeight:900, color:'#fff', letterSpacing:'-0.04em', lineHeight:1.1, marginBottom:16 }}>
+            Scan your domain.<br/><span style={{ color:'#4ade80' }}>Free, right now.</span>
           </h2>
-          <p style={{ fontSize:15, color:'rgba(255,255,255,0.5)', marginBottom:36, lineHeight:1.7 }}>
-            No account needed to run your first scan. See exactly what is broken and how to fix it.
-          </p>
-          <form onSubmit={scan} style={{ display:'flex', gap:8, maxWidth:440, margin:'0 auto 16px' }}>
-            <input style={{ ...input, background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.12)', color:'#fff', flex:1 }} placeholder="yourdomain.com" value={domain} onChange={e=>setDomain(e.target.value)}/>
-            <button type="submit" style={{ padding:'12px 20px', background:'#fff', color:'#111', border:'none', borderRadius:9, fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:F, flexShrink:0 }}>Scan free</button>
+          <p style={{ fontSize:15, color:'rgba(255,255,255,0.5)', marginBottom:36, lineHeight:1.7 }}>No account needed for your first scan. See exactly what is broken and how to fix it.</p>
+          <form onSubmit={scan} style={{ display:'flex', gap:8, maxWidth:440, margin:'0 auto 14px' }}>
+            <input style={{ flex:1, padding:'12px 14px', background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)', borderRadius:9, fontSize:14, fontFamily:MONO, color:'#fff', outline:'none' }} placeholder="yourdomain.com" value={domain} onChange={e=>setDomain(e.target.value)}/>
+            <button type="submit" style={{ padding:'12px 20px', background:'#16a34a', color:'#fff', border:'none', borderRadius:9, fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:F }}>Scan free</button>
           </form>
-          <p style={{ fontSize:12, color:'rgba(255,255,255,0.3)' }}>No credit card · No signup required · 90 seconds</p>
-          <div style={{ marginTop:16 }}>
-            <button onClick={() => setPage('audit')}
-              style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'10px 22px', background:'rgba(255,255,255,0.06)', color:'rgba(255,255,255,0.7)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:9, fontSize:13, fontWeight:500, cursor:'pointer', fontFamily:F, transition:'all 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.1)'; e.currentTarget.style.color='#fff' }}
-              onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.06)'; e.currentTarget.style.color='rgba(255,255,255,0.7)' }}>
-              📄 Get full audit report + PDF export
-            </button>
-          </div>
+          <p style={{ fontSize:12, color:'rgba(255,255,255,0.25)' }}>No credit card · No signup · 90 seconds</p>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
       <footer style={{ background:'#111', borderTop:'1px solid rgba(255,255,255,0.08)', padding:'28px 32px', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12 }}>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-          <div style={{ width:22, height:22, background:'rgba(255,255,255,0.1)', borderRadius:5, display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <Radar size={11} color="#fff"/>
+          <div style={{ width:22, height:22, background:'#16a34a', borderRadius:5, display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <Radar size={12} color="#fff"/>
           </div>
-          <span style={{ fontSize:12, color:'rgba(255,255,255,0.4)', letterSpacing:'-0.01em' }}>DomainRadar</span>
+          <span style={{ fontSize:12, color:'rgba(255,255,255,0.4)' }}>DomainRadar · Made with ♥ in NL</span>
         </div>
-        <div style={{ display:'flex', gap:20 }}>
-          {[['Privacy','privacy'],['Terms','terms'],['Contact','contact'],['Free Audit','audit']].map(([l,id]) => (
+        <div style={{ display:'flex', gap:20, flexWrap:'wrap' }}>
+          {[['Features','#features'],['Pricing','pricing'],['About','about'],['Developer','developer'],['Free Audit','audit']].map(([l,id]) => (
             <span key={l} style={{ fontSize:12, color:'rgba(255,255,255,0.3)', cursor:'pointer', transition:'color 0.15s' }}
-              onMouseEnter={e => e.currentTarget.style.color='rgba(255,255,255,0.7)'}
-              onMouseLeave={e => e.currentTarget.style.color='rgba(255,255,255,0.3)'}
-              onClick={() => setPage(id)}>{l}</span>
+              onMouseEnter={e=>e.currentTarget.style.color='rgba(255,255,255,0.7)'}
+              onMouseLeave={e=>e.currentTarget.style.color='rgba(255,255,255,0.3)'}
+              onClick={() => id.startsWith('#') ? document.getElementById(id.slice(1))?.scrollIntoView({behavior:'smooth'}) : setPage(id)}>{l}</span>
           ))}
         </div>
-        <span style={{ fontSize:12, color:'rgba(255,255,255,0.2)' }}>© 2026 DomainRadar</span>
       </footer>
     </div>
   )

@@ -13,6 +13,9 @@ import DnsAutoFix from './pages/DnsAutoFix'
 import SslCertificates from './pages/SslCertificates'
 import Settings from './pages/Settings'
 import AuditReport from './pages/AuditReport'
+import Pricing from './pages/Pricing'
+import About from './pages/About'
+import Developer from './pages/Developer'
 import './styles/globals.css'
 
 function Alerts({ user }) {
@@ -327,7 +330,10 @@ export default function App() {
   )
 
   // Public pages — no sidebar
-  if (page === 'landing') return <Landing setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>
+  if (page === 'landing')   return <Landing setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>
+  if (page === 'pricing')   return <Pricing setPage={setPage}/>
+  if (page === 'about')     return <About setPage={setPage}/>
+  if (page === 'developer') return <Developer setPage={setPage}/>
   if (page === 'auth') return <Auth setPage={setPage}/>
   if (page === 'scan') return <ScanResult domain={scanDomain} scanType={scanType} setPage={setPage} user={user}/>
   if (page.startsWith('share:')) {
