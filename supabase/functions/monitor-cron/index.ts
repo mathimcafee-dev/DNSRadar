@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
       .eq('verified', true).eq('paused', false)
       .not('monitor_interval', 'eq', 'off')
       .or(`next_scan_at.is.null,next_scan_at.lte.${now}`)
-      .limit(20)
+      .limit(100)
 
     if (!domains?.length) return new Response(JSON.stringify({ scanned: 0 }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
 

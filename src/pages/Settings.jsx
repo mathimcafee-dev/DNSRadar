@@ -177,11 +177,31 @@ export default function Settings({ user }) {
       )}
 
       {activeTab === 'notifications' && (
+        <div>
+        <div style={{ background:'#fffbeb', border:'1px solid #fde68a', borderRadius:10, padding:'12px 16px', marginBottom:16, display:'flex', gap:12, alignItems:'flex-start' }}>
+          <span style={{ fontSize:16, flexShrink:0 }}>⚙️</span>
+          <div>
+            <div style={{ fontSize:13, fontWeight:600, color:'#92400e', marginBottom:4 }}>Supabase Edge Function Secrets Required</div>
+            <div style={{ fontSize:12, color:'#78350f', lineHeight:1.6 }}>
+              For alerts and reports to work, set these in <strong>Supabase → Edge Functions → Secrets</strong>:
+            </div>
+            <div style={{ marginTop:8, display:'flex', flexWrap:'wrap', gap:6 }}>
+              {['RESEND_API_KEY', 'RESEND_FROM_EMAIL', 'APP_URL'].map(s => (
+                <code key={s} style={{ fontSize:11, background:'#fef3c7', color:'#92400e', padding:'2px 8px', borderRadius:6, border:'1px solid #fde68a', fontFamily:'monospace' }}>{s}</code>
+              ))}
+            </div>
+            <div style={{ fontSize:11, color:'#78350f', marginTop:6 }}>
+              APP_URL = <code style={{ fontFamily:'monospace' }}>https://dnsradar.easysecurity.in</code> &nbsp;·&nbsp;
+              RESEND_FROM_EMAIL = <code style={{ fontFamily:'monospace' }}>alerts@dnsradar.easysecurity.in</code>
+            </div>
+          </div>
+        </div>
+
         <div style={card}>
           <div style={{ ...cardHd }}><Bell size={13} color="#f59e0b"/> Notifications</div>
           <div style={{ padding:16 }}>
             <label style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16, cursor:'pointer' }}>
-              <input type="checkbox" checked={profile.alert_email||true} onChange={e => setProfile(p => ({ ...p, alert_email: e.target.checked }))} style={{ accentColor:'#16a34a', width:16, height:16 }}/>
+              <input type="checkbox" checked={profile.alert_email !== false} onChange={e => setProfile(p => ({ ...p, alert_email: e.target.checked }))} style={{ accentColor:'#16a34a', width:16, height:16 }}/>
               <div>
                 <div style={{ fontSize:13, fontWeight:500, color:'#111827' }}>Email alerts</div>
                 <div style={{ fontSize:12,color:'#374151' }}>Get notified when a domain score changes or new issues are detected</div>
@@ -198,6 +218,7 @@ export default function Settings({ user }) {
               {saving ? 'Saving…' : 'Save'}
             </button>
           </div>
+        </div>
         </div>
       )}
       {activeTab === 'team' && (

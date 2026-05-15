@@ -3,14 +3,14 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 const corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type' }
 
 function buildReportHtml(user: any, domains: any[], alerts: any[], avgScore: number, delta: number | null) {
-  const scoreColor = avgScore >= 70 ? '#27500A' : avgScore >= 50 ? '#633806' : '#791F1F'
-  const scoreBg = avgScore >= 70 ? '#EAF3DE' : avgScore >= 50 ? '#FAEEDA' : '#FCEBEB'
+  const scoreColor = avgScore >= 70 ? '#15803d' : avgScore >= 50 ? '#92400e' : '#991b1b'
+  const scoreBg = avgScore >= 70 ? '#f0fdf4' : avgScore >= 50 ? '#fffbeb' : '#fef2f2'
   const critical = alerts.filter(a => a.severity === 'critical')
   const warns = alerts.filter(a => a.severity === 'warn')
 
   const domainRows = domains.map(d => {
     const score = d.latest_score || d.health_score || 0
-    const sc = score >= 70 ? '#27500A' : score >= 50 ? '#633806' : '#791F1F'
+    const sc = score >= 70 ? '#15803d' : score >= 50 ? '#92400e' : '#991b1b'
     const issues = d.latest_issues?.length || 0
     return `
       <tr>
@@ -19,15 +19,15 @@ function buildReportHtml(user: any, domains: any[], alerts: any[], avgScore: num
           <span style="font-size:18px;font-weight:700;color:${sc}">${score}</span>
         </td>
         <td style="padding:10px 16px;border-bottom:1px solid #f1f3f5;text-align:center">
-          ${issues > 0 ? `<span style="background:#FCEBEB;color:#791F1F;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500">${issues} issues</span>` : `<span style="background:#EAF3DE;color:#27500A;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500">All clear</span>`}
+          ${issues > 0 ? `<span style="background:#FCEBEB;color:#991b1b;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500">${issues} issues</span>` : `<span style="background:#EAF3DE;color:#15803d;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500">All clear</span>`}
         </td>
         <td style="padding:10px 16px;border-bottom:1px solid #f1f3f5;font-size:11px;color:#6c757d">${d.monitor_interval}</td>
       </tr>`
   }).join('')
 
   const alertRows = alerts.slice(0, 10).map(a => {
-    const bg = a.severity === 'critical' ? '#FCEBEB' : a.severity === 'warn' ? '#FAEEDA' : '#E6F1FB'
-    const color = a.severity === 'critical' ? '#791F1F' : a.severity === 'warn' ? '#633806' : '#0C447C'
+    const bg = a.severity === 'critical' ? '#fef2f2' : a.severity === 'warn' ? '#fffbeb' : '#eff6ff'
+    const color = a.severity === 'critical' ? '#991b1b' : a.severity === 'warn' ? '#92400e' : '#1e40af'
     return `
       <tr>
         <td style="padding:8px 16px;border-bottom:1px solid #f1f3f5">
@@ -47,7 +47,7 @@ function buildReportHtml(user: any, domains: any[], alerts: any[], avgScore: num
 <body style="font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;background:#F8F9FA;margin:0;padding:24px">
   <div style="max-width:620px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E9ECEF">
     <!-- Header -->
-    <div style="background:#0F6E56;padding:20px 24px;display:flex;justify-content:space-between;align-items:center">
+    <div style="background:#111827;padding:20px 24px;display:flex;justify-content:space-between;align-items:center">
       <div style="color:#fff;font-size:18px;font-weight:700">⬡ DomainRadar</div>
       <div style="color:rgba(255,255,255,0.7);font-size:12px">${today}</div>
     </div>
@@ -55,7 +55,7 @@ function buildReportHtml(user: any, domains: any[], alerts: any[], avgScore: num
     <div style="padding:20px 24px;border-bottom:1px solid #E9ECEF">
       <p style="font-size:14px;color:#495057;margin:0;line-height:1.7">
         Hi — here's your daily DNS health report. You have <strong>${domains.length} monitored domain${domains.length !== 1 ? 's' : ''}</strong>.
-        ${critical.length > 0 ? `<span style="color:#791F1F;font-weight:600">${critical.length} critical issue${critical.length !== 1 ? 's' : ''} need your attention.</span>` : alerts.length === 0 ? 'Everything looks healthy today.' : `${warns.length} warning${warns.length !== 1 ? 's' : ''} to review.`}
+        ${critical.length > 0 ? `<span style="color:#991b1b;font-weight:600">${critical.length} critical issue${critical.length !== 1 ? 's' : ''} need your attention.</span>` : alerts.length === 0 ? 'Everything looks healthy today.' : `${warns.length} warning${warns.length !== 1 ? 's' : ''} to review.`}
       </p>
     </div>
     <!-- Score summary -->
@@ -67,7 +67,7 @@ function buildReportHtml(user: any, domains: any[], alerts: any[], avgScore: num
         </div>
         <div>
           <div style="font-size:13px;color:#6c757d">Fleet average health score</div>
-          ${delta !== null ? `<div style="font-size:12px;color:${delta >= 0 ? '#27500A' : '#791F1F'};font-weight:500;margin-top:4px">${delta >= 0 ? '↑' : '↓'} ${Math.abs(delta)} points vs yesterday</div>` : ''}
+          ${delta !== null ? `<div style="font-size:12px;color:${delta >= 0 ? '#15803d' : '#991b1b'};font-weight:500;margin-top:4px">${delta >= 0 ? '↑' : '↓'} ${Math.abs(delta)} points vs yesterday</div>` : ''}
         </div>
       </div>
       <!-- Domain table -->
@@ -93,12 +93,12 @@ function buildReportHtml(user: any, domains: any[], alerts: any[], avgScore: num
     </div>` : ''}
     <!-- CTA -->
     <div style="padding:24px;text-align:center">
-      <a href="${appUrl}/dashboard" style="display:inline-block;padding:11px 28px;background:#0F6E56;color:#fff;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none">View full dashboard →</a>
+      <a href="${appUrl}/dashboard" style="display:inline-block;padding:11px 28px;background:#111827;color:#fff;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none">View full dashboard →</a>
     </div>
     <!-- Footer -->
     <div style="padding:14px 24px;background:#F8F9FA;border-top:1px solid #E9ECEF;text-align:center;font-size:11px;color:#adb5bd">
       DomainRadar · Built by a Certified PKI Specialist · 
-      <a href="${appUrl}/settings" style="color:#0F6E56;text-decoration:none">Manage alerts</a> · 
+      <a href="${appUrl}/settings" style="color:#16a34a;text-decoration:none">Manage alerts</a> · 
       <a href="${appUrl}/settings" style="color:#6c757d;text-decoration:none">Unsubscribe</a>
     </div>
   </div>
