@@ -930,8 +930,13 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                         return 'out of 100'
                       })(),pct:scan.health_score,tab:'overview'},
                       {label:'Critical issues',val:critical.length,color:critical.length>0?'#dc2626':'#16a34a',sub:critical.length>0?'Fix immediately':'All clear',pct:Math.min(critical.length*25,100),tab:'overview'},
+                      ...(()=>{
+                        const days=scan.ssl_info?.certs?.[0]?.days_remaining
+                        const c=days==null?'#6b7280':days<=7?'#dc2626':days<=30?'#d97706':days<=60?'#2563eb':'#16a34a'
+                        const expDate=scan.ssl_info?.certs?.[0]?.expires_at
+                        return [{label:'SSL expiry',val:days==null?'—':days<=0?'Expired':`${days}d`,color:c,sub:days==null?'Scan to check':days<=0?'Renew immediately':days<=30?'Renew soon':`Expires ${expDate?new Date(expDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'soon'}`,pct:days==null?0:Math.min(100,Math.max(5,days/365*100)),tab:'ssl'}]
+                      })(),
                       {label:'Blacklisted',val:`${scan.blacklists?.listed_count||0}/${scan.blacklists?.results?.length||0}`,color:(scan.blacklists?.listed_count||0)>0?'#dc2626':'#16a34a',sub:'blacklists',pct:(scan.blacklists?.listed_count||0)>0?60:100,tab:'blacklists'},
-                      {label:'DNS records',val:scan.dns_records?.length||0,color:'#3730a3',sub:'records found',pct:100,tab:'dns'},
                     ].map(k=>(
                       <div key={k.label} className="print-card" onClick={()=>setActiveTab(k.tab)} style={{background:'#ffffff',border:'1px solid #e4e7ec',borderTop:`3px solid ${k.color}`,borderRadius:12,padding:'16px 18px',boxShadow:'0 1px 4px rgba(0,0,0,0.06)',transition:'transform 0.15s,box-shadow 0.15s',animation:'fadeIn 0.2s ease both',cursor:'pointer'}}
                         onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 6px 16px rgba(0,0,0,0.1)'}}
@@ -1058,26 +1063,89 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
 
               {/* ══ SSL ══════════════════════════════════════ */}
               {activeTab==='ssl'&&scan?.ssl_info&&(
-                <div style={card}>
-                  <div style={cardHd}>
-                    <span style={{fontSize:12,fontWeight:700,color:'#111827',display:'flex',alignItems:'center',gap:6}}><Lock size={13} color="#10b981"/> SSL / TLS</span>
-                    <SBadge status={scan.ssl_info.overall_status}/>
-                  </div>
-                  {scan.ssl_info.certs?.map((cert,i)=>(
-                    <div key={i} style={{padding:'16px'}}>
-                      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12,marginBottom:12}}>
-                        {[{l:'Domain',v:cert.domain},{l:'Protocol',v:cert.protocol||'TLS'},{l:'Key size',v:`${cert.key_size||'?'}-bit`},{l:'Chain',v:cert.chain_valid?'✓ Valid':'✗ Invalid'},{l:'CT log',v:cert.ct_log?'✓ Verified':'Not found'},{l:'HSTS',v:cert.hsts||'Not configured'}].map(f=>(
-                          <div key={f.l} style={{padding:'10px 12px',background:'rgba(255,255,255,0.03)',borderRadius:8,border:'1px solid #e5e7eb'}}>
-                            <div style={{fontSize:10,color:'#374151',fontWeight:600,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:4}}>{f.l}</div>
-                            <div style={{fontSize:13,fontWeight:500,color:'#111827'}}>{f.v}</div>
-                          </div>
-                        ))}
-                      </div>
-                      <div style={{padding:'10px 14px',background:'rgba(96,165,250,0.06)',border:'1px solid rgba(96,165,250,0.15)',borderRadius:8,fontSize:12,color:'rgba(96,165,250,0.8)'}}>
-                        ℹ {scan.ssl_info.note||'HTTPS connection established successfully.'}
-                      </div>
+                <div style={{display:'flex',flexDirection:'column',gap:12}}>
+                  {/* Summary header card */}
+                  <div style={card}>
+                    <div style={cardHd}>
+                      <span style={{fontSize:12,fontWeight:700,color:'#111827',display:'flex',alignItems:'center',gap:6}}><Lock size={13} color="#10b981"/> SSL / TLS Certificate</span>
+                      <SBadge status={scan.ssl_info.overall_status}/>
                     </div>
-                  ))}
+                    {scan.ssl_info.certs?.length > 0 ? scan.ssl_info.certs.map((cert,i)=>{
+                      const days = cert.days_remaining ?? null
+                      const expiry = cert.expires_at || cert.not_after || cert.valid_to
+                      const issued = cert.not_before || cert.valid_from
+                      const daysColor = days===null?'#6b7280':days<=7?'#dc2626':days<=30?'#d97706':days<=60?'#2563eb':'#16a34a'
+                      const issuer = cert.issuer_org || cert.issuer_cn || cert.issuer || null
+                      return (
+                        <div key={i} style={{padding:'16px'}}>
+                          {/* Big expiry highlight */}
+                          <div style={{display:'flex',alignItems:'center',gap:16,marginBottom:16,padding:'14px 16px',background:days===null?'#f9fafb':days<=30?'#fef2f2':'#f0fdf4',borderRadius:10,border:`1px solid ${days===null?'#e5e7eb':days<=30?'#fecaca':'#bbf7d0'}`}}>
+                            <Lock size={28} color={daysColor}/>
+                            <div style={{flex:1}}>
+                              <div style={{fontSize:22,fontWeight:800,color:daysColor,letterSpacing:'-0.04em',lineHeight:1}}>
+                                {days===null ? 'Active' : days<=0 ? 'Expired' : `${days} days`}
+                              </div>
+                              <div style={{fontSize:12,color:'#6b7280',marginTop:3}}>
+                                {expiry ? `Expires ${new Date(expiry).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}` : 'Certificate valid'}
+                              </div>
+                            </div>
+                            {issuer && (
+                              <div style={{textAlign:'right'}}>
+                                <div style={{fontSize:10,color:'#9ca3af',fontWeight:600,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:2}}>Issued by</div>
+                                <div style={{fontSize:13,fontWeight:600,color:'#111827'}}>{issuer}</div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Detail grid */}
+                          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10,marginBottom:12}}>
+                            {[
+                              {l:'Subject',      v: cert.subject_cn || cert.domain || cert.domain_name || '—'},
+                              {l:'Issued by',    v: issuer || 'Unknown CA'},
+                              {l:'Protocol',     v: cert.protocol || 'TLS'},
+                              {l:'Valid from',   v: issued ? new Date(issued).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '—'},
+                              {l:'Expires',      v: expiry ? new Date(expiry).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '—'},
+                              {l:'Days left',    v: days !== null ? `${days} days` : '—', color: daysColor},
+                              {l:'Key size',     v: cert.key_size ? `${cert.key_size}-bit` : 'RSA'},
+                              {l:'Chain',        v: cert.chain_valid !== false ? '✓ Valid' : '✗ Invalid', color: cert.chain_valid!==false?'#16a34a':'#dc2626'},
+                              {l:'HSTS',         v: cert.hsts==='HSTS enabled'||cert.hsts_enabled ? '✓ Enabled' : 'Not set', color: cert.hsts==='HSTS enabled'||cert.hsts_enabled?'#16a34a':'#9ca3af'},
+                              {l:'CT logged',    v: cert.ct_logged||cert.ct_log ? '✓ Yes' : '—', color: cert.ct_logged||cert.ct_log?'#16a34a':'#9ca3af'},
+                              {l:'HTTP→HTTPS',   v: cert.https_redirect ? '✓ Redirects' : '—', color: cert.https_redirect?'#16a34a':'#9ca3af'},
+                              {l:'Source',       v: cert.source || 'CT logs'},
+                            ].map(f=>(
+                              <div key={f.l} style={{padding:'10px 12px',background:'#f9fafb',borderRadius:8,border:'1px solid #e5e7eb'}}>
+                                <div style={{fontSize:10,color:'#6b7280',fontWeight:600,textTransform:'uppercase',letterSpacing:'0.07em',marginBottom:4}}>{f.l}</div>
+                                <div style={{fontSize:13,fontWeight:600,color:f.color||'#111827'}}>{f.v}</div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* SANs */}
+                          {cert.san?.length > 0 && (
+                            <div style={{marginBottom:12}}>
+                              <div style={{fontSize:10,color:'#6b7280',fontWeight:600,textTransform:'uppercase',letterSpacing:'0.07em',marginBottom:6}}>Subject alt names ({cert.san.length})</div>
+                              <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
+                                {cert.san.slice(0,8).map((s)=>(
+                                  <span key={s} style={{fontSize:11,fontFamily:'monospace',padding:'2px 8px',borderRadius:5,background:'#f3f4f6',border:'1px solid #e5e7eb',color:'#374151'}}>{s}</span>
+                                ))}
+                                {cert.san.length>8&&<span style={{fontSize:11,color:'#9ca3af'}}>+{cert.san.length-8} more</span>}
+                              </div>
+                            </div>
+                          )}
+
+                          <div style={{padding:'10px 14px',background:'#eff6ff',border:'1px solid #bfdbfe',borderRadius:8,fontSize:12,color:'#1d4ed8'}}>
+                            ℹ {scan.ssl_info.note||'HTTPS connection established successfully.'}
+                          </div>
+                        </div>
+                      )
+                    }) : (
+                      <div style={{padding:'32px',textAlign:'center',color:'#9ca3af'}}>
+                        <Lock size={32} style={{marginBottom:10,opacity:0.3}}/>
+                        <div style={{fontSize:14,fontWeight:600,marginBottom:4}}>No certificate data yet</div>
+                        <div style={{fontSize:12}}>Click "Scan now" to fetch SSL certificate details</div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 

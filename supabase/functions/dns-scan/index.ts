@@ -412,8 +412,8 @@ Deno.serve(async (req) => {
           issuer_org: cert.issuer_org || null,
           issuer: cert.issuer_org || cert.issuer_cn || null,
           // Subject
-          subject_cn: cert.domain || clean,
-          subject_alt_names: [clean],
+          subject_cn: cert.subject_cn || cert.domain || clean,
+          subject_alt_names: cert.san || [clean],
           // Validity
           valid_from: cert.not_before || null,
           valid_to: cert.expires_at || null,
