@@ -12,6 +12,7 @@ import DmarcReports from './pages/DmarcReports'
 import DnsAutoFix from './pages/DnsAutoFix'
 import SslCertificates from './pages/SslCertificates'
 import Settings from './pages/Settings'
+import AuditReport from './pages/AuditReport'
 import './styles/globals.css'
 
 function Alerts({ user }) {
@@ -350,6 +351,7 @@ export default function App() {
         {page === 'alerts'    && <Alerts user={user}/>}
         {page === 'reports'   && <Reports user={user}/>}
         {page === 'settings'  && <Settings user={user}/>}
+        {page === 'audit'     && <AuditReport setPage={setPage}/>}
         </div>
       </main>
     </div>
