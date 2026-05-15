@@ -14,13 +14,15 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
   const [verifyError, setVerifyError] = useState('')
 
   function cleanDomain(val) {
-    return val.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].toLowerCase().trim()
+    const clean = val.replace(/^https?:\/\//, '').split('/')[0].toLowerCase().trim()
+    // Only strip www. prefix, keep other subdomains intact
+    return clean.startsWith('www.') ? clean.slice(4) : clean
   }
 
   async function handleAddDomain() {
     setError('')
     const d = cleanDomain(domain)
-    if (!d || !d.includes('.')) { setError('Please enter a valid domain name'); return }
+    if (!d || !d.includes('.') || d.length < 4) { setError('Please enter a valid domain or subdomain'); return }
     setLoading(true)
     try {
       // Ensure profile exists (handles stale sessions / first-time users)
@@ -119,14 +121,14 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
                 Domain name
               </label>
               <input
-                type="text" placeholder="yourdomain.com" value={domain}
+                type="text" placeholder="yourdomain.com or mail.yourdomain.com" value={domain}
                 onChange={e => setDomain(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleAddDomain()}
                 style={{ marginBottom: 8 }}
                 autoFocus
               />
               <div style={{ fontSize: 11, color: 'var(--gray-500)', marginBottom: 16 }}>
-                Enter the apex domain — e.g. example.com not www.example.com
+                Enter a domain or subdomain — e.g. example.com, mail.example.com, newsletter.example.com
               </div>
               {error && (
                 <div style={{ padding: '8px 12px', background: 'var(--red-light)', color: 'var(--red-text)', borderRadius: 8, fontSize: 12, marginBottom: 12 }}>

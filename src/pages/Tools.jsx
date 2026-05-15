@@ -611,12 +611,39 @@ function SPFFlattener() {
               <div style={{ fontSize:12,color:'#374151', marginBottom:5 }}>Original record</div>
               <div style={{ fontFamily:'monospace', fontSize:12, color:'#374151', background:'#f1f5f9', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.original}</div>
             </div>
-            <div>
+            <div style={{ marginBottom:12 }}>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:5 }}>
                 <span style={{ fontSize:12,color:'#374151' }}>Flattened record (copy this into DNS)</span>
                 <CopyBtn text={result.flattened}/>
               </div>
               <div style={{ fontFamily:'monospace', fontSize:12, color:'#111827', background:'#f1f5f9', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.flattened}</div>
+            </div>
+            {/* Hosted SPF option */}
+            <div style={{ background:'#f0fdf4', border:'1px solid #bbf7d0', borderRadius:10, padding:'14px 16px' }}>
+              <div style={{ fontSize:13, fontWeight:600, color:'#15803d', marginBottom:4 }}>⚡ Use Hosted SPF instead</div>
+              <div style={{ fontSize:12, color:'#166534', lineHeight:1.6, marginBottom:10 }}>
+                Instead of a static flat record that goes stale, use a single <code style={{ background:'#dcfce7', padding:'1px 5px', borderRadius:4, fontFamily:'monospace' }}>include:spf.dnsradar.easysecurity.in</code> that DomainRadar hosts and auto-updates. Your SPF record stays valid forever — even when you add new email providers.
+              </div>
+              <div style={{ fontSize:12, color:'#166534', marginBottom:10 }}>
+                <strong>Your new SPF record would be:</strong><br/>
+                <code style={{ fontFamily:'monospace', background:'#dcfce7', padding:'4px 8px', borderRadius:6, display:'inline-block', marginTop:4, wordBreak:'break-all' }}>v=spf1 include:spf.dnsradar.easysecurity.in ~all</code>
+              </div>
+              <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+                <button
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText('v=spf1 include:spf.dnsradar.easysecurity.in ~all')
+                      alert('Hosted SPF record copied! Replace your current SPF record with this in your DNS. Then email us at support@dnsradar.easysecurity.in with your domain so we can configure the hosted record.')
+                    } catch { alert('Copy: v=spf1 include:spf.dnsradar.easysecurity.in ~all') }
+                  }}
+                  style={{ padding:'7px 14px', background:'#16a34a', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>
+                  📋 Copy hosted SPF record
+                </button>
+                <a href="mailto:support@dnsradar.easysecurity.in?subject=Hosted SPF setup&body=Please configure hosted SPF for my domain."
+                  style={{ padding:'7px 14px', background:'#fff', color:'#15803d', border:'1px solid #86efac', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', textDecoration:'none', display:'inline-flex', alignItems:'center' }}>
+                  📧 Request setup
+                </a>
+              </div>
             </div>
           </>
         )}
@@ -944,12 +971,158 @@ function BulkDomainImport({ user }) {
 }
 
 // ─── Tools Page ───────────────────────────────────────────────────────
+// ─── Deliverability Test ─────────────────────────────────────────────
+function DeliverabilityTest({ user }) {
+  const [domain, setDomain] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState(null)
+  const [error, setError] = useState('')
+
+  const KNOWN_PROVIDERS = [
+    { range: /^209\.85\./, name: 'Google Workspace', icon: '🔵' },
+    { range: /^74\.125\./, name: 'Google Workspace', icon: '🔵' },
+    { range: /^40\.92\.|^40\.107\.|^52\.100\./, name: 'Microsoft 365', icon: '🟦' },
+    { range: /^198\.2\./, name: 'Mailchimp', icon: '🐵' },
+    { range: /^167\.89\.|^149\.72\./, name: 'SendGrid', icon: '📧' },
+    { range: /^199\.255\.192\.|^199\.127\.232\./, name: 'Mailgun', icon: '📬' },
+    { range: /^54\.|^52\.|^34\./, name: 'Amazon SES', icon: '☁️' },
+    { range: /^185\.12\.80\./, name: 'Postmark', icon: '📮' },
+    { range: /^136\.143\./, name: 'Klaviyo', icon: '📊' },
+  ]
+
+  async function runTest() {
+    if (!domain.trim()) return
+    setLoading(true); setResult(null); setError('')
+    try {
+      const d = domain.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].toLowerCase().trim()
+      // Use dns-scan to get full email auth results
+      const { data, error: err } = await supabase.functions.invoke('dns-scan', {
+        body: { domain: d, scan_type: 'website', save_to_db: false }
+      })
+      if (err || data?.error) throw new Error(err?.message || data?.error || 'Scan failed')
+
+      const ea = data.email_auth || {}
+      const ssl = data.ssl_info || {}
+      const bl = data.blacklists || {}
+
+      // Build deliverability checks
+      const checks = [
+        { id:'spf',     label:'SPF record',       pass: ea.spf_status === 'Pass',  warn: ea.spf_status === 'Warn',  detail: ea.spf_raw || 'No SPF record', fix: ea.spf_fix, icon:'🛡️' },
+        { id:'dkim',    label:'DKIM signing',      pass: ea.dkim_status === 'Pass', warn: false,                     detail: ea.dkim_selector ? `Selector: ${ea.dkim_selector}` : 'No DKIM found', fix: ea.dkim_note, icon:'🔑' },
+        { id:'dmarc',   label:'DMARC policy',      pass: ['Pass','Warn'].includes(ea.dmarc_status), warn: ea.dmarc_status==='Warn', detail: ea.dmarc_raw || 'No DMARC record', fix: ea.dmarc_fix, icon:'📋' },
+        { id:'blacklist',label:'Not blacklisted',  pass: (bl.listed_count||0) === 0, warn: false, detail: (bl.listed_count||0) === 0 ? `Clean on all ${bl.results?.length||0} lists` : `Listed on ${bl.listed_count} list(s)`, fix: 'Request removal from each blacklist', icon:'🚫' },
+        { id:'ssl',     label:'SSL certificate',   pass: ssl.overall_status === 'Pass', warn: ssl.overall_status==='Warn', detail: ssl.note || 'HTTPS active', fix: 'Install valid SSL certificate', icon:'🔒' },
+        { id:'rdns',    label:'MTA-STS configured', pass: ea.mta_sts_status === 'Enforced', warn: ea.mta_sts_status === 'Warn', detail: ea.mta_sts_status || 'Not configured', fix: 'Configure MTA-STS policy', icon:'📡' },
+      ]
+
+      const passCount = checks.filter(c => c.pass).length
+      const score = Math.round((passCount / checks.length) * 100)
+
+      setResult({ domain: d, checks, score, passCount, total: checks.length, ea, bl })
+    } catch(e) { setError(e.message) }
+    finally { setLoading(false) }
+  }
+
+  const F = "'Inter',system-ui,sans-serif"
+  const card = { background:'#fff', border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }
+
+  return (
+    <div>
+      <div style={{ ...card, padding:'18px 20px', marginBottom:14 }}>
+        <div style={{ fontSize:14, fontWeight:700, color:'#111827', marginBottom:4, display:'flex', alignItems:'center', gap:8 }}>
+          ✉️ Email Deliverability Test
+        </div>
+        <div style={{ fontSize:12, color:'#6b7280', marginBottom:14, lineHeight:1.6 }}>
+          Check if your domain's email configuration will pass spam filters at Gmail, Outlook, and Yahoo. Tests SPF, DKIM, DMARC, blacklists, SSL and MTA-STS in one shot.
+        </div>
+        <div style={{ display:'flex', gap:8 }}>
+          <input value={domain} onChange={e=>setDomain(e.target.value)}
+            onKeyDown={e=>e.key==='Enter'&&runTest()}
+            placeholder="yourdomain.com"
+            style={{ flex:1, padding:'9px 12px', background:'#f8fafc', border:'1px solid #e5e7eb', borderRadius:8, fontSize:13, color:'#111827', outline:'none', fontFamily:F }}/>
+          <button onClick={runTest} disabled={loading||!domain.trim()}
+            style={{ padding:'9px 20px', background:'#111827', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:loading||!domain.trim()?'not-allowed':'pointer', display:'flex', alignItems:'center', gap:6, opacity:loading||!domain.trim()?0.6:1, fontFamily:F }}>
+            {loading ? <><div style={{width:12,height:12,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'spin 0.7s linear infinite'}}/> Testing…</> : '▶ Run test'}
+          </button>
+        </div>
+        {error && <div style={{ marginTop:10, padding:'8px 12px', background:'#fef2f2', border:'1px solid #fecaca', borderRadius:8, fontSize:12, color:'#dc2626' }}>{error}</div>}
+      </div>
+
+      {result && (
+        <>
+          {/* Score */}
+          <div style={{ ...card, padding:'20px 24px', marginBottom:14 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:20 }}>
+              <div style={{ textAlign:'center', flexShrink:0 }}>
+                <div style={{ fontSize:48, fontWeight:800, color: result.score>=80?'#16a34a':result.score>=60?'#d97706':'#dc2626', lineHeight:1, letterSpacing:'-0.04em' }}>{result.score}</div>
+                <div style={{ fontSize:11, color:'#6b7280', fontWeight:500 }}>/ 100</div>
+              </div>
+              <div>
+                <div style={{ fontSize:16, fontWeight:700, color:'#111827', marginBottom:4 }}>
+                  {result.score >= 80 ? '✅ Good deliverability' : result.score >= 60 ? '⚠️ Deliverability issues' : '❌ Poor deliverability'}
+                </div>
+                <div style={{ fontSize:13, color:'#374151', lineHeight:1.6 }}>
+                  {result.passCount} of {result.total} checks passed for <strong>{result.domain}</strong>.
+                  {result.score < 80 && ' Fix the failing checks below to improve inbox placement.'}
+                </div>
+                <div style={{ display:'flex', gap:8, marginTop:10, flexWrap:'wrap' }}>
+                  {[
+                    { label:'Gmail', pass: result.ea.spf_status==='Pass' && result.ea.dkim_status==='Pass' && ['Pass','Warn'].includes(result.ea.dmarc_status) },
+                    { label:'Outlook', pass: result.ea.spf_status==='Pass' && result.ea.dkim_status==='Pass' },
+                    { label:'Yahoo', pass: result.ea.spf_status==='Pass' && result.ea.dmarc_status !== 'Missing' },
+                    { label:'Apple Mail', pass: result.ea.spf_status==='Pass' },
+                  ].map(p => (
+                    <span key={p.label} style={{ fontSize:11, padding:'3px 10px', borderRadius:8, fontWeight:600,
+                      background: p.pass ? '#f0fdf4' : '#fef2f2',
+                      color: p.pass ? '#15803d' : '#dc2626',
+                      border: `1px solid ${p.pass ? '#bbf7d0' : '#fecaca'}` }}>
+                      {p.pass ? '✓' : '✗'} {p.label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Checks */}
+          <div style={card}>
+            <div style={{ padding:'12px 16px', borderBottom:'1px solid #f0f2f5', background:'#fafafa' }}>
+              <span style={{ fontSize:12, fontWeight:700, color:'#111827' }}>Deliverability checks</span>
+            </div>
+            {result.checks.map((c,i) => (
+              <div key={c.id} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'12px 16px', borderBottom: i < result.checks.length-1 ? '1px solid #f3f4f6' : 'none', background: !c.pass&&!c.warn ? '#fefafa' : 'transparent' }}>
+                <div style={{ width:28, height:28, borderRadius:8, background: c.pass?'#f0fdf4':c.warn?'#fffbeb':'#fef2f2', border:`1px solid ${c.pass?'#bbf7d0':c.warn?'#fde68a':'#fecaca'}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, flexShrink:0 }}>
+                  {c.icon}
+                </div>
+                <div style={{ flex:1 }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:3 }}>
+                    <span style={{ fontSize:13, fontWeight:600, color:'#111827' }}>{c.label}</span>
+                    <span style={{ fontSize:10, fontWeight:600, padding:'2px 7px', borderRadius:8,
+                      background: c.pass?'#f0fdf4':c.warn?'#fffbeb':'#fef2f2',
+                      color: c.pass?'#15803d':c.warn?'#d97706':'#dc2626',
+                      border: `1px solid ${c.pass?'#bbf7d0':c.warn?'#fde68a':'#fecaca'}` }}>
+                      {c.pass ? '✓ Pass' : c.warn ? '⚠ Warn' : '✗ Fail'}
+                    </span>
+                  </div>
+                  {c.detail && <div style={{ fontSize:12, fontFamily:'monospace', color:'#374151', marginBottom: c.fix&&!c.pass ? 4 : 0, wordBreak:'break-all' }}>{c.detail}</div>}
+                  {c.fix && !c.pass && <div style={{ fontSize:11, color:'#6b7280', lineHeight:1.5 }}>💡 {c.fix}</div>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 export default function Tools({ user }) {
   const tabs = [
-    { id:'generators', label:'Generators' },
-    { id:'email', label:'Email security' },
-    { id:'advanced', label:'Advanced' },
-    { id:'import', label:'Bulk import' },
+    { id:'generators',     label:'Generators' },
+    { id:'email',          label:'Email security' },
+    { id:'deliverability', label:'✉ Deliverability test' },
+    { id:'advanced',       label:'Advanced' },
+    { id:'import',         label:'Bulk import' },
   ]
   const [activeTab, setActiveTab] = useState('generators')
 
@@ -970,6 +1143,7 @@ export default function Tools({ user }) {
       <div style={{ padding:20, display:'flex', flexDirection:'column', gap:14 }}>
         {activeTab === 'generators' && <><SPFGenerator/><DMARCGenerator/><DKIMTool/></>}
         {activeTab === 'email' && <><BIMIChecker/><MTASTSChecker/><EmailHeaderAnalyser/></>}
+        {activeTab === 'deliverability' && <DeliverabilityTest user={user}/>}
         {activeTab === 'advanced' && <><SPFFlattener/><DKIMRotation/><BulkScanner/></>}
         {activeTab === 'import' && <BulkDomainImport user={user}/>}
       </div>
