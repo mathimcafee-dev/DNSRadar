@@ -312,6 +312,80 @@ function SBadge({ status }) {
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────
+
+// ─── Onboarding checklist ────────────────────────────────────────────
+function OnboardingChecklist({ scan, domain, setPage, setActiveTab }) {
+  const ea = scan?.email_auth || {}
+  const ssl = scan?.ssl_info || {}
+  const [dismissed, setDismissed] = useState(() => {
+    try { return localStorage.getItem(`dr_onboard_${domain?.id}`) === '1' } catch { return false }
+  })
+
+  const steps = [
+    { id:'domain',  done: !!domain?.verified,              label:'Domain verified',           action: null },
+    { id:'scan',    done: !!scan,                           label:'First scan completed',       action: null },
+    { id:'spf',     done: ea.spf_status === 'Pass',        label:'SPF record configured',      action: ()=>setActiveTab('email'), cta:'Fix SPF →' },
+    { id:'dkim',    done: ea.dkim_status === 'Pass',       label:'DKIM signing enabled',       action: ()=>setPage('autofix'),    cta:'Set up DKIM →' },
+    { id:'dmarc',   done: !['Missing','Fail'].includes(ea.dmarc_status), label:'DMARC policy set', action: ()=>setPage('dmarc'), cta:'Configure DMARC →' },
+    { id:'ssl',     done: ssl.overall_status === 'Pass',   label:'SSL certificate valid',      action: ()=>setPage('ssl'),        cta:'Check SSL →' },
+  ]
+
+  const doneCount = steps.filter(s => s.done).length
+  const allDone = doneCount === steps.length
+  const pct = Math.round((doneCount / steps.length) * 100)
+
+  if (dismissed) return null
+  if (allDone) return (
+    <div style={{background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:12,padding:'14px 16px',marginBottom:14,display:'flex',alignItems:'center',gap:12}}>
+      <span style={{fontSize:22}}>🎉</span>
+      <div style={{flex:1}}>
+        <div style={{fontSize:13,fontWeight:700,color:'#15803d'}}>Domain fully configured!</div>
+        <div style={{fontSize:12,color:'#166534'}}>All checks passing. You're protected against spoofing and phishing.</div>
+      </div>
+      <button onClick={()=>{setDismissed(true);try{localStorage.setItem(`dr_onboard_${domain?.id}`,'1')}catch{}}}
+        style={{background:'none',border:'none',color:'#86efac',cursor:'pointer',fontSize:18,lineHeight:1}}>✕</button>
+    </div>
+  )
+
+  return (
+    <div style={{background:'#fff',border:'1px solid #e5e7eb',borderRadius:12,overflow:'hidden',marginBottom:14,boxShadow:'0 1px 3px rgba(0,0,0,0.05)'}}>
+      <div style={{padding:'12px 16px',borderBottom:'1px solid #f0f2f5',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+        <div style={{display:'flex',alignItems:'center',gap:10}}>
+          <span style={{fontSize:14,fontWeight:700,color:'#111827'}}>Setup checklist</span>
+          <span style={{fontSize:11,color:'#6b7280'}}>{doneCount}/{steps.length} complete</span>
+        </div>
+        <button onClick={()=>{setDismissed(true);try{localStorage.setItem(`dr_onboard_${domain?.id}`,'1')}catch{}}}
+          style={{background:'none',border:'none',color:'#9ca3af',cursor:'pointer',fontSize:16,lineHeight:1}}>✕</button>
+      </div>
+      {/* Progress bar */}
+      <div style={{height:3,background:'#f3f4f6'}}>
+        <div style={{height:'100%',width:`${pct}%`,background:'#16a34a',transition:'width 0.5s ease',borderRadius:'0 2px 2px 0'}}/>
+      </div>
+      <div style={{padding:'8px 16px 12px'}}>
+        {steps.map((step, i) => (
+          <div key={step.id} style={{display:'flex',alignItems:'center',gap:10,padding:'7px 0',borderBottom: i < steps.length-1 ? '1px solid #f9fafb' : 'none'}}>
+            {/* Checkbox */}
+            <div style={{width:20,height:20,borderRadius:'50%',flexShrink:0,display:'flex',alignItems:'center',justifyContent:'center',
+              background: step.done ? '#16a34a' : '#f3f4f6',
+              border: step.done ? 'none' : '2px solid #d1d5db'}}>
+              {step.done && <span style={{color:'#fff',fontSize:11,fontWeight:800}}>✓</span>}
+            </div>
+            <span style={{flex:1,fontSize:12,color: step.done ? '#6b7280' : '#111827',fontWeight: step.done ? 400 : 500,textDecoration: step.done ? 'line-through' : 'none'}}>
+              {step.label}
+            </span>
+            {!step.done && step.action && (
+              <button onClick={step.action}
+                style={{padding:'3px 10px',background:'#f0fdf4',color:'#15803d',border:'1px solid #86efac',borderRadius:6,fontSize:11,fontWeight:600,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
+                {step.cta}
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function Dashboard({ user, setPage, setScanDomain, setScanType, onDomainSelect }) {
   const [domains,setDomains]=useState([])
   const [loading,setLoading]=useState(true)
@@ -456,7 +530,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
       <div style={{flex:1,overflowY:'auto',background:D.bg}}>
         {!selected?(
           <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',flexDirection:'column',gap:16}}>
-            <Shield size={56} color="rgba(255,255,255,0.06)"/>
+            <Shield size={56} color="#e5e7eb"/>
             <div style={{fontSize:16,fontWeight:500,color:'#374151'}}>Add a domain to get started</div>
             <button onClick={()=>setShowAdd(true)} style={{padding:'10px 22px',background:'#111827',color:'#ffffff',border:'none',borderRadius:8,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',gap:6}}><Plus size={15}/> Add your first domain</button>
           </div>
@@ -517,10 +591,18 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               {/* ══ OVERVIEW ══════════════════════════════════ */}
               {activeTab==='overview'&&scan&&(
                 <>
+                  <OnboardingChecklist scan={scan} domain={selected} setPage={setPage} setActiveTab={setActiveTab}/>
                   {/* KPI row */}
                   <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16}}>
                     {[
-                      {label:'Health score',val:scan.health_score,color:getScoreColor(scan.health_score),sub:'out of 100',pct:scan.health_score,tab:'overview'},
+                      {label:'Health score',val:scan.health_score,color:getScoreColor(scan.health_score),sub:(()=>{
+                        const scans=selected?.scan_results
+                        if(scans?.length>=2){
+                          const delta=scan.health_score-(scans[1]?.health_score||scan.health_score)
+                          if(delta!==0) return `${delta>0?'↑':'↓'} ${Math.abs(delta)} vs last scan`
+                        }
+                        return 'out of 100'
+                      })(),pct:scan.health_score,tab:'overview'},
                       {label:'Critical issues',val:critical.length,color:critical.length>0?'#dc2626':'#16a34a',sub:critical.length>0?'Fix immediately':'All clear',pct:Math.min(critical.length*25,100),tab:'overview'},
                       {label:'Blacklisted',val:`${scan.blacklists?.listed_count||0}/${scan.blacklists?.results?.length||0}`,color:(scan.blacklists?.listed_count||0)>0?'#dc2626':'#16a34a',sub:'blacklists',pct:(scan.blacklists?.listed_count||0)>0?60:100,tab:'blacklists'},
                       {label:'DNS records',val:scan.dns_records?.length||0,color:'#3730a3',sub:'records found',pct:100,tab:'dns'},
