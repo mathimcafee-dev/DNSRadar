@@ -320,6 +320,7 @@ function OnboardingChecklist({ scan, domain, setPage, setActiveTab }) {
   const [dismissed, setDismissed] = useState(() => {
     try { return localStorage.getItem(`dr_onboard_${domain?.id}`) === '1' } catch { return false }
   })
+  const [expanded, setExpanded] = useState(false)
 
   const steps = [
     { id:'domain',  done: !!domain?.verified,              label:'Domain verified',           action: null },
@@ -334,54 +335,78 @@ function OnboardingChecklist({ scan, domain, setPage, setActiveTab }) {
   const allDone = doneCount === steps.length
   const pct = Math.round((doneCount / steps.length) * 100)
 
+  function dismiss(e) {
+    e.stopPropagation()
+    setDismissed(true)
+    try { localStorage.setItem(`dr_onboard_${domain?.id}`, '1') } catch {}
+  }
+
   if (dismissed) return null
-  if (allDone) return (
-    <div style={{background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:12,padding:'14px 16px',marginBottom:14,display:'flex',alignItems:'center',gap:12}}>
-      <span style={{fontSize:22}}>🎉</span>
-      <div style={{flex:1}}>
-        <div style={{fontSize:13,fontWeight:700,color:'#15803d'}}>Domain fully configured!</div>
-        <div style={{fontSize:12,color:'#166534'}}>All checks passing. You're protected against spoofing and phishing.</div>
-      </div>
-      <button onClick={()=>{setDismissed(true);try{localStorage.setItem(`dr_onboard_${domain?.id}`,'1')}catch{}}}
-        style={{background:'none',border:'none',color:'#86efac',cursor:'pointer',fontSize:18,lineHeight:1}}>✕</button>
-    </div>
-  )
 
   return (
-    <div style={{background:'#fff',border:'1px solid #e5e7eb',borderRadius:12,overflow:'hidden',marginBottom:14,boxShadow:'0 1px 3px rgba(0,0,0,0.05)'}}>
-      <div style={{padding:'12px 16px',borderBottom:'1px solid #f0f2f5',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-        <div style={{display:'flex',alignItems:'center',gap:10}}>
-          <span style={{fontSize:14,fontWeight:700,color:'#111827'}}>Setup checklist</span>
-          <span style={{fontSize:11,color:'#6b7280'}}>{doneCount}/{steps.length} complete</span>
-        </div>
-        <button onClick={()=>{setDismissed(true);try{localStorage.setItem(`dr_onboard_${domain?.id}`,'1')}catch{}}}
-          style={{background:'none',border:'none',color:'#9ca3af',cursor:'pointer',fontSize:16,lineHeight:1}}>✕</button>
-      </div>
-      {/* Progress bar */}
-      <div style={{height:3,background:'#f3f4f6'}}>
-        <div style={{height:'100%',width:`${pct}%`,background:'#16a34a',transition:'width 0.5s ease',borderRadius:'0 2px 2px 0'}}/>
-      </div>
-      <div style={{padding:'8px 16px 12px'}}>
-        {steps.map((step, i) => (
-          <div key={step.id} style={{display:'flex',alignItems:'center',gap:10,padding:'7px 0',borderBottom: i < steps.length-1 ? '1px solid #f9fafb' : 'none'}}>
-            {/* Checkbox */}
-            <div style={{width:20,height:20,borderRadius:'50%',flexShrink:0,display:'flex',alignItems:'center',justifyContent:'center',
-              background: step.done ? '#16a34a' : '#f3f4f6',
-              border: step.done ? 'none' : '2px solid #d1d5db'}}>
-              {step.done && <span style={{color:'#fff',fontSize:11,fontWeight:800}}>✓</span>}
-            </div>
-            <span style={{flex:1,fontSize:12,color: step.done ? '#6b7280' : '#111827',fontWeight: step.done ? 400 : 500,textDecoration: step.done ? 'line-through' : 'none'}}>
-              {step.label}
-            </span>
-            {!step.done && step.action && (
-              <button onClick={step.action}
-                style={{padding:'3px 10px',background:'#f0fdf4',color:'#15803d',border:'1px solid #86efac',borderRadius:6,fontSize:11,fontWeight:600,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
-                {step.cta}
-              </button>
-            )}
+    <div style={{background:'#fff', border:`1px solid ${allDone?'#bbf7d0':'#e5e7eb'}`, borderRadius:12, overflow:'hidden', marginBottom:14, boxShadow:'0 1px 3px rgba(0,0,0,0.05)'}}>
+      {/* Collapsed header — always visible */}
+      <div onClick={() => setExpanded(e => !e)}
+        style={{padding:'10px 16px', display:'flex', alignItems:'center', gap:10, cursor:'pointer', userSelect:'none',
+          background: allDone ? '#f0fdf4' : '#fff'}}>
+        {/* Mini progress bar */}
+        <div style={{width:32, height:32, borderRadius:'50%', flexShrink:0, position:'relative', display:'flex', alignItems:'center', justifyContent:'center',
+          background:`conic-gradient(#16a34a ${pct*3.6}deg, #f3f4f6 0deg)`}}>
+          <div style={{width:22, height:22, borderRadius:'50%', background: allDone?'#f0fdf4':'#fff', display:'flex', alignItems:'center', justifyContent:'center'}}>
+            <span style={{fontSize:10, fontWeight:800, color: allDone?'#16a34a':'#374151'}}>{doneCount}/{steps.length}</span>
           </div>
-        ))}
+        </div>
+        <div style={{flex:1}}>
+          <div style={{fontSize:13, fontWeight:600, color:'#111827'}}>
+            {allDone ? '🎉 Domain fully configured!' : 'Setup checklist'}
+          </div>
+          {!allDone && (
+            <div style={{fontSize:11, color:'#6b7280', marginTop:1}}>
+              {steps.filter(s=>!s.done).slice(0,2).map(s=>s.label).join(' · ')}
+              {steps.filter(s=>!s.done).length > 2 ? ` · +${steps.filter(s=>!s.done).length-2} more` : ''}
+            </div>
+          )}
+        </div>
+        <div style={{display:'flex', alignItems:'center', gap:8}}>
+          <span style={{fontSize:11, color:'#9ca3af'}}>{expanded ? 'Collapse' : 'Expand'}</span>
+          <span style={{fontSize:12, color:'#9ca3af', transform: expanded?'rotate(180deg)':'none', transition:'transform 0.2s', display:'inline-block'}}>▼</span>
+          <button onClick={dismiss}
+            style={{background:'none', border:'none', color:'#d1d5db', cursor:'pointer', fontSize:16, lineHeight:1, padding:'0 0 0 4px'}}
+            title="Dismiss">✕</button>
+        </div>
       </div>
+
+      {/* Progress bar */}
+      <div style={{height:3, background:'#f3f4f6'}}>
+        <div style={{height:'100%', width:`${pct}%`, background:'#16a34a', transition:'width 0.5s ease'}}/>
+      </div>
+
+      {/* Expanded steps */}
+      {expanded && (
+        <div style={{padding:'4px 16px 12px'}}>
+          {steps.map((step, i) => (
+            <div key={step.id} style={{display:'flex', alignItems:'center', gap:10, padding:'8px 0',
+              borderBottom: i < steps.length-1 ? '1px solid #f9fafb' : 'none'}}>
+              <div style={{width:22, height:22, borderRadius:'50%', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center',
+                background: step.done ? '#16a34a' : '#f3f4f6',
+                border: step.done ? 'none' : '2px solid #d1d5db'}}>
+                {step.done && <span style={{color:'#fff', fontSize:11, fontWeight:800}}>✓</span>}
+              </div>
+              <span style={{flex:1, fontSize:12, color: step.done?'#9ca3af':'#111827',
+                fontWeight: step.done ? 400 : 500,
+                textDecoration: step.done ? 'line-through' : 'none'}}>
+                {step.label}
+              </span>
+              {!step.done && step.action && (
+                <button onClick={step.action}
+                  style={{padding:'4px 11px', background:'#f0fdf4', color:'#15803d', border:'1px solid #86efac', borderRadius:7, fontSize:11, fontWeight:600, cursor:'pointer', fontFamily:'inherit', whiteSpace:'nowrap'}}>
+                  {step.cta}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
