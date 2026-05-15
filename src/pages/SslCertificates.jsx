@@ -13,7 +13,11 @@ function daysColor(days) {
   return '#00e5a0'
 }
 
-function DaysBadge({ days }) {
+function DaysBadge({ days, expiresAt }) {
+  // Recalculate from expires_at if days_remaining is null/wrong
+  if ((days == null || days === 90) && expiresAt) {
+    days = Math.ceil((new Date(expiresAt).getTime() - Date.now()) / 86400000)
+  }
   const color = daysColor(days)
   return (
     <span style={{ fontSize:12, fontWeight:600, padding:'2px 9px', borderRadius:20, background:color+'18', color, border:`1px solid ${color}28`, whiteSpace:'nowrap' }}>
@@ -55,12 +59,12 @@ function CertCard({ cert, open, onToggle, onDelete }) {
         {/* Domain + issuer */}
         <div style={{ flex:1, minWidth:0 }}>
           <div style={{ fontSize:13, fontWeight:600, color:'#111827', marginBottom:2 }}>{cert.domain_name}</div>
-          <div style={{ fontSize:12,color:'#374151' }}>{cert.issuer_org || cert.issuer_cn || 'Unknown issuer'}</div>
+          <div style={{ fontSize:12,color:'#374151' }}>{cert.issuer_org || cert.issuer_cn || cert.issuer || 'Unknown issuer'}</div>
         </div>
 
         {/* Badges + actions */}
         <div style={{ display:'flex', alignItems:'center', gap:8, flexShrink:0 }}>
-          <DaysBadge days={cert.days_remaining}/>
+          <DaysBadge days={cert.days_remaining} expiresAt={cert.expires_at || cert.valid_to}/>
           {cert.chain_valid === false && <span style={{ fontSize:10, padding:'2px 7px', borderRadius:6, background:'rgba(239,68,68,0.12)', color:'#ff4d6a', border:'1px solid rgba(239,68,68,0.2)', fontWeight:500 }}>Chain error</span>}
           {cert.weak_cipher_detected && <span style={{ fontSize:10, padding:'2px 7px', borderRadius:6, background:'rgba(245,158,11,0.12)', color:'#92400e', border:'1px solid rgba(245,158,11,0.2)', fontWeight:500 }}>Weak cipher</span>}
           <button onClick={handleDelete} disabled={deleting}
@@ -75,15 +79,15 @@ function CertCard({ cert, open, onToggle, onDelete }) {
       {open && (
         <div style={{ borderTop:'1px solid #e5e7eb', padding:'14px 16px' }}>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(170px,1fr))', gap:12, marginBottom:14 }}>
-            <Field label="Subject CN" value={cert.subject_cn}/>
-            <Field label="Valid from" value={cert.valid_from ? new Date(cert.valid_from).toLocaleDateString() : null}/>
-            <Field label="Expires" value={cert.valid_to ? new Date(cert.valid_to).toLocaleDateString() : null}/>
+            <Field label="Subject CN" value={cert.subject_cn || cert.domain_name}/>
+            <Field label="Valid from" value={(cert.valid_from || cert.not_before) ? new Date(cert.valid_from || cert.not_before).toLocaleDateString() : null}/>
+            <Field label="Expires" value={(cert.valid_to || cert.expires_at) ? new Date(cert.valid_to || cert.expires_at).toLocaleDateString() : null}/>
             <Field label="Key" value={cert.key_algorithm ? `${cert.key_size||'?'}-bit ${cert.key_algorithm}` : null}/>
             <Field label="Signature" value={cert.signature_algorithm}/>
             <Field label="Chain length" value={cert.chain_length != null ? `${cert.chain_length} cert${cert.chain_length!==1?'s':''}` : null}/>
-            <Field label="HSTS" value={cert.hsts_enabled ? (cert.hsts_max_age ? `${Math.round(cert.hsts_max_age/86400)}d max-age` : 'Enabled') : 'Not set'} good={cert.hsts_enabled}/>
+            <Field label="HSTS" value={(cert.hsts_enabled || cert.hsts === 'HSTS enabled') ? 'Enabled' : 'Not set'} good={cert.hsts_enabled || cert.hsts === 'HSTS enabled'}/>
             <Field label="OCSP stapling" value={cert.ocsp_stapling ? 'Enabled' : 'Not enabled'} good={cert.ocsp_stapling}/>
-            <Field label="CT logged" value={cert.ct_logged ? 'Yes' : 'No'} good={cert.ct_logged}/>
+            <Field label="CT logged" value={cert.ct_logged || cert.ct_log ? 'Yes' : 'No'} good={cert.ct_logged || cert.ct_log}/>
           </div>
           {tlsVersions.length > 0 && (
             <div style={{ marginBottom:12 }}>

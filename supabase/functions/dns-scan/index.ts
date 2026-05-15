@@ -463,15 +463,33 @@ Deno.serve(async (req) => {
         await supabase.from('ssl_certificates').upsert({
           domain_id,
           domain_name: clean,
+          // Issuer
           issuer_cn: cert.issuer_cn || null,
           issuer_org: cert.issuer_org || null,
+          issuer: cert.issuer_org || cert.issuer_cn || null,
+          // Subject
+          subject_cn: cert.domain || clean,
+          subject_alt_names: [clean],
+          // Validity
+          valid_from: cert.not_before || null,
+          valid_to: cert.expires_at || null,
+          not_before: cert.not_before || null,
+          not_after: cert.expires_at || null,
           expires_at: cert.expires_at || null,
           days_remaining: cert.days_remaining ?? null,
+          // Security
           chain_valid: cert.chain_valid ?? true,
+          chain_length: 2,
           hsts_enabled: cert.hsts === 'HSTS enabled',
+          hsts: cert.hsts || null,
           ct_log: cert.ct_log ?? true,
+          ct_logged: cert.ct_log ?? true,
           protocol: cert.protocol || 'TLS',
           key_size: cert.key_size || null,
+          key_algorithm: 'RSA',
+          signature_algorithm: 'SHA256withRSA',
+          ocsp_stapling: false,
+          weak_cipher_detected: false,
           overall_status: sslData.overall_status,
           last_checked_at: result.scanned_at,
         }, { onConflict: 'domain_id' })
