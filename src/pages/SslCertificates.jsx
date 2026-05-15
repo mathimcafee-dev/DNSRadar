@@ -304,13 +304,8 @@ export default function SslCertificates({ user }) {
           <Lock size={36} color={D.dim} style={{ marginBottom:14 }}/>
           <div style={{ fontSize:15, fontWeight:600, color:'#111827', marginBottom:8 }}>No SSL data yet</div>
           <p style={{ fontSize:13, color:'#374151', maxWidth:420, margin:'0 auto 16px', lineHeight:1.6 }}>
-            Enter a domain above to check its certificate, or scan all your tracked domains at once.
+            Enter a domain above to check its certificate, or use <strong>Scan all</strong> in the top right to scan your tracked domains.
           </p>
-          {domains.filter(d=>d.verified).length > 0 && (
-            <button onClick={scanAll} disabled={scanning} style={{ padding:'8px 20px', background:'#16a34a', border:'none', borderRadius:8, color:'#fff', fontSize:13, fontWeight:600, cursor:'pointer' }}>
-              Scan all domains now
-            </button>
-          )}
         </div>
       ) : filtered.length === 0 ? (
         <div style={{ textAlign:'center', padding:'48px 24px', color:'#374151', fontSize:13 }}>No certificates match this filter</div>

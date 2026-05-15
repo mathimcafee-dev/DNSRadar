@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Globe, Trash2, RefreshCw, ExternalLink, Shield, Pause, Play, Clock, Mail, Lock, Ban, AlertTriangle, CheckCircle, Zap, FileDown, Share2, Copy, Check } from 'lucide-react'
+import { Plus, Globe, Trash2, RefreshCw, Shield, Pause, Play, Clock, Mail, Lock, Ban, AlertTriangle, CheckCircle, Zap, FileDown, Share2, Copy, Check } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import AddDomainModal from '../components/AddDomainModal'
 import ScoreHistoryChart from '../components/ScoreHistoryChart'
@@ -499,7 +499,6 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
                     {[
                       {icon:selected.paused?Play:Pause,label:selected.paused?'Resume':'Pause',fn:async()=>{await supabase.from('domains').update({paused:!selected.paused}).eq('id',selected.id);fetchDomains()}},
-                      {icon:ExternalLink,label:'Report',fn:()=>{setScanDomain(selected.domain_name);setScanType('website');setPage('scan')}},
                       {icon:FileDown,label:'PDF',fn:()=>window.print()},
                     ].map(b=>(
                       <button key={b.label} className="dsh-btn" onClick={b.fn}
@@ -670,26 +669,33 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 <div style={card}>
                   <div style={cardHd}><span style={{fontSize:12,fontWeight:700,color:'#111827',display:'flex',alignItems:'center',gap:6}}><Mail size={13} color="#a78bfa"/> Email authentication</span></div>
                   {[
-                    {name:'SPF',status:scan.email_auth.spf_status,val:scan.email_auth.spf_raw,note:scan.email_auth.spf_fix,extra:scan.email_auth.spf_lookups!=null?`${scan.email_auth.spf_lookups}/10 lookups`:null},
-                    {name:'DKIM',status:scan.email_auth.dkim_status,val:scan.email_auth.dkim_selector?`Selector: ${scan.email_auth.dkim_selector}`:null,note:scan.email_auth.dkim_note},
-                    {name:'DMARC',status:scan.email_auth.dmarc_status,val:scan.email_auth.dmarc_raw,note:scan.email_auth.dmarc_fix,suggest:scan.email_auth.dmarc_suggestion},
-                    {name:'BIMI',status:scan.email_auth.bimi_status||'Not configured',val:scan.email_auth.bimi_raw,note:scan.email_auth.bimi_note},
+                    {name:'SPF',  status:scan.email_auth.spf_status,  val:scan.email_auth.spf_raw,  note:scan.email_auth.spf_fix,  extra:scan.email_auth.spf_lookups!=null?`${scan.email_auth.spf_lookups}/10 lookups`:null, fixType:'SPF',  fixVal:scan.email_auth.spf_raw||'v=spf1 include:_spf.google.com ~all'},
+                    {name:'DKIM', status:scan.email_auth.dkim_status, val:scan.email_auth.dkim_selector?`Selector: ${scan.email_auth.dkim_selector}`:null, note:scan.email_auth.dkim_note},
+                    {name:'DMARC',status:scan.email_auth.dmarc_status,val:scan.email_auth.dmarc_raw, note:scan.email_auth.dmarc_fix,suggest:scan.email_auth.dmarc_suggestion, fixType:'DMARC', fixVal:scan.email_auth.dmarc_suggestion||scan.email_auth.dmarc_raw||`v=DMARC1; p=quarantine; rua=mailto:dmarc@${selected?.domain_name}; adkim=s; aspf=s`},
+                    {name:'BIMI', status:scan.email_auth.bimi_status||'Not configured',   val:scan.email_auth.bimi_raw, note:scan.email_auth.bimi_note},
                     {name:'MTA-STS',status:scan.email_auth.mta_sts_status||'Not configured',val:null,note:'Enforces TLS for all inbound mail delivery.'},
                     {name:'TLS-RPT',status:scan.email_auth.tls_rpt_status||'Not configured',val:null,note:'Enables TLS failure reporting.'},
-                  ].map((r,i)=>(
-                    <div key={r.name} style={{display:'flex',alignItems:'flex-start',gap:14,padding:'12px 16px',borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
+                  ].map((r,i)=>{
+                    const isMissing = ['Missing','Fail'].includes(r.status)
+                    const canFix = isMissing && r.fixType && r.fixVal
+                    return (
+                    <div key={r.name} style={{display:'flex',alignItems:'flex-start',gap:14,padding:'12px 16px',borderBottom:'1px solid #f3f4f6',background:isMissing&&r.fixType?'#fefafa':'transparent'}}>
                       <div style={{width:60,flexShrink:0}}>
                         <div style={{fontSize:13,fontWeight:700,color:'#111827',fontFamily:'monospace'}}>{r.name}</div>
                         {r.extra&&<div style={{fontSize:10,color:'#374151',marginTop:3}}>{r.extra}</div>}
                       </div>
                       <div style={{flex:1}}>
-                        {r.val&&<div style={{fontSize:12,fontFamily:'monospace',color:'#0f172a',marginBottom:4,wordBreak:'break-all',padding:'4px 8px',background:'rgba(255,255,255,0.03)',borderRadius:5}}>{r.val}</div>}
+                        {r.val&&<div style={{fontSize:12,fontFamily:'monospace',color:'#0f172a',marginBottom:4,wordBreak:'break-all',padding:'4px 8px',background:'#f8fafc',borderRadius:5,border:'1px solid #e2e8f0'}}>{r.val}</div>}
                         {r.note&&<div style={{fontSize:12,color:'#374151',lineHeight:1.5}}>{r.note}</div>}
-                        {r.suggest&&<div style={{marginTop:5,padding:'4px 8px',background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:6,fontSize:12,fontFamily:'monospace',color:'#166534',wordBreak:'break-all',padding:'6px 10px'}}>✦ {r.suggest}</div>}
+                        {r.suggest&&<div style={{marginTop:5,padding:'6px 10px',background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:6,fontSize:12,fontFamily:'monospace',color:'#166534',wordBreak:'break-all'}}>✦ {r.suggest}</div>}
                       </div>
-                      <SBadge status={r.status}/>
+                      <div style={{display:'flex',alignItems:'center',gap:7,flexShrink:0}}>
+                        <SBadge status={r.status}/>
+                        {canFix&&<AutoFixButton domainId={selected.id} issueType={r.fixType} fixValue={r.fixVal} domainName={selected?.domain_name}/>}
+                      </div>
                     </div>
-                  ))}
+                    )
+                  })}
                 </div>
               )}
 
