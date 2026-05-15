@@ -561,113 +561,80 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               {/* ══ PROPAGATION ══════════════════════════════ */}
               {activeTab==='propagation'&&scan?.propagation&&(
                 <div style={{display:'flex',flexDirection:'column',gap:14}}>
-                  {/* ── Visual propagation map ── */}
                   <div style={card}>
                     <div style={cardHd}>
                       <span style={{fontSize:12,fontWeight:700,color:'#111827',display:'flex',alignItems:'center',gap:6}}><Globe size={13} color='#1d4ed8'/> Global propagation status</span>
                       <SBadge status={scan.propagation.consistent?'Consistent':'Inconsistent'}/>
                     </div>
-                    <div style={{padding:'20px 24px'}}>
-                      {/* World map — accurate simplified paths */}
-                      <div style={{position:'relative',background:'#f0f7ff',borderRadius:10,border:'1px solid #e5e7eb',overflow:'hidden',marginBottom:16}}>
-                        <svg viewBox='0 0 1010 530' style={{width:'100%',display:'block'}}>
-                          <rect width='1010' height='530' fill='#dbeafe' rx='10'/>
-                          {/* Accurate continent outlines — simplified natural earth */}
-                          {/* North America */}
-                          <path d='M120,80 L180,65 L230,70 L265,85 L280,110 L275,140 L260,165 L255,195 L240,215 L220,235 L200,250 L185,245 L175,225 L165,205 L155,195 L145,175 L130,165 L115,145 L105,125 L100,100 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1.2'/>
-                          {/* Greenland */}
-                          <path d='M205,40 L235,35 L255,45 L250,65 L225,70 L205,60 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
-                          {/* Central America */}
-                          <path d='M185,245 L200,250 L205,265 L195,275 L180,270 L175,255 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
-                          {/* South America */}
-                          <path d='M190,285 L220,275 L245,285 L260,310 L262,345 L255,375 L240,405 L220,425 L200,430 L180,420 L165,395 L158,360 L160,325 L168,300 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1.2'/>
-                          {/* Europe */}
-                          <path d='M430,75 L465,68 L495,72 L510,85 L505,105 L490,120 L470,128 L450,125 L435,115 L425,100 L425,85 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1.2'/>
-                          {/* Scandinavia */}
-                          <path d='M460,50 L475,48 L485,60 L478,78 L462,80 L452,68 L455,55 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
-                          {/* UK */}
-                          <path d='M415,80 L425,76 L428,88 L420,95 L412,90 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
-                          {/* Africa */}
-                          <path d='M440,145 L480,138 L510,148 L525,170 L530,205 L525,245 L515,285 L500,320 L480,345 L458,352 L438,342 L422,315 L415,275 L415,235 L420,195 L428,165 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1.2'/>
-                          {/* Madagascar */}
-                          <path d='M520,285 L528,280 L532,295 L528,312 L518,315 L514,300 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.6'/>
-                          {/* Asia - main body */}
-                          <path d='M510,60 L580,52 L650,55 L710,65 L760,75 L800,88 L820,105 L815,130 L790,150 L750,165 L700,172 L650,170 L600,165 L565,158 L535,148 L515,135 L505,115 L505,88 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1.2'/>
-                          {/* Indian subcontinent */}
-                          <path d='M615,165 L640,168 L655,185 L650,210 L635,230 L618,235 L605,220 L600,200 L605,178 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1'/>
-                          {/* SE Asia peninsula */}
-                          <path d='M700,170 L725,175 L738,192 L730,215 L710,222 L695,210 L690,190 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
-                          {/* Japan */}
-                          <path d='M788,105 L798,100 L808,110 L802,125 L790,128 L783,118 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
-                          {/* Australia */}
-                          <path d='M730,310 L785,302 L830,308 L860,325 L865,355 L850,380 L820,395 L785,398 L752,390 L728,370 L718,345 L720,320 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1.2'/>
-                          {/* New Zealand */}
-                          <path d='M875,390 L882,385 L888,398 L882,410 L873,408 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.6'/>
-                          {/* Indonesia - simplified */}
-                          <path d='M730,255 L760,250 L785,258 L790,270 L770,275 L745,272 L728,265 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
+                    <div style={{padding:'16px 20px'}}>
 
-                          {/* Region nodes */}
-                          {[
-                            {key:'us',   name:'N. America',  x:175, y:158, flag:'🇺🇸', resolver:'1.1.1.1'},
-                            {key:'eu',   name:'Europe',      x:468, y:100, flag:'🇪🇺', resolver:'8.8.8.8'},
-                            {key:'apac', name:'Asia Pacific', x:690, y:130, flag:'🌏', resolver:'OpenDNS'},
-                            {key:'au',   name:'Australia',   x:790, y:350, flag:'🇦🇺', resolver:'Quad9'},
-                          ].map(reg => {
-                            const allPass = scan.propagation.records?.every(r => r[reg.key]==='pass')
-                            const nc = allPass ? '#16a34a' : '#d97706'
-                            const bg = allPass ? '#dcfce7' : '#fef3c7'
-                            const bd = allPass ? '#86efac' : '#fcd34d'
-                            return (
-                              <g key={reg.key}>
-                                <circle cx={reg.x} cy={reg.y} r='22' fill={bg} stroke={bd} strokeWidth='1.5'/>
-                                <circle cx={reg.x} cy={reg.y} r='9' fill={nc}/>
-                                {allPass
-                                  ? <path d={`M ${reg.x-5} ${reg.y} l 3.5 3.5 l 6 -6`} stroke='#fff' strokeWidth='2' fill='none' strokeLinecap='round' strokeLinejoin='round'/>
-                                  : <text x={reg.x} y={reg.y+4} textAnchor='middle' fill='#fff' fontSize='10' fontWeight='800'>!</text>
-                                }
-                                <text x={reg.x} y={reg.y+35} textAnchor='middle' fill='#1e3a5f' fontSize='9.5' fontWeight='700'>{reg.name}</text>
-                                <text x={reg.x} y={reg.y+47} textAnchor='middle' fill='#64748b' fontSize='8.5'>{allPass?'✓ Propagated':'✗ Inconsistent'}</text>
-                              </g>
-                            )
-                          })}
+                      {/* Real map using OpenStreetMap tiles via static map image */}
+                      <div style={{position:'relative',borderRadius:10,overflow:'hidden',marginBottom:14,border:'1px solid #e5e7eb',background:'#e8f0fe'}}>
+                        {/* Real world map from Wikimedia/OpenStreetMap */}
+                        <img
+                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/1280px-World_map_-_low_resolution.svg.png"
+                          alt="World map"
+                          style={{width:'100%',display:'block',opacity:0.85}}
+                          onError={e=>{e.target.style.display='none'}}
+                        />
 
-                          {/* Legend */}
-                          <circle cx='18' cy='515' r='6' fill='#16a34a'/>
-                          <text x='30' y='519' fill='#374151' fontSize='11' fontWeight='500'>Propagated</text>
-                          <circle cx='115' cy='515' r='6' fill='#d97706'/>
-                          <text x='127' y='519' fill='#374151' fontSize='11' fontWeight='500'>Inconsistent</text>
-                        </svg>
+                        {/* Status pins — positioned as % of map dimensions */}
+                        {/* Map is ~1280x640 Mercator. Pin positions as percentage */}
+                        {[
+                          {key:'us',   name:'N. America',  top:'35%', left:'18%', flag:'🇺🇸'},
+                          {key:'eu',   name:'Europe',      top:'28%', left:'48%', flag:'🇪🇺'},
+                          {key:'apac', name:'Asia Pacific', top:'38%', left:'72%', flag:'🌏'},
+                          {key:'au',   name:'Australia',   top:'70%', left:'78%', flag:'🇦🇺'},
+                        ].map(reg => {
+                          const allPass = scan.propagation.records?.every(r => r[reg.key]==='pass')
+                          const c = allPass ? '#16a34a' : '#dc2626'
+                          const bg = allPass ? '#f0fdf4' : '#fef2f2'
+                          const bd = allPass ? '#86efac' : '#fecaca'
+                          return (
+                            <div key={reg.key} style={{position:'absolute',top:reg.top,left:reg.left,transform:'translate(-50%,-50%)',textAlign:'center',filter:'drop-shadow(0 2px 6px rgba(0,0,0,0.25))'}}>
+                              {/* Pin body */}
+                              <div style={{background:bg,border:`2px solid ${bd}`,borderRadius:20,padding:'5px 10px',display:'flex',alignItems:'center',gap:5,whiteSpace:'nowrap',backdropFilter:'blur(4px)'}}>
+                                <div style={{width:10,height:10,borderRadius:'50%',background:c,flexShrink:0,boxShadow:`0 0 6px ${c}`}}/>
+                                <span style={{fontSize:11,fontWeight:700,color:'#111827'}}>{reg.flag} {reg.name}</span>
+                              </div>
+                              {/* Pin tail */}
+                              <div style={{width:0,height:0,borderLeft:'5px solid transparent',borderRight:'5px solid transparent',borderTop:`6px solid ${bd}`,margin:'0 auto',marginTop:-1}}/>
+                            </div>
+                          )
+                        })}
+
+                        {/* Legend overlay */}
+                        <div style={{position:'absolute',bottom:8,left:8,background:'rgba(255,255,255,0.9)',borderRadius:8,padding:'5px 10px',display:'flex',gap:12,border:'1px solid #e5e7eb',fontSize:11,backdropFilter:'blur(4px)'}}>
+                          <span style={{display:'flex',alignItems:'center',gap:4}}><span style={{width:8,height:8,borderRadius:'50%',background:'#16a34a',display:'inline-block',boxShadow:'0 0 4px #16a34a'}}/><span style={{color:'#374151',fontWeight:500}}>Propagated</span></span>
+                          <span style={{display:'flex',alignItems:'center',gap:4}}><span style={{width:8,height:8,borderRadius:'50%',background:'#dc2626',display:'inline-block',boxShadow:'0 0 4px #dc2626'}}/><span style={{color:'#374151',fontWeight:500}}>Inconsistent</span></span>
+                        </div>
                       </div>
 
-                      {/* Resolver detail rows */}
-                      <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:8}}>
+                      {/* Resolver detail cards */}
+                      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:8}}>
                         {[
-                          {key:'us',   flag:'🇺🇸', name:'North America', resolver:'1.1.1.1 · Cloudflare'},
-                          {key:'eu',   flag:'🇪🇺', name:'Europe',        resolver:'8.8.8.8 · Google'},
-                          {key:'apac', flag:'🌏', name:'Asia Pacific',   resolver:'208.67.222.222 · OpenDNS'},
-                          {key:'au',   flag:'🇦🇺', name:'Australia',     resolver:'9.9.9.9 · Quad9'},
+                          {key:'us',   flag:'🇺🇸', name:'N. America', resolver:'1.1.1.1 · Cloudflare'},
+                          {key:'eu',   flag:'🇪🇺', name:'Europe',     resolver:'8.8.8.8 · Google'},
+                          {key:'apac', flag:'🌏',  name:'Asia Pacific',resolver:'OpenDNS'},
+                          {key:'au',   flag:'🇦🇺', name:'Australia',  resolver:'Quad9'},
                         ].map(reg => {
                           const allPass = scan.propagation.records?.every(r => r[reg.key]==='pass')
                           return (
-                            <div key={reg.key} style={{background:allPass?'#f0fdf4':'#fffbeb',borderRadius:10,padding:'12px 14px',border:`1px solid ${allPass?'#bbf7d0':'#fde68a'}`}}>
-                              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
-                                <div style={{display:'flex',alignItems:'center',gap:7}}>
-                                  <span style={{fontSize:18}}>{reg.flag}</span>
-                                  <div>
-                                    <div style={{fontSize:12,fontWeight:700,color:'#111827'}}>{reg.name}</div>
-                                    <div style={{fontSize:10,color:'#6b7280',fontFamily:'monospace'}}>{reg.resolver}</div>
-                                  </div>
+                            <div key={reg.key} style={{background:allPass?'#f0fdf4':'#fef2f2',borderRadius:10,padding:'10px 12px',border:`1px solid ${allPass?'#bbf7d0':'#fecaca'}`}}>
+                              <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:6}}>
+                                <span style={{fontSize:16}}>{reg.flag}</span>
+                                <div>
+                                  <div style={{fontSize:12,fontWeight:700,color:'#111827',letterSpacing:'-0.01em'}}>{reg.name}</div>
+                                  <div style={{fontSize:10,color:'#6b7280',fontFamily:'monospace'}}>{reg.resolver}</div>
                                 </div>
-                                <span style={{fontSize:10,fontWeight:700,padding:'2px 8px',borderRadius:8,background:allPass?'#dcfce7':'#fef3c7',color:allPass?'#15803d':'#92400e'}}>
-                                  {allPass?'✓ Consistent':'⚠ Inconsistent'}
-                                </span>
                               </div>
-                              <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
-                                {scan.propagation.records?.map(rec => (
-                                  <div key={rec.type} style={{display:'flex',alignItems:'center',gap:4,padding:'2px 8px',background:'rgba(255,255,255,0.7)',borderRadius:6,border:'1px solid rgba(0,0,0,0.06)'}}>
-                                    <div style={{width:6,height:6,borderRadius:'50%',background:rec[reg.key]==='pass'?'#16a34a':'#d97706',flexShrink:0}}/>
-                                    <span style={{fontSize:10,fontFamily:'monospace',color:'#374151',fontWeight:600}}>{rec.type}</span>
-                                  </div>
+                              <div style={{display:'flex',alignItems:'center',gap:5,marginBottom:6}}>
+                                <div style={{width:7,height:7,borderRadius:'50%',background:allPass?'#16a34a':'#dc2626',flexShrink:0}}/>
+                                <span style={{fontSize:11,fontWeight:600,color:allPass?'#15803d':'#dc2626'}}>{allPass?'Propagated':'Inconsistent'}</span>
+                              </div>
+                              <div style={{display:'flex',flexWrap:'wrap',gap:3}}>
+                                {scan.propagation.records?.map(rec=>(
+                                  <span key={rec.type} style={{fontSize:9,fontFamily:'monospace',fontWeight:700,padding:'1px 5px',borderRadius:4,background:rec[reg.key]==='pass'?'#dcfce7':'#fee2e2',color:rec[reg.key]==='pass'?'#166534':'#991b1b',border:`1px solid ${rec[reg.key]==='pass'?'#86efac':'#fca5a5'}`}}>{rec.type}</span>
                                 ))}
                               </div>
                             </div>
