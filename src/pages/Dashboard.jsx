@@ -647,32 +647,88 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               )}
 
               {/* ══ BLACKLISTS ════════════════════════════════ */}
-              {activeTab==='blacklists'&&scan?.blacklists&&(
+              {activeTab==='blacklists'&&scan?.blacklists&&(()=>{
+                const DELIST={
+                  'zen.spamhaus.org':       ip=>`https://www.spamhaus.org/query/ip/${ip}`,
+                  'bl.spamcop.net':         ip=>`https://www.spamcop.net/bl.shtml?${ip}`,
+                  'dnsbl.sorbs.net':        ip=>`http://www.sorbs.net/lookup.shtml?${ip}`,
+                  'b.barracudacentral.org': ()=>`https://www.barracudacentral.org/rbl/removal-request`,
+                  'dbl.spamhaus.org':       ()=>`https://www.spamhaus.org/dbl/`,
+                  'multi.surbl.org':        ip=>`https://www.surbl.org/surbl-analysis?d=${ip}`,
+                  'cbl.abuseat.org':        ip=>`https://www.abuseat.org/lookup.cgi?ip=${ip}`,
+                  'dnsbl-1.uceprotect.net': ip=>`http://www.uceprotect.net/en/rblcheck.php?ipr=${ip}`,
+                  'psbl.surriel.com':       ()=>`https://psbl.org/remove`,
+                  'spam.dnsbl.sorbs.net':   ip=>`http://www.sorbs.net/lookup.shtml?${ip}`,
+                }
+                const ip=scan.blacklists.ip
+                const listed=(scan.blacklists.results||[]).filter(b=>b.listed)
+                return (
                 <div style={{display:'flex',flexDirection:'column',gap:12}}>
+                  {/* Stats */}
                   <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10}}>
-                    {[{l:'IP address',v:scan.blacklists.ip||'–',c:'#a855f7'},{l:'Lists checked',v:scan.blacklists.results?.length||0,c:'#3d9bff'},{l:'Listed on',v:scan.blacklists.listed_count||0,c:(scan.blacklists.listed_count||0)>0?'#dc2626':'#16a34a'}].map(s=>(
+                    {[{l:'IP address',v:ip||'–',c:'#7c3aed'},{l:'Lists checked',v:scan.blacklists.results?.length||0,c:'#2563eb'},{l:'Listed on',v:scan.blacklists.listed_count||0,c:(scan.blacklists.listed_count||0)>0?'#dc2626':'#16a34a'}].map(s=>(
                       <div key={s.l} style={{...card,padding:'14px 16px'}}>
-                        <div style={{fontSize:12,color:'#374151',marginBottom:4}}>{s.l}</div>
-                        <div style={{fontSize:24,fontWeight:700,color:s.c}}>{s.v}</div>
+                        <div style={{fontSize:11,color:'#6b7280',marginBottom:4,textTransform:'uppercase',letterSpacing:'0.07em',fontWeight:600}}>{s.l}</div>
+                        <div style={{fontSize:22,fontWeight:800,color:s.c,letterSpacing:'-0.02em',fontFamily:'monospace'}}>{s.v}</div>
                       </div>
                     ))}
                   </div>
+
+                  {/* Listed — delist buttons */}
+                  {listed.length>0&&(
+                    <div style={card}>
+                      <div style={cardHd}>
+                        <span style={{fontSize:12,fontWeight:700,color:'#dc2626',display:'flex',alignItems:'center',gap:6}}>
+                          <div style={{width:8,height:8,borderRadius:'50%',background:'#dc2626'}}/> Listed on {listed.length} blacklist{listed.length!==1?'s':''}
+                        </span>
+                        <span style={{fontSize:11,color:'#6b7280'}}>Click to request removal</span>
+                      </div>
+                      <div style={{padding:'10px 10px 4px'}}>
+                        {listed.map(bl=>{
+                          const url=DELIST[bl.name]?.(ip)||null
+                          return (
+                            <div key={bl.name} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 12px',marginBottom:6,background:'#fef2f2',borderRadius:9,border:'1px solid #fecaca'}}>
+                              <div style={{display:'flex',alignItems:'center',gap:8}}>
+                                <div style={{width:8,height:8,borderRadius:'50%',background:'#dc2626',flexShrink:0}}/>
+                                <div>
+                                  <div style={{fontSize:12,fontFamily:'monospace',fontWeight:600,color:'#111827'}}>{bl.name}</div>
+                                  <div style={{fontSize:11,color:'#6b7280',marginTop:1}}>IP: {ip}</div>
+                                </div>
+                              </div>
+                              {url
+                                ? <a href={url} target='_blank' rel='noopener noreferrer' style={{display:'inline-flex',alignItems:'center',gap:5,padding:'7px 14px',background:'#111827',color:'#fff',borderRadius:7,fontSize:12,fontWeight:600,textDecoration:'none',whiteSpace:'nowrap',flexShrink:0}}>Request removal →</a>
+                                : <span style={{fontSize:11,color:'#9ca3af',flexShrink:0}}>Manual removal required</span>
+                              }
+                            </div>
+                          )
+                        })}
+                      </div>
+                      <div style={{padding:'10px 16px',borderTop:'1px solid #f0f2f5',background:'#fafafa',borderRadius:'0 0 12px 12px'}}>
+                        <div style={{fontSize:11,color:'#6b7280',lineHeight:1.7}}>
+                          <strong style={{color:'#374151'}}>How delisting works:</strong> Click the button to visit each blacklist's removal page. Submit your IP and reason. Most removals take 24–48 hours. Run a fresh scan after to confirm.
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* All results table */}
                   <div style={card}>
-                    <div style={cardHd}><span style={{fontSize:12,fontWeight:700,color:'#111827'}}>Blacklist results</span></div>
+                    <div style={cardHd}>
+                      <span style={{fontSize:12,fontWeight:700,color:'#111827'}}>All {scan.blacklists.results?.length||0} lists checked</span>
+                      {listed.length===0&&<span style={{fontSize:11,color:'#16a34a',fontWeight:600}}>✓ All clean</span>}
+                    </div>
                     <div style={{display:'grid',gridTemplateColumns:'1fr 1fr'}}>
-                      {scan.blacklists.results?.map((bl,i)=>(
-                        <div key={bl.name} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'9px 16px',borderBottom:`1px solid rgba(255,255,255,0.04)`,background:bl.listed?'rgba(239,68,68,0.04)':'transparent'}}>
-                          <span style={{fontSize:12,fontFamily:'monospace',color:bl.listed?'#ff4d6a':'rgba(255,255,255,0.35)'}}>{bl.name}</span>
-                          <div style={{display:'flex',alignItems:'center',gap:5}}>
-                            <div style={{width:6,height:6,borderRadius:'50%',background:bl.listed?'#dc2626':'#16a34a'}}/>
-                            <span style={{fontSize:10,color:bl.listed?'#dc2626':'#16a34a',fontWeight:500}}>{bl.listed?'Listed':'Clean'}</span>
-                          </div>
+                      {scan.blacklists.results?.map(bl=>(
+                        <div key={bl.name} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 14px',borderBottom:'1px solid #f3f4f6',background:bl.listed?'#fef2f2':'transparent'}}>
+                          <span style={{fontSize:11,fontFamily:'monospace',color:bl.listed?'#dc2626':'#374151',fontWeight:bl.listed?600:400}}>{bl.name}</span>
+                          <span style={{fontSize:10,fontWeight:600,padding:'2px 7px',borderRadius:6,background:bl.listed?'#fecaca':'#dcfce7',color:bl.listed?'#991b1b':'#166534'}}>{bl.listed?'Listed':'Clean'}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
-              )}
+                )
+              })()}
 
               {/* ══ DNS RECORDS ═══════════════════════════════ */}
               {activeTab==='dns'&&scan?.dns_records&&(
