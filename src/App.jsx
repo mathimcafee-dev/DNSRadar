@@ -357,7 +357,7 @@ export default function App() {
         {page === 'alerts'    && <Alerts user={user}/>}
         {page === 'reports'   && <Reports user={user}/>}
         {page === 'settings'  && <Settings user={user}/>}
-        {page === 'audit'     && <AuditReport setPage={setPage}/>}
+        {page === 'audit'     && <AuditReport setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>}
         </div>
       </main>
     </div>

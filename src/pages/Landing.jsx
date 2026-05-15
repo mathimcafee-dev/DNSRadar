@@ -112,7 +112,6 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
           <button className="nav-link" onClick={() => setPage('pricing')}>Pricing</button>
           <button className="nav-link" onClick={() => setPage('about')}>About</button>
           <div style={{ width:1, height:20, background:'#e5e7eb', margin:'0 6px' }}/>
-          <button onClick={() => setPage('audit')} style={{ padding:'6px 13px', background:'#dcfce7', color:'#16a34a', border:'1px solid #bbf7d0', borderRadius:8, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:F }}>📄 Free Audit</button>
           <button onClick={() => setPage('auth')} style={{ padding:'6px 13px', background:'transparent', color:'#555', border:'1px solid #e5e7eb', borderRadius:8, fontSize:13, fontWeight:500, cursor:'pointer', fontFamily:F }}>Sign in</button>
           <button onClick={() => setPage('auth')} style={{ padding:'7px 16px', background:'#111', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Start free →</button>
         </div>
@@ -143,7 +142,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
                 onFocus={e=>e.target.style.borderColor='#16a34a'} onBlur={e=>e.target.style.borderColor='#e5e7eb'}/>
             </div>
             <button type="submit" style={{ padding:'13px 24px', background:'#16a34a', color:'#fff', border:'none', borderRadius:10, fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:F, whiteSpace:'nowrap', boxShadow:'0 2px 8px rgba(22,163,74,0.3)' }}>
-              Scan free
+              Scan domain →
             </button>
           </form>
           <p style={{ fontSize:12, color:'#9ca3af', marginTop:8 }}>No credit card · No signup required · Results in 90 seconds</p>
@@ -164,12 +163,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
           </div>
         )}
 
-        {/* Or get audit */}
-        <div className="fade-up" style={{ animationDelay:'0.3s' }}>
-          <button onClick={() => setPage('audit')} style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'10px 20px', background:'transparent', color:'#374151', border:'1px solid #e5e7eb', borderRadius:9, fontSize:13, fontWeight:500, cursor:'pointer', fontFamily:F }}>
-            <FileText size={14} color="#6b7280"/> Export full audit PDF report
-          </button>
-        </div>
+
 
         {/* Stats */}
         <div className="fade-up" style={{ animationDelay:'0.35s', display:'flex', gap:32, marginTop:56, flexWrap:'wrap', justifyContent:'center' }}>
@@ -310,12 +304,12 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
           <h2 style={{ fontSize:'clamp(28px,5vw,48px)', fontWeight:900, color:'#fff', letterSpacing:'-0.04em', lineHeight:1.1, marginBottom:16 }}>
             Scan your domain.<br/><span style={{ color:'#4ade80' }}>Free, right now.</span>
           </h2>
-          <p style={{ fontSize:15, color:'rgba(255,255,255,0.5)', marginBottom:36, lineHeight:1.7 }}>No account needed for your first scan. See exactly what is broken and how to fix it.</p>
-          <form onSubmit={scan} style={{ display:'flex', gap:8, maxWidth:440, margin:'0 auto 14px' }}>
-            <input style={{ flex:1, padding:'12px 14px', background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)', borderRadius:9, fontSize:14, fontFamily:MONO, color:'#fff', outline:'none' }} placeholder="yourdomain.com" value={domain} onChange={e=>setDomain(e.target.value)}/>
-            <button type="submit" style={{ padding:'12px 20px', background:'#16a34a', color:'#fff', border:'none', borderRadius:9, fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:F }}>Scan free</button>
-          </form>
-          <p style={{ fontSize:12, color:'rgba(255,255,255,0.25)' }}>No credit card · No signup · 90 seconds</p>
+          <p style={{ fontSize:15, color:'rgba(255,255,255,0.5)', marginBottom:36, lineHeight:1.7 }}>No account needed. Full DNS security audit — SPF, DKIM, DMARC, SSL, blacklists, propagation — in under 90 seconds.</p>
+          <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap' }}>
+            <button onClick={() => { window.scrollTo({top:0,behavior:'smooth'}); setTimeout(()=>document.querySelector('input[placeholder="yourdomain.com"]')?.focus(),400) }} style={{ padding:'13px 32px', background:'#16a34a', color:'#fff', border:'none', borderRadius:10, fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:F }}>Audit your domain →</button>
+            <button onClick={() => setPage('auth')} style={{ padding:'13px 24px', background:'rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.8)', border:'1px solid rgba(255,255,255,0.15)', borderRadius:10, fontSize:14, fontWeight:500, cursor:'pointer', fontFamily:F }}>Create account</button>
+          </div>
+          <p style={{ fontSize:12, color:'rgba(255,255,255,0.2)', marginTop:14 }}>No credit card · No signup required · PDF report included</p>
         </div>
       </section>
       <footer style={{ background:'#111', borderTop:'1px solid #1f2937', padding:'28px 32px' }}>
@@ -328,7 +322,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
             <span style={{ fontSize:12, color:'rgba(255,255,255,0.2)' }}>· Made with ♥ in NL</span>
           </div>
           <div style={{ display:'flex', gap:6, flexWrap:'wrap', alignItems:'center' }}>
-            {[['Landing','landing'],['Pricing','pricing'],['About','about'],['Developer','developer'],['Free Audit','audit'],['Sign in','auth']].map(([l,id]) => (
+            {[['Home','landing'],['Pricing','pricing'],['About','about'],['Developer','developer'],['Sign in','auth']].map(([l,id]) => (
               <button key={l} onClick={() => setPage(id)}
                 style={{ fontSize:12, color:'rgba(255,255,255,0.35)', background:'none', border:'none', cursor:'pointer', padding:'4px 8px', borderRadius:5, fontFamily:F, transition:'color 0.15s' }}
                 onMouseEnter={e=>e.currentTarget.style.color='rgba(255,255,255,0.7)'}

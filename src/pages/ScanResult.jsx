@@ -71,69 +71,311 @@ function exportPDF(domain, r) {
   const score = r.health_score || 0
   const g = scoreGrade(score)
   const issues = r.issues || []
+  const critical = issues.filter(i => i.severity === 'critical')
+  const warns    = issues.filter(i => i.severity === 'warn')
+  const ea  = r.email_auth  || {}
+  const ssl = r.ssl_info    || {}
+  const bl  = r.blacklists  || {}
+  const sec = r.security    || {}
+  const prop = r.propagation || {}
+  const cert = ssl.certs?.[0] || {}
   const now = new Date()
   const dateStr = now.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' })
-  const row = (label, status, detail='') => {
-    const ok = ['Pass','Valid','Clean','Consistent','Enforced','Signed','Present','Configured','Blocked'].includes(status)
-    const wn = ['Warn','Warning','Partial','Missing','Not configured'].includes(status)
-    const c  = ok ? '#16a34a' : wn ? '#d97706' : '#dc2626'
-    const bg = ok ? '#f0fdf4' : wn ? '#fffbeb' : '#fef2f2'
-    return `<tr><td style="padding:9px 14px;border-bottom:1px solid #f3f4f6;font-size:13px;font-weight:500;color:#111;">${label}</td><td style="padding:9px 14px;border-bottom:1px solid #f3f4f6;"><span style="background:${bg};color:${c};padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;">${status||'–'}</span></td><td style="padding:9px 14px;border-bottom:1px solid #f3f4f6;font-size:12px;color:#6b7280;font-family:monospace;word-break:break-all;">${detail||'—'}</td></tr>`
+  const scoreLabel = score>=90?'Excellent':score>=80?'Good':score>=70?'Satisfactory':score>=50?'Needs Improvement':'Critical'
+
+  const statusPill = (status) => {
+    const ok = ['Pass','Valid','Consistent','Clean','Enforced','Signed','Present','Configured','Blocked','Active'].includes(status)
+    const wn = ['Warn','Warning','Partial','Quarantine','Not configured','Missing','Testing'].includes(status)
+    const c  = ok?'#16a34a':wn?'#b45309':'#dc2626'
+    const bg = ok?'#f0fdf4':wn?'#fffbeb':'#fef2f2'
+    const bd = ok?'#86efac':wn?'#fde68a':'#fca5a5'
+    return `<span style="background:${bg};color:${c};border:1px solid ${bd};padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;">${status||'—'}</span>`
   }
-  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>DNS Audit — ${domain}</title>
-  <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,'Segoe UI',sans-serif;color:#111;background:#fff;padding:40px;max-width:820px;margin:0 auto}h2{font-size:14px;font-weight:700;color:#111;margin:24px 0 10px;text-transform:uppercase;letter-spacing:0.07em;padding-bottom:8px;border-bottom:2px solid #f3f4f6}table{width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden}th{background:#f9fafb;padding:8px 14px;text-align:left;font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid #e5e7eb}@media print{body{padding:20px}}</style>
-  </head><body>
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:32px;padding-bottom:20px;border-bottom:3px solid #16a34a;">
-    <div>
-      <div style="font-size:12px;color:#9ca3af;margin-bottom:4px;">DomainRadar · DNS Security Audit</div>
-      <div style="font-size:26px;font-weight:900;letter-spacing:-0.03em;color:#111;">${domain}</div>
-      <div style="font-size:13px;color:#6b7280;margin-top:4px;">Generated ${dateStr}</div>
-    </div>
-    <div style="text-align:center;padding:14px 20px;background:${g.bg};border:2px solid ${g.ring};border-radius:12px;">
-      <div style="font-size:42px;font-weight:900;color:${g.color};line-height:1;">${score}</div>
-      <div style="font-size:10px;color:${g.color};font-weight:700;">/100</div>
-      <div style="font-size:22px;font-weight:900;color:${g.color};">${g.grade}</div>
-    </div>
+
+  const trow = (label, status, detail='', fix='') => `
+    <tr>
+      <td class="td-label">${label}</td>
+      <td class="td-status">${statusPill(status)}</td>
+      <td class="td-detail">${(detail||'').slice(0,100)}${(detail||'').length>100?'…':''}</td>
+      ${fix?`<td class="td-fix">↳ ${fix}</td>`:'<td></td>'}
+    </tr>`
+
+  const complianceRow = (label, ok) => `
+    <div class="comp-row">
+      <span class="comp-label">${label}</span>
+      <span style="font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;background:${ok?'#f0fdf4':'#fef2f2'};color:${ok?'#16a34a':'#dc2626'};border:1px solid ${ok?'#86efac':'#fca5a5'};">${ok?'✓ Pass':'✗ Fail'}</span>
+    </div>`
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DNS Security Audit — ${domain}</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px; color: #1a1a1a; background: #fff; line-height: 1.55;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 36px 44px 56px; }
+
+  /* ── Header ── */
+  .hdr { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:28px; padding-bottom:20px; border-bottom:3px solid ${g.color}; }
+  .hdr-brand { font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.12em; margin-bottom:6px; }
+  .hdr-domain { font-size:26px; font-weight:900; letter-spacing:-0.04em; color:#111; line-height:1.1; }
+  .hdr-meta { font-size:12px; color:#6b7280; margin-top:5px; }
+  .score-box { text-align:center; padding:14px 22px; background:${g.bg}; border:2px solid ${g.ring}; border-radius:12px; flex-shrink:0; }
+  .score-num { font-size:46px; font-weight:900; color:${g.color}; line-height:1; letter-spacing:-0.05em; }
+  .score-sub { font-size:12px; color:${g.color}; font-weight:700; }
+  .score-grade { font-size:26px; font-weight:900; color:${g.color}; margin-top:2px; }
+  .score-label { font-size:10px; color:${g.color}; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; opacity:0.75; }
+
+  /* ── Breakdown ── */
+  .breakdown { display:grid; grid-template-columns:repeat(6,1fr); gap:9px; margin-bottom:28px; }
+  .cat { background:#f9fafb; border:1px solid #e5e7eb; border-radius:9px; padding:11px 8px; text-align:center; }
+  .cat-score { font-size:20px; font-weight:900; letter-spacing:-0.04em; line-height:1; }
+  .cat-max { font-size:9px; color:#9ca3af; font-weight:600; }
+  .cat-label { font-size:9px; color:#6b7280; margin-top:3px; text-transform:uppercase; letter-spacing:0.05em; }
+  .cat-bar { height:3px; background:#e5e7eb; border-radius:2px; margin-top:7px; }
+  .cat-fill { height:100%; border-radius:2px; }
+
+  /* ── Sections ── */
+  .section { margin-bottom:26px; page-break-inside:avoid; }
+  .sec-head { display:flex; align-items:center; gap:8px; margin-bottom:11px; padding-bottom:9px; border-bottom:2px solid #f3f4f6; }
+  .sec-icon { font-size:16px; line-height:1; }
+  .sec-title { font-size:14px; font-weight:800; color:#111; letter-spacing:-0.02em; flex:1; }
+  .sec-badge { font-size:10px; font-weight:700; padding:2px 9px; border-radius:20px; }
+
+  /* ── Tables ── */
+  table { width:100%; border-collapse:collapse; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; margin:0; }
+  thead tr { background:#f9fafb; }
+  th { padding:7px 12px; text-align:left; font-size:9px; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.08em; border-bottom:1px solid #e5e7eb; }
+  td { padding:8px 12px; border-bottom:1px solid #f3f4f6; vertical-align:top; }
+  tr:last-child td { border-bottom:none; }
+  .td-label  { font-weight:700; font-size:11px; color:#111; white-space:nowrap; width:14%; }
+  .td-status { width:14%; }
+  .td-detail { font-family:monospace; font-size:10px; color:#374151; word-break:break-all; width:40%; }
+  .td-fix    { font-size:10px; color:#b45309; line-height:1.5; width:32%; }
+  .type-badge { font-family:monospace; font-size:9px; font-weight:700; padding:1px 6px; background:#f0f2f5; border-radius:4px; color:#374151; }
+
+  /* ── Issues ── */
+  .issue-row { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border-bottom:1px solid #f3f4f6; }
+  .issue-row:last-child { border-bottom:none; }
+  .issue-type { font-size:12px; font-weight:700; color:#111; min-width:70px; }
+  .issue-msg { font-size:11px; color:#374151; line-height:1.55; flex:1; }
+  .issue-fix { font-size:10px; color:#6b7280; margin-top:3px; }
+
+  /* ── Compliance ── */
+  .comp-grid { background:#f9fafb; border:1px solid #e5e7eb; border-radius:9px; padding:2px 14px; margin-bottom:0; }
+  .comp-row { display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid #f3f4f6; }
+  .comp-row:last-child { border-bottom:none; }
+  .comp-label { font-size:12px; color:#374151; }
+
+  /* ── Propagation ── */
+  .prop-flag { font-size:13px; }
+
+  /* ── Blacklists ── */
+  .bl-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; }
+  .bl-item { display:flex; align-items:center; justify-content:space-between; padding:5px 9px; border-radius:6px; font-size:10px; font-family:monospace; }
+  .bl-clean { background:#f9fafb; border:1px solid #e5e7eb; color:#6b7280; }
+  .bl-listed { background:#fef2f2; border:1px solid #fecaca; color:#dc2626; font-weight:700; }
+
+  /* ── Footer ── */
+  .footer { margin-top:40px; padding-top:14px; border-top:1px solid #e5e7eb; display:flex; justify-content:space-between; font-size:10px; color:#9ca3af; }
+
+  /* ── Print ── */
+  @media print {
+    .wrap { padding: 16px 20px 32px; }
+    .no-print { display: none !important; }
+    .section { page-break-inside: avoid; }
+    h1, h2, h3 { page-break-after: avoid; }
+    table { page-break-inside: avoid; }
+  }
+  @page { margin: 14mm 12mm; size: A4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- Print button (hidden when printing) -->
+<div class="no-print" style="position:fixed;top:16px;right:16px;z-index:100;display:flex;gap:8px;">
+  <button onclick="window.print()" style="padding:9px 20px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:-apple-system,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+    ⬇ Save as PDF
+  </button>
+  <button onclick="window.close()" style="padding:9px 14px;background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;cursor:pointer;font-family:-apple-system,sans-serif;">
+    ✕ Close
+  </button>
+</div>
+
+<!-- Header -->
+<div class="hdr">
+  <div>
+    <div class="hdr-brand">DomainRadar · DNS Security Audit Report</div>
+    <div class="hdr-domain">${domain}</div>
+    <div class="hdr-meta">Generated ${dateStr} &nbsp;·&nbsp; ${critical.length} critical issue${critical.length!==1?'s':''} &nbsp;·&nbsp; ${(bl.listed_count||0)} blacklist listing${(bl.listed_count||0)!==1?'s':''}</div>
   </div>
-  <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:28px;">
-    ${[['DNS',r.score_dns,25],['Email',r.score_email,30],['SSL',r.score_ssl,20],['Propagation',r.score_propagation,10],['Security',r.score_security,10],['Blacklists',r.score_blacklist,5]].map(([l,s,m])=>{
-      const p=Math.round(((s||0)/m)*100);const c=p>=80?'#16a34a':p>=60?'#d97706':'#dc2626'
-      return `<div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px 10px;text-align:center;"><div style="font-size:18px;font-weight:900;color:${c};">${s||0}</div><div style="font-size:9px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.06em;">/${m}</div><div style="font-size:11px;color:#6b7280;margin-top:3px;">${l}</div><div style="height:3px;background:#e5e7eb;border-radius:2px;margin-top:6px;"><div style="height:100%;width:${p}%;background:${c};border-radius:2px;"></div></div></div>`
+  <div class="score-box">
+    <div class="score-num">${score}</div>
+    <div class="score-sub">/100</div>
+    <div class="score-grade">${g.grade}</div>
+    <div class="score-label">${scoreLabel}</div>
+  </div>
+</div>
+
+<!-- Score breakdown -->
+<div class="breakdown">
+  ${[['DNS',r.score_dns,25],['Email Auth',r.score_email,30],['SSL/TLS',r.score_ssl,20],['Propagation',r.score_propagation,10],['Security',r.score_security,10],['Blacklists',r.score_blacklist,5]].map(([l,s,m])=>{
+    const pct=Math.round(((s||0)/m)*100)
+    const c=pct>=80?'#16a34a':pct>=60?'#d97706':'#dc2626'
+    return `<div class="cat">
+      <div class="cat-score" style="color:${c};">${s||0}</div>
+      <div class="cat-max">/${m}</div>
+      <div class="cat-label">${l}</div>
+      <div class="cat-bar"><div class="cat-fill" style="width:${pct}%;background:${c};"></div></div>
+    </div>`
+  }).join('')}
+</div>
+
+<!-- Compliance -->
+<div class="section">
+  <div class="sec-head"><span class="sec-icon">📋</span><span class="sec-title">Compliance Status</span></div>
+  <div class="comp-grid">
+    ${complianceRow('Google & Yahoo Bulk Sender (2024) — SPF + DKIM + DMARC required', ea.spf_status==='Pass' && ea.dkim_status==='Pass' && ea.dmarc_status!=='Missing')}
+    ${complianceRow('PCI DSS v4.0 — DMARC p=reject required', !!(ea.dmarc_raw?.includes('p=reject')))}
+    ${complianceRow('CISA BOD 18-01 — SPF and DMARC deployed', ea.spf_status==='Pass' && ea.dmarc_status!=='Missing')}
+    ${complianceRow('SSL/TLS certificate valid and not expiring within 30 days', ssl.overall_status==='Pass' && (cert.days_remaining==null||cert.days_remaining>30))}
+    ${complianceRow('IP/domain not listed on any email blacklist', (bl.listed_count||0)===0)}
+  </div>
+</div>
+
+<!-- Issues -->
+${issues.length>0 ? `
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-icon">⚠️</span>
+    <span class="sec-title">Issues Found (${issues.length})</span>
+    <span>${critical.length>0?`<span class="sec-badge" style="background:#fef2f2;color:#dc2626;">${critical.length} Critical</span>`:''}</span>
+    <span>${warns.length>0?`<span class="sec-badge" style="background:#fffbeb;color:#b45309;margin-left:6px;">${warns.length} Warnings</span>`:''}</span>
+  </div>
+  <div style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+    ${issues.map(iss=>{
+      const c=iss.severity==='critical'?'#dc2626':iss.severity==='warn'?'#b45309':'#2563eb'
+      const bg=iss.severity==='critical'?'#fef2f2':iss.severity==='warn'?'#fffbeb':'#eff6ff'
+      const bd=iss.severity==='critical'?'#fca5a5':iss.severity==='warn'?'#fde68a':'#bfdbfe'
+      return `<div class="issue-row" style="background:${iss.severity==='critical'?'#fefafa':'#fff'};">
+        <div><span style="display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;background:${bg};color:${c};border:1px solid ${bd};">${iss.severity}</span></div>
+        <div style="min-width:70px;font-size:12px;font-weight:700;color:#111;">${iss.type}</div>
+        <div style="flex:1;"><div class="issue-msg">${iss.message}</div>${iss.fix?`<div class="issue-fix">↳ Fix: ${iss.fix}</div>`:''}</div>
+      </div>`
     }).join('')}
   </div>
-  <h2>Email Authentication</h2>
-  <table><thead><tr><th>Check</th><th>Status</th><th>Detail</th></tr></thead><tbody>
-    ${row('SPF', r.email_auth?.spf_status||'Unknown', r.email_auth?.spf_raw)}
-    ${row('DKIM', r.email_auth?.dkim_status||'Unknown', r.email_auth?.dkim_selector?`Selector: ${r.email_auth.dkim_selector}`:'')}
-    ${row('DMARC', r.email_auth?.dmarc_status||'Unknown', r.email_auth?.dmarc_raw)}
-    ${row('BIMI', r.email_auth?.bimi_status||'Not configured', '')}
-    ${row('MTA-STS', r.email_auth?.mta_sts_status||'Not configured', '')}
-  </tbody></table>
-  <h2>SSL / TLS</h2>
-  <table><thead><tr><th>Check</th><th>Status</th><th>Detail</th></tr></thead><tbody>
-    ${row('Certificate', r.ssl_info?.overall_status||'Unknown', r.ssl_info?.note||'')}
-    ${r.ssl_info?.certs?.[0] ? row('Issuer', 'Info', r.ssl_info.certs[0].issuer_org||r.ssl_info.certs[0].issuer_cn||'') : ''}
-    ${r.ssl_info?.certs?.[0]?.days_remaining!=null ? row('Expiry', r.ssl_info.certs[0].days_remaining>30?'Pass':r.ssl_info.certs[0].days_remaining>7?'Warn':'Fail', `${r.ssl_info.certs[0].days_remaining} days remaining`) : ''}
-  </tbody></table>
-  <h2>Security</h2>
-  <table><thead><tr><th>Check</th><th>Status</th><th>Detail</th></tr></thead><tbody>
-    ${row('DNSSEC', r.security?.dnssec_status||'Unknown', '')}
-    ${row('CAA Record', r.security?.caa_status||'Unknown', r.security?.caa_value||'')}
-    ${row('Blacklists', (r.blacklists?.listed_count||0)===0?'Clean':'Listed', `${r.blacklists?.listed_count||0} of ${r.blacklists?.results?.length||0} lists`)}
-  </tbody></table>
-  ${issues.length > 0 ? `<h2>Issues (${issues.length})</h2>
-  <table><thead><tr><th>Type</th><th>Severity</th><th>Description</th></tr></thead><tbody>
-    ${issues.map(i=>{const c=i.severity==='critical'?'#dc2626':i.severity==='warn'?'#d97706':'#2563eb';const bg=i.severity==='critical'?'#fef2f2':i.severity==='warn'?'#fffbeb':'#eff6ff';return `<tr><td style="padding:9px 14px;border-bottom:1px solid #f3f4f6;font-weight:600;font-size:13px;">${i.type}</td><td style="padding:9px 14px;border-bottom:1px solid #f3f4f6;"><span style="background:${bg};color:${c};padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;">${i.severity}</span></td><td style="padding:9px 14px;border-bottom:1px solid #f3f4f6;font-size:12px;color:#6b7280;">${i.message}</td></tr>`}).join('')}
-  </tbody></table>` : '<p style="color:#16a34a;font-weight:600;margin-top:20px;">✅ No issues detected</p>'}
-  <div style="margin-top:40px;padding-top:16px;border-top:1px solid #e5e7eb;display:flex;justify-content:space-between;font-size:11px;color:#9ca3af;">
-    <span>DomainRadar · dns-radar.vercel.app</span><span>Score: ${score}/100 · Grade: ${g.grade} · ${dateStr}</span>
+</div>` : `<div style="padding:12px 16px;background:#f0fdf4;border:1px solid #86efac;border-radius:9px;margin-bottom:22px;font-weight:700;color:#16a34a;font-size:13px;">✅ No issues detected — domain is correctly configured.</div>`}
+
+<!-- Email Auth -->
+<div class="section">
+  <div class="sec-head"><span class="sec-icon">✉️</span><span class="sec-title">Email Authentication</span></div>
+  <table>
+    <thead><tr><th>Check</th><th>Status</th><th>Record</th><th>Notes / Fix</th></tr></thead>
+    <tbody>
+      ${trow('SPF',     ea.spf_status||'Missing',              (ea.spf_raw||'').slice(0,90),           ea.spf_fix||'')}
+      ${trow('DKIM',    ea.dkim_status||'Missing',             ea.dkim_selector?`Selector: ${ea.dkim_selector} · ${ea.dkim_key_size||'?'}-bit`:'', ea.dkim_note||'')}
+      ${trow('DMARC',   ea.dmarc_status||'Missing',            (ea.dmarc_raw||'').slice(0,90),         ea.dmarc_fix||'')}
+      ${trow('BIMI',    ea.bimi_status||'Not configured',      '',                                     ea.bimi_note||'')}
+      ${trow('MTA-STS', ea.mta_sts_status||'Not configured',   ea.mta_sts_raw||'',                     '')}
+      ${trow('TLS-RPT', ea.tls_rpt_status||'Not configured',   ea.tls_rpt_raw||'',                     '')}
+    </tbody>
+  </table>
+</div>
+
+<!-- SSL -->
+<div class="section">
+  <div class="sec-head"><span class="sec-icon">🔒</span><span class="sec-title">SSL / TLS Certificate</span></div>
+  <table>
+    <thead><tr><th>Check</th><th>Status</th><th>Detail</th><th>Notes</th></tr></thead>
+    <tbody>
+      ${trow('Certificate', ssl.overall_status||'Unknown', ssl.note||'', '')}
+      ${cert.issuer_org||cert.issuer_cn ? trow('Issuer', 'Info', cert.issuer_org||cert.issuer_cn||'Unknown CA', '') : ''}
+      ${cert.days_remaining!=null ? trow('Expiry', cert.days_remaining>30?'Pass':cert.days_remaining>7?'Warn':'Fail', `${cert.days_remaining} days remaining · ${cert.expires_at?new Date(cert.expires_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):''}`, cert.days_remaining<=30?'Renew certificate immediately':'') : ''}
+      ${trow('HSTS', cert.hsts==='HSTS enabled'?'Pass':'Not set', cert.hsts||'', cert.hsts!=='HSTS enabled'?'Add Strict-Transport-Security header':'')}
+      ${trow('CT Logged', cert.ct_logged?'Pass':'Unknown', cert.ct_logged?'Verified in Certificate Transparency logs':'', '')}
+    </tbody>
+  </table>
+</div>
+
+<!-- DNS Records -->
+<div class="section">
+  <div class="sec-head"><span class="sec-icon">🌐</span><span class="sec-title">DNS Records</span><span style="margin-left:auto;font-size:11px;color:#6b7280;">${(r.dns_records||[]).length} records</span></div>
+  <table>
+    <thead><tr><th style="width:60px;">Type</th><th style="width:55px;">TTL</th><th>Value</th></tr></thead>
+    <tbody>
+      ${(r.dns_records||[]).slice(0,25).map(rec=>`<tr>
+        <td><span class="type-badge">${rec.type}</span></td>
+        <td style="font-family:monospace;font-size:10px;color:#9ca3af;">${rec.ttl||''}</td>
+        <td style="font-family:monospace;font-size:10px;word-break:break-all;">${rec.value||''}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>
+</div>
+
+<!-- Security -->
+<div class="section">
+  <div class="sec-head"><span class="sec-icon">🛡️</span><span class="sec-title">Security Checks</span></div>
+  <table>
+    <thead><tr><th>Check</th><th>Status</th><th>Detail</th><th>Notes</th></tr></thead>
+    <tbody>
+      ${trow('DNSSEC',     sec.dnssec_status||'Not signed', '', 'Validates DNS response integrity.')}
+      ${trow('CAA Record', sec.caa_status||'Missing', sec.caa_value||'', sec.caa_status==='Missing'?`Add: ${sec.caa_suggestion||'0 issue "letsencrypt.org"'}`:'Restricts certificate issuance.')}
+      ${trow('Zone AXFR',  sec.axfr_status||'Blocked', '', 'Nameserver should reject unauthorised transfers.')}
+    </tbody>
+  </table>
+</div>
+
+<!-- Propagation -->
+<div class="section">
+  <div class="sec-head"><span class="sec-icon">📡</span><span class="sec-title">Global DNS Propagation</span></div>
+  <table>
+    <thead><tr><th>Record</th><th>🇺🇸 Americas</th><th>🇪🇺 Europe</th><th>🌏 Asia-Pacific</th><th>🇦🇺 Oceania</th></tr></thead>
+    <tbody>
+      ${(prop.records||[]).map(rec=>`<tr>
+        <td style="font-family:monospace;font-weight:700;">${rec.type}</td>
+        ${['us','eu','apac','au'].map(region=>`<td style="text-align:center;">${rec[region]==='pass'?'✅':'⚠️'}</td>`).join('')}
+      </tr>`).join('')}
+    </tbody>
+  </table>
+</div>
+
+<!-- Blacklists -->
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-icon">🚫</span>
+    <span class="sec-title">Blacklist Reputation</span>
+    ${bl.ip?`<span style="margin-left:auto;font-size:11px;color:#6b7280;">IP: <strong>${bl.ip}</strong> · ${(bl.results||[]).length} lists checked</span>`:''}
   </div>
-  </body></html>`
-  const blob = new Blob([html], { type:'text/html' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url; a.download = `DomainRadar-${domain}-${now.toISOString().slice(0,10)}.html`; a.click()
-  setTimeout(() => URL.revokeObjectURL(url), 2000)
+  ${(bl.listed_count||0)>0
+    ? `<div style="margin-bottom:10px;padding:9px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-weight:700;color:#dc2626;font-size:12px;">⚠ Listed on ${bl.listed_count} blacklist${bl.listed_count>1?'s':''} — email deliverability affected. Request delisting from each flagged provider.</div>`
+    : `<div style="margin-bottom:10px;padding:9px 14px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;font-weight:700;color:#16a34a;font-size:12px;">✅ Clean — not listed on any of the ${(bl.results||[]).length||52} checked blacklists.</div>`
+  }
+  <div class="bl-grid">
+    ${(bl.results||[]).map(b=>`<div class="bl-item ${b.listed?'bl-listed':'bl-clean'}"><span>${b.name}</span><span>${b.listed?'✗':'✓'}</span></div>`).join('')}
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <div><strong>DomainRadar</strong> · dns-radar.vercel.app · dnsradar.easysecurity.in</div>
+  <div>Score: ${score}/100 · Grade: ${g.grade} · ${dateStr}</div>
+</div>
+
+</div>
+</body>
+</html>`
+
+  const w = window.open('', '_blank', 'width=900,height=700')
+  if (!w) { alert('Please allow pop-ups for this site to export the PDF report.'); return }
+  w.document.write(html)
+  w.document.close()
+  // Auto-trigger print dialog after a short delay for styles to render
+  w.onload = () => setTimeout(() => w.print(), 400)
 }
 
 // ── Main component ─────────────────────────────────────────────────────
