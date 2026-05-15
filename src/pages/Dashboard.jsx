@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Globe, Trash2, RefreshCw, Shield, Pause, Play, Clock, Mail, Lock, Ban, AlertTriangle, CheckCircle, Zap, FileDown, Share2, Copy, Check } from 'lucide-react'
+import { Plus, Globe, Trash2, RefreshCw, Shield, Pause, Play, Clock, Mail, Lock, Ban, AlertTriangle, CheckCircle, Zap, FileDown, Share2, Copy, Check, ChevronDown } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import AddDomainModal from '../components/AddDomainModal'
 import ScoreHistoryChart from '../components/ScoreHistoryChart'
@@ -852,67 +852,100 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
       </div>
 
       {/* ── MAIN ─────────────────────────────────────────────── */}
-      <div style={{flex:1,overflowY:'auto',background:D.bg}}>
+      <div style={{flex:1,overflowY:'auto',background:'#0d1117'}}>
         {!selected?(
-          <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',flexDirection:'column',gap:16}}>
-            <Shield size={56} color="#e5e7eb"/>
-            <div style={{fontSize:16,fontWeight:500,color:'#374151'}}>Add a domain to get started</div>
-            <button onClick={()=>setShowAdd(true)} style={{padding:'10px 22px',background:'#111827',color:'#ffffff',border:'none',borderRadius:8,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',gap:6}}><Plus size={15}/> Add your first domain</button>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',flexDirection:'column',gap:16,background:'#0d1117'}}>
+            <div style={{width:64,height:64,borderRadius:16,background:'rgba(22,163,74,0.1)',border:'1px solid rgba(22,163,74,0.2)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+              <Shield size={28} color="#16a34a"/>
+            </div>
+            <div>
+              <div style={{fontSize:18,fontWeight:700,color:'#f9fafb',textAlign:'center',marginBottom:6,letterSpacing:'-0.03em'}}>Add your first domain</div>
+              <div style={{fontSize:13,color:'#6b7280',textAlign:'center'}}>Get a full DNS health score in under 90 seconds</div>
+            </div>
+            <button onClick={()=>setShowAdd(true)} style={{padding:'10px 24px',background:'#16a34a',color:'#fff',border:'none',borderRadius:9,fontSize:13,fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',gap:7,transition:'background 0.15s',fontFamily:"'Inter',system-ui"}}
+              onMouseEnter={e=>e.currentTarget.style.background='#15803d'}
+              onMouseLeave={e=>e.currentTarget.style.background='#16a34a'}>
+              <Plus size={15}/> Add your first domain
+            </button>
           </div>
         ):(
           <div>
-            {/* ── DOMAIN HEADER ── */}
-            <div className="no-print" style={{padding:'14px 20px',borderBottom:'1px solid #e4e7ec',background:'#ffffff'}}>
-              <div style={{display:'flex',alignItems:'flex-start',gap:16,flexWrap:'wrap'}}>
-                <div style={{flex:1}}>
-                  <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4,flexWrap:'wrap'}}>
-                    <h2 style={{fontSize:17,fontWeight:700,color:'#111827',margin:0,letterSpacing:'-0.02em'}}>{selected.domain_name}</h2>
-                    {selected.verified&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#f0fdf4',color:'#111827',border:'1px solid #bbf7d0',fontWeight:600}}>Verified</span>}
-                    {selected.paused&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#f3f4f6',color:'#374151',border:'1px solid #e5e7eb',fontWeight:500}}>Paused</span>}
-                    {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#fef2f2',color:'#dc2626',border:'1px solid #fecaca',fontWeight:600}}>{critical.length} critical</span>}
-                    {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#fffbeb',color:'#d97706',border:'1px solid #fde68a',fontWeight:600}}>{warns.length} warnings</span>}
-                  </div>
-                  <div style={{fontSize:12,color:'#374151',display:'flex',gap:14,flexWrap:'wrap',marginBottom:10}}>
-                    {scan?.blacklists?.ip&&<span style={{fontFamily:'monospace',color:'#0f172a'}}>{scan.blacklists.ip}</span>}
-                    <span>{selected.monitor_interval} monitoring</span>
-                    {scan?.scanned_at&&<span>Scanned {timeAgo(scan.scanned_at)}</span>}
-                  </div>
-                  {/* Sub-nav tabs */}
-                  <div style={{display:'flex',gap:0,borderBottom:'1px solid #e4e7ec',marginBottom:-14}}>
-                    {tabs.map(t=>(
-                      <button key={t} className="dsh-tab" onClick={()=>setActiveTab(t)}
-                        style={{padding:'8px 14px',background:'transparent',border:'none',borderBottom:`2px solid ${activeTab===t?'#111827':'transparent'}`,cursor:'pointer',fontSize:12,fontWeight:activeTab===t?600:400,color:activeTab===t?'#111827':'#9ca3af',textTransform:'capitalize',transition:'all 0.15s',marginBottom:-1}}>
-                        {t==='ssl'?'SSL/TLS':t==='dns'?'DNS Records':t.charAt(0).toUpperCase()+t.slice(1)}
-                      </button>
-                    ))}
-                  </div>
+            {/* ── GRAND DOMAIN HEADER ── */}
+            <div className="no-print" style={{background:'#111827',borderBottom:'1px solid #1f2937',flexShrink:0}}>
+              {/* Top bar */}
+              <div style={{padding:'0 20px',height:52,display:'flex',alignItems:'center',gap:12,borderBottom:'1px solid #1f2937'}}>
+                {/* Domain pill */}
+                <div style={{display:'flex',alignItems:'center',gap:8,background:'#0d1117',border:'1px solid #374151',borderRadius:9,padding:'5px 12px',cursor:'pointer',transition:'border-color 0.15s'}}
+                  onMouseEnter={e=>e.currentTarget.style.borderColor='#4b5563'}
+                  onMouseLeave={e=>e.currentTarget.style.borderColor='#374151'}>
+                  <div style={{width:8,height:8,borderRadius:'50%',background:getScoreColor(scan?.health_score),flexShrink:0}}/>
+                  <span style={{fontSize:13,fontWeight:700,color:'#f9fafb',fontFamily:'monospace',letterSpacing:'-0.02em'}}>{selected.domain_name}</span>
+                  <ChevronDown size={11} color="#6b7280"/>
                 </div>
-                {/* Score gauge */}
-                {scan&&<Gauge score={scan.health_score} size={130}/>}
-                {/* Actions */}
-                <div style={{display:'flex',flexDirection:'column',gap:6,alignSelf:'flex-start'}}>
+                {/* Score pill */}
+                {scan && (()=>{
+                  const s = scan.health_score
+                  const c = s>=70?'#16a34a':s>=50?'#d97706':'#dc2626'
+                  const bg = s>=70?'rgba(22,163,74,0.1)':s>=50?'rgba(217,119,6,0.1)':'rgba(220,38,38,0.1)'
+                  const bd = s>=70?'rgba(22,163,74,0.25)':s>=50?'rgba(217,119,6,0.25)':'rgba(220,38,38,0.25)'
+                  const label = s>=70?'Good':s>=50?'Fair':'Poor'
+                  return (
+                    <div style={{display:'flex',alignItems:'center',gap:6,background:bg,border:`1px solid ${bd}`,borderRadius:9,padding:'5px 12px'}}>
+                      <span style={{fontSize:16,fontWeight:800,color:c,letterSpacing:'-0.04em'}}>{s}</span>
+                      <span style={{fontSize:11,color:c,opacity:0.8}}>/ 100 · {label}</span>
+                    </div>
+                  )
+                })()}
+                {/* Status badges */}
+                {critical.length>0&&<span style={{fontSize:10,padding:'3px 9px',borderRadius:8,background:'rgba(239,68,68,0.12)',color:'#f87171',border:'1px solid rgba(239,68,68,0.2)',fontWeight:700}}>{critical.length} critical</span>}
+                {warns.length>0&&<span style={{fontSize:10,padding:'3px 9px',borderRadius:8,background:'rgba(245,158,11,0.1)',color:'#fbbf24',border:'1px solid rgba(245,158,11,0.2)',fontWeight:600}}>{warns.length} warnings</span>}
+                {selected.paused&&<span style={{fontSize:10,padding:'3px 9px',borderRadius:8,background:'rgba(107,114,128,0.12)',color:'#9ca3af',fontWeight:500}}>Paused</span>}
+                {scan?.scanned_at&&<span style={{fontSize:11,color:'#4b5563',marginLeft:2}}>Scanned {timeAgo(scan.scanned_at)}</span>}
+                {/* Right actions */}
+                <div style={{marginLeft:'auto',display:'flex',gap:6,alignItems:'center'}}>
+                  {[
+                    {icon:selected.paused?Play:Pause, label:selected.paused?'Resume':'Pause', fn:async()=>{await supabase.from('domains').update({paused:!selected.paused}).eq('id',selected.id);fetchDomains()}},
+                    {icon:FileDown, label:'PDF', fn:()=>exportCompliancePDF(selected, scan)},
+                  ].map(b=>(
+                    <button key={b.label} onClick={b.fn}
+                      style={{padding:'6px 12px',background:'rgba(255,255,255,0.04)',color:'#9ca3af',border:'1px solid #374151',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:500,display:'flex',alignItems:'center',gap:5,transition:'all 0.15s',fontFamily:"'Inter',system-ui"}}
+                      onMouseEnter={e=>{e.currentTarget.style.background='rgba(255,255,255,0.08)';e.currentTarget.style.color='#f9fafb'}}
+                      onMouseLeave={e=>{e.currentTarget.style.background='rgba(255,255,255,0.04)';e.currentTarget.style.color='#9ca3af'}}>
+                      <b.icon size={12}/>{b.label}
+                    </button>
+                  ))}
+                  {scan?.id&&<ShareButton domain={selected.domain_name} scanId={scan.id}/>}
+                  <BadgeButton domain={selected.domain_name} score={scan?.health_score}/>
                   <button onClick={()=>triggerScan(selected)} disabled={scanning[selected.id]}
-                    style={{padding:'8px 18px',background:'#111827',color:'#ffffff',letterSpacing:'-0.01em',border:'none',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:600,display:'flex',alignItems:'center',gap:5}}>
-                    {scanning[selected.id]?<><div style={{width:12,height:12,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>Scanning…</>:<><RefreshCw size={12}/>Scan now</>}
+                    style={{padding:'7px 16px',background:'#16a34a',color:'#fff',border:'none',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:700,display:'flex',alignItems:'center',gap:6,transition:'all 0.15s',fontFamily:"'Inter',system-ui"}}
+                    onMouseEnter={e=>{if(!scanning[selected.id])e.currentTarget.style.background='#15803d'}}
+                    onMouseLeave={e=>e.currentTarget.style.background='#16a34a'}>
+                    {scanning[selected.id]?<><div style={{width:12,height:12,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>Scanning…</>:<><RefreshCw size={13}/>Scan now</>}
                   </button>
-                  <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
-                    {[
-                      {icon:selected.paused?Play:Pause,label:selected.paused?'Resume':'Pause',fn:async()=>{await supabase.from('domains').update({paused:!selected.paused}).eq('id',selected.id);fetchDomains()}},
-                      {icon:FileDown,label:'PDF',fn:()=>exportCompliancePDF(selected, scan)},
-                    ].map(b=>(
-                      <button key={b.label} className="dsh-btn" onClick={b.fn}
-                        style={{padding:'6px 12px',background:'#ffffff',color:'#555555',border:'1px solid #e4e7ec',borderRadius:7,cursor:'pointer',fontSize:12,fontWeight:500,display:'flex',alignItems:'center',gap:4,transition:'background 0.15s'}}>
-                        <b.icon size={11}/>{b.label}
-                      </button>
-                    ))}
-                    {scan?.id&&<ShareButton domain={selected.domain_name} scanId={scan.id}/>}
-                    <BadgeButton domain={selected.domain_name} score={scan?.health_score}/>
-                  </div>
                 </div>
+              </div>
+              {/* Tab bar */}
+              <div style={{display:'flex',gap:0,padding:'0 20px',overflowX:'auto',scrollbarWidth:'none'}}>
+                {tabs.map(t=>{
+                  const isActive = activeTab===t
+                  const tabLabel = t==='ssl'?'SSL / TLS':t==='dns'?'DNS Records':t.charAt(0).toUpperCase()+t.slice(1)
+                  const hasIssue = t==='email'&&critical.some(i=>['SPF','DKIM','DMARC'].includes(i.type))
+                  return (
+                    <button key={t} onClick={()=>setActiveTab(t)}
+                      style={{padding:'11px 16px',background:'transparent',border:'none',borderBottom:`2px solid ${isActive?'#16a34a':'transparent'}`,cursor:'pointer',fontSize:12,fontWeight:isActive?600:400,color:isActive?'#f9fafb':'#6b7280',transition:'all 0.15s',whiteSpace:'nowrap',display:'flex',alignItems:'center',gap:6,fontFamily:"'Inter',system-ui"}}>
+                      {tabLabel}
+                      {hasIssue&&<span style={{fontSize:10,background:'rgba(239,68,68,0.15)',color:'#f87171',padding:'1px 5px',borderRadius:5,fontWeight:700}}>{critical.filter(i=>['SPF','DKIM','DMARC'].includes(i.type)).length}</span>}
+                    </button>
+                  )
+                })}
+                <button onClick={()=>setActiveTab('tools')}
+                  style={{padding:'11px 16px',background:'transparent',border:'none',borderBottom:`2px solid ${activeTab==='tools'?'#16a34a':'transparent'}`,cursor:'pointer',fontSize:12,fontWeight:activeTab==='tools'?600:400,color:activeTab==='tools'?'#f9fafb':'#6b7280',transition:'all 0.15s',whiteSpace:'nowrap',fontFamily:"'Inter',system-ui"}}>
+                  Tools
+                </button>
               </div>
             </div>
 
-            <div style={{padding:20,display:'flex',flexDirection:'column',gap:14}}>
+            <div style={{padding:20,display:'flex',flexDirection:'column',gap:14,background:'#f7f8fa',minHeight:'calc(100vh - 100px)'}}>
 
               {/* ══ OVERVIEW ══════════════════════════════════ */}
               {activeTab==='overview'&&scan&&(
@@ -1254,6 +1287,35 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               })()}
 
               {/* ══ DNS RECORDS ═══════════════════════════════ */}
+              {activeTab==='tools'&&(
+                <div style={{display:'flex',flexDirection:'column',gap:12}}>
+                  <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:10}}>
+                    {[
+                      {icon:'🛡️',title:'SPF Generator',desc:'Build SPF record from scratch',fn:()=>setPage('tools')},
+                      {icon:'📋',title:'DMARC Wizard',desc:'Step-by-step DMARC setup',fn:()=>setPage('dmarc')},
+                      {icon:'🔑',title:'DKIM Checker',desc:'Validate DKIM selectors',fn:()=>setPage('tools')},
+                      {icon:'✉️',title:'Deliverability Test',desc:'Gmail · Outlook · Yahoo',fn:()=>setPage('tools')},
+                      {icon:'📄',title:'Compliance PDF',desc:'PCI DSS · CISA · Google/Yahoo',fn:()=>exportCompliancePDF(selected,scan)},
+                      {icon:'⚡',title:'SPF Flattener',desc:'Fix 10-lookup limit',fn:()=>setPage('tools')},
+                      {icon:'🔒',title:'SSL Certificates',desc:'Expiry & chain health',fn:()=>setPage('ssl')},
+                      {icon:'🏅',title:'DNS Health Badge',desc:'Embed in your README',fn:()=>{}},
+                    ].map(tool=>(
+                      <div key={tool.title} onClick={tool.fn}
+                        style={{background:'#fff',border:'1px solid #e5e7eb',borderRadius:12,padding:'14px 16px',cursor:'pointer',display:'flex',alignItems:'center',gap:12,transition:'all 0.15s',boxShadow:'0 1px 3px rgba(0,0,0,0.06)'}}
+                        onMouseEnter={e=>{e.currentTarget.style.borderColor='#d1d5db';e.currentTarget.style.transform='translateY(-1px)';e.currentTarget.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)'}}
+                        onMouseLeave={e=>{e.currentTarget.style.borderColor='#e5e7eb';e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow='0 1px 3px rgba(0,0,0,0.06)'}}>
+                        <div style={{width:38,height:38,borderRadius:10,background:'#f8fafc',border:'1px solid #e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',fontSize:18,flexShrink:0}}>{tool.icon}</div>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{fontSize:13,fontWeight:700,color:'#111827',marginBottom:2}}>{tool.title}</div>
+                          <div style={{fontSize:11,color:'#6b7280'}}>{tool.desc}</div>
+                        </div>
+                        <div style={{fontSize:16,color:'#d1d5db'}}>→</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {activeTab==='dns'&&scan?.dns_records&&(
                 <div style={card}>
                   <div style={cardHd}>

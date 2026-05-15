@@ -339,7 +339,7 @@ export default function App() {
 
   return (
     <div style={{ display:'flex', minHeight:'100vh', background:'#f7f8fa' }}>
-      <Sidebar page={page} setPage={setPage} alertCount={alertCount} user={user}/>
+      <Sidebar page={page} setPage={setPage} alertCount={alertCount} user={user} domains={domains} selectedDomain={selectedDomain} setSelectedDomain={setSelectedDomain}/>
       <main style={{ flex:1, minWidth:0, overflowY:'auto', minHeight:'100vh' }} key={page}>
         <div className="page-enter" style={{minHeight:'100%'}}>
         {page === 'dashboard' && <Dashboard {...sharedDomainProps} setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>}
