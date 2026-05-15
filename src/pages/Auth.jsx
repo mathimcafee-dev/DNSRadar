@@ -32,10 +32,20 @@ export default function Auth({ setPage }) {
     if (password !== confirmPassword) { setError('Passwords do not match'); return }
     if (password.length < 8) { setError('Password must be at least 8 characters'); return }
     setLoading(true)
-    const { error: err } = await supabase.auth.signUp({ email, password })
+    const { data: signUpData, error: err } = await supabase.auth.signUp({ email, password })
+    if (err) { setLoading(false); setError(err.message); return }
+    // Generate unique RUA token for DMARC inbound email
+    if (signUpData?.user?.id) {
+      const ruaToken = crypto.randomUUID().replace(/-/g, '').slice(0, 24)
+      await supabase.from('profiles').upsert({
+        id: signUpData.user.id,
+        email,
+        rua_token: ruaToken,
+        alert_email: true,
+      }, { onConflict: 'id' })
+    }
     setLoading(false)
-    if (err) { setError(err.message); return }
-    setSuccess('Check your email to confirm your account.')
+    setSuccess('Account created! You can now sign in.')
   }
 
   async function handleForgot() {

@@ -195,8 +195,14 @@ function DmarcReportsInner({ user, selectedDomain }) {
   const [currentPolicy, setCurrentPolicy] = useState('none')
 
   useEffect(() => {
-    supabase.from('profiles').select('rua_token').eq('id', user.id).single().then(({ data }) => {
-      if (data?.rua_token) setRuaAddress(`${data.rua_token}@rua.domainmaster.site`)
+    supabase.from('profiles').select('rua_token').eq('id', user.id).single().then(async ({ data }) => {
+      let token = data?.rua_token
+      if (!token) {
+        // Generate token for existing users who signed up before this feature
+        token = crypto.randomUUID().replace(/-/g, '').slice(0, 24)
+        await supabase.from('profiles').update({ rua_token: token }).eq('id', user.id)
+      }
+      if (token) setRuaAddress(`${token}@rua.domainmaster.site`)
     })
   }, [user.id])
 

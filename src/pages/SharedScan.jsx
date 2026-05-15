@@ -69,13 +69,26 @@ export default function SharedScan({ shareId, setPage }) {
   useEffect(() => {
     async function load() {
       try {
+        // Step 1: get the share record
         const { data: share, error: err } = await supabase
           .from('public_scan_shares')
-          .select('*, scan_results(*)')
+          .select('id, domain_name, scan_result_id, created_at')
           .eq('id', shareId)
           .single()
         if (err || !share) { setError('Share link not found or has expired.'); return }
-        setData(share)
+
+        // Step 2: get the scan result separately (avoids FK join issues)
+        let scanResult = null
+        if (share.scan_result_id) {
+          const { data: sr } = await supabase
+            .from('scan_results')
+            .select('*')
+            .eq('id', share.scan_result_id)
+            .single()
+          scanResult = sr
+        }
+
+        setData({ ...share, scan_results: scanResult })
       } catch (e) { setError('Failed to load shared scan.') }
       finally { setLoading(false) }
     }
