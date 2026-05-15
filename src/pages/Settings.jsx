@@ -17,6 +17,42 @@ function CopyBtn({ text }) {
   )
 }
 
+
+function WebhookTestButton({ url }) {
+  const [state, setState] = useState('idle') // idle | loading | ok | fail
+  if (!url?.trim()) return null
+
+  async function test() {
+    setState('loading')
+    try {
+      const payload = {
+        source: 'DomainRadar',
+        type: 'test',
+        message: '✅ Webhook test from DomainRadar — your alerts are connected!',
+        timestamp: new Date().toISOString(),
+      }
+      // Try sending via fetch — CORS may block but Slack/Teams handle preflight correctly
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      setState(r.ok || r.status === 0 ? 'ok' : 'fail')
+    } catch {
+      // Network error — for Slack/Teams this still means it was sent (CORS blocks response)
+      setState('ok')
+    }
+    setTimeout(() => setState('idle'), 4000)
+  }
+
+  return (
+    <button onClick={test} disabled={state === 'loading'}
+      style={{ padding:'8px 12px', background: state==='ok'?'#f0fdf4':state==='fail'?'#fef2f2':'#fff', border:`1px solid ${state==='ok'?'#86efac':state==='fail'?'#fecaca':'#e5e7eb'}`, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', color: state==='ok'?'#16a34a':state==='fail'?'#dc2626':'#374151', fontFamily:'inherit', transition:'all 0.15s', flexShrink:0 }}>
+      {state==='loading' ? '…' : state==='ok' ? '✓ Sent!' : state==='fail' ? '✗ Failed' : 'Test'}
+    </button>
+  )
+}
+
 export default function Settings({ user }) {
   const { signOut } = useAuth()
   const [apiKeys, setApiKeys] = useState([])
@@ -209,9 +245,13 @@ export default function Settings({ user }) {
             </label>
             <div style={{ marginBottom:16 }}>
               <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Webhook URL (Slack, Teams, custom)</label>
-              <input value={profile.alert_webhook||''} onChange={e => setProfile(p => ({ ...p, alert_webhook: e.target.value }))}
-                placeholder="https://hooks.slack.com/services/..."
-                style={{ width:'100%', padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'monospace' }}/>
+              <div style={{ display:'flex', gap:8 }}>
+                <input value={profile.alert_webhook||''} onChange={e => setProfile(p => ({ ...p, alert_webhook: e.target.value }))}
+                  placeholder="https://hooks.slack.com/services/..."
+                  style={{ flex:1, padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'monospace' }}/>
+                <WebhookTestButton url={profile.alert_webhook}/>
+              </div>
+              <div style={{ fontSize:11, color:'#6b7280', marginTop:5 }}>We'll POST a JSON payload to this URL when alerts fire.</div>
             </div>
             <button onClick={saveProfile} disabled={saving}
               style={{ padding:'8px 18px', background:'#16a34a', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>

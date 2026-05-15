@@ -54,10 +54,26 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
     return () => window.removeEventListener('scroll', fn)
   }, [])
 
+  // Load and save recent scans from localStorage
+  const [recentScans, setRecentScans] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('dr_recent_scans') || '[]') } catch { return [] }
+  })
+
+  function saveToHistory(d) {
+    try {
+      const prev = JSON.parse(localStorage.getItem('dr_recent_scans') || '[]')
+      const updated = [d, ...prev.filter(x => x !== d)].slice(0, 8)
+      localStorage.setItem('dr_recent_scans', JSON.stringify(updated))
+      setRecentScans(updated)
+    } catch {}
+  }
+
   function scan(e) {
     e.preventDefault()
     if (!domain.trim()) return
-    setScanDomain(domain.trim())
+    const d = domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].toLowerCase()
+    saveToHistory(d)
+    setScanDomain(d)
     setScanType('website')
     setPage('scan')
   }

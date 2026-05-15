@@ -7,6 +7,141 @@ import DmarcJourney from '../components/DmarcJourney'
 import { timeAgo, getScoreColor } from '../lib/scoreEngine'
 
 // ─── Auto-fix button ──────────────────────────────────────────────────
+
+// ─── Compliance PDF export ────────────────────────────────────────────
+function exportCompliancePDF(domain, scan) {
+  if (!domain || !scan) return
+  const score = scan.health_score || 0
+  const issues = scan.issues || []
+  const critical = issues.filter(i => i.severity === 'critical')
+  const warns = issues.filter(i => i.severity === 'warn')
+  const ea = scan.email_auth || {}
+  const ssl = scan.ssl_info || {}
+  const bl = scan.blacklists || {}
+  const now = new Date()
+  const dateStr = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+
+  const scoreColor = score >= 70 ? '#16a34a' : score >= 50 ? '#d97706' : '#dc2626'
+  const scoreBg = score >= 70 ? '#f0fdf4' : score >= 50 ? '#fffbeb' : '#fef2f2'
+
+  const checkRow = (label, status, detail = '') => {
+    const ok = ['Pass', 'Valid', 'Consistent', 'Clean'].includes(status)
+    const warn = ['Warn', 'Warning', 'Partial'].includes(status)
+    const c = ok ? '#16a34a' : warn ? '#d97706' : '#dc2626'
+    const bg = ok ? '#f0fdf4' : warn ? '#fffbeb' : '#fef2f2'
+    return `<tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#374151;">${label}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;">
+        <span style="background:${bg};color:${c};padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;">${status || 'Unknown'}</span>
+      </td>
+      <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;font-size:12px;color:#6b7280;font-family:monospace;">${detail}</td>
+    </tr>`
+  }
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>DNS Security Report — ${domain.domain_name}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, 'Segoe UI', sans-serif; color: #111827; background: #fff; padding: 40px; max-width: 800px; margin: 0 auto; }
+    h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 4px; }
+    h2 { font-size: 14px; font-weight: 700; color: #111827; margin: 24px 0 10px; text-transform: uppercase; letter-spacing: 0.07em; }
+    table { width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+    th { background: #f9fafb; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 1px solid #e5e7eb; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 2px solid #f3f4f6; }
+    .score-box { text-align: center; padding: 14px 20px; background: ${scoreBg}; border-radius: 10px; border: 1px solid ${scoreColor}30; }
+    .score-num { font-size: 40px; font-weight: 800; color: ${scoreColor}; line-height: 1; }
+    .score-label { font-size: 11px; color: ${scoreColor}; font-weight: 600; margin-top: 4px; }
+    .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #f3f4f6; font-size: 11px; color: #9ca3af; display: flex; justify-content: space-between; }
+    .compliance-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; margin-bottom: 20px; }
+    .compliance-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 12px; color: #374151; border-bottom: 0.5px solid #e5e7eb; }
+    .compliance-item:last-child { border-bottom: none; }
+    @media print { body { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1>${domain.domain_name}</h1>
+      <div style="font-size:13px;color:#6b7280;margin-top:4px;">DNS &amp; Email Security Compliance Report</div>
+      <div style="font-size:12px;color:#9ca3af;margin-top:2px;">Generated ${dateStr} by DomainRadar</div>
+    </div>
+    <div class="score-box">
+      <div class="score-num">${score}</div>
+      <div class="score-label">Health Score / 100</div>
+    </div>
+  </div>
+
+  <h2>Compliance summary</h2>
+  <div class="compliance-box">
+    ${[
+      { label: 'Google/Yahoo Bulk Sender Mandate (2024)', ok: ea.spf_status==='Pass' && ea.dkim_status==='Pass' && ea.dmarc_status!=='Missing' },
+      { label: 'PCI DSS v4.0 — DMARC required', ok: ea.dmarc_status!=='Missing' && ea.dmarc_raw?.includes('p=reject') },
+      { label: 'CISA BOD 18-01 — SPF + DMARC enforcement', ok: ea.spf_status==='Pass' && ea.dmarc_status!=='Missing' },
+      { label: 'SSL/TLS — valid certificate', ok: ssl.overall_status==='Pass' },
+      { label: 'Blacklist clean', ok: (bl.listed_count||0) === 0 },
+    ].map(c => `<div class="compliance-item">
+      <span style="font-size:16px;">${c.ok ? '✅' : '❌'}</span>
+      <span>${c.label}</span>
+      <span style="margin-left:auto;font-size:11px;font-weight:600;color:${c.ok?'#16a34a':'#dc2626'}">${c.ok ? 'Compliant' : 'Non-compliant'}</span>
+    </div>`).join('')}
+  </div>
+
+  <h2>Email authentication</h2>
+  <table>
+    <tr><th>Check</th><th>Status</th><th>Detail</th></tr>
+    ${checkRow('SPF record', ea.spf_status, ea.spf_raw?.slice(0,60))}
+    ${checkRow('DKIM signing', ea.dkim_status, ea.dkim_selector ? `Selector: ${ea.dkim_selector}` : '')}
+    ${checkRow('DMARC policy', ea.dmarc_status, ea.dmarc_raw?.slice(0,60))}
+    ${checkRow('BIMI', ea.bimi_status || 'Not configured', '')}
+    ${checkRow('MTA-STS', ea.mta_sts_status || 'Not configured', '')}
+  </table>
+
+  <h2>SSL certificate</h2>
+  <table>
+    <tr><th>Check</th><th>Status</th><th>Detail</th></tr>
+    ${checkRow('Certificate validity', ssl.overall_status, ssl.note || '')}
+  </table>
+
+  <h2>Security</h2>
+  <table>
+    <tr><th>Check</th><th>Status</th><th>Detail</th></tr>
+    ${checkRow('Blacklist status', (bl.listed_count||0)===0 ? 'Clean' : 'Listed', `${bl.listed_count||0} lists`)}
+    ${checkRow('DNSSEC', scan.security?.dnssec_status || 'Not configured', '')}
+    ${checkRow('CAA record', scan.security?.caa_status || 'Missing', '')}
+  </table>
+
+  ${issues.length > 0 ? `
+  <h2>Issues to fix (${issues.length})</h2>
+  <table>
+    <tr><th>Type</th><th>Severity</th><th>Action required</th></tr>
+    ${issues.map(i => `<tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;font-size:13px;font-weight:600;color:#111827;">${i.type}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;">
+        <span style="background:${i.severity==='critical'?'#fef2f2':i.severity==='warn'?'#fffbeb':'#eff6ff'};color:${i.severity==='critical'?'#dc2626':i.severity==='warn'?'#d97706':'#2563eb'};padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;">${i.severity}</span>
+      </td>
+      <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;font-size:12px;color:#6b7280;">${i.message}</td>
+    </tr>`).join('')}
+  </table>` : '<p style="color:#16a34a;font-weight:600;">✅ No issues detected</p>'}
+
+  <div class="footer">
+    <span>DomainRadar DNS Intelligence · dns-radar.vercel.app</span>
+    <span>Scanned ${dateStr}</span>
+  </div>
+</body>
+</html>`
+
+  const blob = new Blob([html], { type: 'text/html' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `DomainRadar-${domain.domain_name}-${now.toISOString().slice(0,10)}.html`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 function AutoFixBanner({ userId, setPage }) {
   const [hasCred, setHasCred] = useState(null) // null=loading, true, false
   useEffect(() => {
@@ -421,6 +556,63 @@ function IssuesPanel({ issues, critical, warns, scan, selected, user, setPage })
   )
 }
 
+
+// ─── Embeddable badge button ─────────────────────────────────────────
+function BadgeButton({ domain, score }) {
+  const [show, setShow] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  const color = score >= 70 ? '16a34a' : score >= 50 ? 'd97706' : 'dc2626'
+  const label = score >= 70 ? 'Good' : score >= 50 ? 'Fair' : 'Poor'
+  const badgeUrl = `https://img.shields.io/badge/DNS%20Health-${score}%2F100%20${encodeURIComponent(label)}-${color}?style=flat-square&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQyIDAtOC0zLjU4LTgtOHMzLjU4LTggOC04IDggMy41OCA4IDgtMy41OCA4LTggOHoiLz48L3N2Zz4=`
+  const markdownBadge = `[![DNS Health](${badgeUrl})](https://dns-radar.vercel.app)`
+  const htmlBadge = `<a href="https://dns-radar.vercel.app"><img src="${badgeUrl}" alt="DNS Health: ${score}/100"/></a>`
+
+  function copy(text) {
+    navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <div style={{position:'relative', flexShrink:0}}>
+      <button onClick={() => setShow(s => !s)}
+        style={{padding:'6px 12px', background:'#fff', color:'#555', border:'1px solid #e4e7ec', borderRadius:7, cursor:'pointer', fontSize:12, fontWeight:500, display:'flex', alignItems:'center', gap:4, transition:'background 0.15s'}}>
+        🏅 Badge
+      </button>
+      {show && (
+        <div style={{position:'absolute', right:0, top:'calc(100% + 6px)', zIndex:100, background:'#fff', border:'1px solid #e5e7eb', borderRadius:12, padding:'14px 16px', width:320, boxShadow:'0 8px 24px rgba(0,0,0,0.1)'}}>
+          <div style={{fontSize:13, fontWeight:700, color:'#111827', marginBottom:8}}>Embeddable health badge</div>
+          <div style={{marginBottom:10}}>
+            <img src={badgeUrl} alt={`DNS Health: ${score}/100`} style={{height:20}}/>
+          </div>
+          <div style={{fontSize:11, color:'#6b7280', marginBottom:6}}>Markdown (README)</div>
+          <div style={{display:'flex', gap:6, marginBottom:10}}>
+            <div style={{flex:1, fontFamily:'monospace', fontSize:10, color:'#374151', background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:6, padding:'6px 8px', wordBreak:'break-all', lineHeight:1.5}}>
+              {markdownBadge.slice(0, 80)}…
+            </div>
+            <button onClick={() => copy(markdownBadge)} style={{padding:'6px 10px', background:'#f0fdf4', color:'#16a34a', border:'1px solid #86efac', borderRadius:7, fontSize:11, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit'}}>
+              {copied ? '✓' : 'Copy'}
+            </button>
+          </div>
+          <div style={{fontSize:11, color:'#6b7280', marginBottom:6}}>HTML</div>
+          <div style={{display:'flex', gap:6}}>
+            <div style={{flex:1, fontFamily:'monospace', fontSize:10, color:'#374151', background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:6, padding:'6px 8px', wordBreak:'break-all', lineHeight:1.5}}>
+              {htmlBadge.slice(0, 80)}…
+            </div>
+            <button onClick={() => copy(htmlBadge)} style={{padding:'6px 10px', background:'#f0fdf4', color:'#16a34a', border:'1px solid #86efac', borderRadius:7, fontSize:11, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit'}}>
+              {copied ? '✓' : 'Copy'}
+            </button>
+          </div>
+          <div style={{fontSize:11, color:'#9ca3af', marginTop:10, lineHeight:1.5}}>
+            Badge auto-updates when you rescan. Embed in your README or website.
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ─── Onboarding checklist ────────────────────────────────────────────
 function OnboardingChecklist({ scan, domain, setPage, setActiveTab }) {
   const ea = scan?.email_auth || {}
@@ -706,7 +898,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
                     {[
                       {icon:selected.paused?Play:Pause,label:selected.paused?'Resume':'Pause',fn:async()=>{await supabase.from('domains').update({paused:!selected.paused}).eq('id',selected.id);fetchDomains()}},
-                      {icon:FileDown,label:'PDF',fn:()=>window.print()},
+                      {icon:FileDown,label:'PDF',fn:()=>exportCompliancePDF(selected, scan)},
                     ].map(b=>(
                       <button key={b.label} className="dsh-btn" onClick={b.fn}
                         style={{padding:'6px 12px',background:'#ffffff',color:'#555555',border:'1px solid #e4e7ec',borderRadius:7,cursor:'pointer',fontSize:12,fontWeight:500,display:'flex',alignItems:'center',gap:4,transition:'background 0.15s'}}>
@@ -714,6 +906,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       </button>
                     ))}
                     {scan?.id&&<ShareButton domain={selected.domain_name} scanId={scan.id}/>}
+                    <BadgeButton domain={selected.domain_name} score={scan?.health_score}/>
                   </div>
                 </div>
               </div>
