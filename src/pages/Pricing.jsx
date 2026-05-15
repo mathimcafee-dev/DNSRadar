@@ -1,4 +1,4 @@
-import { CheckCircle, Zap, Shield, Globe, Mail, Bell, Users, Code, ArrowRight } from 'lucide-react'
+import { CheckCircle, Zap, Shield, Globe, Mail, Bell, Users, Code, ArrowRight, Radar } from 'lucide-react'
 
 const F = "'Inter',-apple-system,BlinkMacSystemFont,sans-serif"
 
