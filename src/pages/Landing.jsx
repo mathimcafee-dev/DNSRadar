@@ -112,6 +112,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
           {NAV_ITEMS.map(n => <span key={n} className="nav-link">{n}</span>)}
         </div>
         <div style={{ display:'flex', gap:8 }}>
+          <button onClick={() => setPage('audit')} style={{ padding:'7px 16px', background:'rgba(22,163,74,0.12)', color:'#4ade80', border:'1px solid rgba(74,222,128,0.2)', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>📄 Free Audit</button>
           <button style={btn2} onClick={() => setPage('auth')}>Sign in</button>
           <button style={btn1} onClick={() => setPage('auth')}>Start free <ArrowRight size={13}/></button>
         </div>
@@ -277,6 +278,14 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
             <button type="submit" style={{ padding:'12px 20px', background:'#fff', color:'#111', border:'none', borderRadius:9, fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:F, flexShrink:0 }}>Scan free</button>
           </form>
           <p style={{ fontSize:12, color:'rgba(255,255,255,0.3)' }}>No credit card · No signup required · 90 seconds</p>
+          <div style={{ marginTop:16 }}>
+            <button onClick={() => setPage('audit')}
+              style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'10px 22px', background:'rgba(255,255,255,0.06)', color:'rgba(255,255,255,0.7)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:9, fontSize:13, fontWeight:500, cursor:'pointer', fontFamily:F, transition:'all 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.1)'; e.currentTarget.style.color='#fff' }}
+              onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.06)'; e.currentTarget.style.color='rgba(255,255,255,0.7)' }}>
+              📄 Get full audit report + PDF export
+            </button>
+          </div>
         </div>
       </section>
 
@@ -289,11 +298,11 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
           <span style={{ fontSize:12, color:'rgba(255,255,255,0.4)', letterSpacing:'-0.01em' }}>DomainRadar</span>
         </div>
         <div style={{ display:'flex', gap:20 }}>
-          {['Privacy','Terms','Contact'].map(l => (
+          {[['Privacy','privacy'],['Terms','terms'],['Contact','contact'],['Free Audit','audit']].map(([l,id]) => (
             <span key={l} style={{ fontSize:12, color:'rgba(255,255,255,0.3)', cursor:'pointer', transition:'color 0.15s' }}
               onMouseEnter={e => e.currentTarget.style.color='rgba(255,255,255,0.7)'}
               onMouseLeave={e => e.currentTarget.style.color='rgba(255,255,255,0.3)'}
-              onClick={() => setPage(l.toLowerCase())}>{l}</span>
+              onClick={() => setPage(id)}>{l}</span>
           ))}
         </div>
         <span style={{ fontSize:12, color:'rgba(255,255,255,0.2)' }}>© 2026 DomainRadar</span>
