@@ -568,61 +568,74 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       <SBadge status={scan.propagation.consistent?'Consistent':'Inconsistent'}/>
                     </div>
                     <div style={{padding:'20px 24px'}}>
-                      {/* World map SVG */}
-                      <div style={{position:'relative',background:'#f8fafc',borderRadius:10,border:'1px solid #e5e7eb',overflow:'hidden',marginBottom:16}}>
-                        <svg viewBox='0 0 800 380' style={{width:'100%',display:'block'}}>
-                          {/* Ocean bg */}
-                          <rect width='800' height='380' fill='#EFF6FF'/>
-                          {/* Simple continent shapes */}
+                      {/* World map — accurate simplified paths */}
+                      <div style={{position:'relative',background:'#f0f7ff',borderRadius:10,border:'1px solid #e5e7eb',overflow:'hidden',marginBottom:16}}>
+                        <svg viewBox='0 0 1010 530' style={{width:'100%',display:'block'}}>
+                          <rect width='1010' height='530' fill='#dbeafe' rx='10'/>
+                          {/* Accurate continent outlines — simplified natural earth */}
                           {/* North America */}
-                          <path d='M 100 60 L 210 55 L 230 80 L 225 140 L 200 180 L 175 200 L 160 195 L 140 170 L 110 160 L 90 120 L 85 90 Z' fill='#DBEAFE' stroke='#93C5FD' strokeWidth='1'/>
+                          <path d='M120,80 L180,65 L230,70 L265,85 L280,110 L275,140 L260,165 L255,195 L240,215 L220,235 L200,250 L185,245 L175,225 L165,205 L155,195 L145,175 L130,165 L115,145 L105,125 L100,100 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1.2'/>
+                          {/* Greenland */}
+                          <path d='M205,40 L235,35 L255,45 L250,65 L225,70 L205,60 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
+                          {/* Central America */}
+                          <path d='M185,245 L200,250 L205,265 L195,275 L180,270 L175,255 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
                           {/* South America */}
-                          <path d='M 155 220 L 195 215 L 210 250 L 215 300 L 200 340 L 175 355 L 155 340 L 140 300 L 140 255 Z' fill='#DBEAFE' stroke='#93C5FD' strokeWidth='1'/>
+                          <path d='M190,285 L220,275 L245,285 L260,310 L262,345 L255,375 L240,405 L220,425 L200,430 L180,420 L165,395 L158,360 L160,325 L168,300 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1.2'/>
                           {/* Europe */}
-                          <path d='M 340 50 L 400 45 L 420 65 L 415 100 L 390 115 L 365 110 L 340 95 L 330 70 Z' fill='#DBEAFE' stroke='#93C5FD' strokeWidth='1'/>
+                          <path d='M430,75 L465,68 L495,72 L510,85 L505,105 L490,120 L470,128 L450,125 L435,115 L425,100 L425,85 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1.2'/>
+                          {/* Scandinavia */}
+                          <path d='M460,50 L475,48 L485,60 L478,78 L462,80 L452,68 L455,55 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
+                          {/* UK */}
+                          <path d='M415,80 L425,76 L428,88 L420,95 L412,90 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
                           {/* Africa */}
-                          <path d='M 345 125 L 400 120 L 420 145 L 425 200 L 410 260 L 385 290 L 355 285 L 335 250 L 330 200 L 335 150 Z' fill='#DBEAFE' stroke='#93C5FD' strokeWidth='1'/>
-                          {/* Asia */}
-                          <path d='M 430 40 L 620 35 L 650 70 L 640 130 L 600 160 L 540 170 L 480 155 L 440 120 L 425 80 Z' fill='#DBEAFE' stroke='#93C5FD' strokeWidth='1'/>
+                          <path d='M440,145 L480,138 L510,148 L525,170 L530,205 L525,245 L515,285 L500,320 L480,345 L458,352 L438,342 L422,315 L415,275 L415,235 L420,195 L428,165 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1.2'/>
+                          {/* Madagascar */}
+                          <path d='M520,285 L528,280 L532,295 L528,312 L518,315 L514,300 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.6'/>
+                          {/* Asia - main body */}
+                          <path d='M510,60 L580,52 L650,55 L710,65 L760,75 L800,88 L820,105 L815,130 L790,150 L750,165 L700,172 L650,170 L600,165 L565,158 L535,148 L515,135 L505,115 L505,88 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1.2'/>
+                          {/* Indian subcontinent */}
+                          <path d='M615,165 L640,168 L655,185 L650,210 L635,230 L618,235 L605,220 L600,200 L605,178 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1'/>
+                          {/* SE Asia peninsula */}
+                          <path d='M700,170 L725,175 L738,192 L730,215 L710,222 L695,210 L690,190 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
+                          {/* Japan */}
+                          <path d='M788,105 L798,100 L808,110 L802,125 L790,128 L783,118 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
                           {/* Australia */}
-                          <path d='M 580 250 L 660 240 L 680 265 L 680 310 L 650 325 L 600 320 L 570 300 L 565 270 Z' fill='#DBEAFE' stroke='#93C5FD' strokeWidth='1'/>
+                          <path d='M730,310 L785,302 L830,308 L860,325 L865,355 L850,380 L820,395 L785,398 L752,390 L728,370 L718,345 L720,320 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='1.2'/>
+                          {/* New Zealand */}
+                          <path d='M875,390 L882,385 L888,398 L882,410 L873,408 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.6'/>
+                          {/* Indonesia - simplified */}
+                          <path d='M730,255 L760,250 L785,258 L790,270 L770,275 L745,272 L728,265 Z' fill='#bfdbfe' stroke='#93c5fd' strokeWidth='0.8'/>
 
-                          {/* Region nodes — positions on map */}
+                          {/* Region nodes */}
                           {[
-                            {key:'us',   name:'North America', x:155, y:130, resolver:'1.1.1.1 (Cloudflare)'},
-                            {key:'eu',   name:'Europe',        x:375, y: 80, resolver:'8.8.8.8 (Google)'},
-                            {key:'apac', name:'Asia Pacific',  x:560, y:110, resolver:'208.67.222.222 (OpenDNS)'},
-                            {key:'au',   name:'Australia',     x:625, y:285, resolver:'9.9.9.9 (Quad9)'},
+                            {key:'us',   name:'N. America',  x:175, y:158, flag:'🇺🇸', resolver:'1.1.1.1'},
+                            {key:'eu',   name:'Europe',      x:468, y:100, flag:'🇪🇺', resolver:'8.8.8.8'},
+                            {key:'apac', name:'Asia Pacific', x:690, y:130, flag:'🌏', resolver:'OpenDNS'},
+                            {key:'au',   name:'Australia',   x:790, y:350, flag:'🇦🇺', resolver:'Quad9'},
                           ].map(reg => {
                             const allPass = scan.propagation.records?.every(r => r[reg.key]==='pass')
-                            const nodeColor = allPass ? '#16a34a' : '#d97706'
-                            const nodeBg = allPass ? '#dcfce7' : '#fef3c7'
-                            const nodeBorder = allPass ? '#86efac' : '#fde68a'
+                            const nc = allPass ? '#16a34a' : '#d97706'
+                            const bg = allPass ? '#dcfce7' : '#fef3c7'
+                            const bd = allPass ? '#86efac' : '#fcd34d'
                             return (
                               <g key={reg.key}>
-                                {/* Pulse ring */}
-                                <circle cx={reg.x} cy={reg.y} r='18' fill={nodeBg} stroke={nodeBorder} strokeWidth='1.5' opacity='0.8'/>
-                                {/* Center dot */}
-                                <circle cx={reg.x} cy={reg.y} r='7' fill={nodeColor}/>
-                                {/* Check/warning icon */}
+                                <circle cx={reg.x} cy={reg.y} r='22' fill={bg} stroke={bd} strokeWidth='1.5'/>
+                                <circle cx={reg.x} cy={reg.y} r='9' fill={nc}/>
                                 {allPass
-                                  ? <path d={`M ${reg.x-4} ${reg.y} l 3 3 l 5 -5`} stroke='white' strokeWidth='1.8' fill='none' strokeLinecap='round'/>
-                                  : <text x={reg.x} y={reg.y+4} textAnchor='middle' fill='white' fontSize='9' fontWeight='bold'>!</text>
+                                  ? <path d={`M ${reg.x-5} ${reg.y} l 3.5 3.5 l 6 -6`} stroke='#fff' strokeWidth='2' fill='none' strokeLinecap='round' strokeLinejoin='round'/>
+                                  : <text x={reg.x} y={reg.y+4} textAnchor='middle' fill='#fff' fontSize='10' fontWeight='800'>!</text>
                                 }
-                                {/* Label */}
-                                <text x={reg.x} y={reg.y+30} textAnchor='middle' fill='#374151' fontSize='9' fontWeight='600'>{reg.name}</text>
-                                <text x={reg.x} y={reg.y+41} textAnchor='middle' fill='#6b7280' fontSize='8'>{allPass ? 'Propagated' : 'Inconsistent'}</text>
+                                <text x={reg.x} y={reg.y+35} textAnchor='middle' fill='#1e3a5f' fontSize='9.5' fontWeight='700'>{reg.name}</text>
+                                <text x={reg.x} y={reg.y+47} textAnchor='middle' fill='#64748b' fontSize='8.5'>{allPass?'✓ Propagated':'✗ Inconsistent'}</text>
                               </g>
                             )
                           })}
 
                           {/* Legend */}
-                          <g>
-                            <circle cx='20' cy='360' r='5' fill='#16a34a'/>
-                            <text x='30' y='364' fill='#374151' fontSize='10'>Propagated</text>
-                            <circle cx='110' cy='360' r='5' fill='#d97706'/>
-                            <text x='120' y='364' fill='#374151' fontSize='10'>Inconsistent</text>
-                          </g>
+                          <circle cx='18' cy='515' r='6' fill='#16a34a'/>
+                          <text x='30' y='519' fill='#374151' fontSize='11' fontWeight='500'>Propagated</text>
+                          <circle cx='115' cy='515' r='6' fill='#d97706'/>
+                          <text x='127' y='519' fill='#374151' fontSize='11' fontWeight='500'>Inconsistent</text>
                         </svg>
                       </div>
 
