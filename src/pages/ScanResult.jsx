@@ -8,7 +8,7 @@ import { getPillClass, getScoreColor, formatTTL, expiryPill, getDaysUntilExpiry 
 function SectionCard({ icon: Icon, title, status, statusClass, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div style={{background:"#fff",border:"1px solid #e5e7eb",borderRadius:12,overflow:"hidden",marginBottom:12,boxShadow:"0 1px 3px rgba(0,0,0,0.06)"}} style={{ marginBottom: 12 }}>
+    <div style={{background:"#fff",border:"1px solid #e5e7eb",borderRadius:12,overflow:"hidden",marginBottom:12,boxShadow:"0 1px 3px rgba(0,0,0,0.06)",animation:"fadeIn 0.2s ease both"}} style={{ marginBottom: 12 }}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px",borderBottom:"1px solid #f0f2f5",background:"#fafafa",cursor:"pointer"}} style={{ cursor: 'pointer' }} onClick={() => setOpen(o => !o)}>
         <span style={{fontSize:11,fontWeight:700,color:"#6b7280",display:"flex",alignItems:"center",gap:6,textTransform:"uppercase",letterSpacing:"0.08em"}}>
           <Icon size={14} color="#374151" />

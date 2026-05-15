@@ -26,7 +26,7 @@ function CopyBtn({ text }) {
   const [c,setC] = useState(false)
   return (
     <button onClick={() => { navigator.clipboard.writeText(text); setC(true); setTimeout(() => setC(false), 2000) }}
-      style={{ padding:'4px 10px', background:'#dcfce7', border:'1px solid #86efac', borderRadius:6, color:'#111827', fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:5, flexShrink:0 }}>
+      style={{ padding:'4px 10px', background:'#dcfce7', border:'1px solid #86efac', borderRadius:6, color:'#111827', fontSize:12, fontWeight:600, cursor:'pointer',transition:'background 0.15s', display:'flex', alignItems:'center', gap:5, flexShrink:0 }}>
       {c ? <><Check size={11}/>Copied</> : <><Copy size={11}/>Copy</>}
     </button>
   )
@@ -37,7 +37,7 @@ function RuaSetupCard({ ruaAddress }) {
   const dmarcRecord = `v=DMARC1; p=none; rua=mailto:${ruaAddress}; ruf=mailto:${ruaAddress}; adkim=r; aspf=r`
   return (
     <div style={{ ...card, marginBottom:16, border:'1px solid #86efac', background:'rgba(16,185,129,0.04)' }}>
-      <div style={{ ...cardHd, background:'#f0fdf4', cursor:'pointer' }} onClick={() => setOpen(o=>!o)}>
+      <div style={{ ...cardHd, background:'#f0fdf4', cursor:'pointer',transition:'background 0.15s' }} onClick={() => setOpen(o=>!o)}>
         <span style={{ fontSize:13, fontWeight:600, color:'#111827', display:'flex', alignItems:'center', gap:7 }}>
           <Zap size={14}/> Step 1 — Point your DMARC rua= address here to start receiving reports automatically
         </span>
@@ -160,10 +160,10 @@ function UploadXMLModal({ domain, onClose, onSuccess }) {
       <div style={{ background:'#ffffff', border:'1px solid #e5e7eb', borderRadius:14, padding:20, width:'min(520px,95vw)', maxHeight:'80vh', overflow:'auto' }}>
         <div style={{ display:'flex', justifyContent:'space-between', marginBottom:16 }}>
           <span style={{ fontSize:14, fontWeight:600, color:'#111827' }}>Upload DMARC XML report</span>
-          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'#374151', fontSize:18 }}>×</button>
+          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer',transition:'background 0.15s', color:'#374151', fontSize:18 }}>×</button>
         </div>
         <div style={{ marginBottom:12 }}>
-          <button onClick={() => fileRef.current?.click()} style={{ padding:'7px 14px', background:'#e5e7eb', border:'1px solid #e5e7eb', borderRadius:7, color:'#111827', fontSize:12, cursor:'pointer', marginBottom:10 }}>
+          <button onClick={() => fileRef.current?.click()} style={{ padding:'7px 14px', background:'#e5e7eb', border:'1px solid #e5e7eb', borderRadius:7, color:'#111827', fontSize:12, cursor:'pointer',transition:'background 0.15s', marginBottom:10 }}>
             {file ? `📎 ${file.name}` : '📎 Select .xml / .gz file'}
           </button>
           <input ref={fileRef} type="file" accept=".xml,.gz,.zip" style={{ display:'none' }} onChange={e => setFile(e.target.files[0])}/>
@@ -174,10 +174,10 @@ function UploadXMLModal({ domain, onClose, onSuccess }) {
         )}
         {error && <div style={{ fontSize:12, color:'#dc2626', marginTop:8 }}>{error}</div>}
         <div style={{ display:'flex', gap:8, marginTop:14 }}>
-          <button onClick={upload} disabled={loading} style={{ flex:1, padding:'9px', background:'#16a34a', color:'#fff', border:'none', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer' }}>
+          <button onClick={upload} disabled={loading} style={{ flex:1, padding:'9px', background:'#16a34a', color:'#fff', border:'none', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer',transition:'background 0.15s' }}>
             {loading ? 'Processing…' : 'Upload & parse'}
           </button>
-          <button onClick={onClose} style={{ padding:'9px 16px', background:'#e5e7eb', border:'1px solid #e5e7eb', borderRadius:8, color:'#374151', fontSize:13, cursor:'pointer' }}>Cancel</button>
+          <button onClick={onClose} style={{ padding:'9px 16px', background:'#e5e7eb', border:'1px solid #e5e7eb', borderRadius:8, color:'#374151', fontSize:13, cursor:'pointer',transition:'background 0.15s' }}>Cancel</button>
         </div>
       </div>
     </div>
@@ -268,10 +268,10 @@ function DmarcReportsInner({ user, selectedDomain }) {
         </div>
         <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
           {[7,30,90].map(r => (
-            <button key={r} onClick={() => setRange(r)} style={{ padding:'5px 12px', background:range===r?'#dcfce7':'#f9fafb', border:`1px solid ${range===r?'rgba(16,185,129,0.3)':'#e5e7eb'}`, borderRadius:7, color:range===r?'#16a34a':D.muted, fontSize:12, fontWeight:500, cursor:'pointer' }}>{r}d</button>
+            <button key={r} onClick={() => setRange(r)} style={{ padding:'5px 12px', background:range===r?'#dcfce7':'#f9fafb', border:`1px solid ${range===r?'rgba(16,185,129,0.3)':'#e5e7eb'}`, borderRadius:7, color:range===r?'#16a34a':D.muted, fontSize:12, fontWeight:500, cursor:'pointer',transition:'background 0.15s' }}>{r}d</button>
           ))}
-          <button onClick={() => setShowUpload(true)} style={{ padding:'5px 12px', background:'#e5e7eb', border:'1px solid #e5e7eb', borderRadius:7, color:'#111827', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}><Upload size={11}/> Upload XML</button>
-          <button onClick={fetchData} style={{ padding:'5px 10px', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:7, color:'#374151', cursor:'pointer' }}><RefreshCw size={12}/></button>
+          <button onClick={() => setShowUpload(true)} style={{ padding:'5px 12px', background:'#e5e7eb', border:'1px solid #e5e7eb', borderRadius:7, color:'#111827', fontSize:12, cursor:'pointer',transition:'background 0.15s', display:'flex', alignItems:'center', gap:5 }}><Upload size={11}/> Upload XML</button>
+          <button onClick={fetchData} style={{ padding:'5px 10px', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:7, color:'#374151', cursor:'pointer',transition:'background 0.15s' }}><RefreshCw size={12}/></button>
         </div>
       </div>
 
@@ -293,7 +293,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
             Add the RUA address above to your DMARC record. Reports arrive automatically within 24–48 hours.
             Or upload a report XML manually to test immediately.
           </p>
-          <button onClick={() => setShowUpload(true)} style={{ padding:'8px 20px', background:'#16a34a', border:'none', borderRadius:8, color:'#fff', fontSize:13, fontWeight:600, cursor:'pointer' }}>
+          <button onClick={() => setShowUpload(true)} style={{ padding:'8px 20px', background:'#16a34a', border:'none', borderRadius:8, color:'#fff', fontSize:13, fontWeight:600, cursor:'pointer',transition:'background 0.15s' }}>
             Upload test XML now
           </button>
         </div>

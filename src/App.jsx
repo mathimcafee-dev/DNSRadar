@@ -79,7 +79,7 @@ function Alerts({ user }) {
             { label:'Critical', value:criticalCount, color:'#dc2626' },
             { label:'Total', value:alerts.length, color:'#374151' },
           ].map(s => (
-            <div key={s.label} style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:10, padding:'12px 16px', boxShadow:'0 1px 3px rgba(0,0,0,0.04)' }}>
+            <div key={s.label} style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:10, padding:'12px 16px', boxShadow:'0 1px 3px rgba(0,0,0,0.04)', animation:'scaleIn 0.18s ease both', transition:'all 0.15s' }}>
               <div style={{ fontSize:11, color:'#6b7280', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:4 }}>{s.label}</div>
               <div style={{ fontSize:24, fontWeight:800, color:s.color, letterSpacing:'-0.03em' }}>{s.value}</div>
             </div>
@@ -121,7 +121,7 @@ function Alerts({ user }) {
         <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
           {filtered.map(a => (
             <div key={a.id} onClick={() => !a.read && markRead(a.id)}
-              style={{ background:'#fff', border:`1px solid ${!a.read ? sevBd(a.severity) : '#e5e7eb'}`, borderRadius:10, padding:'12px 16px', display:'flex', alignItems:'flex-start', gap:12, boxShadow:'0 1px 3px rgba(0,0,0,0.04)', cursor:!a.read?'pointer':'default', opacity: a.read ? 0.75 : 1, transition:'opacity 0.15s' }}>
+              style={{ background:'#fff', border:`1px solid ${!a.read ? sevBd(a.severity) : '#e5e7eb'}`, borderRadius:10, padding:'12px 16px', display:'flex', alignItems:'flex-start', gap:12, boxShadow:'0 1px 3px rgba(0,0,0,0.04)', cursor:!a.read?'pointer':'default', opacity: a.read ? 0.75 : 1, transition:'all 0.15s', animation:'fadeIn 0.2s ease both' }}>
               {/* Severity dot */}
               <div style={{ width:8, height:8, borderRadius:'50%', background:sevColor(a.severity), flexShrink:0, marginTop:5 }}/>
               <div style={{ flex:1, minWidth:0 }}>
@@ -340,7 +340,8 @@ export default function App() {
   return (
     <div style={{ display:'flex', minHeight:'100vh', background:'#f7f8fa' }}>
       <Sidebar page={page} setPage={setPage} alertCount={alertCount} user={user}/>
-      <main style={{ flex:1, minWidth:0, overflowY:'auto', minHeight:'100vh' }}>
+      <main style={{ flex:1, minWidth:0, overflowY:'auto', minHeight:'100vh' }} key={page}>
+        <div className="page-enter" style={{minHeight:'100%'}}>
         {page === 'dashboard' && <Dashboard {...sharedDomainProps} setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>}
         {page === 'dmarc'     && <DmarcReports user={user}/>}
         {page === 'autofix'   && <DnsAutoFix user={user} domains={domains} selectedDomain={selectedDomain} onScanTrigger={() => setPage('dashboard')}/>}
@@ -349,6 +350,7 @@ export default function App() {
         {page === 'alerts'    && <Alerts user={user}/>}
         {page === 'reports'   && <Reports user={user}/>}
         {page === 'settings'  && <Settings user={user}/>}
+        </div>
       </main>
     </div>
   )

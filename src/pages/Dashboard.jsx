@@ -626,14 +626,14 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
         <div style={{flex:1,overflowY:'auto',padding:'6px 0'}}>
           <div style={{fontSize:10,fontWeight:600,color:'#374151',textTransform:'uppercase',letterSpacing:'0.09em',padding:'4px 14px 6px'}}>Domains</div>
           {loading?[1,2].map(i=><div key={i} style={{margin:'4px 10px',height:44,borderRadius:8,background:'#f1f5f9'}}/>)
-          :domains.map(d=>{
+          :domains.map((d,di)=>{
             const s=d.scan_results?.[0]; const score=s?.health_score; const isActive=selected?.id===d.id
             const sc=score>=70?'#16a34a':score>=50?'#d97706':'#dc2626'
             const critCount=s?.issues?.filter(i=>i.severity==='critical').length||0
             return (
               <div key={d.id} className="dsh-row" onClick={()=>{setSelected(d); onDomainSelect?.(d); setActiveTab('overview')}}
                 style={{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',cursor:'pointer',background:isActive?'#f0fdf4':'transparent',borderLeft:`3px solid ${isActive?'#16a34a':'transparent'}`,transition:'background 0.12s'}}>
-                <div style={{width:7,height:7,borderRadius:'50%',background:d.paused?'#4a5470':!d.verified?'#ffb224':sc,flexShrink:0}}/>
+                <div style={{width:7,height:7,borderRadius:'50%',background:d.paused?'#4a5470':!d.verified?'#ffb224':sc,flexShrink:0,animation:(!d.paused&&d.verified&&sc==='#16a34a')?'pulse-dot 2s ease-in-out infinite':'none'}}/>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:12,fontWeight:500,color:'#111827',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{d.domain_name}</div>
                   <div style={{fontSize:10,color:'#374151'}}>{!d.verified?'Pending verification':d.paused?'Paused':`${critCount>0?`${critCount} critical · `:''}${d.monitor_interval}`}</div>
@@ -740,7 +740,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       {label:'Blacklisted',val:`${scan.blacklists?.listed_count||0}/${scan.blacklists?.results?.length||0}`,color:(scan.blacklists?.listed_count||0)>0?'#dc2626':'#16a34a',sub:'blacklists',pct:(scan.blacklists?.listed_count||0)>0?60:100,tab:'blacklists'},
                       {label:'DNS records',val:scan.dns_records?.length||0,color:'#3730a3',sub:'records found',pct:100,tab:'dns'},
                     ].map(k=>(
-                      <div key={k.label} className="print-card" onClick={()=>setActiveTab(k.tab)} style={{background:'#ffffff',border:'1px solid #e4e7ec',borderTop:`3px solid ${k.color}`,borderRadius:12,padding:'16px 18px',boxShadow:'0 1px 4px rgba(0,0,0,0.06)',transition:'transform 0.15s,box-shadow 0.15s',cursor:'pointer'}}
+                      <div key={k.label} className="print-card" onClick={()=>setActiveTab(k.tab)} style={{background:'#ffffff',border:'1px solid #e4e7ec',borderTop:`3px solid ${k.color}`,borderRadius:12,padding:'16px 18px',boxShadow:'0 1px 4px rgba(0,0,0,0.06)',transition:'transform 0.15s,box-shadow 0.15s',animation:'fadeIn 0.2s ease both',cursor:'pointer'}}
                         onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 6px 16px rgba(0,0,0,0.1)'}}
                         onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.06)'}}>
                         <div style={{fontSize:10,fontWeight:700,color:'#6b7280',marginBottom:10,textTransform:'uppercase',letterSpacing:'0.09em'}}>{k.label}</div>
@@ -769,7 +769,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       </div>
                       <div style={{padding:'8px 16px'}}>
                         {cats.map((c,i)=>(
-                          <div key={c.label} onClick={()=>c.tab&&setActiveTab(c.tab)} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 6px',borderBottom:'1px solid #f3f4f6',cursor:'pointer',borderRadius:6,transition:'background 0.12s'}}
+                          <div key={c.label} style={{animationDelay:`${i*50}ms`}} className='stagger-1' onClick={()=>c.tab&&setActiveTab(c.tab)} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 6px',borderBottom:'1px solid #f3f4f6',cursor:'pointer',borderRadius:6,transition:'background 0.12s'}}
                             onMouseEnter={e=>e.currentTarget.style.background='#f9fafb'}
                             onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
                             <div style={{width:26,height:26,borderRadius:7,background:c.bg,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
