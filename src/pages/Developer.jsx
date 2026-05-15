@@ -259,14 +259,24 @@ console.log(data.issues)            // [{type:'DMARC', severity:'warn', ...}]`}/
         </div>
 
       </div>
-
-      {/* Footer */}
-      <footer style={{ background:'#0d1117', borderTop:'1px solid #1f2937', padding:'22px 32px', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:10 }}>
-        <span style={{ fontSize:12, color:'#374151' }}>DomainRadar · dns-radar.vercel.app · Made with ♥ in NL</span>
-        <div style={{ display:'flex', gap:16 }}>
-          {[['Home','landing'],['About','about'],['Pricing','pricing']].map(([l,id])=>(
-            <span key={l} style={{ fontSize:12, color:'#4b5563', cursor:'pointer' }} onClick={() => setPage(id)}>{l}</span>
-          ))}
+      <footer style={{ background:'#111', borderTop:'1px solid #1f2937', padding:'28px 32px' }}>
+        <div style={{ maxWidth:1020, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:16 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:9 }}>
+            <div style={{ width:24, height:24, background:'#16a34a', borderRadius:6, display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <Radar size={13} color="#fff" strokeWidth={2.5}/>
+            </div>
+            <span style={{ fontSize:13, color:'rgba(255,255,255,0.5)', fontWeight:500 }}>DomainRadar</span>
+            <span style={{ fontSize:12, color:'rgba(255,255,255,0.2)' }}>· Made with ♥ in NL</span>
+          </div>
+          <div style={{ display:'flex', gap:6, flexWrap:'wrap', alignItems:'center' }}>
+            {[['Landing','landing'],['Pricing','pricing'],['About','about'],['Developer','developer'],['Free Audit','audit'],['Sign in','auth']].map(([l,id]) => (
+              <button key={l} onClick={() => setPage(id)}
+                style={{ fontSize:12, color:'rgba(255,255,255,0.35)', background:'none', border:'none', cursor:'pointer', padding:'4px 8px', borderRadius:5, fontFamily:F, transition:'color 0.15s' }}
+                onMouseEnter={e=>e.currentTarget.style.color='rgba(255,255,255,0.7)'}
+                onMouseLeave={e=>e.currentTarget.style.color='rgba(255,255,255,0.35)'}>{l}</button>
+            ))}
+          </div>
+          <div style={{ fontSize:12, color:'rgba(255,255,255,0.2)' }}>© 2026 DomainRadar</div>
         </div>
       </footer>
     </div>

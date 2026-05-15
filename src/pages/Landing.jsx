@@ -119,7 +119,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
       </nav>
 
       {/* ── HERO ── */}
-      <section style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'100px 24px 80px', background:'linear-gradient(180deg,#f0fdf4 0%,#fff 60%)', textAlign:'center' }}>
+      <section style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'100px 24px 80px', background:'#fff', textAlign:'center' }}>
         <div className="fade-up" style={{ animationDelay:'0.05s', marginBottom:20 }}>
           <span style={{ display:'inline-flex', alignItems:'center', gap:6, background:'#dcfce7', color:'#15803d', border:'1px solid #bbf7d0', borderRadius:20, padding:'5px 14px', fontSize:12, fontWeight:600 }}>
             <span style={{ width:6, height:6, borderRadius:'50%', background:'#16a34a', display:'inline-block' }}/>
@@ -127,7 +127,7 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
           </span>
         </div>
         <h1 className="fade-up" style={{ animationDelay:'0.1s', fontSize:'clamp(36px,6vw,68px)', fontWeight:900, letterSpacing:'-0.04em', lineHeight:1.05, marginBottom:20, maxWidth:820 }}>
-          Your domain's security,<br/><span style={{ color:'#16a34a' }}>explained and fixed.</span>
+          Your domain's security,<br/><span style={{ borderBottom:'4px solid #16a34a', paddingBottom:2 }}>explained and fixed.</span>
         </h1>
         <p className="fade-up" style={{ animationDelay:'0.15s', fontSize:'clamp(15px,2vw,19px)', color:'#555', maxWidth:560, marginBottom:40, lineHeight:1.7 }}>
           Full DNS audit — SPF, DKIM, DMARC, SSL, blacklists, propagation — in 90 seconds. One-click auto-fix via Cloudflare. Continuous monitoring with email alerts.
@@ -318,22 +318,24 @@ export default function Landing({ setPage, setScanDomain, setScanType }) {
           <p style={{ fontSize:12, color:'rgba(255,255,255,0.25)' }}>No credit card · No signup · 90 seconds</p>
         </div>
       </section>
-
-      {/* ── FOOTER ── */}
-      <footer style={{ background:'#111', borderTop:'1px solid rgba(255,255,255,0.08)', padding:'28px 32px', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-          <div style={{ width:22, height:22, background:'#16a34a', borderRadius:5, display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <Radar size={12} color="#fff"/>
+      <footer style={{ background:'#111', borderTop:'1px solid #1f2937', padding:'28px 32px' }}>
+        <div style={{ maxWidth:1020, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:16 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:9 }}>
+            <div style={{ width:24, height:24, background:'#16a34a', borderRadius:6, display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <Radar size={13} color="#fff" strokeWidth={2.5}/>
+            </div>
+            <span style={{ fontSize:13, color:'rgba(255,255,255,0.5)', fontWeight:500 }}>DomainRadar</span>
+            <span style={{ fontSize:12, color:'rgba(255,255,255,0.2)' }}>· Made with ♥ in NL</span>
           </div>
-          <span style={{ fontSize:12, color:'rgba(255,255,255,0.4)' }}>DomainRadar · Made with ♥ in NL</span>
-        </div>
-        <div style={{ display:'flex', gap:20, flexWrap:'wrap' }}>
-          {[['Features','#features'],['Pricing','pricing'],['About','about'],['Developer','developer'],['Free Audit','audit']].map(([l,id]) => (
-            <span key={l} style={{ fontSize:12, color:'rgba(255,255,255,0.3)', cursor:'pointer', transition:'color 0.15s' }}
-              onMouseEnter={e=>e.currentTarget.style.color='rgba(255,255,255,0.7)'}
-              onMouseLeave={e=>e.currentTarget.style.color='rgba(255,255,255,0.3)'}
-              onClick={() => id.startsWith('#') ? document.getElementById(id.slice(1))?.scrollIntoView({behavior:'smooth'}) : setPage(id)}>{l}</span>
-          ))}
+          <div style={{ display:'flex', gap:6, flexWrap:'wrap', alignItems:'center' }}>
+            {[['Landing','landing'],['Pricing','pricing'],['About','about'],['Developer','developer'],['Free Audit','audit'],['Sign in','auth']].map(([l,id]) => (
+              <button key={l} onClick={() => setPage(id)}
+                style={{ fontSize:12, color:'rgba(255,255,255,0.35)', background:'none', border:'none', cursor:'pointer', padding:'4px 8px', borderRadius:5, fontFamily:F, transition:'color 0.15s' }}
+                onMouseEnter={e=>e.currentTarget.style.color='rgba(255,255,255,0.7)'}
+                onMouseLeave={e=>e.currentTarget.style.color='rgba(255,255,255,0.35)'}>{l}</button>
+            ))}
+          </div>
+          <div style={{ fontSize:12, color:'rgba(255,255,255,0.2)' }}>© 2026 DomainRadar</div>
         </div>
       </footer>
     </div>
