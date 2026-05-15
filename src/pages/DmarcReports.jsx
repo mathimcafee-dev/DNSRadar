@@ -79,8 +79,8 @@ function PolicyWizard({ domain, currentPolicy, ruaAddress }) {
 
   const policies = [
     { p: 'none', label: 'None (monitor)', color: '#6b7280', desc: 'Emails pass regardless. You receive reports to see who is sending on your behalf. Start here.', risk: 'Low', visibility: 'Full' },
-    { p: 'quarantine', label: 'Quarantine', color: '#ffb224', desc: 'Unauthenticated emails go to spam. Legitimate senders must pass SPF or DKIM.', risk: 'Medium', visibility: 'Full' },
-    { p: 'reject', label: 'Reject (enforce)', color: '#00e5a0', desc: 'Unauthenticated emails are blocked entirely. Maximum protection — use only after monitoring confirms all senders pass.', risk: 'High if misconfigured', visibility: 'Full' },
+    { p: 'quarantine', label: 'Quarantine', color: '#d97706', desc: 'Unauthenticated emails go to spam. Legitimate senders must pass SPF or DKIM.', risk: 'Medium', visibility: 'Full' },
+    { p: 'reject', label: 'Reject (enforce)', color: '#16a34a', desc: 'Unauthenticated emails are blocked entirely. Maximum protection — use only after monitoring confirms all senders pass.', risk: 'High if misconfigured', visibility: 'Full' },
   ]
   const currentIdx = policies.findIndex(p => p.p === currentPolicy) ?? 0
   const safeIdx = Math.max(0, currentIdx)
@@ -120,7 +120,7 @@ function PolicyWizard({ domain, currentPolicy, ruaAddress }) {
               </div>
             </div>
             <div style={{ fontSize:12, color:'#374151', lineHeight:1.6 }}>
-              ⚠️ Before upgrading to <strong style={{ color:'#374151' }}>{nextPolicy.p}</strong>: ensure all your sending sources appear in your DMARC reports with <span style={{ color:'#111827' }}>pass</span> status. If any legitimate sender shows <span style={{ color:'#ff4d6a' }}>fail</span>, fix it first.
+              ⚠️ Before upgrading to <strong style={{ color:'#374151' }}>{nextPolicy.p}</strong>: ensure all your sending sources appear in your DMARC reports with <span style={{ color:'#111827' }}>pass</span> status. If any legitimate sender shows <span style={{ color:'#dc2626' }}>fail</span>, fix it first.
             </div>
           </>
         ) : (
@@ -172,9 +172,9 @@ function UploadXMLModal({ domain, onClose, onSuccess }) {
           <textarea value={xml} onChange={e => setXml(e.target.value)} placeholder="Or paste XML content here..." rows={8}
             style={{ width:'100%', padding:'10px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:8, fontSize:12, fontFamily:'monospace', color:'#111827', outline:'none', resize:'vertical', boxSizing:'border-box' }}/>
         )}
-        {error && <div style={{ fontSize:12, color:'#ff4d6a', marginTop:8 }}>{error}</div>}
+        {error && <div style={{ fontSize:12, color:'#dc2626', marginTop:8 }}>{error}</div>}
         <div style={{ display:'flex', gap:8, marginTop:14 }}>
-          <button onClick={upload} disabled={loading} style={{ flex:1, padding:'9px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer' }}>
+          <button onClick={upload} disabled={loading} style={{ flex:1, padding:'9px', background:'#16a34a', color:'#fff', border:'none', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer' }}>
             {loading ? 'Processing…' : 'Upload & parse'}
           </button>
           <button onClick={onClose} style={{ padding:'9px 16px', background:'#e5e7eb', border:'1px solid #e5e7eb', borderRadius:8, color:'#374151', fontSize:13, cursor:'pointer' }}>Cancel</button>
@@ -245,13 +245,13 @@ function DmarcReportsInner({ user, selectedDomain }) {
   const topCountries = Object.values(countryBreakdown).sort((a, b) => b.count - a.count).slice(0, 8)
 
   const donutData = totalVolume > 0
-    ? [{ name: 'Pass', value: totalPass, color: '#00e5a0' }, { name: 'Fail', value: totalFail, color: '#ff4d6a' }]
+    ? [{ name: 'Pass', value: totalPass, color: '#16a34a' }, { name: 'Fail', value: totalFail, color: '#dc2626' }]
     : [{ name: 'No data', value: 1, color: '#e5e7eb' }]
 
   const hasData = totalVolume > 0
 
   return (
-    <div style={{ padding:20, display:'flex', flexDirection:'column', gap:14, background:'#f7f8fa', minHeight:'100%', fontFamily:"'DM Sans','Inter',system-ui,sans-serif" }}>
+    <div style={{ padding:20, display:'flex', flexDirection:'column', gap:14, background:'#f7f8fa', minHeight:'100%', fontFamily:"'Inter',system-ui,sans-serif" }}>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
 
       {/* Header */}
@@ -262,7 +262,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
         </div>
         <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
           {[7,30,90].map(r => (
-            <button key={r} onClick={() => setRange(r)} style={{ padding:'5px 12px', background:range===r?'#dcfce7':'#f9fafb', border:`1px solid ${range===r?'rgba(16,185,129,0.3)':'#e5e7eb'}`, borderRadius:7, color:range===r?'#00e5a0':D.muted, fontSize:12, fontWeight:500, cursor:'pointer' }}>{r}d</button>
+            <button key={r} onClick={() => setRange(r)} style={{ padding:'5px 12px', background:range===r?'#dcfce7':'#f9fafb', border:`1px solid ${range===r?'rgba(16,185,129,0.3)':'#e5e7eb'}`, borderRadius:7, color:range===r?'#16a34a':D.muted, fontSize:12, fontWeight:500, cursor:'pointer' }}>{r}d</button>
           ))}
           <button onClick={() => setShowUpload(true)} style={{ padding:'5px 12px', background:'#e5e7eb', border:'1px solid #e5e7eb', borderRadius:7, color:'#111827', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}><Upload size={11}/> Upload XML</button>
           <button onClick={fetchData} style={{ padding:'5px 10px', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:7, color:'#374151', cursor:'pointer' }}><RefreshCw size={12}/></button>
@@ -277,7 +277,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
 
       {loading ? (
         <div style={{ display:'flex', justifyContent:'center', padding:40 }}>
-          <div style={{ width:28, height:28, border:'3px solid rgba(16,185,129,0.2)', borderTopColor:'#00e5a0', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
+          <div style={{ width:28, height:28, border:'3px solid rgba(16,185,129,0.2)', borderTopColor:'#16a34a', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
         </div>
       ) : !hasData ? (
         <div style={{ ...card, padding:'48px 24px', textAlign:'center' }}>
@@ -287,7 +287,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
             Add the RUA address above to your DMARC record. Reports arrive automatically within 24–48 hours.
             Or upload a report XML manually to test immediately.
           </p>
-          <button onClick={() => setShowUpload(true)} style={{ padding:'8px 20px', background:'#00e5a0', border:'none', borderRadius:8, color:'#fff', fontSize:13, fontWeight:600, cursor:'pointer' }}>
+          <button onClick={() => setShowUpload(true)} style={{ padding:'8px 20px', background:'#16a34a', border:'none', borderRadius:8, color:'#fff', fontSize:13, fontWeight:600, cursor:'pointer' }}>
             Upload test XML now
           </button>
         </div>
@@ -297,9 +297,9 @@ function DmarcReportsInner({ user, selectedDomain }) {
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))', gap:10 }}>
             {[
               { label:'Total messages', value:totalVolume.toLocaleString(), color:'#111827' },
-              { label:'Pass rate', value:`${passRate}%`, color: passRate >= 90 ? '#00e5a0' : passRate >= 70 ? '#ffb224' : '#ff4d6a' },
+              { label:'Pass rate', value:`${passRate}%`, color: passRate >= 90 ? '#16a34a' : passRate >= 70 ? '#d97706' : '#dc2626' },
               { label:'Passing', value:totalPass.toLocaleString(), color:'#111827' },
-              { label:'Failing', value:totalFail.toLocaleString(), color: totalFail > 0 ? '#ff4d6a' : '#6b7280' },
+              { label:'Failing', value:totalFail.toLocaleString(), color: totalFail > 0 ? '#dc2626' : '#6b7280' },
             ].map(s => (
               <div key={s.label} style={{ background:'#ffffff', border:'1px solid #e5e7eb', borderRadius:10, padding:'12px 14px' }}>
                 <div style={{ fontSize:20, fontWeight:700, color:s.color, marginBottom:2 }}>{s.value}</div>
@@ -338,7 +338,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
                   </Pie>
                 </PieChart>
                 <div style={{ textAlign:'center' }}>
-                  <div style={{ fontSize:22, fontWeight:700, color: passRate >= 90 ? '#00e5a0' : passRate >= 70 ? '#ffb224' : '#ff4d6a' }}>{passRate}%</div>
+                  <div style={{ fontSize:22, fontWeight:700, color: passRate >= 90 ? '#16a34a' : passRate >= 70 ? '#d97706' : '#dc2626' }}>{passRate}%</div>
                   <div style={{ fontSize:12, color:'#374151' }}>pass rate</div>
                 </div>
               </div>
@@ -359,12 +359,12 @@ function DmarcReportsInner({ user, selectedDomain }) {
                       <div style={{ flex:1, minWidth:0 }}>
                         <div style={{ fontSize:12, fontWeight:500, color:'#111827', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{s.name}</div>
                         <div style={{ height:4, borderRadius:2, background:'#e5e7eb', marginTop:4, overflow:'hidden' }}>
-                          <div style={{ height:'100%', width:`${pct}%`, background: pct >= 90 ? '#00e5a0' : pct >= 70 ? '#ffb224' : '#ff4d6a', borderRadius:2 }}/>
+                          <div style={{ height:'100%', width:`${pct}%`, background: pct >= 90 ? '#16a34a' : pct >= 70 ? '#d97706' : '#dc2626', borderRadius:2 }}/>
                         </div>
                       </div>
                       <div style={{ fontSize:12, color:'#374151', flexShrink:0, textAlign:'right' }}>
                         <div>{s.count.toLocaleString()} msgs</div>
-                        <div style={{ color: pct >= 90 ? '#00e5a0' : '#ffb224' }}>{pct}% pass</div>
+                        <div style={{ color: pct >= 90 ? '#16a34a' : '#d97706' }}>{pct}% pass</div>
                       </div>
                     </div>
                   )
@@ -385,7 +385,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
                     <YAxis dataKey="country" type="category" tick={{ fill:'#6b7280', fontSize:10 }} axisLine={false} tickLine={false} width={80}/>
                     <Tooltip content={<VTooltip/>}/>
                     <Bar dataKey="count" name="Messages" fill="#3b82f6" radius={[0,4,4,0]}>
-                      {topCountries.map((e, i) => <Cell key={i} fill={e.threats > 0 ? '#ff4d6a' : '#3d9bff'}/>)}
+                      {topCountries.map((e, i) => <Cell key={i} fill={e.threats > 0 ? '#dc2626' : '#3d9bff'}/>)}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
@@ -435,7 +435,7 @@ export default function DmarcReports({ user }) {
   const selectedDomain = domains.find(d => d.id === selectedId) || null
 
   return (
-    <div style={{ background: D.bg, minHeight: '100%', fontFamily: "'DM Sans','Inter',system-ui,sans-serif" }}>
+    <div style={{ background: D.bg, minHeight: '100%', fontFamily: "'Inter',system-ui,sans-serif" }}>
       <div style={{ padding: '14px 20px', borderBottom: '1px solid #e5e7eb', background: '#ffffff', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
         <h2 style={{ fontSize: 16, fontWeight: 700, color: D.text, margin: 0 }}>DMARC Reports</h2>
         {domains.length > 0 && (

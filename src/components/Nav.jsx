@@ -14,7 +14,7 @@ export default function Nav({ page, setPage, alertCount = 0 }) {
     </button>
   )
   return (
-    <nav style={{ background:'#0d1117',borderBottom:'1px solid rgba(255,255,255,0.08)',padding:'0 18px',height:'56px',display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:100,fontFamily:"'DM Sans','Inter',system-ui,sans-serif" }}>
+    <nav style={{ background:'#0d1117',borderBottom:'1px solid rgba(255,255,255,0.08)',padding:'0 18px',height:'56px',display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:100,fontFamily:"'Inter',system-ui,sans-serif" }}>
       <div style={{ display:'flex',alignItems:'center',gap:8,cursor:'pointer' }} onClick={() => setPage('landing')}>
         <div style={{ width:30,height:30,background:ac,borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center' }}><Radar size={16} color="#fff"/></div>
         <span style={{ fontSize:15,fontWeight:700,color:'#fff' }}>DomainRadar</span>

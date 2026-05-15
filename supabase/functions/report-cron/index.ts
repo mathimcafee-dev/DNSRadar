@@ -38,7 +38,7 @@ function buildReportHtml(user: any, domains: any[], alerts: any[], avgScore: num
       </tr>`
   }).join('')
 
-  const appUrl = Deno.env.get('APP_URL') || 'https://domainradar.vercel.app'
+  const appUrl = Deno.env.get('APP_URL') || 'https://dns-radar.vercel.app'
   const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 
   return `<!DOCTYPE html>
@@ -111,7 +111,7 @@ Deno.serve(async (req) => {
 
   const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
   const RESEND_KEY = Deno.env.get('RESEND_API_KEY')
-  const FROM_EMAIL = Deno.env.get('RESEND_FROM_EMAIL') || 'reports@domainradar.io'
+  const FROM_EMAIL = Deno.env.get('RESEND_FROM_EMAIL') || 'reports@dnsradar.easysecurity.in'
 
   try {
     const today = new Date().toISOString().split('T')[0]

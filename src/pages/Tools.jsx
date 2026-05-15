@@ -954,7 +954,7 @@ export default function Tools({ user }) {
   const [activeTab, setActiveTab] = useState('generators')
 
   return (
-    <div style={{ background:'#f7f8fa', minHeight:'100%', fontFamily:"'DM Sans','Inter',system-ui,sans-serif" }}>
+    <div style={{ background:'#f7f8fa', minHeight:'100%', fontFamily:"'Inter',system-ui,sans-serif" }}>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
       <div style={{ padding:'14px 20px', borderBottom:'1px solid #e5e7eb', background:'#ffffff' }}>
         <h2 style={{ fontSize:16, fontWeight:700, color:'#111827', marginBottom:12 }}>Tools</h2>

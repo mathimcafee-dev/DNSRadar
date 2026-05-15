@@ -6,8 +6,8 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
   const RESEND_KEY = Deno.env.get('RESEND_API_KEY')
-  const FROM_EMAIL = Deno.env.get('RESEND_FROM_EMAIL') || 'alerts@domainradar.io'
-  const APP_URL = Deno.env.get('APP_URL') || 'https://domainradar.vercel.app'
+  const FROM_EMAIL = Deno.env.get('RESEND_FROM_EMAIL') || 'alerts@dnsradar.easysecurity.in'
+  const APP_URL = Deno.env.get('APP_URL') || 'https://dns-radar.vercel.app'
 
   try {
     const { user_id, domain_name, alerts, profile } = await req.json()

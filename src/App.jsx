@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar'
 import Landing from './pages/Landing'
 import Auth from './pages/Auth'
 import ScanResult from './pages/ScanResult'
+import SharedScan from './pages/SharedScan'
 import Dashboard from './pages/Dashboard'
 import Tools from './pages/Tools'
 import DmarcReports from './pages/DmarcReports'
@@ -53,6 +54,12 @@ export default function App() {
 
   function getInitialPage() {
     const params = new URLSearchParams(window.location.search)
+    // Handle shared scan link
+    const shareId = params.get('share')
+    if (shareId) {
+      window.history.replaceState({}, '', '/')
+      return 'share:' + shareId
+    }
     const pg = params.get('page')
     if (pg) { window.history.replaceState({}, '', '/'); return pg }
     try {
@@ -114,6 +121,10 @@ export default function App() {
   if (page === 'landing') return <Landing setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>
   if (page === 'auth') return <Auth setPage={setPage}/>
   if (page === 'scan') return <ScanResult domain={scanDomain} scanType={scanType} setPage={setPage} user={user}/>
+  if (page.startsWith('share:')) {
+    const shareId = page.replace('share:', '')
+    return <SharedScan shareId={shareId} setPage={setPage}/>
+  }
   if (needsAuth && !user) return null
 
   const sharedDomainProps = { user, domains, selectedDomain, setSelectedDomain }

@@ -100,7 +100,7 @@ export default function Reports({ user }) {
   }))
 
   return (
-    <div style={{ background:'#f7f8fa', minHeight:'100%', padding:20, fontFamily:"'DM Sans','Inter',system-ui,sans-serif" }}>
+    <div style={{ background:'#f7f8fa', minHeight:'100%', padding:20, fontFamily:"'Inter',system-ui,sans-serif" }}>
       {/* Header */}
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
         <div>

@@ -74,14 +74,14 @@ export default function Settings({ user }) {
   }
 
   return (
-    <div style={{ background:'#f7f8fa', minHeight:'100%', padding:20, fontFamily:"'DM Sans','Inter',system-ui,sans-serif", maxWidth:800 }}>
+    <div style={{ background:'#f7f8fa', minHeight:'100%', padding:20, fontFamily:"'Inter',system-ui,sans-serif", maxWidth:800 }}>
       <h2 style={{ fontSize:17, fontWeight:700, color:'#111827', marginBottom:20 }}>Settings</h2>
 
       {/* Tabs */}
       <div style={{ display:'flex', gap:0, borderBottom:'1px solid #e5e7eb', marginBottom:20 }}>
         {['api','profile','notifications','team'].map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
-            style={{ padding:'8px 16px', background:'transparent', border:'none', borderBottom:`2px solid ${activeTab===t?'#00e5a0':'transparent'}`, cursor:'pointer', fontSize:12, fontWeight:activeTab===t?600:400, color:activeTab===t?'#00e5a0':D.muted, textTransform:'capitalize', transition:'all 0.15s', marginBottom:-1 }}>
+            style={{ padding:'8px 16px', background:'transparent', border:'none', borderBottom:`2px solid ${activeTab===t?'#16a34a':'transparent'}`, cursor:'pointer', fontSize:12, fontWeight:activeTab===t?600:400, color:activeTab===t?'#16a34a':'#374151', textTransform:'capitalize', transition:'all 0.15s', marginBottom:-1 }}>
             {t === 'api' ? 'API Keys' : t === 'notifications' ? 'Notifications' : t === 'team' ? 'Team' : 'Profile'}
           </button>
         ))}
@@ -90,7 +90,7 @@ export default function Settings({ user }) {
       {activeTab === 'api' && (
         <>
           <div style={card}>
-            <div style={{ ...cardHd }}><Key size={13} color="#10b981"/> API keys</div>
+            <div style={{ ...cardHd }}><Key size={13} color="#16a34a"/> API keys</div>
             <div style={{ padding:16 }}>
               <div style={{ fontSize:13,color:'#374151', marginBottom:12, lineHeight:1.6 }}>
                 Use API keys to access DomainRadar programmatically. Include as <code style={{ fontFamily:'monospace', background:'#e5e7eb', padding:'1px 6px', borderRadius:4 }}>Authorization: Bearer YOUR_KEY</code> header.
@@ -134,13 +134,13 @@ export default function Settings({ user }) {
               {/* Keys list */}
               {apiKeys.map(k => (
                 <div key={k.id} style={{ display:'flex', alignItems:'center', gap:12, padding:'9px 0', borderBottom:`1px solid #f9fafb` }}>
-                  <Key size={13} color={k.revoked?D.dim:'#00e5a0'}/>
+                  <Key size={13} color={k.revoked?D.dim:'#16a34a'}/>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:12, fontWeight:500, color:k.revoked?D.dim:D.text }}>{k.name}</div>
                     <div style={{ fontSize:10, color:'#374151', fontFamily:'monospace' }}>{k.key_prefix}… · {k.request_count||0} requests · {k.last_used_at?`Last used ${new Date(k.last_used_at).toLocaleDateString()}`:'Never used'}</div>
                   </div>
                   {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'#e5e7eb', color:'#374151' }}>Revoked</span>
-                    : <button onClick={() => revokeKey(k.id)} style={{ padding:'4px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'#ff4d6a', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}><Trash2 size={10}/> Revoke</button>}
+                    : <button onClick={() => revokeKey(k.id)} style={{ padding:'4px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'#dc2626', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}><Trash2 size={10}/> Revoke</button>}
                 </div>
               ))}
             </div>
@@ -164,11 +164,11 @@ export default function Settings({ user }) {
             </div>
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={saveProfile} disabled={saving}
-                style={{ padding:'8px 18px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
+                style={{ padding:'8px 18px', background:'#16a34a', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
                 {saving ? 'Saving…' : 'Save changes'}
               </button>
               <button onClick={() => { if(window.confirm('Sign out?')) signOut() }}
-                style={{ padding:'8px 14px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:7, color:'#ff4d6a', fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+                style={{ padding:'8px 14px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:7, color:'#dc2626', fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
                 <LogOut size={13}/> Sign out
               </button>
             </div>
@@ -181,7 +181,7 @@ export default function Settings({ user }) {
           <div style={{ ...cardHd }}><Bell size={13} color="#f59e0b"/> Notifications</div>
           <div style={{ padding:16 }}>
             <label style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16, cursor:'pointer' }}>
-              <input type="checkbox" checked={profile.alert_email||true} onChange={e => setProfile(p => ({ ...p, alert_email: e.target.checked }))} style={{ accentColor:'#00e5a0', width:16, height:16 }}/>
+              <input type="checkbox" checked={profile.alert_email||true} onChange={e => setProfile(p => ({ ...p, alert_email: e.target.checked }))} style={{ accentColor:'#16a34a', width:16, height:16 }}/>
               <div>
                 <div style={{ fontSize:13, fontWeight:500, color:'#111827' }}>Email alerts</div>
                 <div style={{ fontSize:12,color:'#374151' }}>Get notified when a domain score changes or new issues are detected</div>
@@ -194,7 +194,7 @@ export default function Settings({ user }) {
                 style={{ width:'100%', padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'monospace' }}/>
             </div>
             <button onClick={saveProfile} disabled={saving}
-              style={{ padding:'8px 18px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
+              style={{ padding:'8px 18px', background:'#16a34a', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
               {saving ? 'Saving…' : 'Save'}
             </button>
           </div>
@@ -239,7 +239,7 @@ function TeamSection({ user }) {
     setMembers(m => m.filter(x => x.id !== id))
   }
 
-  const statusColor = { pending:'#ffb224', active:'#00e5a0', rejected:'#ff4d6a' }
+  const statusColor = { pending:'#d97706', active:'#16a34a', rejected:'#dc2626' }
   const roleColor   = { admin:'#a855f7', editor:'#3d9bff', viewer:'#6b7280' }
 
   return (
@@ -253,7 +253,7 @@ function TeamSection({ user }) {
             <option value="editor">Editor</option>
             <option value="admin">Admin</option>
           </select>
-          <button onClick={invite} disabled={saving||!email.trim()} style={{ padding:'8px 16px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap' }}>
+          <button onClick={invite} disabled={saving||!email.trim()} style={{ padding:'8px 16px', background:'#16a34a', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap' }}>
             {saving ? 'Sending…' : 'Invite'}
           </button>
         </div>
