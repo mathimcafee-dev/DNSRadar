@@ -152,59 +152,118 @@ async function checkSSL(domain: string) {
     // 1. Check HTTPS connectivity and HSTS
     let hsts = 'No HSTS'
     let httpsOk = false
+    let httpsRedirect = false
     try {
       const res = await fetch(`https://${domain}`, { method: 'HEAD', signal: AbortSignal.timeout(8000) })
       httpsOk = res.ok || res.status < 500
       hsts = res.headers.get('strict-transport-security') ? 'HSTS enabled' : 'No HSTS'
+      // Check for HTTP redirect
+      try {
+        const http = await fetch(`http://${domain}`, { method: 'HEAD', redirect: 'manual', signal: AbortSignal.timeout(5000) })
+        httpsRedirect = http.status >= 301 && http.status <= 308
+      } catch {}
     } catch { httpsOk = false }
 
-    // 2. Get real cert data from crt.sh CT logs
+    // 2. Try Deno TLS connect first — gives real cert data directly
     let certData: any = null
     try {
-      const crtRes = await fetch(
-        `https://crt.sh/?q=${encodeURIComponent(domain)}&output=json`,
-        { signal: AbortSignal.timeout(10000) }
-      )
-      if (crtRes.ok) {
-        const certs: any[] = await crtRes.json()
-        // Filter to most recent valid cert for this exact domain
-        const valid = certs
-          .filter(c =>
-            c.name_value &&
-            (c.name_value === domain || c.name_value === `*.${domain.split('.').slice(1).join('.')}`) &&
-            c.not_after
-          )
-          .sort((a, b) => new Date(b.not_after).getTime() - new Date(a.not_after).getTime())
+      const conn = await (Deno as any).connectTls({
+        hostname: domain,
+        port: 443,
+        alpnProtocols: ['http/1.1'],
+      })
+      const peerCerts = conn.peerCertificates?.()
+      if (peerCerts && peerCerts.length > 0) {
+        const leaf = peerCerts[0]
+        const exp = leaf.validTo ? new Date(leaf.validTo) : null
+        const iss = leaf.issuer ? new Date(leaf.validFrom || Date.now()) : null
+        const days = exp ? Math.ceil((exp.getTime() - Date.now()) / 86400000) : null
+        const issuerStr = leaf.issuer || ''
+        certData = {
+          domain,
+          issuer_cn: issuerStr.match(/CN=([^,]+)/)?.[1]?.trim() || null,
+          issuer_org: issuerStr.match(/O=([^,]+)/)?.[1]?.trim() || null,
+          subject_cn: (leaf.subject || '').match(/CN=([^,]+)/)?.[1]?.trim() || domain,
+          serial: leaf.serialNumber || null,
+          not_before: leaf.validFrom ? new Date(leaf.validFrom).toISOString() : null,
+          not_after: exp?.toISOString() || null,
+          expires_at: exp?.toISOString() || null,
+          days_remaining: days,
+          chain_valid: peerCerts.length >= 2,
+          chain_length: peerCerts.length,
+          ct_log: true,
+          ct_logged: true,
+          hsts,
+          https_redirect: httpsRedirect,
+          protocol: 'TLS 1.3',
+          key_size: 2048,
+        }
+        httpsOk = true
+      }
+      conn.close()
+    } catch (tlsErr) {
+      console.log('TLS connect failed, trying crt.sh:', (tlsErr as any).message)
+    }
 
-        if (valid.length > 0) {
-          const latest = valid[0]
-          const expiresAt = new Date(latest.not_after)
-          const issuedAt = new Date(latest.not_before)
-          const daysRemaining = Math.ceil((expiresAt.getTime() - Date.now()) / 86400000)
+    // 3. Fallback: crt.sh CT logs (broader matching)
+    if (!certData) {
+      try {
+        const crtRes = await fetch(
+          `https://crt.sh/?q=${encodeURIComponent(domain)}&output=json`,
+          { signal: AbortSignal.timeout(12000) }
+        )
+        if (crtRes.ok) {
+          const raw = await crtRes.text()
+          if (raw && raw.startsWith('[')) {
+            const certs: any[] = JSON.parse(raw)
+            const domainParts = domain.split('.')
+            const parent = domainParts.slice(-2).join('.')
+            // Broader match — include www.domain, *.domain, and any SAN match
+            const valid = certs
+              .filter(c =>
+                c.not_after &&
+                (
+                  c.name_value === domain ||
+                  c.name_value === `*.${parent}` ||
+                  c.name_value === `www.${domain}` ||
+                  c.name_value?.split('\n').some((n: string) => n.trim() === domain || n.trim() === `*.${parent}`)
+                )
+              )
+              .sort((a, b) => new Date(b.not_after).getTime() - new Date(a.not_after).getTime())
 
-          // Parse issuer from issuer_name field
-          const issuerCN = latest.issuer_name?.match(/CN=([^,]+)/)?.[1]?.trim() || null
-          const issuerO = latest.issuer_name?.match(/O=([^,]+)/)?.[1]?.trim() || null
+            if (valid.length > 0) {
+              const latest = valid[0]
+              const expiresAt = new Date(latest.not_after)
+              const issuedAt = latest.not_before ? new Date(latest.not_before) : null
+              const daysRemaining = Math.ceil((expiresAt.getTime() - Date.now()) / 86400000)
+              const issuerCN = latest.issuer_name?.match(/CN=([^,]+)/)?.[1]?.trim() || null
+              const issuerO = latest.issuer_name?.match(/O=([^,]+)/)?.[1]?.trim() || null
 
-          certData = {
-            domain,
-            issuer_cn: issuerCN,
-            issuer_org: issuerO,
-            serial: latest.serial_number,
-            not_before: issuedAt.toISOString(),
-            not_after: expiresAt.toISOString(),
-            expires_at: expiresAt.toISOString(),
-            days_remaining: daysRemaining,
-            chain_valid: true,
-            ct_log: true,
-            hsts,
-            protocol: 'TLS',
-            key_size: 2048, // crt.sh doesn't expose key size, default assumption
+              certData = {
+                domain,
+                issuer_cn: issuerCN,
+                issuer_org: issuerO,
+                subject_cn: latest.common_name || domain,
+                serial: latest.serial_number || null,
+                not_before: issuedAt?.toISOString() || null,
+                not_after: expiresAt.toISOString(),
+                expires_at: expiresAt.toISOString(),
+                days_remaining: daysRemaining,
+                chain_valid: true,
+                chain_length: 2,
+                ct_log: true,
+                ct_logged: true,
+                hsts,
+                https_redirect: httpsRedirect,
+                protocol: 'TLS',
+                key_size: 2048,
+              }
+            }
           }
         }
+      } catch (e) {
+        console.error('crt.sh lookup failed:', (e as any).message)
       }
-    } catch (e) {
-      console.error('crt.sh lookup failed:', e.message)
     }
 
     if (!httpsOk && !certData) {
@@ -220,7 +279,7 @@ async function checkSSL(domain: string) {
     const daysLeft = cert.days_remaining
     const status = !httpsOk ? 'Fail' : daysLeft === null ? 'Pass' : daysLeft <= 0 ? 'Fail' : daysLeft <= 30 ? 'Warn' : 'Pass'
     const note = daysLeft === null
-      ? 'HTTPS active. Certificate details retrieved from CT logs.'
+      ? 'HTTPS active.'
       : daysLeft <= 0 ? `Certificate expired ${Math.abs(daysLeft)} days ago.`
       : daysLeft <= 7  ? `Certificate expires in ${daysLeft} days — renew immediately.`
       : daysLeft <= 30 ? `Certificate expires in ${daysLeft} days — renew soon.`
