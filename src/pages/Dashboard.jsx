@@ -35,20 +35,41 @@ function AutoFixBanner({ userId, setPage }) {
   )
 }
 
+const CAA_VENDORS = [
+  { id:'letsencrypt', label:"Let's Encrypt", domain:'letsencrypt.org',  icon:'🔒', note:'Free, auto-renewal' },
+  { id:'digicert',    label:'DigiCert',      domain:'digicert.com',      icon:'🛡️', note:'Enterprise CA' },
+  { id:'sectigo',     label:'Sectigo',       domain:'sectigo.com',       icon:'🔐', note:'Comodo / Sectigo' },
+  { id:'zerossl',     label:'ZeroSSL',       domain:'zerossl.com',       icon:'🔑', note:'Free alternative' },
+  { id:'globalsign',  label:'GlobalSign',    domain:'globalsign.com',    icon:'🌐', note:'Global enterprise' },
+  { id:'entrust',     label:'Entrust',       domain:'entrust.net',       icon:'🏛️', note:'Government & enterprise' },
+  { id:'amazon',      label:'Amazon (ACM)',  domain:'amazon.com',        icon:'☁️', note:'AWS Certificate Manager' },
+  { id:'google',      label:'Google (GTS)',  domain:'pki.goog',          icon:'🔵', note:'Google Trust Services' },
+]
+
 function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
-  const [state, setState] = useState('idle') // idle | loading | success | error | no-cred
+  const [state, setState] = useState('idle')
   const [cred, setCred] = useState(null)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [caaVendors, setCaaVendors] = useState(['letsencrypt'])
+  const [caaMode, setCaaMode] = useState('issue') // issue | issuewild | iodef
 
-  // Map issue types to the DNS record they create/update
   const RECORD_MAP = {
-    SPF:   { type:'TXT', name:'@',                    label:'SPF record' },
-    DMARC: { type:'TXT', name:d=>`_dmarc.${d}`,       label:'DMARC record' },
-    CAA:   { type:'CAA', name:'@',                    label:'CAA record' },
-    DKIM:  { type:'TXT', name:d=>`default._domainkey.${d}`, label:'DKIM record' },
+    SPF:   { type:'TXT', name:'@',                         label:'SPF record' },
+    DMARC: { type:'TXT', name:d=>`_dmarc.${d}`,            label:'DMARC record' },
+    CAA:   { type:'CAA', name:'@',                         label:'CAA record' },
+    DKIM:  { type:'TXT', name:d=>`default._domainkey.${d}`,label:'DKIM record' },
   }
   const mapping = RECORD_MAP[issueType]
   if (!mapping || !fixValue) return null
+
+  // Build CAA record content from selected vendors
+  const caaRecordLines = issueType === 'CAA'
+    ? CAA_VENDORS.filter(v => caaVendors.includes(v.id))
+        .map(v => `0 ${caaMode} "${v.domain}"`)
+        .join('\n') || '0 issue "letsencrypt.org"'
+    : null
+
+  const effectiveFixValue = issueType === 'CAA' ? caaRecordLines.split('\n')[0] : fixValue
 
   async function loadCred() {
     const { data: { user } } = await supabase.auth.getUser()
@@ -65,16 +86,31 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
     setState('loading'); setShowConfirm(false)
     const { data: { session } } = await supabase.auth.getSession()
     const recordName = typeof mapping.name === 'function' ? mapping.name(domainName) : domainName
-    const res = await supabase.functions.invoke('dns-autofix', {
-      body: { credential_id: cred.id, domain_id: domainId, action:'create', record_type: mapping.type, record_name: recordName, record_content: fixValue, record_ttl: 300 },
-      headers: { Authorization: `Bearer ${session?.access_token}` }
-    })
-    setState(res.data?.success ? 'success' : 'error')
-    if (res.data?.success) setTimeout(() => setState('idle'), 5000)
+
+    if (issueType === 'CAA') {
+      // Push one record per selected vendor
+      const lines = caaRecordLines.split('\n')
+      let allOk = true
+      for (const content of lines) {
+        const res = await supabase.functions.invoke('dns-autofix', {
+          body: { credential_id: cred.id, domain_id: domainId, action:'create', record_type:'CAA', record_name: recordName, record_content: content, record_ttl: 300 },
+          headers: { Authorization: `Bearer ${session?.access_token}` }
+        })
+        if (!res.data?.success) { allOk = false }
+      }
+      setState(allOk ? 'success' : 'error')
+    } else {
+      const res = await supabase.functions.invoke('dns-autofix', {
+        body: { credential_id: cred.id, domain_id: domainId, action:'create', record_type: mapping.type, record_name: recordName, record_content: fixValue, record_ttl: 300 },
+        headers: { Authorization: `Bearer ${session?.access_token}` }
+      })
+      setState(res.data?.success ? 'success' : 'error')
+    }
+    if (state !== 'error') setTimeout(() => setState('idle'), 5000)
   }
 
   if (state === 'no-cred') return (
-    <button onClick={()=>{setState('idle')}} style={{fontSize:11,color:'#d97706',background:'#fffbeb',border:'1px solid #fde68a',borderRadius:6,padding:'3px 9px',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
+    <button onClick={()=>setState('idle')} style={{fontSize:11,color:'#d97706',background:'#fffbeb',border:'1px solid #fde68a',borderRadius:6,padding:'3px 9px',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
       Add DNS credentials first
     </button>
   )
@@ -82,33 +118,77 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
   return (
     <div style={{flexShrink:0,position:'relative'}}>
       {showConfirm && (
-        <div style={{position:'absolute',right:0,bottom:'calc(100% + 8px)',zIndex:100,background:'#fff',border:'1px solid #e5e7eb',borderRadius:12,padding:'14px 16px',width:290,boxShadow:'0 8px 24px rgba(0,0,0,0.12)'}}>
-          <div style={{fontSize:13,fontWeight:700,color:'#111827',marginBottom:6}}>Push to {cred?.provider}?</div>
-          <div style={{fontSize:11,color:'#6b7280',marginBottom:8}}>This will create/update the <strong>{mapping.label}</strong> on your DNS provider.</div>
-          <div style={{fontSize:11,fontFamily:'monospace',color:'#1e293b',background:'#f8fafc',border:'1px solid #e2e8f0',padding:'6px 8px',borderRadius:7,marginBottom:12,wordBreak:'break-all',lineHeight:1.5}}>{fixValue?.slice(0,120)}{fixValue?.length > 120 ? '…' : ''}</div>
-          <div style={{display:'flex',gap:6}}>
-            <button onClick={execute} style={{flex:1,padding:'7px',background:'#111827',color:'#fff',border:'none',borderRadius:7,cursor:'pointer',fontSize:12,fontWeight:600,fontFamily:'inherit'}}>
-              ⚡ Confirm push
+        <div style={{position:'absolute',right:0,bottom:'calc(100% + 8px)',zIndex:200,background:'#fff',border:'1px solid #e5e7eb',borderRadius:14,padding:'16px',width: issueType==='CAA' ? 340 : 300,boxShadow:'0 12px 32px rgba(0,0,0,0.14)'}}>
+          <div style={{fontSize:13,fontWeight:700,color:'#111827',marginBottom:4}}>Push to {cred?.provider}</div>
+          <div style={{fontSize:11,color:'#6b7280',marginBottom:12}}>Create/update <strong>{mapping.label}</strong> on your DNS</div>
+
+          {/* CAA vendor picker */}
+          {issueType === 'CAA' && (
+            <div style={{marginBottom:12}}>
+              <div style={{fontSize:11,fontWeight:600,color:'#374151',marginBottom:8,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                <span>Select certificate authorities</span>
+                <div style={{display:'flex',gap:4}}>
+                  {['issue','issuewild'].map(m=>(
+                    <button key={m} onClick={()=>setCaaMode(m)}
+                      style={{fontSize:10,padding:'2px 7px',borderRadius:5,border:`1px solid ${caaMode===m?'#111827':'#e5e7eb'}`,background:caaMode===m?'#111827':'#fff',color:caaMode===m?'#fff':'#6b7280',cursor:'pointer',fontFamily:'inherit'}}>
+                      {m==='issue'?'Standard':'Wildcard'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div style={{display:'flex',flexDirection:'column',gap:5,maxHeight:220,overflowY:'auto'}}>
+                {CAA_VENDORS.map(v=>{
+                  const sel = caaVendors.includes(v.id)
+                  return (
+                    <label key={v.id} style={{display:'flex',alignItems:'center',gap:9,padding:'8px 10px',border:`1px solid ${sel?'#86efac':'#f0f2f5'}`,borderRadius:8,cursor:'pointer',background:sel?'#f0fdf4':'#fff',transition:'all 0.12s'}}>
+                      <input type="checkbox" checked={sel}
+                        onChange={e=>setCaaVendors(prev=>e.target.checked?[...prev,v.id]:prev.filter(x=>x!==v.id))}
+                        style={{width:14,height:14,accentColor:'#16a34a',flexShrink:0}}/>
+                      <span style={{fontSize:16,flexShrink:0}}>{v.icon}</span>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontSize:12,fontWeight:600,color:'#111827'}}>{v.label}</div>
+                        <div style={{fontSize:10,color:'#6b7280',fontFamily:'monospace'}}>{v.domain}</div>
+                      </div>
+                      <span style={{fontSize:10,color:'#9ca3af',flexShrink:0}}>{v.note}</span>
+                    </label>
+                  )
+                })}
+              </div>
+              {/* Preview */}
+              <div style={{marginTop:8,padding:'6px 9px',background:'#f8fafc',border:'1px solid #e2e8f0',borderRadius:7,fontSize:11,fontFamily:'monospace',color:'#1e293b',lineHeight:1.8,wordBreak:'break-all'}}>
+                {caaVendors.length===0
+                  ? <span style={{color:'#9ca3af'}}>Select at least one CA above</span>
+                  : CAA_VENDORS.filter(v=>caaVendors.includes(v.id)).map(v=>(
+                      <div key={v.id}>0 {caaMode} &quot;{v.domain}&quot;</div>
+                    ))
+                }
+              </div>
+            </div>
+          )}
+
+          {/* Non-CAA record preview */}
+          {issueType !== 'CAA' && (
+            <div style={{fontSize:11,fontFamily:'monospace',color:'#1e293b',background:'#f8fafc',border:'1px solid #e2e8f0',padding:'7px 9px',borderRadius:8,marginBottom:12,wordBreak:'break-all',lineHeight:1.6}}>
+              {fixValue?.slice(0,140)}{fixValue?.length>140?'…':''}
+            </div>
+          )}
+
+          <div style={{display:'flex',gap:6,marginTop:4}}>
+            <button onClick={execute} disabled={issueType==='CAA'&&caaVendors.length===0}
+              style={{flex:1,padding:'8px',background: caaVendors.length===0&&issueType==='CAA'?'#9ca3af':'#111827',color:'#fff',border:'none',borderRadius:8,cursor: caaVendors.length===0&&issueType==='CAA'?'not-allowed':'pointer',fontSize:12,fontWeight:600,fontFamily:'inherit'}}>
+              ⚡ Push {issueType==='CAA'&&caaVendors.length>1?`${caaVendors.length} records`:'record'}
             </button>
-            <button onClick={()=>setShowConfirm(false)} style={{padding:'7px 12px',background:'#f9fafb',color:'#374151',border:'1px solid #e5e7eb',borderRadius:7,cursor:'pointer',fontSize:12,fontFamily:'inherit'}}>
+            <button onClick={()=>setShowConfirm(false)} style={{padding:'8px 12px',background:'#f9fafb',color:'#374151',border:'1px solid #e5e7eb',borderRadius:8,cursor:'pointer',fontSize:12,fontFamily:'inherit'}}>
               Cancel
             </button>
           </div>
         </div>
       )}
       <button onClick={state==='idle'?loadCred:undefined} disabled={state==='loading'||state==='success'}
-        style={{
-          padding:'5px 12px',
-          background: state==='success'?'#f0fdf4' : state==='error'?'#fef2f2' : '#f0fdf4',
-          border: `1px solid ${state==='success'?'#86efac' : state==='error'?'#fecaca' : '#86efac'}`,
-          borderRadius:7, color: state==='success'?'#16a34a' : state==='error'?'#dc2626' : '#15803d',
-          fontSize:11, fontWeight:600, cursor:state==='idle'?'pointer':'default',
-          whiteSpace:'nowrap', display:'flex', alignItems:'center', gap:5, fontFamily:'inherit',
-          transition:'all 0.15s',
-        }}
-        onMouseEnter={e=>{ if(state==='idle') e.currentTarget.style.background='#dcfce7' }}
-        onMouseLeave={e=>{ if(state==='idle') e.currentTarget.style.background='#f0fdf4' }}>
-        {state==='loading' && <div style={{width:10,height:10,border:'2px solid #d1d5db',borderTopColor:'#16a34a',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>}
+        style={{padding:'5px 12px',background:state==='success'?'#f0fdf4':state==='error'?'#fef2f2':'#f0fdf4',border:`1px solid ${state==='success'?'#86efac':state==='error'?'#fecaca':'#86efac'}`,borderRadius:7,color:state==='success'?'#16a34a':state==='error'?'#dc2626':'#15803d',fontSize:11,fontWeight:600,cursor:state==='idle'?'pointer':'default',whiteSpace:'nowrap',display:'flex',alignItems:'center',gap:5,fontFamily:'inherit',transition:'all 0.15s'}}
+        onMouseEnter={e=>{if(state==='idle')e.currentTarget.style.background='#dcfce7'}}
+        onMouseLeave={e=>{if(state==='idle')e.currentTarget.style.background='#f0fdf4'}}>
+        {state==='loading'&&<div style={{width:10,height:10,border:'2px solid #d1d5db',borderTopColor:'#16a34a',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>}
         {state==='idle'    && '⚡ Auto-fix'}
         {state==='loading' && 'Pushing…'}
         {state==='success' && '✓ Pushed!'}
