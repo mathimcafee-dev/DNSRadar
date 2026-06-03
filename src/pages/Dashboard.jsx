@@ -161,30 +161,25 @@ function exportCompliancePDF(domain, scan) {
 }
 
 function AutoFixBanner({ userId, setPage }) {
-  const [hasCred, setHasCred] = useState(null) // null=loading, true, false
+  const [hasCred, setHasCred] = useState(null)
   useEffect(() => {
     if (!userId) return
     supabase.from('dns_credentials').select('id', { count:'exact', head:true }).eq('user_id', userId)
       .then(({ count }) => setHasCred((count||0) > 0))
   }, [userId])
 
-  if (hasCred === null) return null // loading — show nothing
+  if (hasCred === null) return null
   if (hasCred) return (
-    <div style={{margin:'0 16px 4px',padding:'9px 12px',background:'#e8f3fc',border:'1px solid var(--green-bdr)',borderRadius:8,display:'flex',alignItems:'center',gap:8,fontSize:12}}>
-      <span style={{fontSize:16}}>⚡</span>
-      <span style={{color:'#0059a5',fontWeight:500}}>DNS credentials connected — click <strong>Auto-fix</strong> on any issue to push the record directly to your DNS provider.</span>
+    <div style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'#0059a5'}}>
+      <span style={{fontSize:13}}>⚡</span>
+      <span style={{fontWeight:500}}>Auto-fix enabled</span>
     </div>
   )
   return (
-    <div style={{margin:'0 16px 4px',padding:'9px 12px',background:'#fffbeb',border:'1px solid var(--amber-bdr)',borderRadius:8,display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,fontSize:12}}>
-      <div style={{display:'flex',alignItems:'center',gap:8}}>
-        <span style={{fontSize:16}}>🔑</span>
-        <span style={{color:'#d97706'}}>Connect Cloudflare or GoDaddy to enable <strong>one-click auto-fix</strong> for DNS issues.</span>
-      </div>
-      <button onClick={()=>setPage('autofix')} style={{padding:'5px 12px',background:'#ffffff',color:'#1a2332',border:'none',borderRadius:7,fontSize:11,fontWeight:600,cursor:'pointer',whiteSpace:'nowrap',fontFamily:'inherit'}}>
-        Add credentials →
-      </button>
-    </div>
+    <button onClick={()=>setPage('autofix')}
+      style={{display:'flex',alignItems:'center',gap:5,padding:'5px 10px',background:'#fffbeb',color:'#d97706',border:'1px solid #fcd34d',borderRadius:7,fontSize:11,fontWeight:600,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
+      🔑 Connect DNS provider for auto-fix
+    </button>
   )
 }
 
@@ -499,118 +494,211 @@ function SBadge({ status }) {
 
 // ─── Main ─────────────────────────────────────────────────────────────
 
-// ─── Issues panel (collapsible) ──────────────────────────────────────
-function IssuesPanel({ issues, critical, warns, scan, selected, user, setPage }) {
-  const [expanded, setExpanded] = useState(critical.length > 0) // auto-open if critical
+// ─── DNS Health Table — replaces old IssuesPanel ─────────────────────
+function DnsHealthTable({ scan, selected, user, setPage }) {
+  if (!scan) return null
+  const ea = scan.email_auth || {}
+  const ssl = scan.ssl_info || {}
+  const sec = scan.security || {}
+  const bl = scan.blacklists || {}
+  const issues = scan.issues || []
 
-  const allClear = issues.length === 0
-  const headerBg = allClear ? '#e0f2fe' : critical.length > 0 ? '#fff5f5' : '#e8f3fc'
-  const headerBd = allClear ? '#a8d0f0' : critical.length > 0 ? '#feb2b2' : '#fcd34d'
-  const headerColor = allClear ? '#0073d1' : critical.length > 0 ? '#e53e3e' : '#0073d1'
+  // Build every record as a row — existing value + status + fix action
+  const rows = [
+    {
+      type:'SPF', label:'SPF record',
+      name:'@', recordType:'TXT',
+      current: ea.spf_raw || null,
+      status: ea.spf_status || 'Missing',
+      note: ea.spf_fix || null,
+      extra: ea.spf_lookups != null ? `${ea.spf_lookups}/10 lookups` : null,
+      fixType:'SPF',
+      fixVal: ea.spf_raw || null, // existing record only — never generate Google SPF
+      ctaLabel:'SPF Generator', ctaAction:()=>setPage('tools'),
+    },
+    {
+      type:'DKIM', label:'DKIM signing',
+      name: ea.dkim_selector ? `${ea.dkim_selector}._domainkey` : '(selector)._domainkey',
+      recordType:'TXT',
+      current: ea.dkim_selector ? `Selector: ${ea.dkim_selector}` : null,
+      status: ea.dkim_status || 'Missing',
+      note: ea.dkim_note || 'No DKIM found. Configure DKIM with your email provider.',
+      extra: ea.dkim_selector ? `${ea.dkim_algo||'RSA'} key` : null,
+      fixType: null, fixVal: null, // DKIM keys must come from your mail provider
+      ctaLabel: null, ctaAction: null,
+    },
+    {
+      type:'DMARC', label:'DMARC policy',
+      name:`_dmarc.${selected?.domain_name}`, recordType:'TXT',
+      current: ea.dmarc_raw || null,
+      status: ea.dmarc_status || 'Missing',
+      note: ea.dmarc_fix || null,
+      extra: ea.dmarc_policy ? `p=${ea.dmarc_policy}` : null,
+      fixType:'DMARC',
+      fixVal: ea.dmarc_suggestion || ea.dmarc_raw || null,
+      suggestion: ea.dmarc_suggestion,
+      ctaLabel:'Policy Wizard', ctaAction:()=>setPage('dmarc'),
+    },
+    {
+      type:'CAA', label:'CAA record',
+      name:'@', recordType:'CAA',
+      current: sec.caa_value || null,
+      status: sec.caa_status || 'Missing',
+      note: sec.caa_status === 'Missing' ? 'Any CA can issue SSL certs for your domain. Add a CAA record to restrict which CAs are authorised.' : null,
+      extra: null,
+      fixType:'CAA',
+      fixVal: sec.caa_value || '(select CA in auto-fix)',
+      ctaLabel: null, ctaAction: null,
+    },
+    {
+      type:'SSL', label:'SSL certificate',
+      name: selected?.domain_name, recordType:'—',
+      current: ssl.certs?.[0] ? `Expires ${ssl.certs[0].expires_at ? new Date(ssl.certs[0].expires_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '?'} · Issuer: ${ssl.certs[0].issuer_org||ssl.certs[0].issuer_cn||'?'}` : null,
+      status: ssl.overall_status || 'Unknown',
+      note: ssl.certs?.[0]?.days_remaining != null && ssl.certs[0].days_remaining <= 30 ? `Expires in ${ssl.certs[0].days_remaining} days — renew soon` : null,
+      extra: ssl.certs?.[0]?.days_remaining != null ? `${ssl.certs[0].days_remaining}d remaining` : null,
+      fixType: null, fixVal: null,
+      ctaLabel: null, ctaAction: null,
+    },
+    {
+      type:'DNSSEC', label:'DNSSEC',
+      name: selected?.domain_name, recordType:'DS/DNSKEY',
+      current: sec.dnssec_algorithm || null,
+      status: sec.dnssec_status || 'Not signed',
+      note: sec.dnssec_status !== 'Signed' ? 'DNS responses are not cryptographically validated. Enable DNSSEC at your registrar.' : null,
+      extra: null,
+      fixType: null, fixVal: null,
+      ctaLabel: null, ctaAction: null,
+    },
+    {
+      type:'Blacklist', label:'Blacklists',
+      name: bl.ip || selected?.domain_name, recordType:'IP/Domain',
+      current: bl.listed_count > 0 ? `Listed on ${bl.listed_count} of ${bl.results?.length||0} lists` : `Clean across ${bl.results?.length||0} lists`,
+      status: bl.listed_count > 0 ? `${bl.listed_count} listed` : 'Clean',
+      note: bl.listed_count > 0 ? 'Email delivery severely affected. Click Delist to request removal from each list.' : null,
+      extra: bl.listed_count > 0 ? `IP: ${bl.ip||'?'}` : null,
+      fixType: null, fixVal: null,
+      ctaLabel: bl.listed_count > 0 ? 'View & Delist' : null,
+      ctaAction: bl.listed_count > 0 ? ()=>setPage('dashboard') : null, // stays on dashboard, switches tab
+    },
+  ]
+
+  const sc = status => {
+    const sl = (status||'').toLowerCase()
+    if (['pass','valid','clean','signed','present'].some(p=>sl.includes(p))) return {color:'#0073d1',bg:'#e8f3fc',bd:'#a8d0f0'}
+    if (['missing','fail','expired','listed'].some(p=>sl.includes(p))) return {color:'#e53e3e',bg:'#fff5f5',bd:'#feb2b2'}
+    return {color:'#d97706',bg:'#fffbeb',bd:'#fcd34d'}
+  }
+
+  const critCount = issues.filter(i=>i.severity==='critical').length
+  const warnCount = issues.filter(i=>i.severity==='warn').length
 
   return (
-    <div className="print-card" style={{background:'#ffffff', border:`1px solid ${expanded ? '#e2e8f0' : headerBd}`, borderRadius:12, overflow:'hidden', boxShadow:'0 1px 3px rgba(0,0,0,0.05)'}}>
-
-      {/* Collapsed header */}
-      <div onClick={() => setExpanded(e => !e)}
-        style={{padding:'11px 16px', display:'flex', alignItems:'center', gap:10, cursor:'pointer', userSelect:'none',
-          background: expanded ? '#fafafa' : headerBg, borderBottom: expanded ? '1px solid #f0f2f5' : 'none'}}>
-
-        {/* Icon */}
-        <div style={{width:30, height:30, borderRadius:8, flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center',
-          background: allClear ? '#e8f3fc' : critical.length > 0 ? '#feb2b2' : '#fcd34d',
-          border: `1px solid ${headerBd}`}}>
-          {allClear
-            ? <CheckCircle size={15} color="var(--green)"/>
-            : <AlertTriangle size={15} color={headerColor}/>
-          }
-        </div>
-
-        <div style={{flex:1}}>
-          <div style={{fontSize:13, fontWeight:700, color:'#1a2332'}}>
-            {allClear ? 'All checks passing' : `${issues.length} issue${issues.length!==1?'s':''} to fix`}
+    <div style={{background:'#ffffff',border:'1px solid #e2e8f0',borderRadius:12,overflow:'hidden',boxShadow:'0 1px 4px rgba(0,0,0,0.05)'}}>
+      {/* Header */}
+      <div style={{padding:'14px 20px',borderBottom:'1px solid #e2e8f0',background:'#fafbfc',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+        <div style={{display:'flex',alignItems:'center',gap:10}}>
+          <div style={{display:'flex',alignItems:'center',gap:7}}>
+            <Shield size={15} color="#0073d1"/>
+            <span style={{fontSize:14,fontWeight:700,color:'#1a2332'}}>DNS &amp; Security health</span>
           </div>
-          <div style={{fontSize:11, color:'#8896a7', marginTop:1}}>
-            {allClear
-              ? `No issues detected on ${selected?.domain_name}`
-              : [
-                  critical.length > 0 && `${critical.length} critical`,
-                  warns.length > 0 && `${warns.length} warning${warns.length!==1?'s':''}`,
-                  issues.filter(i=>i.severity==='info').length > 0 && `${issues.filter(i=>i.severity==='info').length} info`,
-                ].filter(Boolean).join(' · ')
-            }
+          <div style={{display:'flex',gap:5}}>
+            {critCount > 0 && <span style={{fontSize:10,fontWeight:600,padding:'2px 8px',borderRadius:10,background:'#fff5f5',color:'#e53e3e',border:'1px solid #feb2b2'}}>{critCount} critical</span>}
+            {warnCount > 0 && <span style={{fontSize:10,fontWeight:600,padding:'2px 8px',borderRadius:10,background:'#fffbeb',color:'#d97706',border:'1px solid #fcd34d'}}>{warnCount} warning{warnCount>1?'s':''}</span>}
+            {critCount===0 && warnCount===0 && <span style={{fontSize:10,fontWeight:600,padding:'2px 8px',borderRadius:10,background:'#e8f3fc',color:'#0073d1',border:'1px solid #a8d0f0'}}>✓ All clear</span>}
           </div>
         </div>
-
-        {/* Badge pills */}
-        <div style={{display:'flex', gap:5, alignItems:'center'}}>
-          {critical.length > 0 && <span style={{fontSize:10, padding:'2px 7px', borderRadius:8, background:'#fff5f5', color:'#e53e3e', border:'1px solid var(--pk-bdr)', fontWeight:600}}>{critical.length} critical</span>}
-          {warns.length > 0    && <span style={{fontSize:10, padding:'2px 7px', borderRadius:8, background:'#fffbeb', color:'#d97706', border:'1px solid var(--or-bdr)', fontWeight:600}}>{warns.length} warn</span>}
-          <span style={{fontSize:12, color:'#8896a7', transform: expanded?'rotate(180deg)':'none', transition:'transform 0.2s', display:'inline-block', marginLeft:4}}>▼</span>
-        </div>
+        <AutoFixBanner userId={user?.id} setPage={setPage}/>
       </div>
 
-      {/* Expanded content */}
-      {expanded && (
-        <>
-          {/* Auto-fix banner */}
-          {issues.some(i=>['SPF','DMARC','CAA','DKIM'].includes(i.type)) && (
-            <AutoFixBanner userId={user?.id} setPage={setPage}/>
-          )}
+      {/* Column headers */}
+      <div style={{display:'grid',gridTemplateColumns:'110px 90px 1fr 110px 170px',background:'#fafbfc',borderBottom:'1.5px solid #e2e8f0',padding:'7px 16px',gap:0}}>
+        {['Record','Name / Host','Current value','Status','Action'].map(h=>(
+          <div key={h} style={{fontSize:10,fontWeight:700,color:'#8896a7',textTransform:'uppercase',letterSpacing:'0.08em'}}>{h}</div>
+        ))}
+      </div>
 
-          {allClear ? (
-            <div style={{padding:'28px', textAlign:'center'}}>
-              <CheckCircle size={28} color="var(--green)" style={{marginBottom:8}}/>
-              <div style={{fontSize:13, fontWeight:600, color:'#1a2332'}}>All checks passing</div>
-              <div style={{fontSize:12, color:'#8896a7', marginTop:4}}>No issues detected on {selected?.domain_name}</div>
+      {/* Rows */}
+      {rows.map((row, i) => {
+        const s = sc(row.status)
+        const isIssue = s.color === '#e53e3e'
+        const isWarn = s.color === '#d97706'
+        const canFix = row.fixType && row.fixVal && row.fixVal.trim().length > 0
+
+        return (
+          <div key={row.type} style={{
+            display:'grid', gridTemplateColumns:'110px 90px 1fr 110px 170px',
+            padding:'11px 16px', alignItems:'start', gap:0,
+            borderBottom: i < rows.length-1 ? '1px solid #f1f5f9' : 'none',
+            background: isIssue ? '#fefafa' : 'transparent',
+            transition:'background 0.1s',
+          }}
+            onMouseEnter={e=>e.currentTarget.style.background=isIssue?'#fef5f5':'#f8fbff'}
+            onMouseLeave={e=>e.currentTarget.style.background=isIssue?'#fefafa':'transparent'}>
+
+            {/* Col 1: Record label */}
+            <div>
+              <div style={{fontSize:12,fontWeight:700,color:'#1a2332',fontFamily:'monospace'}}>{row.label}</div>
+              <div style={{fontSize:10,color:'#8896a7',marginTop:1}}>{row.recordType}</div>
+              {row.extra && <div style={{fontSize:10,fontFamily:'monospace',color:'#0073d1',marginTop:3,background:'#e8f3fc',padding:'1px 5px',borderRadius:3,display:'inline-block'}}>{row.extra}</div>}
             </div>
-          ) : issues.map((iss, i) => {
-            const fixVal = iss.type==='SPF'   ? (scan.email_auth?.spf_raw || null) // null blocks auto-fix for missing SPF
-                         : iss.type==='DMARC' ? (scan.email_auth?.dmarc_suggestion || scan.email_auth?.dmarc_raw || null)
-                         : iss.type==='CAA'   ? '0 issue "letsencrypt.org"'
-                         : iss.fix
-            const canAutoFix = ['SPF','DMARC','CAA'].includes(iss.type) && fixVal && fixVal.trim().length > 0
-            const sevColor = iss.severity==='critical'?'#e53e3e':iss.severity==='warn'?'#0073d1':'#0284c7'
-            const sevBg    = iss.severity==='critical'?'#fff5f5':iss.severity==='warn'?'#e8f3fc':'#e0f2fe'
-            const sevBd    = iss.severity==='critical'?'#feb2b2':iss.severity==='warn'?'#fcd34d':'#bfdbfe'
-            return (
-              <div key={i} style={{display:'flex', alignItems:'flex-start', gap:12, padding:'12px 16px',
-                borderBottom: i < issues.length-1 ? '1px solid #f3f4f6' : 'none',
-                background: iss.severity==='critical' ? '#fefafa' : 'transparent'}}>
-                <div style={{width:28, height:28, borderRadius:8, background:sevBg, border:`1px solid ${sevBd}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, marginTop:1}}>
-                  <AlertTriangle size={13} color={sevColor}/>
+
+            {/* Col 2: Name/host */}
+            <div style={{paddingRight:8}}>
+              <div style={{fontSize:10,fontFamily:'monospace',color:'#4a5568',wordBreak:'break-all',lineHeight:1.5}}>{row.name}</div>
+            </div>
+
+            {/* Col 3: Current value + issue note */}
+            <div style={{paddingRight:16}}>
+              {row.current ? (
+                <div style={{fontSize:11,fontFamily:'monospace',color:'#1a2332',background:'#f8fafc',border:'1px solid #e2e8f0',borderRadius:5,padding:'4px 7px',wordBreak:'break-all',lineHeight:1.5,marginBottom: (row.note||row.suggestion) ? 5 : 0}}>
+                  {row.current}
                 </div>
-                <div style={{flex:1, minWidth:0}}>
-                  <div style={{display:'flex', alignItems:'center', gap:7, marginBottom:3, flexWrap:'wrap'}}>
-                    <span style={{fontSize:13, fontWeight:700, color:'#1a2332'}}>{formatIssueType(iss.type)}</span>
-                    <span style={{fontSize:10, padding:'2px 7px', borderRadius:8, background:sevBg, color:sevColor, border:`1px solid ${sevBd}`, fontWeight:600}}>{iss.severity}</span>
-                  </div>
-                  <div style={{fontSize:12, color:'#4a5568', lineHeight:1.6, marginBottom:canAutoFix?6:0}}>{iss.message}</div>
-                  {canAutoFix && (
-                    <div style={{fontSize:11, fontFamily:'monospace', color:'#1a2332', background:'#f8fafc', border:'1px solid var(--border)', padding:'4px 9px', borderRadius:6, display:'inline-block', wordBreak:'break-all', marginTop:2, maxWidth:'100%', lineHeight:1.5}}>
-                      {fixVal?.slice(0,120)}{fixVal?.length>120?'…':''}
-                    </div>
-                  )}
-                  {!canAutoFix && iss.fix && (
-                    <div style={{marginTop:4}}>
-                      <div style={{fontSize:12, color:'#4a5568', lineHeight:1.6, marginBottom: iss.type==='SPF' ? 8 : 0}}>{iss.fix}</div>
-                      {iss.type==='SPF' && (
-                        <button onClick={()=>setPage('tools')}
-                          style={{fontSize:12,fontWeight:600,color:'#0073d1',background:'#e8f3fc',border:'1px solid #a8d0f0',borderRadius:6,padding:'5px 12px',cursor:'pointer',fontFamily:'inherit'}}>
-                          Open SPF Generator →
-                        </button>
-                      )}
-                    </div>
-                  )}
+              ) : (
+                <div style={{fontSize:11,color:'#c8d6e5',fontStyle:'italic',marginBottom: row.note ? 5 : 0}}>No record found</div>
+              )}
+              {row.note && (
+                <div style={{fontSize:11,color:isIssue?'#c53030':isWarn?'#d97706':'#4a5568',lineHeight:1.5}}>
+                  {isIssue&&'⚠ '}{row.note}
                 </div>
-                {canAutoFix && (
-                  <AutoFixButton domainId={selected.id} issueType={iss.type} fixValue={fixVal} domainName={selected?.domain_name}/>
-                )}
-              </div>
-            )
-          })}
-        </>
-      )}
+              )}
+              {row.suggestion && (
+                <div style={{marginTop:5,padding:'5px 8px',background:'#e8f3fc',border:'1px solid #a8d0f0',borderRadius:5,fontSize:10,fontFamily:'monospace',color:'#0059a5',wordBreak:'break-all',lineHeight:1.5}}>
+                  <span style={{fontFamily:'inherit',fontWeight:700}}>Safe starting point: </span>{row.suggestion}
+                </div>
+              )}
+            </div>
+
+            {/* Col 4: Status */}
+            <div style={{paddingTop:2}}>
+              <span style={{fontSize:11,fontWeight:600,padding:'3px 9px',borderRadius:20,background:s.bg,color:s.color,border:`1px solid ${s.bd}`,whiteSpace:'nowrap',display:'inline-block'}}>
+                {row.status}
+              </span>
+            </div>
+
+            {/* Col 5: Action */}
+            <div style={{display:'flex',flexDirection:'column',gap:4,paddingTop:2}}>
+              {canFix && <AutoFixButton domainId={selected.id} issueType={row.fixType} fixValue={row.fixVal} domainName={selected?.domain_name}/>}
+              {row.ctaLabel && row.ctaAction && (
+                <button onClick={row.ctaAction}
+                  style={{padding:'5px 10px',background: canFix ? 'transparent' : '#e8f3fc',color:'#0073d1',border:`1px solid ${canFix?'#e2e8f0':'#a8d0f0'}`,borderRadius:7,fontSize:11,fontWeight:600,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',textAlign:'left'}}>
+                  {row.ctaLabel} →
+                </button>
+              )}
+              {!canFix && !row.ctaLabel && (isIssue||isWarn) && row.type!=='SSL' && row.type!=='DNSSEC' && (
+                <span style={{fontSize:10,color:'#8896a7',fontStyle:'italic'}}>Manual setup</span>
+              )}
+            </div>
+          </div>
+        )
+      })}
+
+      {/* Footer */}
+      <div style={{padding:'10px 16px',background:'#fafbfc',borderTop:'1px solid #f1f5f9'}}>
+        <div style={{fontSize:11,color:'#8896a7',lineHeight:1.6}}>
+          <strong style={{color:'#4a5568'}}>Auto-fix safety:</strong> Only DMARC (p=none, relaxed alignment) and CAA (you select the CA) can be auto-pushed. SPF depends on your mail provider — use the SPF Generator. DKIM keys must come from your email provider.
+        </div>
+      </div>
     </div>
   )
 }
@@ -1236,11 +1324,8 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     />
                   </div>
 
-                  {/* Issues */}
-                  <IssuesPanel
-                    issues={issues}
-                    critical={critical}
-                    warns={warns}
+                  {/* DNS Health Table — clean record-by-record view */}
+                  <DnsHealthTable
                     scan={scan}
                     selected={selected}
                     user={user}
@@ -1262,40 +1347,209 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 </>
               )}
 
-              {/* ══ EMAIL AUTH ════════════════════════════════ */}
-              {activeTab==='email'&&scan?.email_auth&&(
-                <div style={card}>
-                  <div style={cardHd}><span style={{fontSize:12,fontWeight:700,color:'#1a2332',display:'flex',alignItems:'center',gap:6}}><Mail size={13} color="#a78bfa"/> Email authentication</span></div>
-                  {[
-                    {name:'SPF',  status:scan.email_auth.spf_status,  val:scan.email_auth.spf_raw,  note:scan.email_auth.spf_fix,  extra:scan.email_auth.spf_lookups!=null?`${scan.email_auth.spf_lookups}/10 lookups`:null, fixType:'SPF',  fixVal:scan.email_auth.spf_raw||null}, // null blocks auto-fix when no existing SPF
-                    {name:'DKIM', status:scan.email_auth.dkim_status, val:scan.email_auth.dkim_selector?`Selector: ${scan.email_auth.dkim_selector}`:null, note:scan.email_auth.dkim_note},
-                    {name:'DMARC',status:scan.email_auth.dmarc_status,val:scan.email_auth.dmarc_raw, note:scan.email_auth.dmarc_fix,suggest:scan.email_auth.dmarc_suggestion, fixType:'DMARC', fixVal:scan.email_auth.dmarc_suggestion||scan.email_auth.dmarc_raw||null},
-                    {name:'BIMI', status:scan.email_auth.bimi_status||'Not configured',   val:scan.email_auth.bimi_raw, note:scan.email_auth.bimi_note},
-                    {name:'MTA-STS',status:scan.email_auth.mta_sts_status||'Not configured',val:null,note:'Enforces TLS for all inbound mail delivery.'},
-                    {name:'TLS-RPT',status:scan.email_auth.tls_rpt_status||'Not configured',val:null,note:'Enables TLS failure reporting.'},
-                  ].map((r,i)=>{
-                    const isMissing = ['Missing','Fail'].includes(r.status)
-                    const canFix = isMissing && r.fixType && r.fixVal
-                    return (
-                    <div key={r.name} style={{display:'flex',alignItems:'flex-start',gap:14,padding:'12px 16px',borderBottom:'1px solid var(--border)',background:isMissing&&r.fixType?'#fefafa':'transparent'}}>
-                      <div style={{width:84,flexShrink:0,minWidth:84}}>
-                        <div style={{fontSize:12,fontWeight:700,color:'#0073d1',fontFamily:'monospace',letterSpacing:'0.04em',textTransform:'uppercase'}}>{r.name}</div>
-                        {r.extra&&<div style={{fontSize:10,color:'#4a5568',marginTop:3}}>{r.extra}</div>}
-                      </div>
-                      <div style={{flex:1}}>
-                        {r.val&&<div style={{fontSize:12,fontFamily:'monospace',color:'#1a2332',marginBottom:4,wordBreak:'break-all',padding:'4px 8px',background:'#f8fafc',borderRadius:5,border:'1px solid var(--border)'}}>{r.val}</div>}
-                        {r.note&&<div style={{fontSize:12,color:'#4a5568',lineHeight:1.5}}>{r.note}</div>}
-                        {r.suggest&&<div style={{marginTop:5,padding:'6px 10px',background:'#e8f3fc',border:'1px solid var(--green-bdr)',borderRadius:6,fontSize:12,fontFamily:'monospace',color:'#0059a5',wordBreak:'break-all'}}>✦ Suggestion: {r.suggest}</div>}
-                      </div>
-                      <div style={{display:'flex',alignItems:'center',gap:7,flexShrink:0}}>
-                        <SBadge status={r.status}/>
-                        {canFix&&<AutoFixButton domainId={selected.id} issueType={r.fixType} fixValue={r.fixVal} domainName={selected?.domain_name}/>}
+              {/* ══ EMAIL AUTH — clean record table ════════════════ */}
+              {activeTab==='email'&&scan?.email_auth&&(()=>{
+                const ea = scan.email_auth
+                const rows = [
+                  {
+                    name:'SPF', fullName:'Sender Policy Framework',
+                    status: ea.spf_status || 'Missing',
+                    currentRecord: ea.spf_raw || null,
+                    extra: ea.spf_lookups != null ? `${ea.spf_lookups}/10 DNS lookups` : null,
+                    issue: ea.spf_fix || null,
+                    fixType:'SPF',
+                    fixVal: ea.spf_raw || null, // null = block auto-fix if no existing SPF
+                    suggestion: null, // SPF cannot be auto-generated — depends on mail provider
+                    ctaLabel: 'SPF Generator',
+                    ctaAction: ()=>setPage('tools'),
+                    desc:'Authorises which mail servers can send email on behalf of your domain.',
+                  },
+                  {
+                    name:'DKIM', fullName:'DomainKeys Identified Mail',
+                    status: ea.dkim_status || 'Missing',
+                    currentRecord: ea.dkim_selector ? `Selector: ${ea.dkim_selector}` : null,
+                    extra: ea.dkim_selector ? `${ea.dkim_algo||'RSA'} · ${ea.dkim_key_size||'?'}bit` : null,
+                    issue: ea.dkim_note || null,
+                    fixType: null, // DKIM keys must be generated by your mail provider, never by us
+                    fixVal: null,
+                    suggestion: null,
+                    ctaLabel: null,
+                    ctaAction: null,
+                    desc:'Cryptographic signature proving emails were not tampered in transit.',
+                  },
+                  {
+                    name:'DMARC', fullName:'Domain-based Message Authentication',
+                    status: ea.dmarc_status || 'Missing',
+                    currentRecord: ea.dmarc_raw || null,
+                    extra: ea.dmarc_policy ? `p=${ea.dmarc_policy}` : null,
+                    issue: ea.dmarc_fix || null,
+                    fixType:'DMARC',
+                    fixVal: ea.dmarc_suggestion || ea.dmarc_raw || null,
+                    suggestion: ea.dmarc_suggestion || null,
+                    ctaLabel: 'Policy Wizard',
+                    ctaAction: ()=>setPage('dmarc'),
+                    desc:'Policy that tells receivers what to do with emails failing SPF/DKIM.',
+                  },
+                  {
+                    name:'BIMI', fullName:'Brand Indicators for Message Identification',
+                    status: ea.bimi_status || 'Not configured',
+                    currentRecord: ea.bimi_raw || null,
+                    extra: null,
+                    issue: ea.bimi_note || null,
+                    fixType: null,
+                    fixVal: null,
+                    suggestion: null,
+                    ctaLabel: null,
+                    ctaAction: null,
+                    desc:'Displays your brand logo in supporting email clients.',
+                  },
+                  {
+                    name:'MTA-STS', fullName:'Mail Transfer Agent Strict Transport Security',
+                    status: ea.mta_sts_status || 'Not configured',
+                    currentRecord: ea.mta_sts_raw || null,
+                    extra: null,
+                    issue: null,
+                    fixType: null,
+                    fixVal: null,
+                    suggestion: null,
+                    ctaLabel: null,
+                    ctaAction: null,
+                    desc:'Enforces TLS encryption for all inbound mail delivery.',
+                  },
+                  {
+                    name:'TLS-RPT', fullName:'TLS Reporting',
+                    status: ea.tls_rpt_status || 'Not configured',
+                    currentRecord: ea.tls_rpt_raw || null,
+                    extra: null,
+                    issue: null,
+                    fixType: null,
+                    fixVal: null,
+                    suggestion: null,
+                    ctaLabel: null,
+                    ctaAction: null,
+                    desc:'Reports TLS connection failures to your designated email address.',
+                  },
+                ]
+                const statusColor = s => {
+                  const sl = (s||'').toLowerCase()
+                  if (['pass','valid','active','configured','enforced'].some(p=>sl.includes(p))) return {color:'#0073d1',bg:'#e8f3fc',bd:'#a8d0f0',dot:'#0073d1'}
+                  if (['missing','fail','expired','listed'].some(p=>sl.includes(p))) return {color:'#e53e3e',bg:'#fff5f5',bd:'#feb2b2',dot:'#e53e3e'}
+                  return {color:'#d97706',bg:'#fffbeb',bd:'#fcd34d',dot:'#d97706'} // warn / not configured
+                }
+                return (
+                <div style={{display:'flex',flexDirection:'column',gap:0}}>
+                  {/* Header */}
+                  <div style={{background:'#ffffff',border:'1px solid #e2e8f0',borderRadius:'12px 12px 0 0',borderBottom:'none',padding:'14px 20px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                    <div style={{display:'flex',alignItems:'center',gap:8}}>
+                      <Mail size={15} color="#0073d1"/>
+                      <span style={{fontSize:14,fontWeight:700,color:'#1a2332'}}>Email authentication</span>
+                    </div>
+                    <div style={{display:'flex',gap:6}}>
+                      {[
+                        {label:'SPF', ok: ea.spf_status==='Pass'},
+                        {label:'DKIM', ok: ea.dkim_status==='Pass'},
+                        {label:'DMARC', ok: !['Missing','Fail'].includes(ea.dmarc_status)},
+                      ].map(p => (
+                        <span key={p.label} style={{fontSize:10,fontWeight:700,padding:'2px 8px',borderRadius:10,background:p.ok?'#e8f3fc':'#fff5f5',color:p.ok?'#0073d1':'#e53e3e',border:`1px solid ${p.ok?'#a8d0f0':'#feb2b2'}`}}>
+                          {p.ok?'✓':'✗'} {p.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Table */}
+                  <div style={{background:'#ffffff',border:'1px solid #e2e8f0',borderRadius:'0 0 12px 12px',overflow:'hidden'}}>
+                    {/* Column headers */}
+                    <div style={{display:'grid',gridTemplateColumns:'120px 1fr 120px 160px',background:'#fafbfc',borderBottom:'1.5px solid #e2e8f0',padding:'8px 16px'}}>
+                      {['Record','Current value / Status','Result','Action'].map(h=>(
+                        <div key={h} style={{fontSize:10,fontWeight:700,color:'#8896a7',textTransform:'uppercase',letterSpacing:'0.08em'}}>{h}</div>
+                      ))}
+                    </div>
+
+                    {rows.map((row, i) => {
+                      const sc = statusColor(row.status)
+                      const isIssue = ['Missing','Fail'].some(x=>row.status.includes(x))
+                      const canFix = row.fixType && row.fixVal
+                      return (
+                        <div key={row.name} style={{
+                          display:'grid', gridTemplateColumns:'120px 1fr 120px 160px',
+                          padding:'12px 16px', alignItems:'start', gap:0,
+                          borderBottom: i < rows.length-1 ? '1px solid #f1f5f9' : 'none',
+                          background: isIssue ? '#fefafa' : 'transparent',
+                        }}>
+
+                          {/* Col 1: Record name */}
+                          <div style={{paddingRight:8}}>
+                            <div style={{fontSize:13,fontWeight:700,color:'#1a2332',fontFamily:'monospace'}}>{row.name}</div>
+                            <div style={{fontSize:10,color:'#8896a7',marginTop:2,lineHeight:1.4}}>{row.fullName}</div>
+                            {row.extra && <div style={{fontSize:10,fontFamily:'monospace',color:'#0073d1',marginTop:3,background:'#e8f3fc',padding:'1px 5px',borderRadius:3,display:'inline-block'}}>{row.extra}</div>}
+                          </div>
+
+                          {/* Col 2: Current value + issue description */}
+                          <div style={{paddingRight:12}}>
+                            {row.currentRecord ? (
+                              <div style={{fontSize:11,fontFamily:'monospace',color:'#1a2332',background:'#f8fafc',border:'1px solid #e2e8f0',borderRadius:5,padding:'5px 8px',wordBreak:'break-all',lineHeight:1.5,marginBottom: row.issue ? 6 : 0}}>
+                                {row.currentRecord}
+                              </div>
+                            ) : (
+                              <div style={{fontSize:12,color:'#8896a7',fontStyle:'italic',marginBottom: row.issue ? 6 : 0}}>{row.desc}</div>
+                            )}
+                            {row.issue && (
+                              <div style={{fontSize:11,color: isIssue ? '#c53030' : '#d97706',lineHeight:1.5,marginTop: row.currentRecord ? 4 : 0}}>
+                                ⚠ {row.issue}
+                              </div>
+                            )}
+                            {row.suggestion && (
+                              <div style={{marginTop:6,padding:'6px 10px',background:'#e8f3fc',border:'1px solid #a8d0f0',borderRadius:6,fontSize:11,fontFamily:'monospace',color:'#0059a5',wordBreak:'break-all',lineHeight:1.5}}>
+                                <div style={{fontSize:10,fontWeight:700,color:'#0059a5',marginBottom:2,fontFamily:'inherit'}}>💡 SUGGESTED SAFE START</div>
+                                {row.suggestion}
+                                <div style={{fontSize:10,color:'#8896a7',fontFamily:'inherit',marginTop:3}}>Add rua= from DMARC Reports → RUA Setup for your unique inbound address</div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Col 3: Status badge */}
+                          <div style={{display:'flex',alignItems:'center',gap:6,paddingTop:2}}>
+                            <span style={{fontSize:11,fontWeight:600,padding:'3px 10px',borderRadius:20,background:sc.bg,color:sc.color,border:`1px solid ${sc.bd}`,whiteSpace:'nowrap'}}>
+                              {row.status}
+                            </span>
+                          </div>
+
+                          {/* Col 4: Action */}
+                          <div style={{display:'flex',flexDirection:'column',gap:5,paddingTop:2}}>
+                            {canFix && (
+                              <AutoFixButton domainId={selected.id} issueType={row.fixType} fixValue={row.fixVal} domainName={selected?.domain_name}/>
+                            )}
+                            {row.ctaLabel && row.ctaAction && !canFix && (
+                              <button onClick={row.ctaAction}
+                                style={{padding:'5px 12px',background:'#e8f3fc',color:'#0073d1',border:'1px solid #a8d0f0',borderRadius:7,fontSize:11,fontWeight:600,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',textAlign:'left'}}>
+                                {row.ctaLabel} →
+                              </button>
+                            )}
+                            {row.ctaLabel && row.ctaAction && canFix && (
+                              <button onClick={row.ctaAction}
+                                style={{padding:'4px 10px',background:'transparent',color:'#8896a7',border:'1px solid #e2e8f0',borderRadius:7,fontSize:10,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
+                                {row.ctaLabel}
+                              </button>
+                            )}
+                            {!canFix && !row.ctaLabel && isIssue && (
+                              <span style={{fontSize:11,color:'#8896a7',fontStyle:'italic'}}>Manual setup required</span>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
+
+                    {/* Footer note */}
+                    <div style={{padding:'10px 16px',background:'#fafbfc',borderTop:'1px solid #f1f5f9'}}>
+                      <div style={{fontSize:11,color:'#8896a7',lineHeight:1.6}}>
+                        <strong style={{color:'#4a5568'}}>About auto-fix:</strong> SPF cannot be auto-generated (depends on your mail provider — use SPF Generator). DKIM keys must come from your email provider. Only DMARC and CAA can be safely auto-pushed with known-safe defaults.
                       </div>
                     </div>
-                    )
-                  })}
+                  </div>
                 </div>
-              )}
+                )
+              })()}
 
               {/* ══ SSL ══════════════════════════════════════ */}
               {activeTab==='ssl'&&scan?.ssl_info&&(
