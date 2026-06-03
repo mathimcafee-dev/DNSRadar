@@ -4,10 +4,10 @@
 
 :root {
   /* ── Page layers — dark red/black like easysecurity.in ── */
-  --page:      #0a0000;
+  --page:      #080000;
   --sidebar:   #0d0101;
-  --card:      #160808;
-  --card-hi:   #1e0c0c;
+  --card:      #120606;
+  --card-hi:   #1c0a0a;
   --input:     #1a0a0a;
   --hover:     #2a1010;
 
@@ -17,9 +17,9 @@
   --border-hi: #5c2222;
 
   /* Text — strong hierarchy */
-  --t1: #f8f0f0;
-  --t2: #a08888;
-  --t3: #5a3a3a;
+  --t1: #f5f0f0;
+  --t2: #9e8e8e;
+  --t3: #6b4a4a;
 
   /* Brand — coral/salmon like easysecurity.in */
   --green:     #E8897A;
