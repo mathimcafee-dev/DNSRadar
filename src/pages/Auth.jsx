@@ -3,7 +3,7 @@ import { Radar, Mail, Lock, Eye, EyeOff, ArrowLeft, CheckCircle } from 'lucide-r
 import { supabase } from '../lib/supabase'
 
 const pwStrength = pw => pw.length === 0 ? null : pw.length < 6 ? 'weak' : pw.length < 10 ? 'medium' : 'strong'
-const pwColor = s => s === 'weak' ? 'var(--red)' : s === 'medium' ? 'var(--amber)' : 'var(--teal)'
+const pwColor = s => s === 'weak' ? 'var(--red)' : s === 'medium' ? 'var(--amber)' : 'var(--or)'
 
 export default function Auth({ setPage }) {
   const [mode, setMode] = useState('signin')
@@ -55,7 +55,7 @@ export default function Auth({ setPage }) {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--page)', padding: 24 }}>
-      <style>{`.auth-input:focus { border-color: var(--green-bdr) !important; box-shadow: 0 0 0 3px rgba(26,181,200,0.08) !important; } .auth-tab-active { background: var(--card-hi) !important; color: var(--t1) !important; }`}</style>
+      <style>{`.auth-input:focus { border-color: var(--green-bdr) !important; box-shadow: 0 0 0 3px rgba(255,107,43,0.08) !important; } .auth-tab-active { background: var(--card-hi) !important; color: var(--t1) !important; }`}</style>
 
       <div style={{ width: '100%', maxWidth: 420 }}>
         <button onClick={() => setPage('landing')}
@@ -68,7 +68,7 @@ export default function Auth({ setPage }) {
         <div style={{ background: 'var(--card)', border: '1px solid var(--border-md)', borderRadius: 16, padding: '36px 32px', boxShadow: '0 4px 40px rgba(0,0,0,0.4)' }}>
 
           <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <div style={{ width: 48, height: 48, background: 'var(--teal)', borderRadius: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+            <div style={{ width: 48, height: 48, background: 'var(--or)', borderRadius: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
               <Radar size={24} color="#021812" strokeWidth={2} />
             </div>
             <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--t1)', margin: 0, letterSpacing: '-0.02em' }}>
@@ -92,7 +92,7 @@ export default function Auth({ setPage }) {
           )}
 
           {success && (
-            <div style={{ display: 'flex', gap: 8, padding: '10px 12px', background: 'var(--green-bg)', border: '1px solid var(--green-bdr)', borderRadius: 8, fontSize: 13, color: 'var(--teal)', marginBottom: 16 }}>
+            <div style={{ display: 'flex', gap: 8, padding: '10px 12px', background: 'var(--green-bg)', border: '1px solid var(--green-bdr)', borderRadius: 8, fontSize: 13, color: 'var(--or)', marginBottom: 16 }}>
               <CheckCircle size={15} style={{ flexShrink: 0, marginTop: 1 }} /> {success}
             </div>
           )}
@@ -161,7 +161,7 @@ export default function Auth({ setPage }) {
             {mode === 'signin' && (
               <div style={{ textAlign: 'right', marginTop: -8 }}>
                 <button onClick={() => { setMode('forgot'); setError(''); setSuccess('') }}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--teal)' }}>
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--or)' }}>
                   Forgot password?
                 </button>
               </div>
@@ -169,7 +169,7 @@ export default function Auth({ setPage }) {
 
             <button onClick={mode === 'signin' ? handleSignIn : mode === 'signup' ? handleSignUp : handleForgot}
               disabled={loading}
-              style={{ width: '100%', padding: '12px', background: 'var(--teal)', color: '#07090c', border: 'none', borderRadius: 9, fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, transition: 'all 0.15s', marginTop: 4, opacity: loading ? 0.7 : 1 }}>
+              style={{ width: '100%', padding: '12px', background: 'var(--or)', color: 'var(--page)', border: 'none', borderRadius: 9, fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, transition: 'all 0.15s', marginTop: 4, opacity: loading ? 0.7 : 1 }}>
               {loading ? (
                 <><div className="spinner" style={{ width: 16, height: 16 }} /> Please wait…</>
               ) : mode === 'signin' ? 'Sign in' : mode === 'signup' ? 'Create account' : 'Send reset link'}

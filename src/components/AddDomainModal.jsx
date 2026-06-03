@@ -112,7 +112,7 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
           {[1, 2].map(s => (
             <div key={s} style={{
               flex: 1, height: 3, borderRadius: 2,
-              background: s <= step ? 'var(--teal)' : 'var(--border)',
+              background: s <= step ? 'var(--or)' : 'var(--border)',
               transition: 'background 0.3s',
             }} />
           ))}
@@ -171,7 +171,7 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
               }}>
                 <Radar size={15} color="var(--green)" style={{ flexShrink: 0 }} />
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--teal)' }}>Verifying: {domain}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--or)' }}>Verifying: {domain}</div>
                   <div style={{ fontSize: 11, color: 'var(--t2)', marginTop: 2, lineHeight: 1.5 }}>
                     Add the TXT record below to your DNS provider to confirm ownership.
                   </div>
@@ -212,7 +212,7 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
                     padding: '10px 12px', background: 'var(--card-hi)',
                     border: '1px solid var(--border)', borderRadius: 8,
                   }}>
-                    <span style={{ fontSize: 11, flex: 1, wordBreak: 'break-all', color: 'var(--teal)', fontFamily: 'var(--mono)' }}>
+                    <span style={{ fontSize: 11, flex: 1, wordBreak: 'break-all', color: 'var(--or)', fontFamily: 'var(--mono)' }}>
                       domainradar-verify={token}
                     </span>
                     <button className="btn btn-ghost btn-sm" onClick={copyToken} style={{ flexShrink: 0, padding: '4px 8px' }}>

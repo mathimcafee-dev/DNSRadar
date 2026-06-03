@@ -256,13 +256,13 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                         {testing===cred.id?<div style={{ width:10,height:10,border:'2px solid rgba(129,140,248,0.3)',borderTopColor:'#818cf8',borderRadius:'50%',animation:'spin 0.7s linear infinite' }}/>:<RefreshCw size={11}/>} Test
                       </button>
                       <button onClick={() => deleteCredential(cred.id)}
-                        style={{ padding:'5px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'#dc2626', fontSize:12, cursor:'pointer' }}>
+                        style={{ padding:'5px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'var(--pk)', fontSize:12, cursor:'pointer' }}>
                         <Trash2 size={11}/>
                       </button>
                     </div>
                   </div>
                   {tr && (
-                    <div style={{ padding:'7px 16px 10px', fontSize:12, color:tr.ok?'var(--teal)':'#dc2626', background:tr.ok?'rgba(26,181,200,0.05)':'rgba(239,68,68,0.05)' }}>
+                    <div style={{ padding:'7px 16px 10px', fontSize:12, color:tr.ok?'var(--or)':'#dc2626', background:tr.ok?'rgba(255,107,43,0.05)':'rgba(239,68,68,0.05)' }}>
                       {tr.msg}
                     </div>
                   )}
@@ -302,7 +302,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                         <div style={{ fontSize:12, fontWeight:700, color:'var(--t1)', fontFamily:'monospace' }}>{issue.type}</div>
                         <div style={{ fontSize:12,color:'var(--t2)' }}>{issue.message}</div>
                       </div>
-                      <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'rgba(239,68,68,0.15)', color:'#dc2626' }}>{issue.severity}</span>
+                      <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'rgba(239,68,68,0.15)', color:'var(--pk)' }}>{issue.severity}</span>
                     </div>
                     <div style={{ padding:'12px 16px' }}>
                       <div style={{ fontSize:12,color:'var(--t2)', marginBottom:6 }}>Will create this record:</div>
@@ -326,7 +326,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                             return (
                               <div key={cred.id}>
                                 {fr ? (
-                                  <div style={{ padding:'6px 12px', borderRadius:7, background:fr.success?'rgba(26,181,200,0.1)':'rgba(239,68,68,0.1)', border:`1px solid ${fr.success?'rgba(26,181,200,0.25)':'rgba(239,68,68,0.25)'}`, fontSize:12, color:fr.success?'var(--teal)':'#dc2626', display:'flex', alignItems:'center', gap:5 }}>
+                                  <div style={{ padding:'6px 12px', borderRadius:7, background:fr.success?'rgba(255,107,43,0.1)':'rgba(239,68,68,0.1)', border:`1px solid ${fr.success?'rgba(255,107,43,0.25)':'rgba(239,68,68,0.25)'}`, fontSize:12, color:fr.success?'var(--or)':'#dc2626', display:'flex', alignItems:'center', gap:5 }}>
                                     {fr.success?<CheckCircle size={12}/>:<AlertTriangle size={12}/>}
                                     {fr.success?'Record created!':fr.results?.[0]?.error||'Failed'}
                                   </div>
@@ -378,7 +378,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                       <td style={{ padding:'8px 14px', fontFamily:'monospace', color:'var(--t2)', fontSize:11 }}>{c.record_name}</td>
                       <td style={{ padding:'8px 14px', fontFamily:'monospace', color:'var(--t2)', fontSize:10, maxWidth:200, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.record_value}</td>
                       <td style={{ padding:'8px 14px' }}>
-                        <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:c.status==='success'?'rgba(26,181,200,0.15)':c.status==='failed'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)', color:c.status==='success'?'var(--teal)':c.status==='failed'?'#dc2626':'#d97706' }}>
+                        <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:c.status==='success'?'rgba(255,107,43,0.15)':c.status==='failed'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)', color:c.status==='success'?'var(--or)':c.status==='failed'?'#dc2626':'#d97706' }}>
                           {c.status}
                         </span>
                       </td>

@@ -13,7 +13,7 @@ export default function ScoreRing({ score, size = 80, strokeWidth = 6 }) {
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
         <circle
           cx={size / 2} cy={size / 2} r={radius}
-          fill={bg} stroke="rgba(255,255,255,0.08)" strokeWidth={strokeWidth}
+          fill={bg} stroke="rgba(255,107,43,0.15)" strokeWidth={strokeWidth}
         />
         <circle
           cx={size / 2} cy={size / 2} r={radius}

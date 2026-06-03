@@ -31,7 +31,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
       <div style={{ height:56, padding:collapsed?'0':'0 12px 0 16px', display:'flex', alignItems:'center', justifyContent:collapsed?'center':'space-between', borderBottom:'1px solid #1f2937', flexShrink:0 }}>
         {!collapsed && (
           <div style={{ display:'flex', alignItems:'center', gap:9, cursor:'pointer' }} onClick={() => setPage(user?'dashboard':'landing')}>
-            <div style={{ width:30, height:30, background:'var(--teal)', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+            <div style={{ width:30, height:30, background:'var(--or)', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
               <Radar size={15} color="#1a0000" strokeWidth={2.5}/>
             </div>
             <div>
@@ -41,7 +41,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
           </div>
         )}
         {collapsed && (
-          <div style={{ width:30, height:30, background:'var(--teal)', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer' }} onClick={() => setCollapsed(false)}>
+          <div style={{ width:30, height:30, background:'var(--or)', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer' }} onClick={() => setCollapsed(false)}>
             <Radar size={15} color="#1a0000" strokeWidth={2.5}/>
           </div>
         )}
@@ -73,8 +73,8 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
                     style={{ width:'100%', display:'flex', alignItems:'center', gap:9, padding:collapsed?'9px 0':'8px 10px', justifyContent:collapsed?'center':'flex-start', background:active?'#1f2937':'transparent', border:`1px solid ${active?'#374151':'transparent'}`, borderRadius:8, color:active?'#f9fafb':'#9ca3af', fontSize:13, fontWeight:active?600:400, cursor:'pointer', transition:'all 0.12s', position:'relative', fontFamily:"'Inter',system-ui,sans-serif" }}
                     onMouseEnter={e => { if(!active){e.currentTarget.style.background='#1f2937';e.currentTarget.style.color='#f9fafb'}}}
                     onMouseLeave={e => { if(!active){e.currentTarget.style.background='transparent';e.currentTarget.style.color='#9ca3af'}}}>
-                    {active && !collapsed && <span style={{ position:'absolute', left:0, top:'20%', bottom:'20%', width:3, borderRadius:'0 2px 2px 0', background:'var(--teal)' }}/>}
-                    <item.icon size={15} style={{ flexShrink:0, color:active?'var(--teal)':'var(--t3)' }}/>
+                    {active && !collapsed && <span style={{ position:'absolute', left:0, top:'20%', bottom:'20%', width:3, borderRadius:'0 2px 2px 0', background:'var(--or)' }}/>}
+                    <item.icon size={15} style={{ flexShrink:0, color:active?'var(--or)':'var(--t3)' }}/>
                     {!collapsed && <span style={{ flex:1, textAlign:'left', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{item.label}</span>}
                     {hasBadge && !collapsed && <span style={{ fontSize:10, padding:'1px 6px', borderRadius:10, background:'rgba(239,68,68,0.2)', color:'#fca5a5', fontWeight:700, border:'1px solid rgba(239,68,68,0.3)' }}>{alertCount>99?'99+':alertCount}</span>}
                     {hasBadge && collapsed && <span style={{ position:'absolute', top:6, right:8, width:6, height:6, borderRadius:'50%', background:'#ef4444' }}/>}
@@ -86,7 +86,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
         ))}
         {!user && (
           <div style={{ padding:'16px 10px', display:'flex', flexDirection:'column', gap:7 }}>
-            <button onClick={() => setPage('auth')} style={{ padding:'9px', background:'var(--lime)', color:'#07090c', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:"'Inter',system-ui" }}>Start free</button>
+            <button onClick={() => setPage('auth')} style={{ padding:'9px', background:'var(--cy)', color:'var(--page)', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:"'Inter',system-ui" }}>Start free</button>
             <button onClick={() => setPage('auth')} style={{ padding:'9px', background:'#1f2937', color:'var(--t3)', border:'1px solid #374151', borderRadius:8, fontSize:13, cursor:'pointer', fontFamily:"'Inter',system-ui" }}>Sign in</button>
           </div>
         )}
@@ -100,7 +100,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
               style={{ width:'100%', display:'flex', alignItems:'center', gap:9, padding:collapsed?'9px 0':'8px 10px', justifyContent:collapsed?'center':'flex-start', background:page==='settings'?'#1f2937':'transparent', border:`1px solid ${page==='settings'?'#374151':'transparent'}`, borderRadius:8, cursor:'pointer', color:page==='settings'?'#f9fafb':'#9ca3af', fontSize:13, fontFamily:"'Inter',system-ui", transition:'all 0.12s' }}
               onMouseEnter={e => { if(page!=='settings'){e.currentTarget.style.background='#1f2937';e.currentTarget.style.color='#f9fafb'}}}
               onMouseLeave={e => { if(page!=='settings'){e.currentTarget.style.background='transparent';e.currentTarget.style.color='#9ca3af'}}}>
-              <Settings size={15} style={{ flexShrink:0, color:page==='settings'?'var(--teal)':'var(--t3)' }}/>
+              <Settings size={15} style={{ flexShrink:0, color:page==='settings'?'var(--or)':'var(--t3)' }}/>
               {!collapsed && 'Settings'}
             </button>
           </div>
@@ -111,7 +111,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
               style={{ width:'100%', display:'flex', alignItems:'center', gap:9, padding:collapsed?'7px 0':'8px 10px', justifyContent:collapsed?'center':'flex-start', background:'#1f2937', border:'1px solid #374151', borderRadius:9, cursor:'pointer', transition:'background 0.12s' }}
               onMouseEnter={e => e.currentTarget.style.background='#374151'}
               onMouseLeave={e => e.currentTarget.style.background='#1f2937'}>
-              <div style={{ width:26, height:26, borderRadius:'50%', background:'rgba(26,181,200,0.15)', color:'var(--teal)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0, border:'1px solid var(--green-bdr)' }}>
+              <div style={{ width:26, height:26, borderRadius:'50%', background:'var(--pu-bg)', color:'var(--pu)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0, border:'1px solid var(--green-bdr)' }}>
                 {user.email?.[0]?.toUpperCase()}
               </div>
               {!collapsed && (
@@ -133,7 +133,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
                 ].map(item => (
                   <button key={item.label} onClick={item.fn}
                     style={{ width:'100%', display:'flex', alignItems:'center', gap:8, padding:'7px 10px', background:'none', border:'none', cursor:'pointer', fontSize:12, color:item.color, borderRadius:7, fontFamily:"'Inter',system-ui" }}
-                    onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.06)'}
+                    onMouseEnter={e => e.currentTarget.style.background='rgba(255,107,43,0.07)'}
                     onMouseLeave={e => e.currentTarget.style.background='none'}>
                     <item.icon size={13}/> {item.label}
                   </button>

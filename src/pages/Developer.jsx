@@ -87,15 +87,15 @@ export default function Developer({ setPage }) {
       {/* Nav */}
       <nav style={{ background:'var(--card)', borderBottom:'1px solid #1f2937', padding:'0 32px', height:56, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100 }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }} onClick={() => setPage('landing')}>
-          <div style={{ width:28, height:28, background:'var(--teal)', borderRadius:7, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:28, height:28, background:'var(--or)', borderRadius:7, display:'flex', alignItems:'center', justifyContent:'center' }}>
             <Radar size={14} color="#fff" strokeWidth={2.5}/>
           </div>
           <span style={{ fontSize:14, fontWeight:800, color:'#f9fafb' }}>DomainRadar</span>
-          <span style={{ fontSize:10, background:'rgba(26,181,200,0.12)', color:'var(--teal)', padding:'2px 8px', borderRadius:8, fontWeight:600, border:'1px solid rgba(26,181,200,0.2)' }}>Developer</span>
+          <span style={{ fontSize:10, background:'rgba(255,107,43,0.12)', color:'var(--or)', padding:'2px 8px', borderRadius:8, fontWeight:600, border:'1px solid rgba(255,107,43,0.2)' }}>Developer</span>
         </div>
         <div style={{ display:'flex', gap:8 }}>
           <button onClick={() => setPage('landing')} style={{ padding:'6px 14px', background:'rgba(255,255,255,0.05)', color:'var(--t3)', border:'1px solid #374151', borderRadius:7, fontSize:13, cursor:'pointer', fontFamily:F }}>← Home</button>
-          <button onClick={() => setPage('auth')} style={{ padding:'6px 14px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Start free</button>
+          <button onClick={() => setPage('auth')} style={{ padding:'6px 14px', background:'var(--or)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Start free</button>
         </div>
       </nav>
 
@@ -103,7 +103,7 @@ export default function Developer({ setPage }) {
 
         {/* Header */}
         <div className="fade" style={{ marginBottom:56 }}>
-          <div style={{ fontSize:11, fontWeight:700, color:'var(--teal)', textTransform:'uppercase', letterSpacing:'0.12em', marginBottom:14 }}>Developer docs</div>
+          <div style={{ fontSize:11, fontWeight:700, color:'var(--or)', textTransform:'uppercase', letterSpacing:'0.12em', marginBottom:14 }}>Developer docs</div>
           <h1 style={{ fontSize:'clamp(32px,5vw,52px)', fontWeight:900, letterSpacing:'-0.04em', color:'#f9fafb', lineHeight:1.1, marginBottom:18 }}>
             Build with DomainRadar
           </h1>
@@ -114,7 +114,7 @@ export default function Developer({ setPage }) {
 
         {/* Mission (developer framing) */}
         <div className="fade" style={{ background:'var(--card)', border:'1px solid #1f2937', borderLeft:'4px solid var(--green)', borderRadius:'0 12px 12px 0', padding:'20px 24px', marginBottom:48 }}>
-          <div style={{ fontSize:12, fontWeight:700, color:'var(--teal)', marginBottom:8, textTransform:'uppercase', letterSpacing:'0.09em' }}>Why this exists</div>
+          <div style={{ fontSize:12, fontWeight:700, color:'var(--or)', marginBottom:8, textTransform:'uppercase', letterSpacing:'0.09em' }}>Why this exists</div>
           <p style={{ fontSize:14, color:'var(--t3)', lineHeight:1.8, margin:0 }}>
             I built DomainRadar because I was tired of watching small businesses and indie developers get blacklisted, spoofed, or have their sites go down over expired certificates — problems that are completely preventable with the right tooling. The scan engine checks 50+ things in parallel in under 90 seconds. The auto-fix layer means zero DNS knowledge required to resolve most issues.
           </p>
@@ -128,7 +128,7 @@ export default function Developer({ setPage }) {
             {STACK.map(s => (
               <div key={s.name} style={{ background:'var(--card)', border:'1px solid #1f2937', borderRadius:10, padding:'14px 16px' }}>
                 <div style={{ fontSize:13, fontWeight:700, color:'#f9fafb', marginBottom:5, display:'flex', alignItems:'center', gap:7 }}>
-                  <span style={{ width:6, height:6, borderRadius:'50%', background:'var(--teal)', display:'inline-block' }}/>
+                  <span style={{ width:6, height:6, borderRadius:'50%', background:'var(--or)', display:'inline-block' }}/>
                   {s.name}
                 </div>
                 <div style={{ fontSize:12, color:'var(--t3)', lineHeight:1.6 }}>{s.desc}</div>
@@ -158,11 +158,11 @@ console.log(data.issues)            // [{type:'DMARC', severity:'warn', ...}]`}/
         {/* Endpoints */}
         <div className="fade" style={{ marginBottom:56 }}>
           <h2 style={{ fontSize:22, fontWeight:800, color:'#f9fafb', letterSpacing:'-0.03em', marginBottom:8 }}>Endpoints</h2>
-          <p style={{ fontSize:13, color:'var(--t3)', marginBottom:24 }}>Base URL: <code style={{ fontFamily:MONO, background:'var(--card)', padding:'2px 8px', borderRadius:5, color:'var(--teal)' }}>{SUPABASE_URL}/functions/v1</code></p>
+          <p style={{ fontSize:13, color:'var(--t3)', marginBottom:24 }}>Base URL: <code style={{ fontFamily:MONO, background:'var(--card)', padding:'2px 8px', borderRadius:5, color:'var(--or)' }}>{SUPABASE_URL}/functions/v1</code></p>
           {ENDPOINTS.map(ep => (
             <div key={ep.path} style={{ background:'var(--card)', border:'1px solid #1f2937', borderRadius:14, overflow:'hidden', marginBottom:20 }}>
               <div style={{ padding:'14px 18px', borderBottom:'1px solid #1f2937', display:'flex', alignItems:'center', gap:10 }}>
-                <span style={{ fontSize:11, fontWeight:800, padding:'3px 9px', borderRadius:6, background:'rgba(26,181,200,0.12)', color:'var(--teal)', fontFamily:MONO }}>{ep.method}</span>
+                <span style={{ fontSize:11, fontWeight:800, padding:'3px 9px', borderRadius:6, background:'rgba(255,107,43,0.12)', color:'var(--or)', fontFamily:MONO }}>{ep.method}</span>
                 <code style={{ fontFamily:MONO, fontSize:13, color:'#f9fafb' }}>{ep.path}</code>
               </div>
               <div style={{ padding:'14px 18px' }}>
@@ -229,7 +229,7 @@ console.log(data.issues)            // [{type:'DMARC', severity:'warn', ...}]`}/
               ['API access (Agency)', 'Coming soon — dedicated API key, higher limits, bulk scan endpoint.'],
             ].map(([k,v]) => (
               <div key={k} style={{ display:'flex', gap:12, alignItems:'flex-start' }}>
-                <div style={{ width:6, height:6, borderRadius:'50%', background:'var(--teal)', flexShrink:0, marginTop:5 }}/>
+                <div style={{ width:6, height:6, borderRadius:'50%', background:'var(--or)', flexShrink:0, marginTop:5 }}/>
                 <div>
                   <span style={{ fontSize:13, fontWeight:600, color:'#f9fafb' }}>{k}: </span>
                   <span style={{ fontSize:13, color:'var(--t3)' }}>{v}</span>
@@ -248,11 +248,11 @@ console.log(data.issues)            // [{type:'DMARC', severity:'warn', ...}]`}/
           </p>
           <div style={{ display:'flex', gap:10, justifyContent:'center', flexWrap:'wrap' }}>
             <a href="https://github.com/mathimcafee-dev/DNSRadar" target="_blank" rel="noopener noreferrer"
-              style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'9px 18px', background:'rgba(255,255,255,0.06)', color:'#f9fafb', border:'1px solid #374151', borderRadius:8, fontSize:13, fontWeight:600, textDecoration:'none' }}>
+              style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'9px 18px', background:'rgba(255,107,43,0.07)', color:'#f9fafb', border:'1px solid #374151', borderRadius:8, fontSize:13, fontWeight:600, textDecoration:'none' }}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
               View on GitHub
             </a>
-            <button onClick={() => setPage('auth')} style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'9px 18px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>
+            <button onClick={() => setPage('auth')} style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'9px 18px', background:'var(--or)', color:'var(--t1)', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>
               Start building →
             </button>
           </div>
@@ -262,7 +262,7 @@ console.log(data.issues)            // [{type:'DMARC', severity:'warn', ...}]`}/
       <footer style={{ background:'#111', borderTop:'1px solid #1f2937', padding:'28px 32px' }}>
         <div style={{ maxWidth:1020, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:16 }}>
           <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-            <div style={{ width:24, height:24, background:'var(--teal)', borderRadius:6, display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <div style={{ width:24, height:24, background:'var(--or)', borderRadius:6, display:'flex', alignItems:'center', justifyContent:'center' }}>
               <Radar size={13} color="#fff" strokeWidth={2.5}/>
             </div>
             <span style={{ fontSize:13, color:'rgba(255,255,255,0.5)', fontWeight:500 }}>DomainRadar</span>
