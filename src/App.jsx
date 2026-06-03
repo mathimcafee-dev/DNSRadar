@@ -92,7 +92,7 @@ function Alerts({ user }) {
             { id:'warn', label:'Warnings' },
           ].map(f => (
             <button key={f.id} onClick={() => setFilter(f.id)}
-              style={{ padding:'5px 12px', background:filter===f.id?'var(--green)':'var(--card)', color:filter===f.id?'#021812':'var(--t2)', border:`1px solid ${filter===f.id?'var(--green-bdr)':'var(--border-md)'}`, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer' }}>
+              style={{ padding:'5px 12px', background:filter===f.id?'var(--teal)':'var(--card)', color:filter===f.id?'#021812':'var(--t2)', border:`1px solid ${filter===f.id?'var(--green-bdr)':'var(--border-md)'}`, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer' }}>
               {f.label}
             </button>
           ))}
@@ -132,7 +132,7 @@ function Alerts({ user }) {
                 {(a.before_val || a.after_val) && (
                   <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
                     {a.before_val && <span style={{ fontSize:11, fontFamily:'monospace', color:'var(--red)', background:'var(--red-bg)', padding:'2px 7px', borderRadius:5 }}>Before: {a.before_val}</span>}
-                    {a.after_val  && <span style={{ fontSize:11, fontFamily:'monospace', color:'var(--green)', background:'var(--green-bg)', padding:'2px 7px', borderRadius:5 }}>After: {a.after_val}</span>}
+                    {a.after_val  && <span style={{ fontSize:11, fontFamily:'monospace', color:'var(--teal)', background:'var(--green-bg)', padding:'2px 7px', borderRadius:5 }}>After: {a.after_val}</span>}
                   </div>
                 )}
               </div>
@@ -192,7 +192,7 @@ function Reports({ user }) {
         </div>
       ) : snapshots.map(s => {
         const domains = s.domains_json || []
-        const scoreColor = s.avg_score >= 70 ? 'var(--green)' : s.avg_score >= 50 ? 'var(--amber)' : 'var(--red)'
+        const scoreColor = s.avg_score >= 70 ? 'var(--teal)' : s.avg_score >= 50 ? 'var(--amber)' : 'var(--red)'
         return (
           <div key={s.id} className="card" style={{ marginBottom:10 }}>
             <div className="card-header" style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
@@ -207,7 +207,7 @@ function Reports({ user }) {
               <div style={{ display:'flex', alignItems:'center', gap:6 }}>
                 <span style={{ fontSize:20, fontWeight:800, color:scoreColor }}>{s.avg_score}</span>
                 {s.avg_score_delta !== null && s.avg_score_delta !== undefined && s.avg_score_delta !== 0 && (
-                  <span style={{ fontSize:11, color: s.avg_score_delta > 0 ? 'var(--green)' : 'var(--red)', fontWeight:600 }}>
+                  <span style={{ fontSize:11, color: s.avg_score_delta > 0 ? 'var(--teal)' : 'var(--red)', fontWeight:600 }}>
                     {s.avg_score_delta > 0 ? '↑' : '↓'}{Math.abs(s.avg_score_delta)}
                   </span>
                 )}
@@ -218,8 +218,8 @@ function Reports({ user }) {
               <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom: domains.length > 0 ? 12 : 0 }}>
                 {[
                   { label:'Domains', value: s.domain_count || 0 },
-                  { label:'Issues', value: s.total_issues || 0, color: (s.total_issues||0) > 0 ? 'var(--amber)' : 'var(--green)' },
-                  { label:'Critical', value: s.critical_count || 0, color: (s.critical_count||0) > 0 ? 'var(--red)' : 'var(--green)' },
+                  { label:'Issues', value: s.total_issues || 0, color: (s.total_issues||0) > 0 ? 'var(--amber)' : 'var(--teal)' },
+                  { label:'Critical', value: s.critical_count || 0, color: (s.critical_count||0) > 0 ? 'var(--red)' : 'var(--teal)' },
                 ].map(m => (
                   <div key={m.label} style={{ textAlign:'center', padding:'8px', background:'var(--card-hi)', borderRadius:8 }}>
                     <div style={{ fontSize:18, fontWeight:700, color: m.color || 'var(--t1)' }}>{m.value}</div>
@@ -309,7 +309,7 @@ export default function App() {
 
   if (loading) return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'#f7f8fa' }}>
-      <div style={{ width:28, height:28, border:'3px solid #e5e7eb', borderTopColor:'var(--green)', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
+      <div style={{ width:28, height:28, border:'3px solid #e5e7eb', borderTopColor:'var(--teal)', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )

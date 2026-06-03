@@ -8,8 +8,8 @@ const MONO = "'JetBrains Mono','Fira Code',monospace"
 
 // ── Helpers ───────────────────────────────────────────────────────────
 function scoreGrade(s) {
-  if (s >= 90) return { grade:'A+', color:'var(--green)', bg:'var(--green-bg)', ring:'var(--green)' }
-  if (s >= 80) return { grade:'A',  color:'var(--green)', bg:'var(--green-bg)', ring:'var(--green)' }
+  if (s >= 90) return { grade:'A+', color:'var(--teal)', bg:'var(--green-bg)', ring:'var(--teal)' }
+  if (s >= 80) return { grade:'A',  color:'var(--teal)', bg:'var(--green-bg)', ring:'var(--teal)' }
   if (s >= 70) return { grade:'B',  color:'#65a30d', bg:'#f7fee7', ring:'#84cc16' }
   if (s >= 60) return { grade:'C',  color:'#d97706', bg:'#fffbeb', ring:'#f59e0b' }
   if (s >= 50) return { grade:'D',  color:'#ea580c', bg:'#fff7ed', ring:'#f97316' }
@@ -20,7 +20,7 @@ function StatusChip({ status }) {
   const ok  = ['Pass','Valid','Consistent','Clean','Enforced','Signed','Present','Configured','Blocked','Active','Detected'].includes(status)
   const wn  = ['Warn','Warning','Partial','Quarantine','Testing','Not configured','Missing'].includes(status)
   const info = ['Info','Not found'].includes(status)
-  const color = ok ? 'var(--green)' : wn ? '#d97706' : info ? '#2563eb' : '#dc2626'
+  const color = ok ? 'var(--teal)' : wn ? '#d97706' : info ? '#2563eb' : '#dc2626'
   const bg    = ok ? 'var(--green-bg)'  : wn ? '#fffbeb'  : info ? '#eff6ff'  : '#fef2f2'
   const bd    = ok ? 'var(--green-bdr)'  : wn ? '#fde68a'  : info ? '#bfdbfe'  : '#fecaca'
   return <span style={{ fontSize:11, fontWeight:700, padding:'3px 9px', borderRadius:20, background:bg, color, border:`1px solid ${bd}`, whiteSpace:'nowrap' }}>{status || 'Unknown'}</span>
@@ -86,7 +86,7 @@ function exportPDF(domain, r) {
   const statusPill = (status) => {
     const ok = ['Pass','Valid','Consistent','Clean','Enforced','Signed','Present','Configured','Blocked','Active'].includes(status)
     const wn = ['Warn','Warning','Partial','Quarantine','Not configured','Missing','Testing'].includes(status)
-    const c  = ok?'var(--green)':wn?'#b45309':'#dc2626'
+    const c  = ok?'var(--teal)':wn?'#b45309':'#dc2626'
     const bg = ok?'var(--green-bg)':wn?'#fffbeb':'#fef2f2'
     const bd = ok?'var(--green-bdr)':wn?'#fde68a':'#fca5a5'
     return `<span style="background:${bg};color:${c};border:1px solid ${bd};padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;">${status||'—'}</span>`
@@ -103,7 +103,7 @@ function exportPDF(domain, r) {
   const complianceRow = (label, ok) => `
     <div class="comp-row">
       <span class="comp-label">${label}</span>
-      <span style="font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;background:${ok?'var(--green-bg)':'#fef2f2'};color:${ok?'var(--green)':'#dc2626'};border:1px solid ${ok?'var(--green-bdr)':'#fca5a5'};">${ok?'✓ Pass':'✗ Fail'}</span>
+      <span style="font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;background:${ok?'var(--green-bg)':'#fef2f2'};color:${ok?'var(--teal)':'#dc2626'};border:1px solid ${ok?'var(--green-bdr)':'#fca5a5'};">${ok?'✓ Pass':'✗ Fail'}</span>
     </div>`
 
   const html = `<!DOCTYPE html>
@@ -226,7 +226,7 @@ function exportPDF(domain, r) {
 <div class="breakdown">
   ${[['DNS',r.score_dns,25],['Email Auth',r.score_email,30],['SSL/TLS',r.score_ssl,20],['Propagation',r.score_propagation,10],['Security',r.score_security,10],['Blacklists',r.score_blacklist,5]].map(([l,s,m])=>{
     const pct=Math.round(((s||0)/m)*100)
-    const c=pct>=80?'var(--green)':pct>=60?'#d97706':'#dc2626'
+    const c=pct>=80?'var(--teal)':pct>=60?'#d97706':'#dc2626'
     return `<div class="cat">
       <div class="cat-score" style="color:${c};">${s||0}</div>
       <div class="cat-max">/${m}</div>
@@ -400,7 +400,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
 
   if (loading) return (
     <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'70vh', gap:20, fontFamily:F }}>
-      <div style={{ width:52, height:52, border:'3px solid #e5e7eb', borderTopColor:'var(--green)', borderRadius:'50%', animation:'spin 0.8s linear infinite' }}/>
+      <div style={{ width:52, height:52, border:'3px solid #e5e7eb', borderTopColor:'var(--teal)', borderRadius:'50%', animation:'spin 0.8s linear infinite' }}/>
       <div>
         <div style={{ fontSize:15, fontWeight:600, color:'#111', marginBottom:4, textAlign:'center' }}>Scanning {domain}</div>
         <div style={{ fontSize:13, color:'var(--t3)', textAlign:'center' }}>Checking DNS, email auth, SSL, blacklists and propagation…</div>
@@ -416,7 +416,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
       <div style={{ fontSize:13, color:'var(--t3)', marginBottom:24 }}>{error}</div>
       <div style={{ display:'flex', gap:10, justifyContent:'center' }}>
         <button onClick={() => setPage('landing')} style={{ padding:'8px 18px', background:'transparent', color:'#555', border:'1px solid var(--border)', borderRadius:8, fontSize:13, cursor:'pointer', fontFamily:F }}>← Back</button>
-        <button onClick={runScan} style={{ padding:'8px 18px', background:'var(--green)', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Try again</button>
+        <button onClick={runScan} style={{ padding:'8px 18px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Try again</button>
       </div>
     </div>
   )
@@ -431,7 +431,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
   const CATS = [
     { id:'dns',         label:'DNS',         icon:Globe,   color:'#3730a3', score:r.score_dns,         max:25 },
     { id:'email',       label:'Email auth',  icon:Mail,    color:'#dc2626', score:r.score_email,       max:30 },
-    { id:'ssl',         label:'SSL / TLS',   icon:Lock,    color:'var(--green)', score:r.score_ssl,         max:20 },
+    { id:'ssl',         label:'SSL / TLS',   icon:Lock,    color:'var(--teal)', score:r.score_ssl,         max:20 },
     { id:'propagation', label:'Propagation', icon:Network, color:'#d97706', score:r.score_propagation, max:10 },
     { id:'security',    label:'Security',    icon:Shield,  color:'#7c3aed', score:r.score_security,    max:10 },
     { id:'blacklist',   label:'Blacklists',  icon:Ban,     color:'#dc2626', score:r.score_blacklist,   max:5  },
@@ -462,7 +462,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
           <button onClick={() => exportPDF(domain, r)} style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', background:'transparent', border:'1px solid var(--border)', borderRadius:8, cursor:'pointer', fontSize:12, color:'#555', fontFamily:F }}>
             <FileDown size={12}/> Export PDF
           </button>
-          <button onClick={() => setPage(user ? 'dashboard' : 'auth')} style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'var(--green)', color:'#fff', border:'none', borderRadius:8, cursor:'pointer', fontSize:12, fontWeight:700, fontFamily:F }}>
+          <button onClick={() => setPage(user ? 'dashboard' : 'auth')} style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:8, cursor:'pointer', fontSize:12, fontWeight:700, fontFamily:F }}>
             <Bell size={12}/> {user ? 'Monitor this domain' : 'Monitor — sign up free'}
           </button>
         </div>
@@ -490,7 +490,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
               <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
                 {CATS.map(c => {
                   const pct = Math.round(((c.score||0)/c.max)*100)
-                  const cc  = pct>=80?'var(--green)':pct>=60?'#d97706':'#dc2626'
+                  const cc  = pct>=80?'var(--teal)':pct>=60?'#d97706':'#dc2626'
                   const cbg = pct>=80?'var(--green-bg)':pct>=60?'#fffbeb':'#fef2f2'
                   return (
                     <div key={c.id} style={{ background:'var(--card-hi)', border:`1px solid #e5e7eb`, borderRadius:10, padding:'12px 14px' }}>
@@ -590,7 +590,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
           <Section icon={Lock} iconColor="var(--green)" title="SSL / TLS Certificate" badge={r.ssl_info?.overall_status}>
             {r.ssl_info?.certs?.length > 0 ? r.ssl_info.certs.map((cert, i) => {
               const days = cert.days_remaining
-              const daysColor = days==null?'#6b7280':days<=7?'#dc2626':days<=30?'#d97706':days<=60?'#2563eb':'var(--green)'
+              const daysColor = days==null?'#6b7280':days<=7?'#dc2626':days<=30?'#d97706':days<=60?'#2563eb':'var(--teal)'
               const issuer = cert.issuer_org || cert.issuer_cn || 'Unknown CA'
               return (
                 <div key={i}>
@@ -708,7 +708,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
                 {r.blacklists?.results?.map((bl, i) => (
                   <div key={i} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'7px 12px', background: bl.listed ? '#fef2f2' : '#f9fafb', borderRadius:8, border:`1px solid ${bl.listed ? '#fecaca' : '#e5e7eb'}` }}>
                     <span style={{ fontSize:11, fontFamily:MONO, color: bl.listed ? '#dc2626' : '#6b7280', fontWeight: bl.listed ? 700 : 400 }}>{bl.name}</span>
-                    <span style={{ fontSize:11, fontWeight:700, color: bl.listed ? '#dc2626' : 'var(--green)' }}>{bl.listed ? '✗ Listed' : '✓'}</span>
+                    <span style={{ fontSize:11, fontWeight:700, color: bl.listed ? '#dc2626' : 'var(--teal)' }}>{bl.listed ? '✗ Listed' : '✓'}</span>
                   </div>
                 ))}
               </div>
@@ -727,7 +727,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
               <button onClick={() => exportPDF(domain, r)} style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 16px', background:'rgba(255,255,255,0.08)', color:'#f9fafb', border:'1px solid #374151', borderRadius:9, fontSize:13, cursor:'pointer', fontFamily:F }}>
                 <FileDown size={13}/> Export PDF
               </button>
-              <button onClick={() => setPage('auth')} style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 18px', background:'var(--green)', color:'#fff', border:'none', borderRadius:9, fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:F }}>
+              <button onClick={() => setPage('auth')} style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 18px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:9, fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:F }}>
                 <Bell size={13}/> Start monitoring free →
               </button>
             </div>

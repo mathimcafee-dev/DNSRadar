@@ -115,7 +115,7 @@ export default function Reports({ user }) {
             </select>
           )}
           <button onClick={()=>setUploadXML(u=>!u)}
-            style={{ padding:'7px 14px', background:'var(--green-bg)', border:'1px solid rgba(232,137,122,0.3)', borderRadius:8, color:'var(--t1)', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+            style={{ padding:'7px 14px', background:'var(--green-bg)', border:'1px solid rgba(26,181,200,0.3)', borderRadius:8, color:'var(--t1)', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
             <Upload size={13}/> Upload XML report
           </button>
         </div>
@@ -131,10 +131,10 @@ export default function Reports({ user }) {
             </div>
             <textarea value={xmlInput} onChange={e=>setXmlInput(e.target.value)} rows={8} placeholder="<?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?><feedback>..."
               style={{ width:'100%', padding:'10px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:12, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
-            {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(232,137,122,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'#00e5a0':'#ff4d6a', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
+            {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(26,181,200,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'var(--teal)':'#ff4d6a', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
             <div style={{ display:'flex', gap:8, marginTop:8 }}>
               <button onClick={uploadReport} disabled={uploading||!xmlInput}
-                style={{ padding:'7px 16px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', opacity:!xmlInput?0.5:1 }}>
+                style={{ padding:'7px 16px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', opacity:!xmlInput?0.5:1 }}>
                 {uploading?'Parsing…':'Parse & import'}
               </button>
               <button onClick={()=>{setUploadXML(false);setXmlInput('')}} style={{ padding:'7px 14px', background:'#e5e7eb', color:D.m, border:'1px solid var(--border)', borderRadius:7, fontSize:12, cursor:'pointer' }}>Cancel</button>
@@ -163,9 +163,9 @@ export default function Reports({ user }) {
           <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12, marginBottom:14 }}>
             {[
               { l:'Total emails', v:totalVolume.toLocaleString(), c:D.t, sub:'across all reports' },
-              { l:'Compliance rate', v:`${complianceRate}%`, c:complianceRate>=90?'#00e5a0':complianceRate>=70?'#ffb224':'#ff4d6a', sub:`${totalPass.toLocaleString()} passing` },
-              { l:'Failing', v:totalFail.toLocaleString(), c:totalFail>0?'#ff4d6a':'#00e5a0', sub:'emails failing DMARC' },
-              { l:'Threats detected', v:threats.length, c:threats.length>0?'#ff4d6a':'#00e5a0', sub:'unauthorised sources' },
+              { l:'Compliance rate', v:`${complianceRate}%`, c:complianceRate>=90?'var(--teal)':complianceRate>=70?'#ffb224':'#ff4d6a', sub:`${totalPass.toLocaleString()} passing` },
+              { l:'Failing', v:totalFail.toLocaleString(), c:totalFail>0?'#ff4d6a':'var(--teal)', sub:'emails failing DMARC' },
+              { l:'Threats detected', v:threats.length, c:threats.length>0?'#ff4d6a':'var(--teal)', sub:'unauthorised sources' },
             ].map(k=>(
               <div key={k.l} style={{ ...card, padding:'13px 16px' }}>
                 <div style={{ fontSize:12, color:D.m, marginBottom:4 }}>{k.l}</div>
@@ -238,13 +238,13 @@ export default function Reports({ user }) {
                         <td style={{ padding:'9px 14px' }}>
                           <div style={{ display:'flex', alignItems:'center', gap:6 }}>
                             <div style={{ height:5, width:60, background:'#e5e7eb', borderRadius:3, overflow:'hidden' }}>
-                              <div style={{ height:'100%', width:`${rate}%`, background:rate>=90?'#00e5a0':rate>=70?'#ffb224':'#ff4d6a', borderRadius:3 }}/>
+                              <div style={{ height:'100%', width:`${rate}%`, background:rate>=90?'var(--teal)':rate>=70?'#ffb224':'#ff4d6a', borderRadius:3 }}/>
                             </div>
-                            <span style={{ fontSize:12, color:rate>=90?'#00e5a0':rate>=70?'#ffb224':'#ff4d6a', fontWeight:600 }}>{rate}%</span>
+                            <span style={{ fontSize:12, color:rate>=90?'var(--teal)':rate>=70?'#ffb224':'#ff4d6a', fontWeight:600 }}>{rate}%</span>
                           </div>
                         </td>
                         <td style={{ padding:'9px 14px' }}>
-                          <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${s.fail>0&&rate<50?'239,68,68':'16,185,129'},0.15)`, color:s.fail>0&&rate<50?'#ff4d6a':'#00e5a0' }}>
+                          <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${s.fail>0&&rate<50?'239,68,68':'16,185,129'},0.15)`, color:s.fail>0&&rate<50?'#ff4d6a':'var(--teal)' }}>
                             {s.fail>0&&rate<50?'Threat':'Legitimate'}
                           </span>
                         </td>
@@ -267,11 +267,11 @@ export default function Reports({ user }) {
                 </div>
                 <div style={{ textAlign:'right' }}>
                   <div style={{ fontSize:13, fontWeight:700, color:D.t }}>{(r.total_volume||0).toLocaleString()} emails</div>
-                  <div style={{ fontSize:10, color:r.fail_count>0?'#ff4d6a':'#00e5a0' }}>
+                  <div style={{ fontSize:10, color:r.fail_count>0?'#ff4d6a':'var(--teal)' }}>
                     {r.pass_count||0} pass · {r.fail_count||0} fail
                   </div>
                 </div>
-                <div style={{ width:48, textAlign:'right', fontSize:12, fontWeight:700, color:r.total_volume>0?Math.round((r.pass_count/r.total_volume)*100)>=90?'#00e5a0':'#ffb224':D.d }}>
+                <div style={{ width:48, textAlign:'right', fontSize:12, fontWeight:700, color:r.total_volume>0?Math.round((r.pass_count/r.total_volume)*100)>=90?'var(--teal)':'#ffb224':D.d }}>
                   {r.total_volume > 0 ? Math.round((r.pass_count/r.total_volume)*100)+'%' : '–'}
                 </div>
               </div>

@@ -3,7 +3,7 @@ import { CheckCircle, Circle, ArrowRight, Shield, Inbox, Eye, Wand2 } from 'luci
 const STEPS = [
   { key: 'none', label: 'None', icon: Eye, desc: 'Monitoring only. No action on failing emails.', color: '#ef4444', risk: 'No protection' },
   { key: 'quarantine', label: 'Quarantine', icon: Inbox, desc: 'Suspicious emails sent to spam folder.', color: '#f59e0b', risk: 'Partial protection' },
-  { key: 'reject', label: 'Reject', icon: Shield, desc: 'Unauthorized emails blocked completely.', color: 'var(--green)', risk: 'Full protection' },
+  { key: 'reject', label: 'Reject', icon: Shield, desc: 'Unauthorized emails blocked completely.', color: 'var(--teal)', risk: 'Full protection' },
 ]
 
 export default function DmarcJourney({ currentPolicy, onGenerate }) {
@@ -25,8 +25,8 @@ export default function DmarcJourney({ currentPolicy, onGenerate }) {
               <div style={{ textAlign:'center', minWidth:80 }}>
                 <div style={{
                   width:40, height:40, borderRadius:'50%', margin:'0 auto 8px',
-                  background: done ? 'rgba(232,137,122,0.15)' : active ? `rgba(${step.color === '#ef4444' ? '239,68,68' : step.color === '#f59e0b' ? '245,158,11' : '16,185,129'},0.15)` : 'rgba(255,255,255,0.04)',
-                  border: `2px solid ${done ? 'var(--green)' : active ? step.color : 'rgba(255,255,255,0.1)'}`,
+                  background: done ? 'rgba(26,181,200,0.15)' : active ? `rgba(${step.color === '#ef4444' ? '239,68,68' : step.color === '#f59e0b' ? '245,158,11' : '16,185,129'},0.15)` : 'rgba(255,255,255,0.04)',
+                  border: `2px solid ${done ? 'var(--teal)' : active ? step.color : 'rgba(255,255,255,0.1)'}`,
                   display:'flex', alignItems:'center', justifyContent:'center',
                   position:'relative',
                 }}>
@@ -38,13 +38,13 @@ export default function DmarcJourney({ currentPolicy, onGenerate }) {
                     <div style={{ position:'absolute', top:-3, right:-3, width:10, height:10, borderRadius:'50%', background:step.color, border:'2px solid #0d1117' }}/>
                   )}
                 </div>
-                <div style={{ fontSize:12, fontWeight:active ? 600 : 400, color: active ? step.color : done ? 'var(--green)' : 'rgba(255,255,255,0.3)' }}>
+                <div style={{ fontSize:12, fontWeight:active ? 600 : 400, color: active ? step.color : done ? 'var(--teal)' : 'rgba(255,255,255,0.3)' }}>
                   {step.label}
                 </div>
                 <div style={{ fontSize:10, color:'var(--t3)', marginTop:2 }}>{step.risk}</div>
               </div>
               {i < STEPS.length - 1 && (
-                <div style={{ flex:1, height:2, background: i < currentIdx ? 'rgba(232,137,122,0.4)' : 'rgba(255,255,255,0.08)', margin:'0 8px', marginBottom:28 }}/>
+                <div style={{ flex:1, height:2, background: i < currentIdx ? 'rgba(26,181,200,0.4)' : 'rgba(255,255,255,0.08)', margin:'0 8px', marginBottom:28 }}/>
               )}
             </div>
           )
@@ -68,12 +68,12 @@ export default function DmarcJourney({ currentPolicy, onGenerate }) {
           </div>
           {next && (
             <button onClick={() => onGenerate && onGenerate(next.key)}
-              style={{ padding:'7px 14px', background:'rgba(232,137,122,0.15)', color:'var(--green)', border:'1px solid rgba(232,137,122,0.3)', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, whiteSpace:'nowrap', flexShrink:0 }}>
+              style={{ padding:'7px 14px', background:'rgba(26,181,200,0.15)', color:'var(--teal)', border:'1px solid rgba(26,181,200,0.3)', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, whiteSpace:'nowrap', flexShrink:0 }}>
               <Wand2 size={12}/> Generate p={next.key}
             </button>
           )}
           {!next && (
-            <div style={{ fontSize:12, color:'var(--green)', display:'flex', alignItems:'center', gap:5, fontWeight:500 }}>
+            <div style={{ fontSize:12, color:'var(--teal)', display:'flex', alignItems:'center', gap:5, fontWeight:500 }}>
               <CheckCircle size={14}/> Fully enforced
             </div>
           )}

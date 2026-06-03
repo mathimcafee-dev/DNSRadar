@@ -152,7 +152,7 @@ export function Reports({ user }) {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 22, fontWeight: 700, color: r.avg_score >= 70 ? 'var(--green)' : r.avg_score >= 50 ? 'var(--amber)' : 'var(--red)' }}>{r.avg_score}</div>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: r.avg_score >= 70 ? 'var(--teal)' : r.avg_score >= 50 ? 'var(--amber)' : 'var(--red)' }}>{r.avg_score}</div>
                     <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>avg score</div>
                   </div>
                   <div>
@@ -162,7 +162,7 @@ export function Reports({ user }) {
                       {r.critical_count > 0 && <span style={{ color: 'var(--red-text)', fontWeight: 500 }}>· {r.critical_count} critical</span>}
                       <span>· {r.total_issues} issues</span>
                       {r.avg_score_delta !== 0 && r.avg_score_delta !== null && (
-                        <span style={{ color: r.avg_score_delta > 0 ? 'var(--green)' : 'var(--red-text)' }}>
+                        <span style={{ color: r.avg_score_delta > 0 ? 'var(--teal)' : 'var(--red-text)' }}>
                           · {r.avg_score_delta > 0 ? '+' : ''}{r.avg_score_delta} vs prev
                         </span>
                       )}
@@ -247,7 +247,7 @@ export function Settings({ user }) {
             </div>
             <div style={{
               width: 40, height: 22, borderRadius: 11, cursor: 'pointer', position: 'relative',
-              background: alertEmail ? 'var(--green)' : 'var(--gray-300)', transition: 'background 0.2s',
+              background: alertEmail ? 'var(--teal)' : 'var(--gray-300)', transition: 'background 0.2s',
             }} onClick={() => setAlertEmail(!alertEmail)}>
               <div style={{
                 position: 'absolute', top: 3, left: alertEmail ? 21 : 3,

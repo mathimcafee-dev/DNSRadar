@@ -14,7 +14,7 @@ function CopyBtn({ text }) {
     setTimeout(() => setCopied(false), 2000)
   }
   return (
-    <button onClick={copy} style={{ padding:'5px 12px', background:'var(--green-bg)', border:'1px solid rgba(232,137,122,0.3)', borderRadius:6, color:'var(--t1)', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+    <button onClick={copy} style={{ padding:'5px 12px', background:'var(--green-bg)', border:'1px solid rgba(26,181,200,0.3)', borderRadius:6, color:'var(--t1)', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
       {copied ? <><Check size={12}/> Copied</> : <><Copy size={12}/> Copy</>}
     </button>
   )
@@ -100,7 +100,7 @@ function SPFGenerator() {
               {PROVIDERS.map(p => (
                 <label key={p.key} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 10px', background:providers[p.key] ? 'var(--green-bg)' : '#f9fafb', border:`1px solid ${providers[p.key] ? 'var(--green-bdr)' : '#e5e7eb'}`, borderRadius:7, cursor:'pointer', fontSize:12, color:'var(--t1)' }}>
                   <input type="checkbox" checked={providers[p.key]} onChange={e => setProviders(prev => ({ ...prev, [p.key]: e.target.checked }))}
-                    style={{ accentColor:'var(--green)', width:14, height:14 }}/>
+                    style={{ accentColor:'var(--teal)', width:14, height:14 }}/>
                   {p.label}
                 </label>
               ))}
@@ -116,7 +116,7 @@ function SPFGenerator() {
             <div style={{ display:'flex', gap:6 }}>
               {[['~all','SoftFail (recommended)'],['−all','HardFail (strict)'],['?all','Neutral']].map(([v, l]) => (
                 <button key={v} onClick={() => setQualifier(v)}
-                  style={{ padding:'6px 12px', background:qualifier === v ? 'var(--green-bg)' : '#f9fafb', border:`1px solid ${qualifier === v ? 'var(--green)' : '#e5e7eb'}`, borderRadius:6, color:qualifier === v ? 'var(--green)' : '#374151', fontSize:12, cursor:'pointer', fontFamily:'monospace' }}>
+                  style={{ padding:'6px 12px', background:qualifier === v ? 'var(--green-bg)' : '#f9fafb', border:`1px solid ${qualifier === v ? 'var(--teal)' : '#e5e7eb'}`, borderRadius:6, color:qualifier === v ? 'var(--teal)' : '#374151', fontSize:12, cursor:'pointer', fontFamily:'monospace' }}>
                   {v} <span style={{ fontFamily:'inherit', fontSize:10, opacity:0.7 }}>— {l}</span>
                 </button>
               ))}
@@ -124,8 +124,8 @@ function SPFGenerator() {
           </div>
           {/* Lookup counter */}
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12, padding:'8px 12px', background:`lookupCount >= 8 ? '#fef2f2' : lookupCount >= 6 ? '#fffbeb' : 'var(--green-bg)'`, borderRadius:7, border:`1px solid lookupCount >= 8 ? '#fecaca' : lookupCount >= 6 ? '#fde68a' : 'var(--green-bdr)'` }}>
-            <AlertTriangle size={13} color={lookupCount >= 8 ? '#dc2626' : lookupCount >= 6 ? '#d97706' : 'var(--green)'}/>
-            <span style={{ fontSize:12, color: lookupCount >= 8 ? '#dc2626' : lookupCount >= 6 ? '#d97706' : 'var(--green)' }}>
+            <AlertTriangle size={13} color={lookupCount >= 8 ? '#dc2626' : lookupCount >= 6 ? '#d97706' : 'var(--teal)'}/>
+            <span style={{ fontSize:12, color: lookupCount >= 8 ? '#dc2626' : lookupCount >= 6 ? '#d97706' : 'var(--teal)' }}>
               DNS lookups: {lookupCount}/10 {lookupCount >= 8 ? '— near limit! Consider SPF flattening' : lookupCount >= 6 ? '— getting close to RFC 7208 limit' : '— well within limit'}
             </span>
           </div>
@@ -161,7 +161,7 @@ function DMARCGenerator({ presetPolicy }) {
   }
 
   const record = build()
-  const policyColor = policy === 'reject' ? 'var(--green)' : policy === 'quarantine' ? '#d97706' : '#dc2626'
+  const policyColor = policy === 'reject' ? 'var(--teal)' : policy === 'quarantine' ? '#d97706' : '#dc2626'
 
   return (
     <div style={card}>
@@ -318,7 +318,7 @@ function DKIMTool() {
                         <CheckCircle size={14} color="var(--green)"/>
                         <span style={{ fontFamily:'monospace', fontSize:13, fontWeight:600, color:'#92400e' }}>{r.selector}</span>
                         <span style={{ fontSize:12,color:'var(--t2)' }}>._domainkey.{domain}</span>
-                        {r.keySize && <span style={{ fontSize:12, padding:'2px 8px', borderRadius:8, background:r.keySize >= 2048 ? 'var(--green-bg)' : '#fffbeb', color:r.keySize >= 2048 ? 'var(--green)' : '#92400e' }}>{r.keySize}-bit</span>}
+                        {r.keySize && <span style={{ fontSize:12, padding:'2px 8px', borderRadius:8, background:r.keySize >= 2048 ? 'var(--green-bg)' : '#fffbeb', color:r.keySize >= 2048 ? 'var(--teal)' : '#92400e' }}>{r.keySize}-bit</span>}
                       </div>
                       <div style={{ fontFamily:'monospace', fontSize:10, color:'var(--t2)', wordBreak:'break-all', lineHeight:1.5 }}>{r.raw?.slice(0, 120)}…</div>
                     </div>
@@ -371,7 +371,7 @@ function EmailHeaderAnalyser() {
   }
 
   const StatusDot = ({ pass, fail, label, value }) => {
-    const color = pass ? 'var(--green)' : fail ? '#dc2626' : '#d97706'
+    const color = pass ? 'var(--teal)' : fail ? '#dc2626' : '#d97706'
     const status = pass ? 'Pass' : fail ? 'Fail' : 'Unknown'
     return (
       <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'10px 14px', borderBottom:'1px solid var(--border)' }}>
@@ -535,13 +535,13 @@ function BulkScanner() {
                   {results.map(r => (
                     <tr key={r.domain} style={{ borderBottom:`1px solid #f9fafb` }}>
                       <td style={{ padding:'8px 12px', fontFamily:'monospace', color:'var(--t1)' }}>{r.domain}</td>
-                      <td style={{ padding:'8px 12px', fontWeight:700, color: r.score >= 70 ? 'var(--green)' : r.score >= 50 ? '#92400e' : r.score ? '#dc2626' : '#6b7280' }}>{r.score ?? '–'}</td>
+                      <td style={{ padding:'8px 12px', fontWeight:700, color: r.score >= 70 ? 'var(--teal)' : r.score >= 50 ? '#92400e' : r.score ? '#dc2626' : '#6b7280' }}>{r.score ?? '–'}</td>
                       {[r.spf, r.dmarc, r.ssl].map((v, i) => {
                         const p = ['pass','valid','pass'].includes(v?.toLowerCase())
                         const f = ['missing','fail','fail'].includes(v?.toLowerCase())
-                        return <td key={i} style={{ padding:'8px 12px' }}><span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${p ? '16,185,129' : f ? '239,68,68' : '245,158,11'},0.12)`, color: p ? 'var(--green)' : f ? '#dc2626' : '#92400e' }}>{v ?? '–'}</span></td>
+                        return <td key={i} style={{ padding:'8px 12px' }}><span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${p ? '16,185,129' : f ? '239,68,68' : '245,158,11'},0.12)`, color: p ? 'var(--teal)' : f ? '#dc2626' : '#92400e' }}>{v ?? '–'}</span></td>
                       })}
-                      <td style={{ padding:'8px 12px', color: r.issues > 0 ? '#dc2626' : 'var(--green)', fontWeight:600 }}>{r.issues ?? '–'}</td>
+                      <td style={{ padding:'8px 12px', color: r.issues > 0 ? '#dc2626' : 'var(--teal)', fontWeight:600 }}>{r.issues ?? '–'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -586,7 +586,7 @@ function SPFFlattener() {
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&flatten()}
             placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
-          <button onClick={flatten} disabled={loading||!domain.trim()} style={{ padding:'8px 18px', background:'var(--green)', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
+          <button onClick={flatten} disabled={loading||!domain.trim()} style={{ padding:'8px 18px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
             {loading ? <div style={{ width:12, height:12, border:'2px solid #9ca3af', borderTopColor:'#fff', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> : <Zap size={13}/>}
             Flatten
           </button>
@@ -595,7 +595,7 @@ function SPFFlattener() {
         {result && (
           <>
             <div style={{ display:'flex', gap:8, marginBottom:10, flexWrap:'wrap' }}>
-              {[['IPs resolved', result.ip_count, 'var(--green)'], ['Lookups after', result.lookup_count_after, result.lookup_count_after === 0 ? 'var(--green)' : '#d97706'], ['Original lookups', '10 limit', '#6b7280']].map(([l,v,c]) => (
+              {[['IPs resolved', result.ip_count, 'var(--teal)'], ['Lookups after', result.lookup_count_after, result.lookup_count_after === 0 ? 'var(--teal)' : '#d97706'], ['Original lookups', '10 limit', '#6b7280']].map(([l,v,c]) => (
                 <div key={l} style={{ background:'var(--card-hi)', borderRadius:8, padding:'8px 12px', border:'1px solid var(--border)' }}>
                   <div style={{ fontSize:16, fontWeight:700, color:c }}>{v}</div>
                   <div style={{ fontSize:10, color:'var(--t2)' }}>{l}</div>
@@ -616,7 +616,7 @@ function SPFFlattener() {
             </div>
             {/* Hosted SPF option */}
             <div style={{ background:'var(--green-bg)', border:'1px solid var(--green-bdr)', borderRadius:10, padding:'14px 16px' }}>
-              <div style={{ fontSize:13, fontWeight:600, color:'var(--green)', marginBottom:4 }}>⚡ Use Hosted SPF instead</div>
+              <div style={{ fontSize:13, fontWeight:600, color:'var(--teal)', marginBottom:4 }}>⚡ Use Hosted SPF instead</div>
               <div style={{ fontSize:12, color:'var(--green-bdr)', lineHeight:1.6, marginBottom:10 }}>
                 Instead of a static flat record that goes stale, use a single <code style={{ background:'var(--green-bg)', padding:'1px 5px', borderRadius:4, fontFamily:'monospace' }}>include:spf.dnsradar.easysecurity.in</code> that DomainRadar hosts and auto-updates. Your SPF record stays valid forever — even when you add new email providers.
               </div>
@@ -632,11 +632,11 @@ function SPFFlattener() {
                       alert('Hosted SPF record copied! Replace your current SPF record with this in your DNS. Then email us at support@dnsradar.easysecurity.in with your domain so we can configure the hosted record.')
                     } catch { alert('Copy: v=spf1 include:spf.dnsradar.easysecurity.in ~all') }
                   }}
-                  style={{ padding:'7px 14px', background:'var(--green)', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>
+                  style={{ padding:'7px 14px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>
                   📋 Copy hosted SPF record
                 </button>
                 <a href="mailto:support@dnsradar.easysecurity.in?subject=Hosted SPF setup&body=Please configure hosted SPF for my domain."
-                  style={{ padding:'7px 14px', background:'var(--card)', color:'var(--green)', border:'1px solid var(--green-bdr)', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', textDecoration:'none', display:'inline-flex', alignItems:'center' }}>
+                  style={{ padding:'7px 14px', background:'var(--card)', color:'var(--teal)', border:'1px solid var(--green-bdr)', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', textDecoration:'none', display:'inline-flex', alignItems:'center' }}>
                   📧 Request setup
                 </a>
               </div>
@@ -702,7 +702,7 @@ function DKIMRotation() {
               {selectors.map(s => (
                 <div key={s.selector} style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid var(--border)', marginBottom:6 }}>
                   <code style={{ fontSize:12, color:'#1e1b4b', fontWeight:600 }}>{s.selector}</code>
-                  <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background: s.key_size >= 2048 ? 'var(--green-bg)' : '#fffbeb', color: s.key_size >= 2048 ? 'var(--green)' : '#92400e', fontWeight:600 }}>{s.key_size || '?'}-bit</span>
+                  <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background: s.key_size >= 2048 ? 'var(--green-bg)' : '#fffbeb', color: s.key_size >= 2048 ? 'var(--teal)' : '#92400e', fontWeight:600 }}>{s.key_size || '?'}-bit</span>
                   <span style={{ fontSize:12,color:'var(--t2)' }}>TTL {s.ttl}s</span>
                   {s.key_size < 2048 && <span style={{ fontSize:10, color:'#92400e', marginLeft:'auto' }}>⚠️ Upgrade to 2048-bit</span>}
                 </div>
@@ -789,9 +789,9 @@ function BIMIChecker() {
                 { label:'DMARC policy', ok: result.dmarc_ready, yes:`p=${result.dmarc_policy} ✓`, no:`p=${result.dmarc_policy} — upgrade needed` },
                 { label:'VMC certificate', ok: result.has_vmc, yes:'Present', no:'Not found (logo may not show in all clients)' },
               ].map(s => (
-                <div key={s.label} style={{ flex:1, minWidth:140, padding:'10px 12px', borderRadius:8, background: s.ok ? 'rgba(232,137,122,0.08)' : 'rgba(239,68,68,0.08)', border:`1px solid ${s.ok ? 'rgba(232,137,122,0.2)' : 'rgba(239,68,68,0.2)'}` }}>
+                <div key={s.label} style={{ flex:1, minWidth:140, padding:'10px 12px', borderRadius:8, background: s.ok ? 'rgba(26,181,200,0.08)' : 'rgba(239,68,68,0.08)', border:`1px solid ${s.ok ? 'rgba(26,181,200,0.2)' : 'rgba(239,68,68,0.2)'}` }}>
                   <div style={{ fontSize:10, color:'var(--t2)', marginBottom:3 }}>{s.label}</div>
-                  <div style={{ fontSize:12, fontWeight:600, color: s.ok ? 'var(--green)' : '#dc2626' }}>{s.ok ? s.yes : s.no}</div>
+                  <div style={{ fontSize:12, fontWeight:600, color: s.ok ? 'var(--teal)' : '#dc2626' }}>{s.ok ? s.yes : s.no}</div>
                 </div>
               ))}
             </div>
@@ -861,7 +861,7 @@ function MTASTSChecker() {
     setLoading(false)
   }
 
-  const statusDot = (ok) => <span style={{ display:'inline-block', width:8, height:8, borderRadius:'50%', background: ok ? 'var(--green)' : '#dc2626', marginRight:6 }}/>
+  const statusDot = (ok) => <span style={{ display:'inline-block', width:8, height:8, borderRadius:'50%', background: ok ? 'var(--teal)' : '#dc2626', marginRight:6 }}/>
 
   return (
     <div style={card}>
@@ -946,14 +946,14 @@ function BulkDomainImport({ user }) {
         <textarea value={text} onChange={e => setText(e.target.value)} rows={6} placeholder={'example.com\ngoogle.com\nhttps://microsoft.com/\nyourdomain.org'}
           style={{ width:'100%', padding:'10px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:8, fontSize:12, fontFamily:'monospace', color:'var(--t1)', outline:'none', resize:'vertical', boxSizing:'border-box', marginBottom:10 }}/>
         {!user && <div style={{ fontSize:12, color:'#92400e', marginBottom:10 }}>⚠️ Sign in to import domains to your account</div>}
-        <button onClick={importDomains} disabled={importing || !text.trim() || !user} style={{ padding:'8px 18px', background:'var(--green)', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', marginBottom: results.length ? 14 : 0 }}>
+        <button onClick={importDomains} disabled={importing || !text.trim() || !user} style={{ padding:'8px 18px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', marginBottom: results.length ? 14 : 0 }}>
           {importing ? 'Importing…' : 'Import domains'}
         </button>
         {results.length > 0 && (
           <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
             {results.map(r => (
               <div key={r.domain} style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 10px', background:`rgba(${r.ok ? '16,185,129' : '239,68,68'},0.06)`, borderRadius:6, border:`1px solid rgba(${r.ok ? '16,185,129' : '239,68,68'},0.15)` }}>
-                <span style={{ fontSize:12, color: r.ok ? 'var(--green)' : '#d97706' }}>{r.ok ? '✓' : '—'}</span>
+                <span style={{ fontSize:12, color: r.ok ? 'var(--teal)' : '#d97706' }}>{r.ok ? '✓' : '—'}</span>
                 <span style={{ fontSize:12, fontFamily:'monospace', color:'var(--t1)', flex:1 }}>{r.domain}</span>
                 <span style={{ fontSize:10, color:'var(--t2)' }}>{r.status}</span>
               </div>
@@ -1050,7 +1050,7 @@ function DeliverabilityTest({ user }) {
           <div style={{ ...card, padding:'20px 24px', marginBottom:14 }}>
             <div style={{ display:'flex', alignItems:'center', gap:20 }}>
               <div style={{ textAlign:'center', flexShrink:0 }}>
-                <div style={{ fontSize:48, fontWeight:800, color: result.score>=80?'var(--green)':result.score>=60?'#d97706':'#dc2626', lineHeight:1, letterSpacing:'-0.04em' }}>{result.score}</div>
+                <div style={{ fontSize:48, fontWeight:800, color: result.score>=80?'var(--teal)':result.score>=60?'#d97706':'#dc2626', lineHeight:1, letterSpacing:'-0.04em' }}>{result.score}</div>
                 <div style={{ fontSize:11, color:'var(--t3)', fontWeight:500 }}>/ 100</div>
               </div>
               <div>
@@ -1070,7 +1070,7 @@ function DeliverabilityTest({ user }) {
                   ].map(p => (
                     <span key={p.label} style={{ fontSize:11, padding:'3px 10px', borderRadius:8, fontWeight:600,
                       background: p.pass ? 'var(--green-bg)' : '#fef2f2',
-                      color: p.pass ? 'var(--green)' : '#dc2626',
+                      color: p.pass ? 'var(--teal)' : '#dc2626',
                       border: `1px solid ${p.pass ? 'var(--green-bdr)' : '#fecaca'}` }}>
                       {p.pass ? '✓' : '✗'} {p.label}
                     </span>
@@ -1095,7 +1095,7 @@ function DeliverabilityTest({ user }) {
                     <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)' }}>{c.label}</span>
                     <span style={{ fontSize:10, fontWeight:600, padding:'2px 7px', borderRadius:8,
                       background: c.pass?'var(--green-bg)':c.warn?'#fffbeb':'#fef2f2',
-                      color: c.pass?'var(--green)':c.warn?'#d97706':'#dc2626',
+                      color: c.pass?'var(--teal)':c.warn?'#d97706':'#dc2626',
                       border: `1px solid ${c.pass?'var(--green-bdr)':c.warn?'#fde68a':'#fecaca'}` }}>
                       {c.pass ? '✓ Pass' : c.warn ? '⚠ Warn' : '✗ Fail'}
                     </span>
@@ -1130,7 +1130,7 @@ export default function Tools({ user }) {
         <div style={{ display:'flex', gap:2, flexWrap:'wrap' }}>
           {tabs.map(t => (
             <button key={t.id} onClick={() => setActiveTab(t.id)}
-              style={{ padding:'7px 16px', background:activeTab===t.id?'var(--green-bg)':'transparent', border:`1px solid ${activeTab===t.id?'var(--green-bdr)':'transparent'}`, borderRadius:8, color:activeTab===t.id?'var(--green)':'#374151', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+              style={{ padding:'7px 16px', background:activeTab===t.id?'var(--green-bg)':'transparent', border:`1px solid ${activeTab===t.id?'var(--green-bdr)':'transparent'}`, borderRadius:8, color:activeTab===t.id?'var(--teal)':'#374151', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
               {t.label}
             </button>
           ))}

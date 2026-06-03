@@ -262,7 +262,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                     </div>
                   </div>
                   {tr && (
-                    <div style={{ padding:'7px 16px 10px', fontSize:12, color:tr.ok?'var(--green)':'#dc2626', background:tr.ok?'rgba(232,137,122,0.05)':'rgba(239,68,68,0.05)' }}>
+                    <div style={{ padding:'7px 16px 10px', fontSize:12, color:tr.ok?'var(--teal)':'#dc2626', background:tr.ok?'rgba(26,181,200,0.05)':'rgba(239,68,68,0.05)' }}>
                       {tr.msg}
                     </div>
                   )}
@@ -326,7 +326,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                             return (
                               <div key={cred.id}>
                                 {fr ? (
-                                  <div style={{ padding:'6px 12px', borderRadius:7, background:fr.success?'rgba(232,137,122,0.1)':'rgba(239,68,68,0.1)', border:`1px solid ${fr.success?'rgba(232,137,122,0.25)':'rgba(239,68,68,0.25)'}`, fontSize:12, color:fr.success?'var(--green)':'#dc2626', display:'flex', alignItems:'center', gap:5 }}>
+                                  <div style={{ padding:'6px 12px', borderRadius:7, background:fr.success?'rgba(26,181,200,0.1)':'rgba(239,68,68,0.1)', border:`1px solid ${fr.success?'rgba(26,181,200,0.25)':'rgba(239,68,68,0.25)'}`, fontSize:12, color:fr.success?'var(--teal)':'#dc2626', display:'flex', alignItems:'center', gap:5 }}>
                                     {fr.success?<CheckCircle size={12}/>:<AlertTriangle size={12}/>}
                                     {fr.success?'Record created!':fr.results?.[0]?.error||'Failed'}
                                   </div>
@@ -378,7 +378,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                       <td style={{ padding:'8px 14px', fontFamily:'monospace', color:'var(--t2)', fontSize:11 }}>{c.record_name}</td>
                       <td style={{ padding:'8px 14px', fontFamily:'monospace', color:'var(--t2)', fontSize:10, maxWidth:200, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.record_value}</td>
                       <td style={{ padding:'8px 14px' }}>
-                        <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:c.status==='success'?'rgba(232,137,122,0.15)':c.status==='failed'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)', color:c.status==='success'?'var(--green)':c.status==='failed'?'#dc2626':'#d97706' }}>
+                        <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:c.status==='success'?'rgba(26,181,200,0.15)':c.status==='failed'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)', color:c.status==='success'?'var(--teal)':c.status==='failed'?'#dc2626':'#d97706' }}>
                           {c.status}
                         </span>
                       </td>
