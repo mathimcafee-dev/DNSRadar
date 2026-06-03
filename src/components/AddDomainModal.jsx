@@ -15,7 +15,6 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
 
   function cleanDomain(val) {
     const clean = val.replace(/^https?:\/\//, '').split('/')[0].toLowerCase().trim()
-    // Only strip www. prefix, keep other subdomains intact
     return clean.startsWith('www.') ? clean.slice(4) : clean
   }
 
@@ -25,7 +24,6 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
     if (!d || !d.includes('.') || d.length < 4) { setError('Please enter a valid domain or subdomain'); return }
     setLoading(true)
     try {
-      // Ensure profile exists (handles stale sessions / first-time users)
       await supabase.from('profiles').upsert({ id: user.id, email: user.email }, { onConflict: 'id' })
       const tok = 'dr-verify-' + Math.random().toString(36).slice(2, 18)
       const { data, error: err } = await supabase.from('domains').insert({
@@ -80,102 +78,141 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
 
   return (
     <div style={{
-      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)',
+      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
       display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000,
+      backdropFilter: 'blur(4px)',
     }} onClick={e => e.target === e.currentTarget && onClose()}>
       <div style={{
-        background: '#fff', borderRadius: 16, width: '100%', maxWidth: 480,
-        margin: '0 16px', boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+        background: 'var(--card)',
+        border: '1px solid var(--border-md)',
+        borderRadius: 16,
+        width: '100%',
+        maxWidth: 480,
+        margin: '0 16px',
+        boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
       }} className="fade-in">
+
         {/* Header */}
-        <div style={{ padding: '18px 20px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ padding: '20px 20px 0', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 600 }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)' }}>
               {step === 1 ? 'Add a domain' : 'Verify ownership'}
             </div>
-            <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 2 }}>
-              Step {step} of 2
+            <div style={{ fontSize: 12, color: 'var(--t2)', marginTop: 3 }}>
+              Step {step} of 2 — {step === 1 ? 'Enter your domain' : 'Add DNS TXT record'}
             </div>
           </div>
-          <button onClick={onClose} className="btn btn-ghost btn-sm" style={{ padding: 6 }}><X size={16} /></button>
+          <button onClick={onClose} className="btn btn-ghost btn-sm" style={{ padding: 6, marginTop: -2 }}>
+            <X size={16} />
+          </button>
         </div>
 
-        {/* Steps */}
-        <div style={{ display: 'flex', gap: 4, padding: '12px 20px 0' }}>
+        {/* Progress bar */}
+        <div style={{ display: 'flex', gap: 6, padding: '14px 20px 0' }}>
           {[1, 2].map(s => (
             <div key={s} style={{
               flex: 1, height: 3, borderRadius: 2,
-              background: s <= step ? 'var(--green)' : 'var(--gray-200)',
+              background: s <= step ? 'var(--green)' : 'var(--border)',
               transition: 'background 0.3s',
             }} />
           ))}
         </div>
 
-        <div style={{ padding: 20 }}>
+        <div style={{ padding: '20px 20px 20px' }}>
           {step === 1 ? (
             <>
-              <p style={{ fontSize: 13, color: 'var(--gray-600)', marginBottom: 16, lineHeight: 1.6 }}>
-                Enter your domain name to begin. We'll generate a unique TXT record for you to add to your DNS — this proves you own the domain.
+              <p style={{ fontSize: 13, color: 'var(--t2)', marginBottom: 18, lineHeight: 1.7 }}>
+                Enter your domain name below. We'll generate a unique TXT record for you to add to your DNS — this proves you own the domain.
               </p>
-              <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>
+
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--t1)', display: 'block', marginBottom: 6 }}>
                 Domain name
               </label>
               <input
-                type="text" placeholder="yourdomain.com or mail.yourdomain.com" value={domain}
+                type="text"
+                placeholder="yourdomain.com or mail.yourdomain.com"
+                value={domain}
                 onChange={e => setDomain(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleAddDomain()}
-                style={{ marginBottom: 8 }}
+                style={{ width: '100%', marginBottom: 8, boxSizing: 'border-box' }}
                 autoFocus
               />
-              <div style={{ fontSize: 11, color: 'var(--gray-500)', marginBottom: 16 }}>
-                Enter a domain or subdomain — e.g. example.com, mail.example.com, newsletter.example.com
+              <div style={{ fontSize: 11, color: 'var(--t3)', marginBottom: 18, lineHeight: 1.6 }}>
+                Supports root domains and subdomains — e.g. example.com, mail.example.com
               </div>
+
               {error && (
-                <div style={{ padding: '8px 12px', background: 'var(--red-light)', color: 'var(--red-text)', borderRadius: 8, fontSize: 12, marginBottom: 12 }}>
+                <div style={{
+                  padding: '10px 12px', background: 'var(--red-bg)',
+                  color: 'var(--red)', border: '1px solid var(--red-bdr)',
+                  borderRadius: 8, fontSize: 12, marginBottom: 14,
+                }}>
                   {error}
                 </div>
               )}
+
               <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
                 <button className="btn btn-outline" onClick={onClose}>Cancel</button>
                 <button className="btn btn-primary" onClick={handleAddDomain} disabled={loading || !domain}>
-                  {loading ? <><div className="spinner" style={{ width: 14, height: 14 }} /> Adding…</> : 'Continue →'}
+                  {loading
+                    ? <><div className="spinner" style={{ width: 14, height: 14 }} /> Adding…</>
+                    : 'Continue →'}
                 </button>
               </div>
             </>
           ) : (
             <>
+              {/* Domain verification banner */}
               <div style={{
-                background: '#EAF3DE', border: '1px solid var(--green-mid)',
-                borderRadius: 10, padding: 14, marginBottom: 16,
+                background: 'var(--green-bg)',
+                border: '1px solid var(--green-bdr)',
+                borderRadius: 10, padding: '12px 14px', marginBottom: 18,
+                display: 'flex', alignItems: 'center', gap: 10,
               }}>
-                <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--green-dark)', marginBottom: 8 }}>
-                  <Radar size={13} style={{ display: 'inline', marginRight: 4 }} />
-                  Verifying: {domain}
+                <Radar size={15} color="var(--green)" style={{ flexShrink: 0 }} />
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--green)' }}>Verifying: {domain}</div>
+                  <div style={{ fontSize: 11, color: 'var(--t2)', marginTop: 2, lineHeight: 1.5 }}>
+                    Add the TXT record below to your DNS provider to confirm ownership.
+                  </div>
                 </div>
-                <p style={{ fontSize: 12, color: 'var(--green-dark)', lineHeight: 1.6 }}>
-                  Add this TXT record to your DNS provider (Cloudflare, GoDaddy, Namecheap, etc.) to prove you own this domain.
-                </p>
               </div>
 
+              {/* DNS record fields */}
               <div style={{ marginBottom: 16 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-600)', marginBottom: 4 }}>Record type</div>
-                    <div style={{ padding: '7px 10px', background: 'var(--gray-50)', border: '1px solid var(--gray-200)', borderRadius: 6, fontSize: 12, fontFamily: 'var(--mono)' }}>TXT</div>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--t2)', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                      Record type
+                    </div>
+                    <div style={{
+                      padding: '8px 12px', background: 'var(--card-hi)',
+                      border: '1px solid var(--border)', borderRadius: 8,
+                      fontSize: 13, fontFamily: 'var(--mono)', color: 'var(--t1)',
+                    }}>TXT</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-600)', marginBottom: 4 }}>Name / Host</div>
-                    <div style={{ padding: '7px 10px', background: 'var(--gray-50)', border: '1px solid var(--gray-200)', borderRadius: 6, fontSize: 12, fontFamily: 'var(--mono)' }}>@ (root)</div>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--t2)', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                      Name / Host
+                    </div>
+                    <div style={{
+                      padding: '8px 12px', background: 'var(--card-hi)',
+                      border: '1px solid var(--border)', borderRadius: 8,
+                      fontSize: 13, fontFamily: 'var(--mono)', color: 'var(--t1)',
+                    }}>@ (root)</div>
                   </div>
                 </div>
+
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-600)', marginBottom: 4 }}>Value</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--t2)', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                    Value
+                  </div>
                   <div style={{
                     display: 'flex', alignItems: 'center', gap: 8,
-                    padding: '8px 12px', background: 'var(--gray-50)',
-                    border: '1px solid var(--gray-200)', borderRadius: 6,
+                    padding: '10px 12px', background: 'var(--card-hi)',
+                    border: '1px solid var(--border)', borderRadius: 8,
                   }}>
-                    <span className="mono" style={{ fontSize: 11, flex: 1, wordBreak: 'break-all', color: 'var(--gray-800)' }}>
+                    <span style={{ fontSize: 11, flex: 1, wordBreak: 'break-all', color: 'var(--green)', fontFamily: 'var(--mono)' }}>
                       domainradar-verify={token}
                     </span>
                     <button className="btn btn-ghost btn-sm" onClick={copyToken} style={{ flexShrink: 0, padding: '4px 8px' }}>
@@ -185,12 +222,22 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
                 </div>
               </div>
 
-              <div style={{ padding: '10px 12px', background: 'var(--blue-light)', borderRadius: 8, fontSize: 11, color: 'var(--blue-text)', marginBottom: 16, lineHeight: 1.6 }}>
-                ℹ After adding the record, click "Verify now". DNS propagation can take a few minutes to several hours. You can close this window and verify later from your dashboard.
+              {/* Info notice */}
+              <div style={{
+                padding: '10px 12px', background: 'var(--blue-bg)',
+                border: '1px solid var(--blue-bdr)',
+                borderRadius: 8, fontSize: 11, color: 'var(--blue)',
+                marginBottom: 16, lineHeight: 1.7,
+              }}>
+                ℹ After adding the record, click "Verify now". DNS propagation can take a few minutes to several hours. You can close this and verify later from your dashboard.
               </div>
 
               {verifyError && (
-                <div style={{ padding: '8px 12px', background: 'var(--amber-light)', color: 'var(--amber-text)', borderRadius: 8, fontSize: 12, marginBottom: 12 }}>
+                <div style={{
+                  padding: '10px 12px', background: 'var(--amber-bg)',
+                  color: 'var(--amber)', border: '1px solid var(--amber-bdr)',
+                  borderRadius: 8, fontSize: 12, marginBottom: 14,
+                }}>
                   {verifyError}
                 </div>
               )}
