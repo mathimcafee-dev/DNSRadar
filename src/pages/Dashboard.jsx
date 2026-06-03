@@ -55,7 +55,7 @@ function exportCompliancePDF(domain, scan) {
     .score-num { font-size: 40px; font-weight: 800; color: ${scoreColor}; line-height: 1; }
     .score-label { font-size: 11px; color: ${scoreColor}; font-weight: 600; margin-top: 4px; }
     .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #f3f4f6; font-size: 11px; color: #9ca3af; display: flex; justify-content: space-between; }
-    .compliance-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; margin-bottom: 20px; }
+    .compliance-box { background: #1c160e; border: 1px solid rgba(255,107,43,0.18); border-radius: 8px; padding: 14px 16px; margin-bottom: 20px; }
     .compliance-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 12px; color: #374151; border-bottom: 0.5px solid #e5e7eb; }
     .compliance-item:last-child { border-bottom: none; }
     @media print { body { padding: 20px; } }
@@ -290,7 +290,7 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
                 })}
               </div>
               {/* Preview */}
-              <div style={{marginTop:8,padding:'6px 9px',background:'#f8fafc',border:'1px solid var(--border)',borderRadius:7,fontSize:11,fontFamily:'monospace',color:'#1e293b',lineHeight:1.8,wordBreak:'break-all'}}>
+              <div style={{marginTop:8,padding:'6px 9px',background:'var(--card-hi)',border:'1px solid var(--border)',borderRadius:7,fontSize:11,fontFamily:'monospace',color:'var(--t1)',lineHeight:1.8,wordBreak:'break-all'}}>
                 {caaVendors.length===0
                   ? <span style={{color:'var(--t3)'}}>Select at least one CA above</span>
                   : CAA_VENDORS.filter(v=>caaVendors.includes(v.id)).map(v=>(
@@ -303,7 +303,7 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
 
           {/* Non-CAA record preview */}
           {issueType !== 'CAA' && (
-            <div style={{fontSize:11,fontFamily:'monospace',color:'#1e293b',background:'#f8fafc',border:'1px solid var(--border)',padding:'7px 9px',borderRadius:8,marginBottom:12,wordBreak:'break-all',lineHeight:1.6}}>
+            <div style={{fontSize:11,fontFamily:'monospace',color:'var(--t1)',background:'var(--card-hi)',border:'1px solid var(--border)',padding:'7px 9px',borderRadius:8,marginBottom:12,wordBreak:'break-all',lineHeight:1.6}}>
               {fixValue?.slice(0,140)}{fixValue?.length>140?'…':''}
             </div>
           )}
@@ -536,7 +536,7 @@ function IssuesPanel({ issues, critical, warns, scan, selected, user, setPage })
                   </div>
                   <div style={{fontSize:12, color:'var(--t2)', lineHeight:1.6, marginBottom:canAutoFix?6:0}}>{iss.message}</div>
                   {canAutoFix && (
-                    <div style={{fontSize:11, fontFamily:'monospace', color:'#1e293b', background:'#f8fafc', border:'1px solid var(--border)', padding:'4px 9px', borderRadius:6, display:'inline-block', wordBreak:'break-all', marginTop:2, maxWidth:'100%', lineHeight:1.5}}>
+                    <div style={{fontSize:11, fontFamily:'monospace', color:'var(--t1)', background:'var(--card-hi)', border:'1px solid var(--border)', padding:'4px 9px', borderRadius:6, display:'inline-block', wordBreak:'break-all', marginTop:2, maxWidth:'100%', lineHeight:1.5}}>
                       {fixVal?.slice(0,120)}{fixVal?.length>120?'…':''}
                     </div>
                   )}
@@ -588,7 +588,7 @@ function BadgeButton({ domain, score }) {
           </div>
           <div style={{fontSize:11, color:'var(--t3)', marginBottom:6}}>Markdown (README)</div>
           <div style={{display:'flex', gap:6, marginBottom:10}}>
-            <div style={{flex:1, fontFamily:'monospace', fontSize:10, color:'var(--t2)', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:6, padding:'6px 8px', wordBreak:'break-all', lineHeight:1.5}}>
+            <div style={{flex:1, fontFamily:'monospace', fontSize:10, color:'var(--t2)', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:6, padding:'6px 8px', wordBreak:'break-all', lineHeight:1.5}}>
               {markdownBadge.slice(0, 80)}…
             </div>
             <button onClick={() => copy(markdownBadge)} style={{padding:'6px 10px', background:'var(--green-bg)', color:'var(--or)', border:'1px solid var(--green-bdr)', borderRadius:7, fontSize:11, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit'}}>
@@ -597,7 +597,7 @@ function BadgeButton({ domain, score }) {
           </div>
           <div style={{fontSize:11, color:'var(--t3)', marginBottom:6}}>HTML</div>
           <div style={{display:'flex', gap:6}}>
-            <div style={{flex:1, fontFamily:'monospace', fontSize:10, color:'var(--t2)', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:6, padding:'6px 8px', wordBreak:'break-all', lineHeight:1.5}}>
+            <div style={{flex:1, fontFamily:'monospace', fontSize:10, color:'var(--t2)', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:6, padding:'6px 8px', wordBreak:'break-all', lineHeight:1.5}}>
               {htmlBadge.slice(0, 80)}…
             </div>
             <button onClick={() => copy(htmlBadge)} style={{padding:'6px 10px', background:'var(--green-bg)', color:'var(--or)', border:'1px solid var(--green-bdr)', borderRadius:7, fontSize:11, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit'}}>
@@ -781,12 +781,12 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
   const cardHd={padding:'12px 16px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',justifyContent:'space-between',background:'var(--card-hi)'}
 
   const cats=scan?[
-    {label:'DNS records',icon:Globe,color:'#3730a3',bg:'#eff6ff',score:scan.score_dns,max:25,tab:'dns'},
-    {label:'Email auth',icon:Mail,color:'var(--red)',bg:'#fef2f2',score:scan.score_email,max:30,tab:'email'},
+    {label:'DNS records',icon:Globe,color:'var(--pu)',bg:'var(--cy-bg)',score:scan.score_dns,max:25,tab:'dns'},
+    {label:'Email auth',icon:Mail,color:'var(--red)',bg:'var(--pk-bg)',score:scan.score_email,max:30,tab:'email'},
     {label:'SSL / TLS',icon:Lock,color:'var(--t1)',bg:'var(--green-bg)',score:scan.score_ssl,max:20},
-    {label:'Propagation',icon:Globe,color:'var(--amber)',bg:'#fffbeb',score:scan.score_propagation,max:10,tab:'propagation'},
-    {label:'Security',icon:Shield,color:'#4338ca',bg:'#f5f3ff',score:scan.score_security,max:10,tab:'overview'},
-    {label:'Blacklists',icon:Ban,color:'var(--red)',bg:'#fef2f2',score:scan.score_blacklist,max:5,tab:'blacklists'},
+    {label:'Propagation',icon:Globe,color:'var(--amber)',bg:'var(--or-bg)',score:scan.score_propagation,max:10,tab:'propagation'},
+    {label:'Security',icon:Shield,color:'#4338ca',bg:'var(--pu-bg)',score:scan.score_security,max:10,tab:'overview'},
+    {label:'Blacklists',icon:Ban,color:'var(--red)',bg:'var(--pk-bg)',score:scan.score_blacklist,max:5,tab:'blacklists'},
   ]:[]
 
   const tabs=['overview','email','ssl','propagation','blacklists','dns']
@@ -852,7 +852,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
       </div>
 
       {/* ── MAIN ─────────────────────────────────────────────── */}
-      <div style={{flex:1,overflowY:'auto',background:D.bg}}>
+      <div style={{flex:1,overflowY:'auto',background:'var(--page)'}}>
         {!selected?(
           <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',flexDirection:'column',gap:16}}>
             <Shield size={56} color="#e5e7eb"/>
@@ -873,7 +873,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'var(--amber-bg)',color:'var(--amber)',border:'1px solid var(--or-bdr)',fontWeight:600}}>{warns.length} warnings</span>}
                   </div>
                   <div style={{fontSize:12,color:'var(--t2)',display:'flex',gap:14,flexWrap:'wrap',marginBottom:10}}>
-                    {scan?.blacklists?.ip&&<span style={{fontFamily:'monospace',color:'#0f172a'}}>{scan.blacklists.ip}</span>}
+                    {scan?.blacklists?.ip&&<span style={{fontFamily:'monospace',color:'var(--t1)'}}>{scan.blacklists.ip}</span>}
                     <span>{selected.monitor_interval} monitoring</span>
                     {scan?.scanned_at&&<span>Scanned {timeAgo(scan.scanned_at)}</span>}
                   </div>
@@ -881,7 +881,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   <div style={{display:'flex',gap:0,borderBottom:'1px solid #e4e7ec',marginBottom:-14}}>
                     {tabs.map(t=>(
                       <button key={t} className="dsh-tab" onClick={()=>setActiveTab(t)}
-                        style={{padding:'8px 14px',background:'transparent',border:'none',borderBottom:`2px solid ${activeTab===t?'#111827':'transparent'}`,cursor:'pointer',fontSize:12,fontWeight:activeTab===t?600:400,color:activeTab===t?'#111827':'#9ca3af',textTransform:'capitalize',transition:'all 0.15s',marginBottom:-1}}>
+                        style={{padding:'8px 14px',background:'transparent',border:'none',borderBottom:`2px solid ${activeTab===t?'var(--or)':'transparent'}`,cursor:'pointer',fontSize:12,fontWeight:activeTab===t?700:400,color:activeTab===t?'var(--or)':'var(--t3)',textTransform:'capitalize',transition:'all 0.15s',marginBottom:-1,fontFamily:'inherit'}}>
                         {t==='ssl'?'SSL/TLS':t==='dns'?'DNS Records':t.charAt(0).toUpperCase()+t.slice(1)}
                       </button>
                     ))}
@@ -1047,7 +1047,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                         {r.extra&&<div style={{fontSize:10,color:'var(--t2)',marginTop:3}}>{r.extra}</div>}
                       </div>
                       <div style={{flex:1}}>
-                        {r.val&&<div style={{fontSize:12,fontFamily:'monospace',color:'#0f172a',marginBottom:4,wordBreak:'break-all',padding:'4px 8px',background:'#f8fafc',borderRadius:5,border:'1px solid var(--border)'}}>{r.val}</div>}
+                        {r.val&&<div style={{fontSize:12,fontFamily:'monospace',color:'var(--t1)',marginBottom:4,wordBreak:'break-all',padding:'4px 8px',background:'var(--card-hi)',borderRadius:5,border:'1px solid var(--border)'}}>{r.val}</div>}
                         {r.note&&<div style={{fontSize:12,color:'var(--t2)',lineHeight:1.5}}>{r.note}</div>}
                         {r.suggest&&<div style={{marginTop:5,padding:'6px 10px',background:'var(--green-bg)',border:'1px solid var(--green-bdr)',borderRadius:6,fontSize:12,fontFamily:'monospace',color:'var(--green-bdr)',wordBreak:'break-all'}}>✦ {r.suggest}</div>}
                       </div>
@@ -1133,7 +1133,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                             </div>
                           )}
 
-                          <div style={{padding:'10px 14px',background:'#eff6ff',border:'1px solid #bfdbfe',borderRadius:8,fontSize:12,color:'#1d4ed8'}}>
+                          <div style={{padding:'10px 14px',background:'#eff6ff',border:'1px solid #bfdbfe',borderRadius:8,fontSize:12,color:'var(--cy)'}}>
                             ℹ {scan.ssl_info.note||'HTTPS connection established successfully.'}
                           </div>
                         </div>
@@ -1154,10 +1154,10 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 <div style={{display:'flex',flexDirection:'column',gap:14}}>
                   <div style={card}>
                     <div style={cardHd}>
-                      <span style={{fontSize:12,fontWeight:700,color:'var(--t1)',display:'flex',alignItems:'center',gap:6}}><Globe size={13} color='#1d4ed8'/> Global propagation status</span>
+                      <span style={{fontSize:12,fontWeight:700,color:'var(--t1)',display:'flex',alignItems:'center',gap:6}}><Globe size={13} color='var(--cy)'/> Global propagation status</span>
                       <SBadge status={scan.propagation.consistent?'Consistent':'Inconsistent'}/>
                     </div>
-                    <div style={{padding:'16px 20px'}}>
+                    <div style={{padding:'16px 20px', background:'var(--page)'}}>
 
                       {/* Real map using OpenStreetMap tiles via static map image */}
                       <div style={{position:'relative',borderRadius:10,overflow:'hidden',marginBottom:14,border:'1px solid var(--border)',background:'#e8f0fe'}}>
@@ -1340,9 +1340,9 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       <tbody>
                         {scan.dns_records.map((r,i)=>(
                           <tr key={i} style={{borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
-                            <td style={{padding:'9px 16px'}}><span style={{fontSize:10,padding:'2px 8px',borderRadius:5,background:'rgba(96,165,250,0.15)',color:'#3730a3',fontFamily:'monospace',fontWeight:700}}>{r.type}</span></td>
-                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'#0f172a',fontSize:12,maxWidth:380,wordBreak:'break-all'}}>{r.value}</td>
-                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'#334155',fontSize:12,whiteSpace:'nowrap'}}>{r.ttl}s</td>
+                            <td style={{padding:'9px 16px'}}><span style={{fontSize:10,padding:'2px 8px',borderRadius:5,background:'rgba(96,165,250,0.15)',color:'var(--pu)',fontFamily:'monospace',fontWeight:700}}>{r.type}</span></td>
+                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'var(--t1)',fontSize:12,maxWidth:380,wordBreak:'break-all'}}>{r.value}</td>
+                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'var(--t2)',fontSize:12,whiteSpace:'nowrap'}}>{r.ttl}s</td>
                             <td style={{padding:'9px 16px'}}><SBadge status={r.status||'Pass'}/></td>
                           </tr>
                         ))}

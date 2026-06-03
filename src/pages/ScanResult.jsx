@@ -37,7 +37,7 @@ function Section({ icon: Icon, iconColor, title, badge, badgeOk, children, defau
   return (
     <div style={{ background:'var(--card)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', marginBottom:14, boxShadow:'0 1px 4px rgba(0,0,0,0.05)' }}>
       <button onClick={() => setOpen(o=>!o)}
-        style={{ width:'100%', display:'flex', alignItems:'center', gap:10, padding:'14px 18px', background:'var(--card-hi)', border:'none', borderBottom: open ? '1px solid #e5e7eb' : 'none', cursor:'pointer', fontFamily:F, textAlign:'left' }}>
+        style={{ width:'100%', display:'flex', alignItems:'center', gap:10, padding:'14px 18px', background:'var(--card)', border:'none', borderBottom: open ? '1px solid #e5e7eb' : 'none', cursor:'pointer', fontFamily:F, textAlign:'left' }}>
         <div style={{ width:30, height:30, borderRadius:8, background: iconColor+'18', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
           <Icon size={15} color={iconColor}/>
         </div>
@@ -57,7 +57,7 @@ function Row({ label, status, value, note, fix }) {
         <span style={{ fontSize:12, fontWeight:700, color:'var(--t2)', fontFamily:MONO }}>{label}</span>
       </div>
       <div style={{ flex:1, minWidth:180 }}>
-        {value && <div style={{ fontSize:12, fontFamily:MONO, color:'var(--t2)', background:'#f8fafc', padding:'5px 10px', borderRadius:6, border:'1px solid var(--border)', marginBottom: note||fix ? 6 : 0, wordBreak:'break-all', lineHeight:1.6 }}>{value.slice(0,120)}{value.length>120?'…':''}</div>}
+        {value && <div style={{ fontSize:12, fontFamily:MONO, color:'var(--cy)', background:'var(--cy-bg)', padding:'5px 10px', borderRadius:6, border:'1px solid var(--border)', marginBottom: note||fix ? 6 : 0, wordBreak:'break-all', lineHeight:1.6 }}>{value.slice(0,120)}{value.length>120?'…':''}</div>}
         {note && <div style={{ fontSize:12, color:'var(--t3)', lineHeight:1.6 }}>{note}</div>}
         {fix  && <div style={{ fontSize:12, color:'var(--amber)', marginTop:4, display:'flex', alignItems:'flex-start', gap:5, lineHeight:1.5 }}><AlertTriangle size={12} style={{ flexShrink:0, marginTop:1 }}/> {fix}</div>}
       </div>
@@ -449,7 +449,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
             <ArrowLeft size={14}/> Back
           </button>
           <div style={{ width:1, height:20, background:'var(--border)' }}/>
-          <div style={{ display:'flex', alignItems:'center', gap:7, background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:20, padding:'4px 12px' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:7, background:'var(--card)', border:'1px solid var(--border)', borderRadius:20, padding:'4px 12px' }}>
             <Globe size={12} color="var(--green)"/>
             <span style={{ fontSize:13, fontWeight:600, fontFamily:MONO, color:'#111' }}>{domain}</span>
           </div>
@@ -493,7 +493,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
                   const cc  = pct>=80?'var(--or)':pct>=60?'#d97706':'#dc2626'
                   const cbg = pct>=80?'var(--green-bg)':pct>=60?'#fffbeb':'#fef2f2'
                   return (
-                    <div key={c.id} style={{ background:'var(--card-hi)', border:`1px solid var(--border)`, borderRadius:10, padding:'12px 14px' }}>
+                    <div key={c.id} style={{ background:'var(--card)', border:`1px solid var(--border)`, borderRadius:10, padding:'12px 14px' }}>
                       <div style={{ display:'flex', alignItems:'center', gap:5, marginBottom:6 }}>
                         <c.icon size={11} color={c.color}/>
                         <span style={{ fontSize:10, color:'var(--t3)', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.07em' }}>{c.label}</span>
@@ -516,7 +516,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
         {/* ── ISSUES PANEL ── */}
         {r.issues?.length > 0 && (
           <div className="fade" style={{ background:'var(--card)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', marginBottom:16, boxShadow:'0 1px 4px rgba(0,0,0,0.05)', animationDelay:'0.05s' }}>
-            <div style={{ padding:'13px 18px', background:'var(--card-hi)', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:10 }}>
+            <div style={{ padding:'13px 18px', background:'var(--card)', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:10 }}>
               <AlertTriangle size={14} color="#d97706"/>
               <span style={{ fontSize:13, fontWeight:700, color:'#111', flex:1 }}>Issues to fix</span>
               {critical.length > 0 && <span style={{ fontSize:11, fontWeight:700, padding:'2px 9px', borderRadius:20, background:'var(--red-bg)', color:'var(--red)', border:'1px solid var(--pk-bdr)' }}>{critical.length} critical</span>}
@@ -545,7 +545,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
             <div style={{ overflowX:'auto' }}>
               <table style={{ width:'100%', borderCollapse:'collapse' }}>
                 <thead>
-                  <tr style={{ background:'var(--card-hi)', borderBottom:'1px solid var(--border)' }}>
+                  <tr style={{ background:'var(--card)', borderBottom:'1px solid var(--border)' }}>
                     {['Type','TTL','Value','Status'].map(h => (
                       <th key={h} style={{ padding:'8px 16px', textAlign:'left', fontSize:10, fontWeight:700, color:'var(--t3)', textTransform:'uppercase', letterSpacing:'0.08em' }}>{h}</th>
                     ))}
@@ -557,7 +557,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
                       onMouseEnter={e=>e.currentTarget.style.background='var(--hover)'}
                       onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
                       <td style={{ padding:'9px 16px' }}>
-                        <span style={{ fontSize:11, fontWeight:700, padding:'2px 8px', borderRadius:5, background:'var(--card-hi)', color:'var(--t2)', fontFamily:MONO }}>{rec.type}</span>
+                        <span style={{ fontSize:11, fontWeight:700, padding:'2px 8px', borderRadius:5, background:'var(--card)', color:'var(--t2)', fontFamily:MONO }}>{rec.type}</span>
                       </td>
                       <td style={{ padding:'9px 16px', fontSize:12, color:'var(--t3)', fontFamily:MONO }}>{formatTTL(rec.ttl)}</td>
                       <td style={{ padding:'9px 16px', fontSize:12, color:'var(--t2)', fontFamily:MONO, wordBreak:'break-all', maxWidth:400 }}>{rec.value}</td>
@@ -620,7 +620,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
                       ['HSTS',       cert.hsts === 'HSTS enabled' ? '✓ Enabled' : 'Not set'],
                       ['CT logged',  cert.ct_logged ? '✓ Yes' : '—'],
                     ].map(([l,v]) => (
-                      <div key={l} style={{ background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:8, padding:'10px 12px' }}>
+                      <div key={l} style={{ background:'var(--card)', border:'1px solid var(--border)', borderRadius:8, padding:'10px 12px' }}>
                         <div style={{ fontSize:10, color:'var(--t3)', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:4 }}>{l}</div>
                         <div style={{ fontSize:13, fontWeight:600, color:'#111' }}>{v}</div>
                       </div>
@@ -649,7 +649,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
               <div style={{ overflowX:'auto' }}>
                 <table style={{ width:'100%', borderCollapse:'collapse', minWidth:400 }}>
                   <thead>
-                    <tr style={{ background:'var(--card-hi)', borderBottom:'1px solid var(--border)' }}>
+                    <tr style={{ background:'var(--card)', borderBottom:'1px solid var(--border)' }}>
                       <th style={{ padding:'8px 14px', textAlign:'left', fontSize:10, fontWeight:700, color:'var(--t3)', textTransform:'uppercase', letterSpacing:'0.08em' }}>Record</th>
                       {['🇺🇸 Americas','🇪🇺 Europe','🌏 Asia-Pacific','🇦🇺 Oceania'].map(r => (
                         <th key={r} style={{ padding:'8px 14px', fontSize:10, fontWeight:700, color:'var(--t3)', textAlign:'center', textTransform:'uppercase', letterSpacing:'0.06em' }}>{r}</th>
@@ -692,7 +692,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
             badge={(r.blacklists?.listed_count||0) > 0 ? `Listed on ${r.blacklists.listed_count}` : 'Clean'}>
             <div style={{ padding:'16px 18px' }}>
               {r.blacklists?.ip && (
-                <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:8, fontSize:12 }}>
+                <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14, padding:'8px 12px', background:'var(--card)', border:'1px solid var(--border)', borderRadius:8, fontSize:12 }}>
                   <Globe size={12} color="#6b7280"/>
                   <span style={{ color:'var(--t3)' }}>IP address:</span>
                   <span style={{ fontFamily:MONO, fontWeight:600, color:'#111' }}>{r.blacklists.ip}</span>

@@ -1035,7 +1035,7 @@ function DeliverabilityTest({ user }) {
           <input value={domain} onChange={e=>setDomain(e.target.value)}
             onKeyDown={e=>e.key==='Enter'&&runTest()}
             placeholder="yourdomain.com"
-            style={{ flex:1, padding:'9px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:8, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:F }}/>
+            style={{ flex:1, padding:'9px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:8, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:F }}/>
           <button onClick={runTest} disabled={loading||!domain.trim()}
             style={{ padding:'9px 20px', background:'var(--card)', color:'var(--t1)', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:loading||!domain.trim()?'not-allowed':'pointer', display:'flex', alignItems:'center', gap:6, opacity:loading||!domain.trim()?0.6:1, fontFamily:F }}>
             {loading ? <><div style={{width:12,height:12,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'spin 0.7s linear infinite'}}/> Testing…</> : '▶ Run test'}
