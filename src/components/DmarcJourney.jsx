@@ -3,7 +3,7 @@ import { CheckCircle, Circle, ArrowRight, Shield, Inbox, Eye, Wand2 } from 'luci
 const STEPS = [
   { key: 'none', label: 'None', icon: Eye, desc: 'Monitoring only. No action on failing emails.', color: '#ef4444', risk: 'No protection' },
   { key: 'quarantine', label: 'Quarantine', icon: Inbox, desc: 'Suspicious emails sent to spam folder.', color: '#f59e0b', risk: 'Partial protection' },
-  { key: 'reject', label: 'Reject', icon: Shield, desc: 'Unauthorized emails blocked completely.', color: 'var(--or)', risk: 'Full protection' },
+  { key: 'reject', label: 'Reject', icon: Shield, desc: 'Unauthorized emails blocked completely.', color: '#0073d1', risk: 'Full protection' },
 ]
 
 export default function DmarcJourney({ currentPolicy, onGenerate }) {
@@ -26,7 +26,7 @@ export default function DmarcJourney({ currentPolicy, onGenerate }) {
                 <div style={{
                   width:40, height:40, borderRadius:'50%', margin:'0 auto 8px',
                   background: done ? 'rgba(255,107,43,0.15)' : active ? `rgba(${step.color === '#ef4444' ? '239,68,68' : step.color === '#f59e0b' ? '245,158,11' : '16,185,129'},0.15)` : 'rgba(255,255,255,0.04)',
-                  border: `2px solid ${done ? 'var(--or)' : active ? step.color : 'rgba(255,255,255,0.1)'}`,
+                  border: `2px solid ${done ? '#0073d1' : active ? step.color : 'rgba(255,255,255,0.1)'}`,
                   display:'flex', alignItems:'center', justifyContent:'center',
                   position:'relative',
                 }}>
@@ -38,10 +38,10 @@ export default function DmarcJourney({ currentPolicy, onGenerate }) {
                     <div style={{ position:'absolute', top:-3, right:-3, width:10, height:10, borderRadius:'50%', background:step.color, border:'2px solid #0d1117' }}/>
                   )}
                 </div>
-                <div style={{ fontSize:12, fontWeight:active ? 600 : 400, color: active ? step.color : done ? 'var(--or)' : 'rgba(255,255,255,0.3)' }}>
+                <div style={{ fontSize:12, fontWeight:active ? 600 : 400, color: active ? step.color : done ? '#0073d1' : 'rgba(255,255,255,0.3)' }}>
                   {step.label}
                 </div>
-                <div style={{ fontSize:10, color:'var(--t3)', marginTop:2 }}>{step.risk}</div>
+                <div style={{ fontSize:10, color:'#8896a7', marginTop:2 }}>{step.risk}</div>
               </div>
               {i < STEPS.length - 1 && (
                 <div style={{ flex:1, height:2, background: i < currentIdx ? 'rgba(255,107,43,0.4)' : 'rgba(255,255,255,0.08)', margin:'0 8px', marginBottom:28 }}/>
@@ -58,9 +58,9 @@ export default function DmarcJourney({ currentPolicy, onGenerate }) {
             <div style={{ fontSize:12, fontWeight:600, color:current.color, marginBottom:3 }}>
               Current: p={current.key} — {current.risk}
             </div>
-            <div style={{ fontSize:11, color:'var(--t3)' }}>{current.desc}</div>
+            <div style={{ fontSize:11, color:'#8896a7' }}>{current.desc}</div>
             {next && (
-              <div style={{ fontSize:11, color:'var(--t3)', marginTop:4, display:'flex', alignItems:'center', gap:4 }}>
+              <div style={{ fontSize:11, color:'#8896a7', marginTop:4, display:'flex', alignItems:'center', gap:4 }}>
                 <ArrowRight size={10}/>
                 Next: upgrade to <strong style={{ color:next.color }}>p={next.key}</strong> for {next.risk.toLowerCase()}
               </div>
@@ -68,12 +68,12 @@ export default function DmarcJourney({ currentPolicy, onGenerate }) {
           </div>
           {next && (
             <button onClick={() => onGenerate && onGenerate(next.key)}
-              style={{ padding:'7px 14px', background:'rgba(255,107,43,0.15)', color:'var(--or)', border:'1px solid rgba(255,107,43,0.3)', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, whiteSpace:'nowrap', flexShrink:0 }}>
+              style={{ padding:'7px 14px', background:'rgba(255,107,43,0.15)', color:'#0073d1', border:'1px solid rgba(255,107,43,0.3)', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, whiteSpace:'nowrap', flexShrink:0 }}>
               <Wand2 size={12}/> Generate p={next.key}
             </button>
           )}
           {!next && (
-            <div style={{ fontSize:12, color:'var(--or)', display:'flex', alignItems:'center', gap:5, fontWeight:500 }}>
+            <div style={{ fontSize:12, color:'#0073d1', display:'flex', alignItems:'center', gap:5, fontWeight:500 }}>
               <CheckCircle size={14}/> Fully enforced
             </div>
           )}

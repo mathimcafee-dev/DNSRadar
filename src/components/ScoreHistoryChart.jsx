@@ -7,15 +7,15 @@ const CustomTooltip = ({ active, payload, label }) => {
   const d = payload[0]?.payload
   return (
     <div style={{ background:'#1a2035', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'10px 14px', fontSize:12 }}>
-      <div style={{ color:'var(--t3)', marginBottom:6, fontSize:11 }}>{label}</div>
+      <div style={{ color:'#8896a7', marginBottom:6, fontSize:11 }}>{label}</div>
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
-        <div style={{ width:8, height:8, borderRadius:'50%', background: d?.overall >= 70 ? 'var(--or)' : d?.overall >= 50 ? '#f59e0b' : '#ef4444' }}/>
-        <span style={{ color:'var(--t1)', fontWeight:600 }}>Overall: {d?.overall}</span>
+        <div style={{ width:8, height:8, borderRadius:'50%', background: d?.overall >= 70 ? '#0073d1' : d?.overall >= 50 ? '#f59e0b' : '#ef4444' }}/>
+        <span style={{ color:'#1a2332', fontWeight:600 }}>Overall: {d?.overall}</span>
       </div>
-      {[['DNS','#3b82f6'],['Email','#ef4444'],['SSL','var(--or)'],['Security','#a78bfa']].map(([k,c]) => (
+      {[['DNS','#3b82f6'],['Email','#ef4444'],['SSL','#0073d1'],['Security','#a78bfa']].map(([k,c]) => (
         <div key={k} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:2 }}>
           <div style={{ width:6, height:6, borderRadius:'50%', background:c }}/>
-          <span style={{ color:'var(--t3)' }}>{k}: {d?.[k.toLowerCase()]}</span>
+          <span style={{ color:'#8896a7' }}>{k}: {d?.[k.toLowerCase()]}</span>
         </div>
       ))}
     </div>
@@ -51,40 +51,40 @@ export default function ScoreHistoryChart({ domainId }) {
   }, [domainId])
 
   if (loading) return (
-    <div style={{ height:180, display:'flex', alignItems:'center', justifyContent:'center', color:'var(--t3)', fontSize:12 }}>
+    <div style={{ height:180, display:'flex', alignItems:'center', justifyContent:'center', color:'#8896a7', fontSize:12 }}>
       Loading history…
     </div>
   )
 
   if (data.length < 2) return (
     <div style={{ height:180, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8 }}>
-      <div style={{ fontSize:13, color:'var(--t3)' }}>Not enough data yet</div>
-      <div style={{ fontSize:11, color:'var(--t3)' }}>Run at least 2 scans to see history</div>
+      <div style={{ fontSize:13, color:'#8896a7' }}>Not enough data yet</div>
+      <div style={{ fontSize:11, color:'#8896a7' }}>Run at least 2 scans to see history</div>
     </div>
   )
 
   const latest = data[data.length - 1]?.overall
   const prev = data[data.length - 2]?.overall
   const delta = latest - prev
-  const scoreColor = latest >= 70 ? 'var(--or)' : latest >= 50 ? '#f59e0b' : '#ef4444'
+  const scoreColor = latest >= 70 ? '#0073d1' : latest >= 50 ? '#f59e0b' : '#ef4444'
 
   return (
     <div>
       <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:12 }}>
         <div>
-          <div style={{ fontSize:11, color:'var(--t3)', marginBottom:2 }}>Score trend</div>
+          <div style={{ fontSize:11, color:'#8896a7', marginBottom:2 }}>Score trend</div>
           <div style={{ display:'flex', alignItems:'baseline', gap:6 }}>
             <span style={{ fontSize:24, fontWeight:700, color:scoreColor }}>{latest}</span>
             {delta !== 0 && (
-              <span style={{ fontSize:12, color: delta > 0 ? 'var(--or)' : '#ef4444', fontWeight:500 }}>
+              <span style={{ fontSize:12, color: delta > 0 ? '#0073d1' : '#ef4444', fontWeight:500 }}>
                 {delta > 0 ? '▲' : '▼'} {Math.abs(delta)} vs prev
               </span>
             )}
           </div>
         </div>
         <div style={{ display:'flex', gap:12, marginLeft:'auto', fontSize:10 }}>
-          {[['Overall','var(--or)'],['DNS','#3b82f6'],['Email','#ef4444'],['SSL','#a78bfa']].map(([l,c]) => (
-            <span key={l} style={{ display:'flex', alignItems:'center', gap:4, color:'var(--t3)' }}>
+          {[['Overall','#0073d1'],['DNS','#3b82f6'],['Email','#ef4444'],['SSL','#a78bfa']].map(([l,c]) => (
+            <span key={l} style={{ display:'flex', alignItems:'center', gap:4, color:'#8896a7' }}>
               <span style={{ width:8, height:2, background:c, borderRadius:1, display:'inline-block' }}/>
               {l}
             </span>
@@ -94,7 +94,7 @@ export default function ScoreHistoryChart({ domainId }) {
       <ResponsiveContainer width="100%" height={160}>
         <AreaChart data={data} margin={{ top:4, right:4, bottom:0, left:-20 }}>
           <defs>
-            {[['overall','var(--or)'],['dns','#3b82f6'],['email','#ef4444'],['ssl','#a78bfa']].map(([k,c]) => (
+            {[['overall','#0073d1'],['dns','#3b82f6'],['email','#ef4444'],['ssl','#a78bfa']].map(([k,c]) => (
               <linearGradient key={k} id={`grad-${k}`} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor={c} stopOpacity={0.15}/>
                 <stop offset="95%" stopColor={c} stopOpacity={0}/>
@@ -106,7 +106,7 @@ export default function ScoreHistoryChart({ domainId }) {
           <YAxis domain={[0,100]} tick={{ fill:'#9ca3af', fontSize:9 }} axisLine={false} tickLine={false}/>
           <Tooltip content={<CustomTooltip/>}/>
           <ReferenceLine y={70} stroke="rgba(255,107,43,0.2)" strokeDasharray="4 4"/>
-          <Area type="monotone" dataKey="overall" stroke="var(--green)" strokeWidth={2} fill="url(#grad-overall)" dot={{ fill:'var(--or)', r:3 }} activeDot={{ r:5 }}/>
+          <Area type="monotone" dataKey="overall" stroke="var(--green)" strokeWidth={2} fill="url(#grad-overall)" dot={{ fill:'#0073d1', r:3 }} activeDot={{ r:5 }}/>
           <Area type="monotone" dataKey="dns" stroke="#3b82f6" strokeWidth={1.5} fill="url(#grad-dns)" dot={false}/>
           <Area type="monotone" dataKey="email" stroke="#ef4444" strokeWidth={1.5} fill="url(#grad-email)" dot={false}/>
           <Area type="monotone" dataKey="ssl" stroke="#a78bfa" strokeWidth={1.5} fill="url(#grad-ssl)" dot={false}/>

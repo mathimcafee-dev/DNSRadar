@@ -3,10 +3,10 @@ import { Radar, Shield, Globe, Zap, Mail, Lock, Heart, Target, Code, BarChart2, 
 const F = "'Inter',-apple-system,BlinkMacSystemFont,sans-serif"
 
 const VALUES = [
-  { icon: Shield,    color:'var(--or)', bg:'var(--green-bg)', bd:'var(--green-bdr)', title:'Security first',         body:'Every feature exists to make real security improvements, not surface metrics. We explain every finding in plain English with exact remediation steps — because a warning without an action resolves nothing.' },
+  { icon: Shield,    color:'#0073d1', bg:'#e8f3fc', bd:'#a8d0f0', title:'Security first',         body:'Every feature exists to make real security improvements, not surface metrics. We explain every finding in plain English with exact remediation steps — because a warning without an action resolves nothing.' },
   { icon: Target,    color:'#2563eb', bg:'#eff6ff', bd:'#bfdbfe', title:'Radical simplicity',      body:'DNS and email authentication are genuinely complex. DomainRadar is designed for domain owners who have never opened a DNS panel, without sacrificing depth for those who have.' },
-  { icon: Zap,       color:'var(--or)', bg:'#fffbeb', bd:'var(--amber-bdr)', title:'Fix, don\'t just flag',   body:'A score without a path to improvement is noise. Auto-fix via Cloudflare API, DMARC journey wizard, SPF flattener, and DKIM rotation guide mean issues get resolved — not just listed.' },
-  { icon: Heart,     color:'var(--pk)', bg:'#fef2f2', bd:'var(--red-bdr)', title:'Accessible to everyone',  body:'Professional domain security tooling has historically required significant budget and dedicated technical staff. DomainRadar makes the same quality of visibility available to indie developers, small businesses, and nonprofits for free.' },
+  { icon: Zap,       color:'#0073d1', bg:'#fffbeb', bd:'#fcd34d', title:'Fix, don\'t just flag',   body:'A score without a path to improvement is noise. Auto-fix via Cloudflare API, DMARC journey wizard, SPF flattener, and DKIM rotation guide mean issues get resolved — not just listed.' },
+  { icon: Heart,     color:'#e53e3e', bg:'#fef2f2', bd:'#feb2b2', title:'Accessible to everyone',  body:'Professional domain security tooling has historically required significant budget and dedicated technical staff. DomainRadar makes the same quality of visibility available to indie developers, small businesses, and nonprofits for free.' },
   { icon: Globe,     color:'#7c3aed', bg:'#f5f3ff', bd:'#ddd6fe', title:'Transparent by default',  body:'Pricing is public. Scan logic is documented. Scores are explained. No black-box ratings, no fabricated urgency, no hidden upsells.' },
   { icon: Code,      color:'#0891b2', bg:'#ecfeff', bd:'#a5f3fc', title:'Built for integration',   body:'Public scan API, documented response types, and working code examples. DomainRadar fits into CI pipelines, client onboarding checklists, and automated reporting workflows.' },
 ]
@@ -52,7 +52,7 @@ export default function About({ setPage }) {
   const scroll = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
   return (
-    <div style={{ fontFamily: F, background: 'var(--card)', color: '#111', minHeight: '100vh' }}>
+    <div style={{ fontFamily: F, background: '#ffffff', color: '#111', minHeight: '100vh' }}>
       <style>{`
         .sl { font-size:11px; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:0.12em; display:block; margin-bottom:12px; }
         .h1 { font-size:clamp(34px,5.5vw,56px); font-weight:900; letter-spacing:-0.04em; line-height:1.05; }
@@ -65,9 +65,9 @@ export default function About({ setPage }) {
       `}</style>
 
       {/* NAV */}
-      <nav style={{ background:'var(--card)', borderBottom:'1px solid var(--border)', padding:'0 32px', height:56, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100 }}>
+      <nav style={{ background:'#ffffff', borderBottom:'1px solid var(--border)', padding:'0 32px', height:56, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100 }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }} onClick={() => setPage('landing')}>
-          <div style={{ width:30, height:30, background:'var(--or)', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:30, height:30, background:'#0073d1', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center' }}>
             <Radar size={15} color="#fff" strokeWidth={2.5}/>
           </div>
           <span style={{ fontSize:15, fontWeight:800, letterSpacing:'-0.03em' }}>DomainRadar</span>
@@ -77,14 +77,14 @@ export default function About({ setPage }) {
           <button className="nb" onClick={() => scroll('story')}>Our story</button>
           <button className="nb" onClick={() => scroll('coverage')}>Coverage</button>
           <button className="nb" onClick={() => scroll('team')}>Team</button>
-          <div style={{ width:1, height:18, background:'var(--border)', margin:'0 6px' }}/>
+          <div style={{ width:1, height:18, background:'#e2e8f0', margin:'0 6px' }}/>
           <button onClick={() => setPage('landing')} style={{ padding:'6px 12px', background:'transparent', color:'#555', border:'1px solid var(--border)', borderRadius:7, fontSize:13, cursor:'pointer', fontFamily:F }}>← Home</button>
-          <button onClick={() => setPage('auth')} style={{ padding:'6px 14px', background:'var(--or)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Start free</button>
+          <button onClick={() => setPage('auth')} style={{ padding:'6px 14px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:7, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Start free</button>
         </div>
       </nav>
 
       {/* HERO */}
-      <section style={{ padding:'88px 24px 72px', background:'var(--card-hi)', borderBottom:'1px solid var(--border)' }}>
+      <section style={{ padding:'88px 24px 72px', background:'#f8fafc', borderBottom:'1px solid var(--border)' }}>
         <div style={{ maxWidth:780, margin:'0 auto' }}>
           <span className="sl">About DomainRadar</span>
           <h1 className="h1" style={{ marginBottom:28 }}>
@@ -97,10 +97,10 @@ export default function About({ setPage }) {
             The product was built on a straightforward observation: the information needed to secure a domain is publicly available and technically accessible, but the tooling to surface it clearly has always been built for large organisations. DomainRadar exists to change that — a full security audit in under 90 seconds, with explanations that make sense and fixes that actually work.
           </p>
           <div style={{ display:'flex', gap:12, flexWrap:'wrap' }}>
-            <button onClick={() => setPage('auth')} style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'11px 24px', background:'#111', color:'var(--t1)', border:'none', borderRadius:9, fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:F }}>
+            <button onClick={() => setPage('auth')} style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'11px 24px', background:'#111', color:'#1a2332', border:'none', borderRadius:9, fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:F }}>
               Start scanning free <ArrowRight size={14}/>
             </button>
-            <button onClick={() => setPage('audit')} style={{ padding:'11px 18px', background:'transparent', color:'var(--t2)', border:'1px solid var(--border)', borderRadius:9, fontSize:13, cursor:'pointer', fontFamily:F }}>
+            <button onClick={() => setPage('audit')} style={{ padding:'11px 18px', background:'transparent', color:'#4a5568', border:'1px solid var(--border)', borderRadius:9, fontSize:13, cursor:'pointer', fontFamily:F }}>
               📄 Try instant audit
             </button>
           </div>
@@ -112,7 +112,7 @@ export default function About({ setPage }) {
         <div style={{ maxWidth:900, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(130px,1fr))', gap:28, textAlign:'center' }}>
           {[['< 90s','Full scan time'],['52','Blacklists checked'],['9','Check categories'],['4','Global resolvers'],['Free','To start, forever'],['1-click','DNS auto-fix']].map(([v,l]) => (
             <div key={l}>
-              <div style={{ fontSize:30, fontWeight:900, color:'var(--t1)', letterSpacing:'-0.04em', lineHeight:1, marginBottom:6 }}>{v}</div>
+              <div style={{ fontSize:30, fontWeight:900, color:'#1a2332', letterSpacing:'-0.04em', lineHeight:1, marginBottom:6 }}>{v}</div>
               <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)' }}>{l}</div>
             </div>
           ))}
@@ -120,7 +120,7 @@ export default function About({ setPage }) {
       </div>
 
       {/* MISSION */}
-      <section id="mission" style={{ padding:'88px 24px', background:'var(--card)' }}>
+      <section id="mission" style={{ padding:'88px 24px', background:'#ffffff' }}>
         <div style={{ maxWidth:780, margin:'0 auto' }}>
           <span className="sl">Mission</span>
           <h2 className="h2" style={{ marginBottom:32 }}>Why DomainRadar exists</h2>
@@ -142,17 +142,17 @@ export default function About({ setPage }) {
       </section>
 
       {/* STORY */}
-      <section id="story" style={{ padding:'88px 24px', background:'var(--card-hi)', borderTop:'1px solid #e5e7eb', borderBottom:'1px solid var(--border)' }}>
+      <section id="story" style={{ padding:'88px 24px', background:'#f8fafc', borderTop:'1px solid #e5e7eb', borderBottom:'1px solid var(--border)' }}>
         <div style={{ maxWidth:780, margin:'0 auto' }}>
           <span className="sl">Our story</span>
           <h2 className="h2" style={{ marginBottom:12 }}>How DomainRadar was built</h2>
           <p className="body" style={{ marginBottom:52, maxWidth:560 }}>A product built from direct experience — the same problems, seen repeatedly, now solved systematically.</p>
           <div style={{ position:'relative' }}>
-            <div style={{ position:'absolute', left:12, top:6, bottom:0, width:1, background:'var(--border)' }}/>
+            <div style={{ position:'absolute', left:12, top:6, bottom:0, width:1, background:'#e2e8f0' }}/>
             {MILESTONES.map((m, i) => (
               <div key={m.title} style={{ position:'relative', paddingLeft:40, paddingBottom: i < MILESTONES.length-1 ? 52 : 0 }}>
-                <div style={{ position:'absolute', left:7, top:4, width:11, height:11, borderRadius:'50%', background:'var(--or)', border:'2px solid #fafafa' }}/>
-                <div style={{ fontSize:11, fontWeight:700, color:'var(--or)', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:6 }}>{m.date}</div>
+                <div style={{ position:'absolute', left:7, top:4, width:11, height:11, borderRadius:'50%', background:'#0073d1', border:'2px solid #fafafa' }}/>
+                <div style={{ fontSize:11, fontWeight:700, color:'#0073d1', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:6 }}>{m.date}</div>
                 <div style={{ fontSize:18, fontWeight:800, color:'#111', letterSpacing:'-0.02em', marginBottom:10, lineHeight:1.2 }}>{m.title}</div>
                 <p style={{ fontSize:14, color:'#555', lineHeight:1.9, margin:0 }}>{m.body}</p>
               </div>
@@ -162,7 +162,7 @@ export default function About({ setPage }) {
       </section>
 
       {/* VALUES */}
-      <section style={{ padding:'88px 24px', background:'var(--card)' }}>
+      <section style={{ padding:'88px 24px', background:'#ffffff' }}>
         <div style={{ maxWidth:960, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:56 }}>
             <span className="sl" style={{ textAlign:'center' }}>Principles</span>
@@ -170,12 +170,12 @@ export default function About({ setPage }) {
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(270px,1fr))', gap:18 }}>
             {VALUES.map(v => (
-              <div key={v.title} className="hc" style={{ background:'var(--card-hi)', border:`1px solid ${v.bd}`, borderTop:`3px solid ${v.color}`, borderRadius:14, padding:'24px 22px' }}>
+              <div key={v.title} className="hc" style={{ background:'#f8fafc', border:`1px solid ${v.bd}`, borderTop:`3px solid ${v.color}`, borderRadius:14, padding:'24px 22px' }}>
                 <div style={{ width:40, height:40, borderRadius:10, background:v.bg, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:14 }}>
                   <v.icon size={19} color={v.color}/>
                 </div>
                 <div style={{ fontSize:15, fontWeight:700, color:'#111', marginBottom:9 }}>{v.title}</div>
-                <div style={{ fontSize:13, color:'var(--t3)', lineHeight:1.75 }}>{v.body}</div>
+                <div style={{ fontSize:13, color:'#8896a7', lineHeight:1.75 }}>{v.body}</div>
               </div>
             ))}
           </div>
@@ -183,22 +183,22 @@ export default function About({ setPage }) {
       </section>
 
       {/* COVERAGE */}
-      <section id="coverage" style={{ padding:'88px 24px', background:'var(--card-hi)', borderTop:'1px solid #e5e7eb' }}>
+      <section id="coverage" style={{ padding:'88px 24px', background:'#f8fafc', borderTop:'1px solid #e5e7eb' }}>
         <div style={{ maxWidth:960, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:52 }}>
             <span className="sl" style={{ textAlign:'center' }}>What we check</span>
             <h2 className="h2" style={{ marginBottom:12 }}>Complete domain security coverage</h2>
-            <p style={{ fontSize:15, color:'var(--t3)', maxWidth:460, margin:'0 auto' }}>All checks run in parallel. Full results in under 90 seconds. No prior configuration required.</p>
+            <p style={{ fontSize:15, color:'#8896a7', maxWidth:460, margin:'0 auto' }}>All checks run in parallel. Full results in under 90 seconds. No prior configuration required.</p>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:16 }}>
             {CHECKS.map(c => (
-              <div key={c.label} className="hc" style={{ background:'var(--card)', border:'1px solid var(--border)', borderRadius:12, padding:'20px 22px', display:'flex', gap:14, alignItems:'flex-start' }}>
-                <div style={{ width:38, height:38, borderRadius:9, background:'var(--green-bg)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+              <div key={c.label} className="hc" style={{ background:'#ffffff', border:'1px solid var(--border)', borderRadius:12, padding:'20px 22px', display:'flex', gap:14, alignItems:'flex-start' }}>
+                <div style={{ width:38, height:38, borderRadius:9, background:'#e8f3fc', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                   <c.icon size={17} color="var(--green)"/>
                 </div>
                 <div>
                   <div style={{ fontSize:14, fontWeight:700, color:'#111', marginBottom:5 }}>{c.label}</div>
-                  <div style={{ fontSize:13, color:'var(--t3)', lineHeight:1.7 }}>{c.desc}</div>
+                  <div style={{ fontSize:13, color:'#8896a7', lineHeight:1.7 }}>{c.desc}</div>
                 </div>
               </div>
             ))}
@@ -207,41 +207,41 @@ export default function About({ setPage }) {
       </section>
 
       {/* TEAM */}
-      <section id="team" style={{ padding:'88px 24px', background:'var(--card)', borderTop:'1px solid #e5e7eb' }}>
+      <section id="team" style={{ padding:'88px 24px', background:'#ffffff', borderTop:'1px solid #e5e7eb' }}>
         <div style={{ maxWidth:780, margin:'0 auto' }}>
           <span className="sl">The team</span>
           <h2 className="h2" style={{ marginBottom:36 }}>Who built DomainRadar</h2>
-          <div style={{ background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:16, padding:'36px', marginBottom:28 }}>
+          <div style={{ background:'#f8fafc', border:'1px solid var(--border)', borderRadius:16, padding:'36px', marginBottom:28 }}>
             <div style={{ display:'flex', gap:24, alignItems:'flex-start', flexWrap:'wrap' }}>
-              <div style={{ width:64, height:64, borderRadius:16, background:'var(--green-bg)', border:'1.5px solid var(--green-bdr)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+              <div style={{ width:64, height:64, borderRadius:16, background:'#e8f3fc', border:'1.5px solid var(--green-bdr)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                 <Shield size={28} color="var(--green)"/>
               </div>
               <div style={{ flex:1, minWidth:220 }}>
                 <div style={{ fontSize:20, fontWeight:900, color:'#111', letterSpacing:'-0.03em', marginBottom:4 }}>Spartan</div>
-                <div style={{ fontSize:13, fontWeight:600, color:'var(--or)', marginBottom:20 }}>Founder · Domain Security Specialist</div>
-                <p style={{ fontSize:14, color:'var(--t2)', lineHeight:1.9, marginBottom:14 }}>
+                <div style={{ fontSize:13, fontWeight:600, color:'#0073d1', marginBottom:20 }}>Founder · Domain Security Specialist</div>
+                <p style={{ fontSize:14, color:'#4a5568', lineHeight:1.9, marginBottom:14 }}>
                   Extensive background in digital security, public key infrastructure, and email authentication — advising enterprise clients and partner networks on domain security strategy, certificate management, and email deliverability across global markets.
                 </p>
-                <p style={{ fontSize:14, color:'var(--t2)', lineHeight:1.9, marginBottom:22 }}>
+                <p style={{ fontSize:14, color:'#4a5568', lineHeight:1.9, marginBottom:22 }}>
                   DomainRadar was built to address a gap observed consistently across that work: the same preventable security failures — misconfigured authentication records, unmonitored blacklist listings, expiring certificates — affecting organisations that lacked the right tooling to detect them early. The goal was a product that applies deep domain security expertise in a form accessible to every domain owner.
                 </p>
                 <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
                   {['Domain Security','Email Authentication','DNS Infrastructure','SSL & PKI','Global Markets'].map(tag => (
-                    <span key={tag} style={{ fontSize:11, fontWeight:600, padding:'3px 11px', background:'var(--green-bg)', color:'var(--or)', border:'1px solid var(--green-bdr)', borderRadius:20 }}>{tag}</span>
+                    <span key={tag} style={{ fontSize:11, fontWeight:600, padding:'3px 11px', background:'#e8f3fc', color:'#0073d1', border:'1px solid var(--green-bdr)', borderRadius:20 }}>{tag}</span>
                   ))}
                 </div>
               </div>
             </div>
           </div>
-          <p style={{ fontSize:13, color:'var(--t3)', textAlign:'center', lineHeight:1.7 }}>
+          <p style={{ fontSize:13, color:'#8896a7', textAlign:'center', lineHeight:1.7 }}>
             Questions or feedback?{' '}
-            <a href="mailto:support@dnsradar.easysecurity.in" style={{ color:'var(--or)', textDecoration:'none', fontWeight:600 }}>support@dnsradar.easysecurity.in</a>
+            <a href="mailto:support@dnsradar.easysecurity.in" style={{ color:'#0073d1', textDecoration:'none', fontWeight:600 }}>support@dnsradar.easysecurity.in</a>
           </p>
         </div>
       </section>
 
       {/* CTA */}
-      <section style={{ padding:'72px 24px', background:'var(--green-bg)', borderTop:'1px solid var(--green-bdr)' }}>
+      <section style={{ padding:'72px 24px', background:'#e8f3fc', borderTop:'1px solid var(--green-bdr)' }}>
         <div style={{ maxWidth:560, margin:'0 auto', textAlign:'center' }}>
           <Lock size={32} color="var(--green)" style={{ marginBottom:18 }}/>
           <h2 style={{ fontSize:'clamp(22px,3.5vw,32px)', fontWeight:900, letterSpacing:'-0.03em', marginBottom:14 }}>See your domain's security posture</h2>
@@ -249,9 +249,9 @@ export default function About({ setPage }) {
             Free scan, no account required. Full health score, every issue identified, and exact fix instructions in under 90 seconds.
           </p>
           <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap' }}>
-            <button onClick={() => setPage('auth')} style={{ padding:'12px 28px', background:'var(--or)', color:'var(--t1)', border:'none', borderRadius:10, fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:F }}>Start free →</button>
-            <button onClick={() => setPage('audit')} style={{ padding:'12px 20px', background:'var(--card)', color:'var(--t2)', border:'1px solid var(--green-bdr)', borderRadius:10, fontSize:13, cursor:'pointer', fontFamily:F }}>📄 Instant audit</button>
-            <button onClick={() => setPage('pricing')} style={{ padding:'12px 20px', background:'transparent', color:'var(--or)', border:'1px solid var(--green-bdr)', borderRadius:10, fontSize:13, cursor:'pointer', fontFamily:F }}>View pricing</button>
+            <button onClick={() => setPage('auth')} style={{ padding:'12px 28px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:10, fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:F }}>Start free →</button>
+            <button onClick={() => setPage('audit')} style={{ padding:'12px 20px', background:'#ffffff', color:'#4a5568', border:'1px solid var(--green-bdr)', borderRadius:10, fontSize:13, cursor:'pointer', fontFamily:F }}>📄 Instant audit</button>
+            <button onClick={() => setPage('pricing')} style={{ padding:'12px 20px', background:'transparent', color:'#0073d1', border:'1px solid var(--green-bdr)', borderRadius:10, fontSize:13, cursor:'pointer', fontFamily:F }}>View pricing</button>
           </div>
         </div>
       </section>
@@ -260,7 +260,7 @@ export default function About({ setPage }) {
       <footer style={{ background:'#111', borderTop:'1px solid #1f2937', padding:'28px 32px' }}>
         <div style={{ maxWidth:1020, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:16 }}>
           <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-            <div style={{ width:24, height:24, background:'var(--or)', borderRadius:6, display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <div style={{ width:24, height:24, background:'#0073d1', borderRadius:6, display:'flex', alignItems:'center', justifyContent:'center' }}>
               <Radar size={13} color="#fff" strokeWidth={2.5}/>
             </div>
             <span style={{ fontSize:13, color:'rgba(255,255,255,0.5)', fontWeight:500 }}>DomainRadar</span>

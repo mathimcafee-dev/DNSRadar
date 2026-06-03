@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { Shield, Plus, Trash2, CheckCircle, AlertTriangle, Zap, Eye, EyeOff, Info, RefreshCw } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
-const D = { bg:'var(--page)', surface:'var(--card)', surface2:'var(--card-hi)', border:'var(--border)', text:'var(--t1)', muted:'var(--t2)', dim:'var(--t3)' }
-const card = { background:'var(--card)', border:'1px solid var(--border-md)', borderRadius:12, overflow:'hidden', boxShadow:'0 4px 16px rgba(0,0,0,0.3)' }
+const D = { bg:'#f4f6f8', surface:'#ffffff', surface2:'#f8fafc', border:'#e2e8f0', text:'#1a2332', muted:'#4a5568', dim:'#8896a7' }
+const card = { background:'#ffffff', border:'1px solid var(--border-md)', borderRadius:12, overflow:'hidden', boxShadow:'0 4px 16px rgba(0,0,0,0.3)' }
 
 const PROVIDERS = [
   { id:'cloudflare', name:'Cloudflare', logo:'☁️', fields:[
@@ -138,16 +138,16 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
   const connectedCreds = credentials.filter(c => !c.domain_id || c.domain_id === selectedDomain?.id)
 
   return (
-    <div style={{ background:'var(--page)', minHeight:'100%', padding:20, fontFamily:"'Inter',system-ui,sans-serif" }}>
+    <div style={{ background:'#f4f6f8', minHeight:'100%', padding:20, fontFamily:"'Inter',system-ui,sans-serif" }}>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
 
       <div style={{ marginBottom:16, display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:14 }}>
         <div>
-          <h2 style={{ fontSize:17, fontWeight:700, color:'var(--t1)', margin:0, marginBottom:4 }}>DNS Auto-Fix</h2>
-          <p style={{ fontSize:13, color:'var(--t2)', margin:0 }}>Connect your DNS provider. One click to push any missing record directly — no copy-pasting.</p>
+          <h2 style={{ fontSize:17, fontWeight:700, color:'#1a2332', margin:0, marginBottom:4 }}>DNS Auto-Fix</h2>
+          <p style={{ fontSize:13, color:'#4a5568', margin:0 }}>Connect your DNS provider. One click to push any missing record directly — no copy-pasting.</p>
         </div>
         <button onClick={() => setShowAdd(true)}
-          style={{ padding:'8px 16px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:8, color:'var(--amber)', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, flexShrink:0 }}>
+          style={{ padding:'8px 16px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:8, color:'#d97706', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, flexShrink:0 }}>
           <Plus size={14}/> Connect DNS provider
         </button>
       </div>
@@ -156,7 +156,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
       <div style={{ display:'flex', gap:0, borderBottom:'1px solid var(--border)', marginBottom:16 }}>
         {['credentials','auto-fix','audit log'].map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
-            style={{ padding:'8px 16px', background:'transparent', border:'none', borderBottom:`2px solid ${activeTab===t?'var(--or)':'transparent'}`, cursor:'pointer', fontSize:12, fontWeight:activeTab===t?600:400, color:activeTab===t?'var(--or)':D.muted, textTransform:'capitalize', transition:'all 0.15s', marginBottom:-1 }}>
+            style={{ padding:'8px 16px', background:'transparent', border:'none', borderBottom:`2px solid ${activeTab===t?'#0073d1':'transparent'}`, cursor:'pointer', fontSize:12, fontWeight:activeTab===t?600:400, color:activeTab===t?'#0073d1':D.muted, textTransform:'capitalize', transition:'all 0.15s', marginBottom:-1 }}>
             {t}
           </button>
         ))}
@@ -166,8 +166,8 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
       {showAdd && (
         <div style={{ ...card, marginBottom:16, border:'1px solid rgba(245,158,11,0.25)' }}>
           <div style={{ padding:'12px 16px', borderBottom:'1px solid var(--border)', background:'rgba(245,158,11,0.06)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-            <span style={{ fontSize:13, fontWeight:600, color:'var(--amber)' }}>Connect DNS provider</span>
-            <button onClick={() => { setShowAdd(false); setForm({}) }} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--t2)' }}>✕</button>
+            <span style={{ fontSize:13, fontWeight:600, color:'#d97706' }}>Connect DNS provider</span>
+            <button onClick={() => { setShowAdd(false); setForm({}) }} style={{ background:'none', border:'none', cursor:'pointer', color:'#4a5568' }}>✕</button>
           </div>
           <div style={{ padding:16 }}>
             {/* Provider selector */}
@@ -176,7 +176,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                 <button key={p.id} onClick={() => { setSelectedProvider(p.id); setForm({}) }}
                   style={{ padding:'10px 8px', background:selectedProvider===p.id?'rgba(245,158,11,0.12)':'rgba(255,255,255,0.03)', border:`1px solid ${selectedProvider===p.id?'rgba(245,158,11,0.4)':D.border}`, borderRadius:8, cursor:'pointer', textAlign:'center' }}>
                   <div style={{ fontSize:20, marginBottom:4 }}>{p.logo}</div>
-                  <div style={{ fontSize:12, fontWeight:500, color:selectedProvider===p.id?'var(--or)':D.muted }}>{p.name}</div>
+                  <div style={{ fontSize:12, fontWeight:500, color:selectedProvider===p.id?'#0073d1':D.muted }}>{p.name}</div>
                 </button>
               ))}
             </div>
@@ -189,25 +189,25 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
 
             {/* Label */}
             <div style={{ marginBottom:12 }}>
-              <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:4 }}>Label (optional)</label>
+              <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:4 }}>Label (optional)</label>
               <input value={label} onChange={e => setLabel(e.target.value)} placeholder={`My ${selectedProvider} credentials`}
-                style={{ width:'100%', padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'#1a2332', outline:'none', fontFamily:'inherit' }}/>
             </div>
 
             {/* Dynamic fields */}
             {PROVIDERS.find(p=>p.id===selectedProvider)?.fields.map(f => (
               <div key={f.key} style={{ marginBottom:12 }}>
-                <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:4 }}>{f.label}</label>
+                <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:4 }}>{f.label}</label>
                 <div style={{ position:'relative' }}>
                   <input
                     type={f.secret && !showSecrets[f.key] ? 'password' : 'text'}
                     placeholder={f.placeholder}
                     value={form[f.key] || ''}
                     onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
-                    style={{ width:'100%', padding:f.secret?'8px 36px 8px 12px':'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:f.mono?'monospace':'inherit', boxSizing:'border-box' }}/>
+                    style={{ width:'100%', padding:f.secret?'8px 36px 8px 12px':'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'#1a2332', outline:'none', fontFamily:f.mono?'monospace':'inherit', boxSizing:'border-box' }}/>
                   {f.secret && (
                     <button onClick={() => setShowSecrets(s => ({ ...s, [f.key]: !s[f.key] }))}
-                      style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', color:'var(--t2)' }}>
+                      style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', color:'#4a5568' }}>
                       {showSecrets[f.key] ? <EyeOff size={14}/> : <Eye size={14}/>}
                     </button>
                   )}
@@ -217,10 +217,10 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
 
             <div style={{ display:'flex', gap:8, marginTop:4 }}>
               <button onClick={saveCredential} disabled={saving}
-                style={{ padding:'8px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'var(--amber)', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
-                {saving ? <><div style={{ width:12, height:12, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'var(--or)', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Saving…</> : <><Shield size={13}/> Save credentials</>}
+                style={{ padding:'8px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'#d97706', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
+                {saving ? <><div style={{ width:12, height:12, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'#0073d1', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Saving…</> : <><Shield size={13}/> Save credentials</>}
               </button>
-              <button onClick={() => { setShowAdd(false); setForm({}) }} style={{ padding:'8px 14px', background:'transparent', border:'1px solid var(--border)', borderRadius:7, color:'var(--t2)', fontSize:13, cursor:'pointer' }}>Cancel</button>
+              <button onClick={() => { setShowAdd(false); setForm({}) }} style={{ padding:'8px 14px', background:'transparent', border:'1px solid var(--border)', borderRadius:7, color:'#4a5568', fontSize:13, cursor:'pointer' }}>Cancel</button>
             </div>
           </div>
         </div>
@@ -230,10 +230,10 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
         credentials.length === 0 ? (
           <div style={{ ...card, padding:'48px 20px', textAlign:'center' }}>
             <Shield size={44} color="#f3f4f6" style={{ marginBottom:14 }}/>
-            <div style={{ fontSize:15, fontWeight:600, color:'var(--t2)', marginBottom:8 }}>No DNS providers connected</div>
-            <div style={{ fontSize:13, color:'var(--t2)', marginBottom:20 }}>Connect Cloudflare, GoDaddy, Route 53, or Namecheap to enable one-click DNS record fixes.</div>
+            <div style={{ fontSize:15, fontWeight:600, color:'#4a5568', marginBottom:8 }}>No DNS providers connected</div>
+            <div style={{ fontSize:13, color:'#4a5568', marginBottom:20 }}>Connect Cloudflare, GoDaddy, Route 53, or Namecheap to enable one-click DNS record fixes.</div>
             <button onClick={() => setShowAdd(true)}
-              style={{ padding:'9px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:8, color:'var(--amber)', fontSize:13, fontWeight:500, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:6 }}>
+              style={{ padding:'9px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:8, color:'#d97706', fontSize:13, fontWeight:500, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:6 }}>
               <Plus size={14}/> Connect your first provider
             </button>
           </div>
@@ -247,8 +247,8 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                   <div style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 16px' }}>
                     <span style={{ fontSize:24 }}>{provider?.logo}</span>
                     <div style={{ flex:1 }}>
-                      <div style={{ fontSize:13, fontWeight:600, color:'var(--t1)' }}>{cred.label || provider?.name}</div>
-                      <div style={{ fontSize:12,color:'var(--t1)', fontFamily:'var(--mono)' }}>{cred.zone_id}</div>
+                      <div style={{ fontSize:13, fontWeight:600, color:'#1a2332' }}>{cred.label || provider?.name}</div>
+                      <div style={{ fontSize:12,color:'#1a2332', fontFamily:'var(--mono)' }}>{cred.zone_id}</div>
                     </div>
                     <div style={{ display:'flex', gap:6 }}>
                       <button onClick={() => testCredential(cred)} disabled={testing === cred.id}
@@ -256,13 +256,13 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                         {testing===cred.id?<div style={{ width:10,height:10,border:'2px solid rgba(129,140,248,0.3)',borderTopColor:'#818cf8',borderRadius:'50%',animation:'spin 0.7s linear infinite' }}/>:<RefreshCw size={11}/>} Test
                       </button>
                       <button onClick={() => deleteCredential(cred.id)}
-                        style={{ padding:'5px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'var(--pk)', fontSize:12, cursor:'pointer' }}>
+                        style={{ padding:'5px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'#e53e3e', fontSize:12, cursor:'pointer' }}>
                         <Trash2 size={11}/>
                       </button>
                     </div>
                   </div>
                   {tr && (
-                    <div style={{ padding:'7px 16px 10px', fontSize:12, color:tr.ok?'var(--or)':'var(--pk)', background:tr.ok?'rgba(255,107,43,0.05)':'rgba(239,68,68,0.05)' }}>
+                    <div style={{ padding:'7px 16px 10px', fontSize:12, color:tr.ok?'#0073d1':'#e53e3e', background:tr.ok?'rgba(255,107,43,0.05)':'rgba(239,68,68,0.05)' }}>
                       {tr.msg}
                     </div>
                   )}
@@ -276,12 +276,12 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
       {activeTab === 'auto-fix' && (
         <div>
           {!selectedDomain ? (
-            <div style={{ ...card, padding:'40px', textAlign:'center', color:'var(--t2)', fontSize:13 }}>Select a domain in the dashboard to see auto-fix options</div>
+            <div style={{ ...card, padding:'40px', textAlign:'center', color:'#4a5568', fontSize:13 }}>Select a domain in the dashboard to see auto-fix options</div>
           ) : fixableIssues.length === 0 ? (
             <div style={{ ...card, padding:'40px', textAlign:'center' }}>
               <CheckCircle size={36} color="var(--green)" style={{ marginBottom:12 }}/>
-              <div style={{ fontSize:14, fontWeight:600, color:'var(--t1)' }}>No auto-fixable issues for {selectedDomain.domain_name}</div>
-              <div style={{ fontSize:12,color:'var(--t2)', marginTop:6 }}>SPF, DMARC and CAA records are all present</div>
+              <div style={{ fontSize:14, fontWeight:600, color:'#1a2332' }}>No auto-fixable issues for {selectedDomain.domain_name}</div>
+              <div style={{ fontSize:12,color:'#4a5568', marginTop:6 }}>SPF, DMARC and CAA records are all present</div>
             </div>
           ) : (
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
@@ -299,23 +299,23 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                         <AlertTriangle size={11} color="#ef4444"/>
                       </div>
                       <div style={{ flex:1 }}>
-                        <div style={{ fontSize:12, fontWeight:700, color:'var(--t1)', fontFamily:'monospace' }}>{issue.type}</div>
-                        <div style={{ fontSize:12,color:'var(--t2)' }}>{issue.message}</div>
+                        <div style={{ fontSize:12, fontWeight:700, color:'#1a2332', fontFamily:'monospace' }}>{issue.type}</div>
+                        <div style={{ fontSize:12,color:'#4a5568' }}>{issue.message}</div>
                       </div>
-                      <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'rgba(239,68,68,0.15)', color:'var(--pk)' }}>{issue.severity}</span>
+                      <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'rgba(239,68,68,0.15)', color:'#e53e3e' }}>{issue.severity}</span>
                     </div>
                     <div style={{ padding:'12px 16px' }}>
-                      <div style={{ fontSize:12,color:'var(--t2)', marginBottom:6 }}>Will create this record:</div>
-                      <div style={{ display:'grid', gridTemplateColumns:'80px 120px 1fr', gap:8, padding:'8px 12px', background:'var(--card-hi)', borderRadius:7, fontFamily:'monospace', fontSize:12, marginBottom:12 }}>
-                        <span style={{ color:'var(--pu)',fontWeight:700 }}>{record.type}</span>
-                        <span style={{ color:'var(--t1)',fontWeight:500 }}>{record.name}</span>
-                        <span style={{ color:'var(--t1)',wordBreak:'break-all' }}>{record.content}</span>
+                      <div style={{ fontSize:12,color:'#4a5568', marginBottom:6 }}>Will create this record:</div>
+                      <div style={{ display:'grid', gridTemplateColumns:'80px 120px 1fr', gap:8, padding:'8px 12px', background:'#f8fafc', borderRadius:7, fontFamily:'monospace', fontSize:12, marginBottom:12 }}>
+                        <span style={{ color:'#7c3aed',fontWeight:700 }}>{record.type}</span>
+                        <span style={{ color:'#1a2332',fontWeight:500 }}>{record.name}</span>
+                        <span style={{ color:'#1a2332',wordBreak:'break-all' }}>{record.content}</span>
                       </div>
                       {connectedCreds.length === 0 ? (
-                        <div style={{ fontSize:12, color:'var(--amber)', display:'flex', alignItems:'center', gap:6 }}>
+                        <div style={{ fontSize:12, color:'#d97706', display:'flex', alignItems:'center', gap:6 }}>
                           <AlertTriangle size={12}/>
                           <span>Connect a DNS provider first to enable auto-fix</span>
-                          <button onClick={() => { setActiveTab('credentials'); setShowAdd(true) }} style={{ background:'none', border:'none', color:'var(--amber)', cursor:'pointer', textDecoration:'underline', fontSize:12 }}>Go to Credentials</button>
+                          <button onClick={() => { setActiveTab('credentials'); setShowAdd(true) }} style={{ background:'none', border:'none', color:'#d97706', cursor:'pointer', textDecoration:'underline', fontSize:12 }}>Go to Credentials</button>
                         </div>
                       ) : (
                         <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
@@ -326,14 +326,14 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                             return (
                               <div key={cred.id}>
                                 {fr ? (
-                                  <div style={{ padding:'6px 12px', borderRadius:7, background:fr.success?'rgba(255,107,43,0.1)':'rgba(239,68,68,0.1)', border:`1px solid ${fr.success?'rgba(255,107,43,0.25)':'rgba(239,68,68,0.25)'}`, fontSize:12, color:fr.success?'var(--or)':'var(--pk)', display:'flex', alignItems:'center', gap:5 }}>
+                                  <div style={{ padding:'6px 12px', borderRadius:7, background:fr.success?'rgba(255,107,43,0.1)':'rgba(239,68,68,0.1)', border:`1px solid ${fr.success?'rgba(255,107,43,0.25)':'rgba(239,68,68,0.25)'}`, fontSize:12, color:fr.success?'#0073d1':'#e53e3e', display:'flex', alignItems:'center', gap:5 }}>
                                     {fr.success?<CheckCircle size={12}/>:<AlertTriangle size={12}/>}
                                     {fr.success?'Record created!':fr.results?.[0]?.error||'Failed'}
                                   </div>
                                 ) : (
                                   <button onClick={() => autoFix(cred, issue)} disabled={fixing[fixKey]}
-                                    style={{ padding:'7px 14px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'var(--amber)', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
-                                    {fixing[fixKey]?<div style={{ width:12,height:12,border:'2px solid rgba(245,158,11,0.3)',borderTopColor:'var(--or)',borderRadius:'50%',animation:'spin 0.7s linear infinite' }}/>:<Zap size={12}/>}
+                                    style={{ padding:'7px 14px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'#d97706', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
+                                    {fixing[fixKey]?<div style={{ width:12,height:12,border:'2px solid rgba(245,158,11,0.3)',borderTopColor:'#0073d1',borderRadius:'50%',animation:'spin 0.7s linear infinite' }}/>:<Zap size={12}/>}
                                     Fix via {provider?.logo} {cred.label || provider?.name}
                                   </button>
                                 )}
@@ -353,32 +353,32 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
 
       {activeTab === 'audit log' && (
         <div style={card}>
-          <div style={{ padding:'11px 16px', borderBottom:'1px solid var(--border)', background:'var(--card)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-            <span style={{ fontSize:12, fontWeight:600, color:'var(--t1)' }}>DNS change audit log</span>
-            <span style={{ fontSize:12,color:'var(--t2)' }}>{changeLog.length} entries</span>
+          <div style={{ padding:'11px 16px', borderBottom:'1px solid var(--border)', background:'#ffffff', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <span style={{ fontSize:12, fontWeight:600, color:'#1a2332' }}>DNS change audit log</span>
+            <span style={{ fontSize:12,color:'#4a5568' }}>{changeLog.length} entries</span>
           </div>
           {changeLog.length === 0 ? (
-            <div style={{ padding:'40px', textAlign:'center', color:'var(--t2)', fontSize:13 }}>No DNS changes made yet</div>
+            <div style={{ padding:'40px', textAlign:'center', color:'#4a5568', fontSize:13 }}>No DNS changes made yet</div>
           ) : (
             <div style={{ overflowX:'auto' }}>
               <table style={{ width:'100%', borderCollapse:'collapse', fontSize:12 }}>
                 <thead>
                   <tr style={{ background:'rgba(255,255,255,0.02)' }}>
                     {['Time','Provider','Type','Name','Value','Status'].map(h => (
-                      <th key={h} style={{ textAlign:'left', padding:'7px 14px', fontSize:10, fontWeight:600, color:'var(--t2)', textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid var(--border)' }}>{h}</th>
+                      <th key={h} style={{ textAlign:'left', padding:'7px 14px', fontSize:10, fontWeight:600, color:'#4a5568', textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid var(--border)' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {changeLog.map((c, i) => (
                     <tr key={i} style={{ borderBottom:`1px solid var(--border)` }}>
-                      <td style={{ padding:'8px 14px', fontFamily:'monospace', color:'var(--t2)', fontSize:11 }}>{new Date(c.created_at).toLocaleString()}</td>
-                      <td style={{ padding:'8px 14px', color:'var(--t2)' }}>{c.provider}</td>
-                      <td style={{ padding:'8px 14px' }}><span style={{ fontSize:10, padding:'1px 6px', borderRadius:5, background:'rgba(96,165,250,0.15)', color:'var(--pu)', fontFamily:'monospace' }}>{c.record_type}</span></td>
-                      <td style={{ padding:'8px 14px', fontFamily:'monospace', color:'var(--t2)', fontSize:11 }}>{c.record_name}</td>
-                      <td style={{ padding:'8px 14px', fontFamily:'monospace', color:'var(--t2)', fontSize:10, maxWidth:200, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.record_value}</td>
+                      <td style={{ padding:'8px 14px', fontFamily:'monospace', color:'#4a5568', fontSize:11 }}>{new Date(c.created_at).toLocaleString()}</td>
+                      <td style={{ padding:'8px 14px', color:'#4a5568' }}>{c.provider}</td>
+                      <td style={{ padding:'8px 14px' }}><span style={{ fontSize:10, padding:'1px 6px', borderRadius:5, background:'rgba(96,165,250,0.15)', color:'#7c3aed', fontFamily:'monospace' }}>{c.record_type}</span></td>
+                      <td style={{ padding:'8px 14px', fontFamily:'monospace', color:'#4a5568', fontSize:11 }}>{c.record_name}</td>
+                      <td style={{ padding:'8px 14px', fontFamily:'monospace', color:'#4a5568', fontSize:10, maxWidth:200, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.record_value}</td>
                       <td style={{ padding:'8px 14px' }}>
-                        <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:c.status==='success'?'rgba(255,107,43,0.15)':c.status==='failed'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)', color:c.status==='success'?'var(--or)':c.status==='failed'?'var(--pk)':'var(--or)' }}>
+                        <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:c.status==='success'?'rgba(255,107,43,0.15)':c.status==='failed'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)', color:c.status==='success'?'#0073d1':c.status==='failed'?'#e53e3e':'#0073d1' }}>
                           {c.status}
                         </span>
                       </td>

@@ -2,15 +2,15 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { Lock, RefreshCw, ChevronDown, ChevronUp, Search, Trash2, Plus } from 'lucide-react'
 
-const D = { bg:'var(--page)', surface:'var(--card)', surface2:'var(--card-hi)', border:'var(--border)', text:'var(--t1)', muted:'var(--t2)', dim:'var(--t3)' }
-const card = { background:'var(--card)', border:'1px solid var(--border-md)', borderRadius:12, overflow:'hidden', boxShadow:'0 4px 16px rgba(0,0,0,0.3)' }
+const D = { bg:'#f4f6f8', surface:'#ffffff', surface2:'#f8fafc', border:'#e2e8f0', text:'#1a2332', muted:'#4a5568', dim:'#8896a7' }
+const card = { background:'#ffffff', border:'1px solid var(--border-md)', borderRadius:12, overflow:'hidden', boxShadow:'0 4px 16px rgba(0,0,0,0.3)' }
 
 function daysColor(days) {
   if (days == null) return '#6b7280'
-  if (days <= 7)  return 'var(--pk)'
-  if (days <= 30) return 'var(--or)'
+  if (days <= 7)  return '#e53e3e'
+  if (days <= 30) return '#0073d1'
   if (days <= 60) return '#3d9bff'
-  return 'var(--or)'
+  return '#0073d1'
 }
 
 function DaysBadge({ days, expiresAt }) {
@@ -27,10 +27,10 @@ function DaysBadge({ days, expiresAt }) {
 }
 
 function Field({ label, value, good }) {
-  const color = good === true ? 'var(--or)' : good === false ? 'var(--pk)' : D.muted
+  const color = good === true ? '#0073d1' : good === false ? '#e53e3e' : D.muted
   return (
     <div>
-      <div style={{ fontSize:10, color:'var(--t2)', marginBottom:2, textTransform:'uppercase', letterSpacing:'0.05em' }}>{label}</div>
+      <div style={{ fontSize:10, color:'#4a5568', marginBottom:2, textTransform:'uppercase', letterSpacing:'0.05em' }}>{label}</div>
       <div style={{ fontSize:12, color, fontWeight:500 }}>{value || '–'}</div>
     </div>
   )
@@ -58,15 +58,15 @@ function CertCard({ cert, open, onToggle, onDelete }) {
 
         {/* Domain + issuer */}
         <div style={{ flex:1, minWidth:0 }}>
-          <div style={{ fontSize:13, fontWeight:600, color:'var(--t1)', marginBottom:2 }}>{cert.domain_name}</div>
-          <div style={{ fontSize:12,color:'var(--t2)' }}>{cert.issuer_org || cert.issuer_cn || cert.issuer || 'Unknown issuer'}</div>
+          <div style={{ fontSize:13, fontWeight:600, color:'#1a2332', marginBottom:2 }}>{cert.domain_name}</div>
+          <div style={{ fontSize:12,color:'#4a5568' }}>{cert.issuer_org || cert.issuer_cn || cert.issuer || 'Unknown issuer'}</div>
         </div>
 
         {/* Badges + actions */}
         <div style={{ display:'flex', alignItems:'center', gap:8, flexShrink:0 }}>
           <DaysBadge days={cert.days_remaining} expiresAt={cert.expires_at || cert.valid_to}/>
-          {cert.chain_valid === false && <span style={{ fontSize:10, padding:'2px 7px', borderRadius:6, background:'rgba(239,68,68,0.12)', color:'var(--pk)', border:'1px solid var(--pk-bdr)', fontWeight:500 }}>Chain error</span>}
-          {cert.weak_cipher_detected && <span style={{ fontSize:10, padding:'2px 7px', borderRadius:6, background:'rgba(245,158,11,0.12)', color:'var(--amber)', border:'1px solid rgba(245,158,11,0.2)', fontWeight:500 }}>Weak cipher</span>}
+          {cert.chain_valid === false && <span style={{ fontSize:10, padding:'2px 7px', borderRadius:6, background:'rgba(239,68,68,0.12)', color:'#e53e3e', border:'1px solid var(--pk-bdr)', fontWeight:500 }}>Chain error</span>}
+          {cert.weak_cipher_detected && <span style={{ fontSize:10, padding:'2px 7px', borderRadius:6, background:'rgba(245,158,11,0.12)', color:'#d97706', border:'1px solid rgba(245,158,11,0.2)', fontWeight:500 }}>Weak cipher</span>}
           <button onClick={handleDelete} disabled={deleting}
             style={{ padding:'5px 7px', background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.15)', borderRadius:7, color:'rgba(239,68,68,0.7)', cursor:'pointer',transition:'background 0.12s', lineHeight:0, flexShrink:0 }}
             title="Delete this SSL record">
@@ -91,27 +91,27 @@ function CertCard({ cert, open, onToggle, onDelete }) {
           </div>
           {tlsVersions.length > 0 && (
             <div style={{ marginBottom:12 }}>
-              <div style={{ fontSize:12,color:'var(--t2)', marginBottom:6, fontWeight:500 }}>TLS versions</div>
+              <div style={{ fontSize:12,color:'#4a5568', marginBottom:6, fontWeight:500 }}>TLS versions</div>
               <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                 {tlsVersions.map(v => (
-                  <span key={v} style={{ fontSize:12, padding:'2px 8px', borderRadius:6, background:(v==='TLSv1.0'||v==='TLSv1.1')?'var(--pk-bg)':'var(--green-bg)', color:(v==='TLSv1.0'||v==='TLSv1.1')?'var(--pk)':'var(--or)', border:`1px solid ${(v==='TLSv1.0'||v==='TLSv1.1')?'var(--red-bdr)':'var(--green-bdr)'}`, fontWeight:500 }}>{v}</span>
+                  <span key={v} style={{ fontSize:12, padding:'2px 8px', borderRadius:6, background:(v==='TLSv1.0'||v==='TLSv1.1')?'#fff5f5':'#e8f3fc', color:(v==='TLSv1.0'||v==='TLSv1.1')?'#e53e3e':'#0073d1', border:`1px solid ${(v==='TLSv1.0'||v==='TLSv1.1')?'#feb2b2':'#a8d0f0'}`, fontWeight:500 }}>{v}</span>
                 ))}
               </div>
             </div>
           )}
           {sans.length > 0 && (
             <div style={{ marginBottom:10 }}>
-              <div style={{ fontSize:12,color:'var(--t2)', marginBottom:6, fontWeight:500 }}>Subject alt names ({sans.length})</div>
+              <div style={{ fontSize:12,color:'#4a5568', marginBottom:6, fontWeight:500 }}>Subject alt names ({sans.length})</div>
               <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
                 {sans.slice(0,12).map(s => (
-                  <span key={s} style={{ fontSize:10, fontFamily:'monospace', padding:'2px 7px', borderRadius:5, background:'var(--card-hi)', color:'var(--t2)', border:'1px solid var(--border)' }}>{s}</span>
+                  <span key={s} style={{ fontSize:10, fontFamily:'monospace', padding:'2px 7px', borderRadius:5, background:'#f8fafc', color:'#4a5568', border:'1px solid var(--border)' }}>{s}</span>
                 ))}
-                {sans.length > 12 && <span style={{ fontSize:10, color:'var(--t2)' }}>+{sans.length-12} more</span>}
+                {sans.length > 12 && <span style={{ fontSize:10, color:'#4a5568' }}>+{sans.length-12} more</span>}
               </div>
             </div>
           )}
-          {cert.serial_number && <div style={{ fontSize:10, fontFamily:'monospace', color:'var(--t2)', marginTop:4 }}>Serial: {cert.serial_number}</div>}
-          <div style={{ fontSize:10, color:'var(--t2)', marginTop:6 }}>Last scanned {cert.scanned_at ? new Date(cert.scanned_at).toLocaleString() : '–'}</div>
+          {cert.serial_number && <div style={{ fontSize:10, fontFamily:'monospace', color:'#4a5568', marginTop:4 }}>Serial: {cert.serial_number}</div>}
+          <div style={{ fontSize:10, color:'#4a5568', marginTop:6 }}>Last scanned {cert.scanned_at ? new Date(cert.scanned_at).toLocaleString() : '–'}</div>
         </div>
       )}
     </div>
@@ -120,9 +120,9 @@ function CertCard({ cert, open, onToggle, onDelete }) {
 
 function SummaryCard({ label, value, color, onClick }) {
   return (
-    <div onClick={onClick} style={{ background:'var(--card)', border:'1px solid var(--border)', borderRadius:10, padding:'12px 14px', cursor:onClick?'pointer':'default' }}>
+    <div onClick={onClick} style={{ background:'#ffffff', border:'1px solid var(--border)', borderRadius:10, padding:'12px 14px', cursor:onClick?'pointer':'default' }}>
       <div style={{ fontSize:22, fontWeight:700, color, marginBottom:2 }}>{value}</div>
-      <div style={{ fontSize:12,color:'var(--t2)' }}>{label}</div>
+      <div style={{ fontSize:12,color:'#4a5568' }}>{label}</div>
     </div>
   )
 }
@@ -234,18 +234,18 @@ export default function SslCertificates({ user }) {
       {/* Header */}
       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:20, flexWrap:'wrap', gap:12 }}>
         <div>
-          <h2 style={{ fontSize:18, fontWeight:700, color:'var(--t1)', marginBottom:4 }}>SSL Certificates</h2>
-          <p style={{ fontSize:13, color:'var(--t2)' }}>TLS certificate health across all monitored domains</p>
+          <h2 style={{ fontSize:18, fontWeight:700, color:'#1a2332', marginBottom:4 }}>SSL Certificates</h2>
+          <p style={{ fontSize:13, color:'#4a5568' }}>TLS certificate health across all monitored domains</p>
         </div>
         <button onClick={scanAll} disabled={scanning || !domains.some(d=>d.verified)}
-          style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'var(--green-bg)', border:'1px solid var(--green-bdr)', borderRadius:8, color:'var(--t1)', fontSize:12, fontWeight:600, cursor:'pointer',transition:'background 0.12s', opacity:scanning?0.6:1 }}>
+          style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'#e8f3fc', border:'1px solid var(--green-bdr)', borderRadius:8, color:'#1a2332', fontSize:12, fontWeight:600, cursor:'pointer',transition:'background 0.12s', opacity:scanning?0.6:1 }}>
           <RefreshCw size={13} style={{ animation:scanning?'sslspin 1s linear infinite':'none' }}/> Scan all
         </button>
       </div>
 
       {/* Manual domain input */}
       <div style={{ ...card, marginBottom:20, padding:'14px 16px' }}>
-        <div style={{ fontSize:12, fontWeight:600, color:'var(--t1)', marginBottom:10, display:'flex', alignItems:'center', gap:7 }}>
+        <div style={{ fontSize:12, fontWeight:600, color:'#1a2332', marginBottom:10, display:'flex', alignItems:'center', gap:7 }}>
           <Search size={13} color="var(--green)"/> Check any domain
         </div>
         <div style={{ display:'flex', gap:8 }}>
@@ -254,33 +254,33 @@ export default function SslCertificates({ user }) {
             onChange={e => setManualDomain(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && !manualScanning && scanManualDomain()}
             placeholder="Enter any domain — e.g. github.com"
-            style={{ flex:1, padding:'9px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:8, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}
+            style={{ flex:1, padding:'9px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:8, fontSize:13, color:'#1a2332', outline:'none', fontFamily:'inherit' }}
           />
           <button
             onClick={scanManualDomain}
             disabled={manualScanning || !manualDomain.trim()}
-            style={{ padding:'9px 18px', background:'var(--or)', color:'var(--t1)', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer',transition:'background 0.12s', display:'flex', alignItems:'center', gap:7, opacity: manualScanning || !manualDomain.trim() ? 0.6 : 1 }}>
+            style={{ padding:'9px 18px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer',transition:'background 0.12s', display:'flex', alignItems:'center', gap:7, opacity: manualScanning || !manualDomain.trim() ? 0.6 : 1 }}>
             {manualScanning
               ? <><div style={{ width:13, height:13, border:'2px solid #9ca3af', borderTopColor:'#fff', borderRadius:'50%', animation:'sslspin 0.7s linear infinite' }}/> Scanning…</>
               : <><Plus size={13}/> Check SSL</>
             }
           </button>
         </div>
-        <div style={{ fontSize:12,color:'var(--t2)', marginTop:7 }}>
+        <div style={{ fontSize:12,color:'#4a5568', marginTop:7 }}>
           Checks any domain — doesn't need to be in your account. Result is saved so you can track it.
         </div>
       </div>
 
       {/* Status messages */}
-      {scanMsg && <div style={{ padding:'9px 14px', background:'var(--green-bg)', border:'1px solid var(--border-md)', borderRadius:8, color:'var(--t1)', fontSize:12, marginBottom:14 }}>{scanMsg}</div>}
-      {scanError && <div style={{ padding:'9px 14px', background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:8, color:'var(--pk)', fontSize:12, marginBottom:14 }}>{scanError}</div>}
+      {scanMsg && <div style={{ padding:'9px 14px', background:'#e8f3fc', border:'1px solid var(--border-md)', borderRadius:8, color:'#1a2332', fontSize:12, marginBottom:14 }}>{scanMsg}</div>}
+      {scanError && <div style={{ padding:'9px 14px', background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:8, color:'#e53e3e', fontSize:12, marginBottom:14 }}>{scanError}</div>}
 
       {/* Summary cards */}
       {certs.length > 0 && (
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))', gap:10, marginBottom:18 }}>
           <SummaryCard label="Total" value={certs.length} color="#6b7280"/>
-          <SummaryCard label="Expiring ≤ 30d" value={expiringSoon} color={expiringSoon>0?'var(--or)':'var(--or)'} onClick={()=>setFilter('expiring')}/>
-          <SummaryCard label="Issues" value={issues} color={issues>0?'var(--pk)':'var(--or)'} onClick={()=>setFilter('issues')}/>
+          <SummaryCard label="Expiring ≤ 30d" value={expiringSoon} color={expiringSoon>0?'#0073d1':'#0073d1'} onClick={()=>setFilter('expiring')}/>
+          <SummaryCard label="Issues" value={issues} color={issues>0?'#e53e3e':'#0073d1'} onClick={()=>setFilter('issues')}/>
           <SummaryCard label="Healthy" value={certs.filter(c=>c.days_remaining>30&&c.chain_valid&&!c.weak_cipher_detected).length} color="var(--green)"/>
         </div>
       )}
@@ -289,7 +289,7 @@ export default function SslCertificates({ user }) {
       {certs.length > 0 && (
         <div style={{ display:'flex', gap:6, marginBottom:14, flexWrap:'wrap' }}>
           {[['all','All'],['expiring','Expiring soon'],['issues','Issues']].map(([v,l])=>(
-            <button key={v} onClick={()=>setFilter(v)} style={{ padding:'5px 12px', background:filter===v?'var(--green-bg)':'var(--card-hi)', border:`1px solid ${filter===v?'var(--green-bdr)':'var(--border)'}`, borderRadius:7, color:filter===v?'var(--or)':'#374151', fontSize:12, fontWeight:filter===v?600:400, cursor:'pointer',transition:'background 0.12s' }}>{l}</button>
+            <button key={v} onClick={()=>setFilter(v)} style={{ padding:'5px 12px', background:filter===v?'#e8f3fc':'#f8fafc', border:`1px solid ${filter===v?'#a8d0f0':'#e2e8f0'}`, borderRadius:7, color:filter===v?'#0073d1':'#374151', fontSize:12, fontWeight:filter===v?600:400, cursor:'pointer',transition:'background 0.12s' }}>{l}</button>
           ))}
         </div>
       )}
@@ -297,18 +297,18 @@ export default function SslCertificates({ user }) {
       {/* Content */}
       {loading ? (
         <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-          {[1,2,3].map(i=><div key={i} style={{ height:60, background:'var(--card)', borderRadius:12, opacity:0.4 }}/>)}
+          {[1,2,3].map(i=><div key={i} style={{ height:60, background:'#ffffff', borderRadius:12, opacity:0.4 }}/>)}
         </div>
       ) : certs.length === 0 ? (
         <div style={{ ...card, padding:'48px 24px', textAlign:'center' }}>
           <Lock size={36} color={D.dim} style={{ marginBottom:14 }}/>
-          <div style={{ fontSize:15, fontWeight:600, color:'var(--t1)', marginBottom:8 }}>No SSL data yet</div>
-          <p style={{ fontSize:13, color:'var(--t2)', maxWidth:420, margin:'0 auto 16px', lineHeight:1.6 }}>
+          <div style={{ fontSize:15, fontWeight:600, color:'#1a2332', marginBottom:8 }}>No SSL data yet</div>
+          <p style={{ fontSize:13, color:'#4a5568', maxWidth:420, margin:'0 auto 16px', lineHeight:1.6 }}>
             Enter a domain above to check its certificate, or use <strong>Scan all</strong> in the top right to scan your tracked domains.
           </p>
         </div>
       ) : filtered.length === 0 ? (
-        <div style={{ textAlign:'center', padding:'48px 24px', color:'var(--t2)', fontSize:13 }}>No certificates match this filter</div>
+        <div style={{ textAlign:'center', padding:'48px 24px', color:'#4a5568', fontSize:13 }}>No certificates match this filter</div>
       ) : (
         filtered.map(cert => (
           <CertCard
@@ -324,11 +324,11 @@ export default function SslCertificates({ user }) {
       {/* Unscanned domains */}
       {!loading && domains.filter(d=>d.verified&&!certs.find(c=>c.domain_name===d.domain_name)).length > 0 && (
         <div style={{ marginTop:20 }}>
-          <div style={{ fontSize:13,color:'var(--t2)', marginBottom:10, fontWeight:500 }}>Tracked domains not yet scanned for SSL</div>
+          <div style={{ fontSize:13,color:'#4a5568', marginBottom:10, fontWeight:500 }}>Tracked domains not yet scanned for SSL</div>
           {domains.filter(d=>d.verified&&!certs.find(c=>c.domain_name===d.domain_name)).map(d=>(
-            <div key={d.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', background:'var(--card)', border:'1px solid var(--border)', borderRadius:10, marginBottom:6 }}>
-              <span style={{ fontSize:13, color:'var(--t2)' }}>{d.domain_name}</span>
-              <button onClick={()=>scanDomain(d)} disabled={scanning} style={{ padding:'5px 14px', background:'var(--border)', border:'1px solid var(--border)', borderRadius:6, color:'var(--t2)', fontSize:12, fontWeight:500, cursor:'pointer',transition:'background 0.12s' }}>Scan now</button>
+            <div key={d.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', background:'#ffffff', border:'1px solid var(--border)', borderRadius:10, marginBottom:6 }}>
+              <span style={{ fontSize:13, color:'#4a5568' }}>{d.domain_name}</span>
+              <button onClick={()=>scanDomain(d)} disabled={scanning} style={{ padding:'5px 14px', background:'#e2e8f0', border:'1px solid var(--border)', borderRadius:6, color:'#4a5568', fontSize:12, fontWeight:500, cursor:'pointer',transition:'background 0.12s' }}>Scan now</button>
             </div>
           ))}
         </div>

@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { Wand2, Shield, Key, Mail, Upload, Copy, Check, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Zap } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
-const D = { bg:'var(--page)', surface:'var(--card)', surface2:'var(--card-hi)', border:'var(--border)', text:'var(--t1)', muted:'var(--t2)', dim:'var(--t3)' }
-const card = { background:'var(--card)', border:'1px solid var(--border-md)', borderRadius:12, overflow:'hidden', boxShadow:'0 4px 16px rgba(0,0,0,0.3)' }
-const cardHd = { padding:'12px 16px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'var(--card-hi)' }
+const D = { bg:'#f4f6f8', surface:'#ffffff', surface2:'#f8fafc', border:'#e2e8f0', text:'#1a2332', muted:'#4a5568', dim:'#8896a7' }
+const card = { background:'#ffffff', border:'1px solid var(--border-md)', borderRadius:12, overflow:'hidden', boxShadow:'0 4px 16px rgba(0,0,0,0.3)' }
+const cardHd = { padding:'12px 16px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'#f8fafc' }
 
 function CopyBtn({ text }) {
   const [copied, setCopied] = useState(false)
@@ -14,7 +14,7 @@ function CopyBtn({ text }) {
     setTimeout(() => setCopied(false), 2000)
   }
   return (
-    <button onClick={copy} style={{ padding:'5px 12px', background:'var(--green-bg)', border:'1px solid rgba(255,107,43,0.3)', borderRadius:6, color:'var(--t1)', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+    <button onClick={copy} style={{ padding:'5px 12px', background:'#e8f3fc', border:'1px solid rgba(255,107,43,0.3)', borderRadius:6, color:'#1a2332', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
       {copied ? <><Check size={12}/> Copied</> : <><Copy size={12}/> Copy</>}
     </button>
   )
@@ -26,15 +26,15 @@ function RecordDisplay({ record, label }) {
   return (
     <div style={{ marginTop:12 }}>
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6 }}>
-        <span style={{ fontSize:12, fontWeight:600, color:'var(--t2)', textTransform:'uppercase', letterSpacing:'0.07em' }}>{label}</span>
+        <span style={{ fontSize:12, fontWeight:600, color:'#4a5568', textTransform:'uppercase', letterSpacing:'0.07em' }}>{label}</span>
         <CopyBtn text={record}/>
       </div>
-      <div style={{ background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:8, padding:'10px 14px' }}>
-        <div style={{ fontFamily:'monospace', fontSize:12, color:'var(--t1)', wordBreak:'break-all', lineHeight:1.6 }}>
+      <div style={{ background:'#f8fafc', border:'1px solid var(--border)', borderRadius:8, padding:'10px 14px' }}>
+        <div style={{ fontFamily:'monospace', fontSize:12, color:'#1a2332', wordBreak:'break-all', lineHeight:1.6 }}>
           {parts.map((p, i) => (
             <span key={i}>
-              {i > 0 && <span style={{ color:'var(--t2)' }}>; </span>}
-              <span style={{ color: p.startsWith('v=') ? 'var(--amber)' : p.includes('include:') || p.includes('rua=') || p.includes('ruf=') ? 'var(--purple)' : 'var(--blue)' }}>{p}</span>
+              {i > 0 && <span style={{ color:'#4a5568' }}>; </span>}
+              <span style={{ color: p.startsWith('v=') ? '#d97706' : p.includes('include:') || p.includes('rua=') || p.includes('ruf=') ? '#7c3aed' : '#0073d1' }}>{p}</span>
             </span>
           ))}
         </div>
@@ -80,52 +80,52 @@ function SPFGenerator() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)', display:'flex', alignItems:'center', gap:7 }}>
+        <span style={{ fontSize:13, fontWeight:600, color:'#1a2332', display:'flex', alignItems:'center', gap:7 }}>
           <Wand2 size={14} color="var(--green)"/> SPF record generator
         </span>
-        <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--t2)' }}>
+        <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'#4a5568' }}>
           {open ? <ChevronUp size={16}/> : <ChevronDown size={16}/>}
         </button>
       </div>
       {open && (
         <div style={{ padding:16 }}>
           <div style={{ marginBottom:12 }}>
-            <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>Your domain</label>
+            <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:5 }}>Your domain</label>
             <input type="text" placeholder="yourdomain.com" value={domain} onChange={e => setDomain(e.target.value)}
-              style={{ width:'100%', padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
+              style={{ width:'100%', padding:'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'#1a2332', outline:'none', fontFamily:'inherit' }}/>
           </div>
           <div style={{ marginBottom:12 }}>
-            <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:8 }}>Email providers</label>
+            <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:8 }}>Email providers</label>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6 }}>
               {PROVIDERS.map(p => (
-                <label key={p.key} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 10px', background:providers[p.key] ? 'var(--or-bg)' : 'var(--card-hi)', border:`1px solid ${providers[p.key] ? 'var(--or-bdr)' : 'var(--border)'}`, borderRadius:7, cursor:'pointer', fontSize:12, color:'var(--t1)' }}>
+                <label key={p.key} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 10px', background:providers[p.key] ? '#e8f3fc' : '#f8fafc', border:`1px solid ${providers[p.key] ? '#a8d0f0' : '#e2e8f0'}`, borderRadius:7, cursor:'pointer', fontSize:12, color:'#1a2332' }}>
                   <input type="checkbox" checked={providers[p.key]} onChange={e => setProviders(prev => ({ ...prev, [p.key]: e.target.checked }))}
-                    style={{ accentColor:'var(--or)', width:14, height:14 }}/>
+                    style={{ accentColor:'#0073d1', width:14, height:14 }}/>
                   {p.label}
                 </label>
               ))}
             </div>
           </div>
           <div style={{ marginBottom:12 }}>
-            <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>Custom IPs (optional, one per line)</label>
+            <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:5 }}>Custom IPs (optional, one per line)</label>
             <textarea value={customIPs} onChange={e => setCustomIPs(e.target.value)} rows={2} placeholder="192.168.1.1&#10;10.0.0.0/24"
-              style={{ width:'100%', padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:12, color:'var(--t1)', outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
+              style={{ width:'100%', padding:'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:12, color:'#1a2332', outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
           </div>
           <div style={{ marginBottom:12 }}>
-            <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:8 }}>Policy (how to handle failures)</label>
+            <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:8 }}>Policy (how to handle failures)</label>
             <div style={{ display:'flex', gap:6 }}>
               {[['~all','SoftFail (recommended)'],['−all','HardFail (strict)'],['?all','Neutral']].map(([v, l]) => (
                 <button key={v} onClick={() => setQualifier(v)}
-                  style={{ padding:'6px 12px', background:qualifier === v ? 'var(--or-bg)' : 'var(--card-hi)', border:`1px solid ${qualifier === v ? 'var(--or)' : 'var(--border)'}`, borderRadius:6, color:qualifier === v ? 'var(--or)' : 'var(--t2)', fontSize:12, cursor:'pointer', fontFamily:'monospace' }}>
+                  style={{ padding:'6px 12px', background:qualifier === v ? '#e8f3fc' : '#f8fafc', border:`1px solid ${qualifier === v ? '#0073d1' : '#e2e8f0'}`, borderRadius:6, color:qualifier === v ? '#0073d1' : '#4a5568', fontSize:12, cursor:'pointer', fontFamily:'monospace' }}>
                   {v} <span style={{ fontFamily:'inherit', fontSize:10, opacity:0.7 }}>— {l}</span>
                 </button>
               ))}
             </div>
           </div>
           {/* Lookup counter */}
-          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12, padding:'8px 12px', background:lookupCount >= 8 ? 'var(--red-bg)' : lookupCount >= 6 ? 'var(--amber-bg)' : 'var(--cy-bg)', borderRadius:7, border:`1px solid lookupCount >= 8 ? 'var(--red-bdr)' : lookupCount >= 6 ? 'var(--amber-bdr)' : 'var(--green-bdr)'` }}>
-            <AlertTriangle size={13} color={lookupCount >= 8 ? 'var(--pk)' : lookupCount >= 6 ? 'var(--or)' : 'var(--or)'}/>
-            <span style={{ fontSize:12, color: lookupCount >= 8 ? 'var(--pk)' : lookupCount >= 6 ? 'var(--or)' : 'var(--or)' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12, padding:'8px 12px', background:lookupCount >= 8 ? '#fff5f5' : lookupCount >= 6 ? '#fffbeb' : '#e0f2fe', borderRadius:7, border:`1px solid lookupCount >= 8 ? '#feb2b2' : lookupCount >= 6 ? '#fcd34d' : '#a8d0f0'` }}>
+            <AlertTriangle size={13} color={lookupCount >= 8 ? '#e53e3e' : lookupCount >= 6 ? '#0073d1' : '#0073d1'}/>
+            <span style={{ fontSize:12, color: lookupCount >= 8 ? '#e53e3e' : lookupCount >= 6 ? '#0073d1' : '#0073d1' }}>
               DNS lookups: {lookupCount}/10 {lookupCount >= 8 ? '— near limit! Consider SPF flattening' : lookupCount >= 6 ? '— getting close to RFC 7208 limit' : '— well within limit'}
             </span>
           </div>
@@ -161,15 +161,15 @@ function DMARCGenerator({ presetPolicy }) {
   }
 
   const record = build()
-  const policyColor = policy === 'reject' ? 'var(--or)' : policy === 'quarantine' ? 'var(--or)' : 'var(--pk)'
+  const policyColor = policy === 'reject' ? '#0073d1' : policy === 'quarantine' ? '#0073d1' : '#e53e3e'
 
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)', display:'flex', alignItems:'center', gap:7 }}>
+        <span style={{ fontSize:13, fontWeight:600, color:'#1a2332', display:'flex', alignItems:'center', gap:7 }}>
           <Shield size={14} color="#6366f1"/> DMARC record generator
         </span>
-        <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--t2)' }}>
+        <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'#4a5568' }}>
           {open ? <ChevronUp size={16}/> : <ChevronDown size={16}/>}
         </button>
       </div>
@@ -177,16 +177,16 @@ function DMARCGenerator({ presetPolicy }) {
         <div style={{ padding:16 }}>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:12 }}>
             <div>
-              <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>Domain</label>
+              <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:5 }}>Domain</label>
               <input type="text" placeholder="yourdomain.com" value={domain} onChange={e => setDomain(e.target.value)}
-                style={{ width:'100%', padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'#1a2332', outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div>
-              <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>Policy (p=)</label>
+              <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:5 }}>Policy (p=)</label>
               <div style={{ display:'flex', gap:5 }}>
                 {['none','quarantine','reject'].map(p => (
                   <button key={p} onClick={() => setPolicy(p)}
-                    style={{ flex:1, padding:'7px 4px', background:policy === p ? `rgba(${p === 'reject' ? '26,181,200' : p === 'quarantine' ? '251,191,36' : '239,68,68'},0.15)` : 'var(--card-hi)', border:`1px solid ${policy === p ? policyColor : D.border}`, borderRadius:6, color:policy === p ? policyColor : 'var(--t2)', fontSize:12, cursor:'pointer', fontWeight:policy === p ? 600 : 400 }}>
+                    style={{ flex:1, padding:'7px 4px', background:policy === p ? `rgba(${p === 'reject' ? '26,181,200' : p === 'quarantine' ? '251,191,36' : '239,68,68'},0.15)` : '#f8fafc', border:`1px solid ${policy === p ? policyColor : D.border}`, borderRadius:6, color:policy === p ? policyColor : '#4a5568', fontSize:12, cursor:'pointer', fontWeight:policy === p ? 600 : 400 }}>
                     {p}
                   </button>
                 ))}
@@ -195,39 +195,39 @@ function DMARCGenerator({ presetPolicy }) {
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:12 }}>
             <div>
-              <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>RUA email (aggregate reports)</label>
+              <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:5 }}>RUA email (aggregate reports)</label>
               <input type="email" placeholder={`dmarc@${domain || 'yourdomain.com'}`} value={rua} onChange={e => setRua(e.target.value)}
-                style={{ width:'100%', padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:12, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:12, color:'#1a2332', outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div>
-              <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>RUF email (forensic reports)</label>
+              <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:5 }}>RUF email (forensic reports)</label>
               <input type="email" placeholder={`forensic@${domain || 'yourdomain.com'}`} value={ruf} onChange={e => setRuf(e.target.value)}
-                style={{ width:'100%', padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:12, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:12, color:'#1a2332', outline:'none', fontFamily:'inherit' }}/>
             </div>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:12, marginBottom:12 }}>
             <div>
-              <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>Percentage (pct=) {pct}%</label>
+              <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:5 }}>Percentage (pct=) {pct}%</label>
               <input type="range" min={1} max={100} step={1} value={pct} onChange={e => setPct(+e.target.value)}
                 style={{ width:'100%', accentColor:'#6366f1' }}/>
             </div>
             <div>
-              <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>DKIM alignment (adkim=)</label>
+              <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:5 }}>DKIM alignment (adkim=)</label>
               <div style={{ display:'flex', gap:5 }}>
                 {[['r','Relaxed'],['s','Strict']].map(([v,l]) => (
                   <button key={v} onClick={() => setAdkim(v)}
-                    style={{ flex:1, padding:'6px', background:adkim===v?'var(--purple-bg)':'var(--card-hi)', border:`1px solid ${adkim===v?'var(--purple-bdr)':'var(--border)'}`, borderRadius:6, color:adkim===v?'var(--purple)':'var(--t2)', fontSize:12, cursor:'pointer' }}>
+                    style={{ flex:1, padding:'6px', background:adkim===v?'#f5f3ff':'#f8fafc', border:`1px solid ${adkim===v?'#c4b5fd':'#e2e8f0'}`, borderRadius:6, color:adkim===v?'#7c3aed':'#4a5568', fontSize:12, cursor:'pointer' }}>
                     {v} — {l}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>SPF alignment (aspf=)</label>
+              <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:5 }}>SPF alignment (aspf=)</label>
               <div style={{ display:'flex', gap:5 }}>
                 {[['r','Relaxed'],['s','Strict']].map(([v,l]) => (
                   <button key={v} onClick={() => setAspf(v)}
-                    style={{ flex:1, padding:'6px', background:aspf===v?'var(--purple-bg)':'var(--card-hi)', border:`1px solid ${aspf===v?'var(--purple-bdr)':'var(--border)'}`, borderRadius:6, color:aspf===v?'var(--purple)':'var(--t2)', fontSize:12, cursor:'pointer' }}>
+                    style={{ flex:1, padding:'6px', background:aspf===v?'#f5f3ff':'#f8fafc', border:`1px solid ${aspf===v?'#c4b5fd':'#e2e8f0'}`, borderRadius:6, color:aspf===v?'#7c3aed':'#4a5568', fontSize:12, cursor:'pointer' }}>
                     {v} — {l}
                   </button>
                 ))}
@@ -285,10 +285,10 @@ function DKIMTool() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)', display:'flex', alignItems:'center', gap:7 }}>
+        <span style={{ fontSize:13, fontWeight:600, color:'#1a2332', display:'flex', alignItems:'center', gap:7 }}>
           <Key size={14} color="#f59e0b"/> DKIM selector discovery
         </span>
-        <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--t2)' }}>
+        <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'#4a5568' }}>
           {open ? <ChevronUp size={16}/> : <ChevronDown size={16}/>}
         </button>
       </div>
@@ -297,17 +297,17 @@ function DKIMTool() {
           <div style={{ display:'flex', gap:8, marginBottom:12 }}>
             <input type="text" placeholder="yourdomain.com" value={domain} onChange={e => setDomain(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && scan()}
-              style={{ flex:1, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
+              style={{ flex:1, padding:'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'#1a2332', outline:'none', fontFamily:'inherit' }}/>
             <button onClick={scan} disabled={loading || !domain}
-              style={{ padding:'8px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'var(--amber)', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !domain ? 0.5 : 1 }}>
-              {loading ? <><div style={{ width:13, height:13, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'var(--or)', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Scanning {SELECTORS.length} selectors…</> : <><Zap size={13}/> Discover</>}
+              style={{ padding:'8px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'#d97706', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !domain ? 0.5 : 1 }}>
+              {loading ? <><div style={{ width:13, height:13, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'#0073d1', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Scanning {SELECTORS.length} selectors…</> : <><Zap size={13}/> Discover</>}
             </button>
           </div>
-          <div style={{ fontSize:12,color:'var(--t2)', marginBottom:12 }}>Checks {SELECTORS.length} known selectors via Cloudflare DoH</div>
+          <div style={{ fontSize:12,color:'#4a5568', marginBottom:12 }}>Checks {SELECTORS.length} known selectors via Cloudflare DoH</div>
           {results.length > 0 && (
             <div>
               {results[0]?.selector === null ? (
-                <div style={{ padding:'16px', textAlign:'center', color:'var(--t2)', fontSize:13 }}>
+                <div style={{ padding:'16px', textAlign:'center', color:'#4a5568', fontSize:13 }}>
                   No DKIM records found on {SELECTORS.length} common selectors
                 </div>
               ) : (
@@ -316,11 +316,11 @@ function DKIMTool() {
                     <div key={r.selector} style={{ padding:'10px 14px', background:'rgba(245,158,11,0.06)', border:'1px solid rgba(245,158,11,0.2)', borderRadius:8 }}>
                       <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:6 }}>
                         <CheckCircle size={14} color="var(--green)"/>
-                        <span style={{ fontFamily:'monospace', fontSize:13, fontWeight:600, color:'var(--amber)' }}>{r.selector}</span>
-                        <span style={{ fontSize:12,color:'var(--t2)' }}>._domainkey.{domain}</span>
-                        {r.keySize && <span style={{ fontSize:12, padding:'2px 8px', borderRadius:8, background:r.keySize >= 2048 ? 'var(--cy-bg)' : 'var(--amber-bg)', color:r.keySize >= 2048 ? 'var(--cy)' : 'var(--amber)' }}>{r.keySize}-bit</span>}
+                        <span style={{ fontFamily:'monospace', fontSize:13, fontWeight:600, color:'#d97706' }}>{r.selector}</span>
+                        <span style={{ fontSize:12,color:'#4a5568' }}>._domainkey.{domain}</span>
+                        {r.keySize && <span style={{ fontSize:12, padding:'2px 8px', borderRadius:8, background:r.keySize >= 2048 ? '#e0f2fe' : '#fffbeb', color:r.keySize >= 2048 ? '#0284c7' : '#d97706' }}>{r.keySize}-bit</span>}
                       </div>
-                      <div style={{ fontFamily:'monospace', fontSize:10, color:'var(--t2)', wordBreak:'break-all', lineHeight:1.5 }}>{r.raw?.slice(0, 120)}…</div>
+                      <div style={{ fontFamily:'monospace', fontSize:10, color:'#4a5568', wordBreak:'break-all', lineHeight:1.5 }}>{r.raw?.slice(0, 120)}…</div>
                     </div>
                   ))}
                 </div>
@@ -371,7 +371,7 @@ function EmailHeaderAnalyser() {
   }
 
   const StatusDot = ({ pass, fail, label, value }) => {
-    const color = pass ? 'var(--or)' : fail ? 'var(--pk)' : 'var(--or)'
+    const color = pass ? '#0073d1' : fail ? '#e53e3e' : '#0073d1'
     const status = pass ? 'Pass' : fail ? 'Fail' : 'Unknown'
     return (
       <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'10px 14px', borderBottom:'1px solid var(--border)' }}>
@@ -380,10 +380,10 @@ function EmailHeaderAnalyser() {
         </div>
         <div style={{ flex:1 }}>
           <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:2 }}>
-            <span style={{ fontSize:12, fontWeight:700, color:'var(--t1)', fontFamily:'monospace' }}>{label}</span>
+            <span style={{ fontSize:12, fontWeight:700, color:'#1a2332', fontFamily:'monospace' }}>{label}</span>
             <span style={{ fontSize:10, padding:'1px 7px', borderRadius:8, background:`rgba(${pass ? '16,185,129' : fail ? '239,68,68' : '245,158,11'},0.15)`, color }}>{status}</span>
           </div>
-          {value && <div style={{ fontSize:10, color:'var(--t1)', fontFamily:'var(--mono)', wordBreak:'break-all' }}>{value}</div>}
+          {value && <div style={{ fontSize:10, color:'#1a2332', fontFamily:'var(--mono)', wordBreak:'break-all' }}>{value}</div>}
         </div>
       </div>
     )
@@ -392,22 +392,22 @@ function EmailHeaderAnalyser() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)', display:'flex', alignItems:'center', gap:7 }}>
+        <span style={{ fontSize:13, fontWeight:600, color:'#1a2332', display:'flex', alignItems:'center', gap:7 }}>
           <Mail size={14} color="#a78bfa"/> Email header analyser
         </span>
-        <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--t2)' }}>
+        <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'#4a5568' }}>
           {open ? <ChevronUp size={16}/> : <ChevronDown size={16}/>}
         </button>
       </div>
       {open && (
         <div style={{ padding:16 }}>
           <div style={{ marginBottom:12 }}>
-            <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>
+            <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:5 }}>
               Paste raw email header (Gmail: ⋮ → Show original → Copy to clipboard)
             </label>
             <textarea value={header} onChange={e => setHeader(e.target.value)} rows={6}
               placeholder="Delivered-To: user@example.com&#10;Received: from mail.example.com...&#10;Authentication-Results: mx.google.com;&#10;   dkim=pass header.i=@example.com;&#10;   spf=pass..."
-              style={{ width:'100%', padding:'10px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:12,color:'var(--t2)', outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
+              style={{ width:'100%', padding:'10px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:12,color:'#4a5568', outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
           </div>
           <button onClick={analyse} disabled={!header}
             style={{ padding:'8px 20px', background:'#ede9fe', border:'1px solid #c4b5fd', borderRadius:7, color:'#1e1b4b', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !header ? 0.5 : 1, marginBottom:12 }}>
@@ -425,15 +425,15 @@ function EmailHeaderAnalyser() {
                 { l:'Subject', v:result.subject },
               ].filter(f => f.v).map(f => (
                 <div key={f.l} style={{ display:'flex', gap:12, padding:'8px 14px', borderBottom:'1px solid var(--border)', fontSize:12 }}>
-                  <span style={{ color:'var(--t2)', width:72, flexShrink:0 }}>{f.l}</span>
-                  <span style={{ color:'var(--t1)', fontFamily: f.l === 'Sending IP' ? 'monospace' : 'inherit' }}>{f.v}</span>
+                  <span style={{ color:'#4a5568', width:72, flexShrink:0 }}>{f.l}</span>
+                  <span style={{ color:'#1a2332', fontFamily: f.l === 'Sending IP' ? 'monospace' : 'inherit' }}>{f.v}</span>
                 </div>
               ))}
               {result.receivedFrom.length > 0 && (
                 <div style={{ padding:'8px 14px' }}>
-                  <div style={{ fontSize:12,color:'var(--t2)', marginBottom:6 }}>Routing path ({result.receivedFrom.length} hops)</div>
+                  <div style={{ fontSize:12,color:'#4a5568', marginBottom:6 }}>Routing path ({result.receivedFrom.length} hops)</div>
                   {result.receivedFrom.map((r, i) => (
-                    <div key={i} style={{ fontSize:10, color:'var(--t1)', fontFamily:'var(--mono)', padding:'3px 0', borderBottom:`1px solid rgba(255,255,255,0.03)` }}>{r.slice(0, 100)}</div>
+                    <div key={i} style={{ fontSize:10, color:'#1a2332', fontFamily:'var(--mono)', padding:'3px 0', borderBottom:`1px solid rgba(255,255,255,0.03)` }}>{r.slice(0, 100)}</div>
                   ))}
                 </div>
               )}
@@ -487,20 +487,20 @@ function BulkScanner() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)', display:'flex', alignItems:'center', gap:7 }}>
+        <span style={{ fontSize:13, fontWeight:600, color:'#1a2332', display:'flex', alignItems:'center', gap:7 }}>
           <Upload size={14} color="#22d3ee"/> Bulk domain scanner
         </span>
-        <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--t2)' }}>
+        <button onClick={() => setOpen(o => !o)} style={{ background:'none', border:'none', cursor:'pointer', color:'#4a5568' }}>
           {open ? <ChevronUp size={16}/> : <ChevronDown size={16}/>}
         </button>
       </div>
       {open && (
         <div style={{ padding:16 }}>
           <div style={{ marginBottom:12 }}>
-            <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>Domains (one per line, max 25)</label>
+            <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:5 }}>Domains (one per line, max 25)</label>
             <textarea value={input} onChange={e => setInput(e.target.value)} rows={5}
               placeholder="google.com&#10;microsoft.com&#10;digicert.com"
-              style={{ width:'100%', padding:'10px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:12, color:'var(--t1)', outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
+              style={{ width:'100%', padding:'10px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:12, color:'#1a2332', outline:'none', resize:'vertical', fontFamily:'monospace' }}/>
           </div>
           <div style={{ display:'flex', gap:8, marginBottom:12 }}>
             <button onClick={runBulk} disabled={scanning || !input}
@@ -509,14 +509,14 @@ function BulkScanner() {
             </button>
             {results.length > 0 && !scanning && (
               <button onClick={exportCSV}
-                style={{ padding:'8px 14px', border:'1px solid var(--border)', borderRadius:7, background:'transparent', color:'var(--t2)', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+                style={{ padding:'8px 14px', border:'1px solid var(--border)', borderRadius:7, background:'transparent', color:'#4a5568', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
                 <Upload size={12}/> Export CSV
               </button>
             )}
           </div>
           {scanning && (
             <div style={{ marginBottom:12 }}>
-              <div style={{ height:4, background:'var(--border)', borderRadius:2, overflow:'hidden' }}>
+              <div style={{ height:4, background:'#e2e8f0', borderRadius:2, overflow:'hidden' }}>
                 <div style={{ height:'100%', width:`${progress}%`, background:'#22d3ee', borderRadius:2, transition:'width 0.3s ease' }}/>
               </div>
             </div>
@@ -527,21 +527,21 @@ function BulkScanner() {
                 <thead>
                   <tr style={{ background:'rgba(255,255,255,0.03)' }}>
                     {['Domain','Score','SPF','DMARC','SSL','Critical'].map(h => (
-                      <th key={h} style={{ textAlign:'left', padding:'7px 12px', fontSize:10, fontWeight:600, color:'var(--t2)', textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid var(--border)' }}>{h}</th>
+                      <th key={h} style={{ textAlign:'left', padding:'7px 12px', fontSize:10, fontWeight:600, color:'#4a5568', textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid var(--border)' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {results.map(r => (
                     <tr key={r.domain} style={{ borderBottom:`1px solid var(--border)` }}>
-                      <td style={{ padding:'8px 12px', fontFamily:'monospace', color:'var(--t1)' }}>{r.domain}</td>
-                      <td style={{ padding:'8px 12px', fontWeight:700, color: r.score >= 70 ? 'var(--or)' : r.score >= 50 ? 'var(--or)' : r.score ? 'var(--pk)' : '#6b7280' }}>{r.score ?? '–'}</td>
+                      <td style={{ padding:'8px 12px', fontFamily:'monospace', color:'#1a2332' }}>{r.domain}</td>
+                      <td style={{ padding:'8px 12px', fontWeight:700, color: r.score >= 70 ? '#0073d1' : r.score >= 50 ? '#0073d1' : r.score ? '#e53e3e' : '#6b7280' }}>{r.score ?? '–'}</td>
                       {[r.spf, r.dmarc, r.ssl].map((v, i) => {
                         const p = ['pass','valid','pass'].includes(v?.toLowerCase())
                         const f = ['missing','fail','fail'].includes(v?.toLowerCase())
-                        return <td key={i} style={{ padding:'8px 12px' }}><span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${p ? '16,185,129' : f ? '239,68,68' : '245,158,11'},0.12)`, color: p ? 'var(--or)' : f ? 'var(--pk)' : 'var(--or)' }}>{v ?? '–'}</span></td>
+                        return <td key={i} style={{ padding:'8px 12px' }}><span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${p ? '16,185,129' : f ? '239,68,68' : '245,158,11'},0.12)`, color: p ? '#0073d1' : f ? '#e53e3e' : '#0073d1' }}>{v ?? '–'}</span></td>
                       })}
-                      <td style={{ padding:'8px 12px', color: r.issues > 0 ? 'var(--pk)' : 'var(--or)', fontWeight:600 }}>{r.issues ?? '–'}</td>
+                      <td style={{ padding:'8px 12px', color: r.issues > 0 ? '#e53e3e' : '#0073d1', fontWeight:600 }}>{r.issues ?? '–'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -577,52 +577,52 @@ function SPFFlattener() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)' }}>SPF flattening — resolve all includes to a single flat record</span>
+        <span style={{ fontSize:13, fontWeight:600, color:'#1a2332' }}>SPF flattening — resolve all includes to a single flat record</span>
       </div>
       <div style={{ padding:16 }}>
-        <div style={{ fontSize:13,color:'var(--t2)', marginBottom:12, lineHeight:1.6 }}>
+        <div style={{ fontSize:13,color:'#4a5568', marginBottom:12, lineHeight:1.6 }}>
           Too many DNS lookups? This tool recursively resolves all <code style={{ color:'#f97316' }}>include:</code>, <code style={{ color:'#f97316' }}>a:</code>, and <code style={{ color:'#f97316' }}>mx</code> mechanisms into a flat list of IP addresses — bringing your lookup count to near zero.
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&flatten()}
-            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
-          <button onClick={flatten} disabled={loading||!domain.trim()} style={{ padding:'8px 18px', background:'var(--or)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
+            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'#1a2332', outline:'none', fontFamily:'inherit' }}/>
+          <button onClick={flatten} disabled={loading||!domain.trim()} style={{ padding:'8px 18px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
             {loading ? <div style={{ width:12, height:12, border:'2px solid #9ca3af', borderTopColor:'#fff', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> : <Zap size={13}/>}
             Flatten
           </button>
         </div>
-        {error && <div style={{ fontSize:12, color:'var(--pk)', marginBottom:10 }}>{error}</div>}
+        {error && <div style={{ fontSize:12, color:'#e53e3e', marginBottom:10 }}>{error}</div>}
         {result && (
           <>
             <div style={{ display:'flex', gap:8, marginBottom:10, flexWrap:'wrap' }}>
-              {[['IPs resolved', result.ip_count, 'var(--or)'], ['Lookups after', result.lookup_count_after, result.lookup_count_after === 0 ? 'var(--or)' : 'var(--or)'], ['Original lookups', '10 limit', '#6b7280']].map(([l,v,c]) => (
-                <div key={l} style={{ background:'var(--card-hi)', borderRadius:8, padding:'8px 12px', border:'1px solid var(--border)' }}>
+              {[['IPs resolved', result.ip_count, '#0073d1'], ['Lookups after', result.lookup_count_after, result.lookup_count_after === 0 ? '#0073d1' : '#0073d1'], ['Original lookups', '10 limit', '#6b7280']].map(([l,v,c]) => (
+                <div key={l} style={{ background:'#f8fafc', borderRadius:8, padding:'8px 12px', border:'1px solid var(--border)' }}>
                   <div style={{ fontSize:16, fontWeight:700, color:c }}>{v}</div>
-                  <div style={{ fontSize:10, color:'var(--t2)' }}>{l}</div>
+                  <div style={{ fontSize:10, color:'#4a5568' }}>{l}</div>
                 </div>
               ))}
             </div>
-            {result.warning && <div style={{ fontSize:12, color:'var(--amber)', marginBottom:10, padding:'6px 10px', background:'rgba(245,158,11,0.08)', borderRadius:6 }}>⚠️ {result.warning}</div>}
+            {result.warning && <div style={{ fontSize:12, color:'#d97706', marginBottom:10, padding:'6px 10px', background:'rgba(245,158,11,0.08)', borderRadius:6 }}>⚠️ {result.warning}</div>}
             <div style={{ marginBottom:8 }}>
-              <div style={{ fontSize:12,color:'var(--t2)', marginBottom:5 }}>Original record</div>
-              <div style={{ fontFamily:'monospace', fontSize:12, color:'var(--t2)', background:'var(--card-hi)', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.original}</div>
+              <div style={{ fontSize:12,color:'#4a5568', marginBottom:5 }}>Original record</div>
+              <div style={{ fontFamily:'monospace', fontSize:12, color:'#4a5568', background:'#f8fafc', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.original}</div>
             </div>
             <div style={{ marginBottom:12 }}>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:5 }}>
-                <span style={{ fontSize:12,color:'var(--t2)' }}>Flattened record (copy this into DNS)</span>
+                <span style={{ fontSize:12,color:'#4a5568' }}>Flattened record (copy this into DNS)</span>
                 <CopyBtn text={result.flattened}/>
               </div>
-              <div style={{ fontFamily:'monospace', fontSize:12, color:'var(--t1)', background:'var(--card-hi)', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.flattened}</div>
+              <div style={{ fontFamily:'monospace', fontSize:12, color:'#1a2332', background:'#f8fafc', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.flattened}</div>
             </div>
             {/* Hosted SPF option */}
-            <div style={{ background:'var(--green-bg)', border:'1px solid var(--green-bdr)', borderRadius:10, padding:'14px 16px' }}>
-              <div style={{ fontSize:13, fontWeight:600, color:'var(--or)', marginBottom:4 }}>⚡ Use Hosted SPF instead</div>
-              <div style={{ fontSize:12, color:'var(--green-bdr)', lineHeight:1.6, marginBottom:10 }}>
-                Instead of a static flat record that goes stale, use a single <code style={{ background:'var(--green-bg)', padding:'1px 5px', borderRadius:4, fontFamily:'monospace' }}>include:spf.dnsradar.easysecurity.in</code> that DomainRadar hosts and auto-updates. Your SPF record stays valid forever — even when you add new email providers.
+            <div style={{ background:'#e8f3fc', border:'1px solid var(--green-bdr)', borderRadius:10, padding:'14px 16px' }}>
+              <div style={{ fontSize:13, fontWeight:600, color:'#0073d1', marginBottom:4 }}>⚡ Use Hosted SPF instead</div>
+              <div style={{ fontSize:12, color:'#a8d0f0', lineHeight:1.6, marginBottom:10 }}>
+                Instead of a static flat record that goes stale, use a single <code style={{ background:'#e8f3fc', padding:'1px 5px', borderRadius:4, fontFamily:'monospace' }}>include:spf.dnsradar.easysecurity.in</code> that DomainRadar hosts and auto-updates. Your SPF record stays valid forever — even when you add new email providers.
               </div>
-              <div style={{ fontSize:12, color:'var(--green-bdr)', marginBottom:10 }}>
+              <div style={{ fontSize:12, color:'#a8d0f0', marginBottom:10 }}>
                 <strong>Your new SPF record would be:</strong><br/>
-                <code style={{ fontFamily:'monospace', background:'var(--green-bg)', padding:'4px 8px', borderRadius:6, display:'inline-block', marginTop:4, wordBreak:'break-all' }}>v=spf1 include:spf.dnsradar.easysecurity.in ~all</code>
+                <code style={{ fontFamily:'monospace', background:'#e8f3fc', padding:'4px 8px', borderRadius:6, display:'inline-block', marginTop:4, wordBreak:'break-all' }}>v=spf1 include:spf.dnsradar.easysecurity.in ~all</code>
               </div>
               <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                 <button
@@ -632,11 +632,11 @@ function SPFFlattener() {
                       alert('Hosted SPF record copied! Replace your current SPF record with this in your DNS. Then email us at support@dnsradar.easysecurity.in with your domain so we can configure the hosted record.')
                     } catch { alert('Copy: v=spf1 include:spf.dnsradar.easysecurity.in ~all') }
                   }}
-                  style={{ padding:'7px 14px', background:'var(--or)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>
+                  style={{ padding:'7px 14px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>
                   📋 Copy hosted SPF record
                 </button>
                 <a href="mailto:support@dnsradar.easysecurity.in?subject=Hosted SPF setup&body=Please configure hosted SPF for my domain."
-                  style={{ padding:'7px 14px', background:'var(--card)', color:'var(--or)', border:'1px solid var(--green-bdr)', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', textDecoration:'none', display:'inline-flex', alignItems:'center' }}>
+                  style={{ padding:'7px 14px', background:'#ffffff', color:'#0073d1', border:'1px solid var(--green-bdr)', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', textDecoration:'none', display:'inline-flex', alignItems:'center' }}>
                   📧 Request setup
                 </a>
               </div>
@@ -681,36 +681,36 @@ function DKIMRotation() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)' }}>DKIM key rotation wizard</span>
+        <span style={{ fontSize:13, fontWeight:600, color:'#1a2332' }}>DKIM key rotation wizard</span>
       </div>
       <div style={{ padding:16 }}>
-        <div style={{ fontSize:13,color:'var(--t2)', marginBottom:12, lineHeight:1.6 }}>
+        <div style={{ fontSize:13,color:'#4a5568', marginBottom:12, lineHeight:1.6 }}>
           Find all active DKIM selectors on your domain, check key sizes, and get step-by-step rotation guidance.
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:14 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&checkSelectors()}
-            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
-          <button onClick={checkSelectors} disabled={checking||!domain.trim()} style={{ padding:'8px 16px', background:'rgba(59,130,246,0.15)', border:'1px solid rgba(59,130,246,0.3)', borderRadius:7, color:'var(--pu)', fontSize:12, fontWeight:600, cursor:'pointer' }}>
+            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'#1a2332', outline:'none', fontFamily:'inherit' }}/>
+          <button onClick={checkSelectors} disabled={checking||!domain.trim()} style={{ padding:'8px 16px', background:'rgba(59,130,246,0.15)', border:'1px solid rgba(59,130,246,0.3)', borderRadius:7, color:'#7c3aed', fontSize:12, fontWeight:600, cursor:'pointer' }}>
             {checking ? 'Scanning…' : 'Find selectors'}
           </button>
         </div>
-        {error && <div style={{ fontSize:12, color:'var(--pk)', marginBottom:10 }}>{error}</div>}
+        {error && <div style={{ fontSize:12, color:'#e53e3e', marginBottom:10 }}>{error}</div>}
         {selectors.length > 0 && (
           <>
             <div style={{ marginBottom:14 }}>
-              <div style={{ fontSize:12,color:'var(--t2)', marginBottom:8, fontWeight:500, textTransform:'uppercase', letterSpacing:'0.06em' }}>Active DKIM selectors found</div>
+              <div style={{ fontSize:12,color:'#4a5568', marginBottom:8, fontWeight:500, textTransform:'uppercase', letterSpacing:'0.06em' }}>Active DKIM selectors found</div>
               {selectors.map(s => (
                 <div key={s.selector} style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid var(--border)', marginBottom:6 }}>
                   <code style={{ fontSize:12, color:'#1e1b4b', fontWeight:600 }}>{s.selector}</code>
-                  <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background: s.key_size >= 2048 ? 'var(--cy-bg)' : 'var(--amber-bg)', color: s.key_size >= 2048 ? 'var(--cy)' : 'var(--amber)', fontWeight:600 }}>{s.key_size || '?'}-bit</span>
-                  <span style={{ fontSize:12,color:'var(--t2)' }}>TTL {s.ttl}s</span>
-                  {s.key_size < 2048 && <span style={{ fontSize:10, color:'var(--amber)', marginLeft:'auto' }}>⚠️ Upgrade to 2048-bit</span>}
+                  <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background: s.key_size >= 2048 ? '#e0f2fe' : '#fffbeb', color: s.key_size >= 2048 ? '#0284c7' : '#d97706', fontWeight:600 }}>{s.key_size || '?'}-bit</span>
+                  <span style={{ fontSize:12,color:'#4a5568' }}>TTL {s.ttl}s</span>
+                  {s.key_size < 2048 && <span style={{ fontSize:10, color:'#d97706', marginLeft:'auto' }}>⚠️ Upgrade to 2048-bit</span>}
                 </div>
               ))}
             </div>
             <div style={{ background:'rgba(59,130,246,0.06)', border:'1px solid rgba(59,130,246,0.2)', borderRadius:8, padding:'12px 14px' }}>
-              <div style={{ fontSize:12, fontWeight:600, color:'var(--t1)', marginBottom:8 }}>How to rotate safely (zero downtime)</div>
-              <ol style={{ fontSize:13,color:'var(--t2)', margin:0, paddingLeft:20, lineHeight:2 }}>
+              <div style={{ fontSize:12, fontWeight:600, color:'#1a2332', marginBottom:8 }}>How to rotate safely (zero downtime)</div>
+              <ol style={{ fontSize:13,color:'#4a5568', margin:0, paddingLeft:20, lineHeight:2 }}>
                 <li>Generate a new 2048-bit RSA key pair in your email provider dashboard</li>
                 <li>Add the new public key as a TXT record: <code style={{ color:'#f97316' }}>{newSelector}._domainkey.{domain}</code></li>
                 <li>Wait for DNS propagation (15–60 minutes), then verify it appears above</li>
@@ -721,7 +721,7 @@ function DKIMRotation() {
           </>
         )}
         {selectors.length === 0 && domain && !checking && (
-          <div style={{ fontSize:12,color:'var(--t2)', textAlign:'center', padding:16 }}>No active DKIM selectors found. Check your email provider's setup instructions.</div>
+          <div style={{ fontSize:12,color:'#4a5568', textAlign:'center', padding:16 }}>No active DKIM selectors found. Check your email provider's setup instructions.</div>
         )}
       </div>
     </div>
@@ -767,20 +767,20 @@ function BIMIChecker() {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)' }}>BIMI checker — Brand Indicators for Message Identification</span>
+        <span style={{ fontSize:13, fontWeight:600, color:'#1a2332' }}>BIMI checker — Brand Indicators for Message Identification</span>
       </div>
       <div style={{ padding:16 }}>
-        <div style={{ fontSize:13,color:'var(--t2)', marginBottom:12, lineHeight:1.6 }}>
+        <div style={{ fontSize:13,color:'#4a5568', marginBottom:12, lineHeight:1.6 }}>
           BIMI lets your brand logo appear in Gmail, Apple Mail, and Yahoo inboxes next to your emails. Requires DMARC p=quarantine or p=reject, and a verified SVG logo.
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&check()}
-            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
+            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'#1a2332', outline:'none', fontFamily:'inherit' }}/>
           <button onClick={check} disabled={loading||!domain.trim()} style={{ padding:'8px 16px', background:'#ede9fe', border:'1px solid #c4b5fd', borderRadius:7, color:'#1e1b4b', fontSize:12, fontWeight:600, cursor:'pointer' }}>
             {loading ? 'Checking…' : 'Check BIMI'}
           </button>
         </div>
-        {error && <div style={{ fontSize:12, color:'var(--pk)', marginBottom:10 }}>{error}</div>}
+        {error && <div style={{ fontSize:12, color:'#e53e3e', marginBottom:10 }}>{error}</div>}
         {result && (
           <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
             <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
@@ -790,34 +790,34 @@ function BIMIChecker() {
                 { label:'VMC certificate', ok: result.has_vmc, yes:'Present', no:'Not found (logo may not show in all clients)' },
               ].map(s => (
                 <div key={s.label} style={{ flex:1, minWidth:140, padding:'10px 12px', borderRadius:8, background: s.ok ? 'rgba(255,107,43,0.08)' : 'rgba(239,68,68,0.08)', border:`1px solid ${s.ok ? 'rgba(255,107,43,0.2)' : 'rgba(239,68,68,0.2)'}` }}>
-                  <div style={{ fontSize:10, color:'var(--t2)', marginBottom:3 }}>{s.label}</div>
-                  <div style={{ fontSize:12, fontWeight:600, color: s.ok ? 'var(--or)' : 'var(--pk)' }}>{s.ok ? s.yes : s.no}</div>
+                  <div style={{ fontSize:10, color:'#4a5568', marginBottom:3 }}>{s.label}</div>
+                  <div style={{ fontSize:12, fontWeight:600, color: s.ok ? '#0073d1' : '#e53e3e' }}>{s.ok ? s.yes : s.no}</div>
                 </div>
               ))}
             </div>
             {result.bimi_found && result.raw && (
               <div>
-                <div style={{ fontSize:12,color:'var(--t2)', marginBottom:5 }}>BIMI record</div>
-                <div style={{ fontFamily:'monospace', fontSize:12, color:'var(--t1)', background:'var(--card-hi)', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.raw}</div>
+                <div style={{ fontSize:12,color:'#4a5568', marginBottom:5 }}>BIMI record</div>
+                <div style={{ fontFamily:'monospace', fontSize:12, color:'#1a2332', background:'#f8fafc', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.raw}</div>
               </div>
             )}
             {result.logo_url && (
               <div style={{ display:'flex', alignItems:'center', gap:12, padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid var(--border)' }}>
-                <img src={result.logo_url} alt="BIMI logo" style={{ width:40, height:40, objectFit:'contain', background:'var(--card)', borderRadius:6, padding:2 }} onError={e => e.target.style.display='none'}/>
+                <img src={result.logo_url} alt="BIMI logo" style={{ width:40, height:40, objectFit:'contain', background:'#ffffff', borderRadius:6, padding:2 }} onError={e => e.target.style.display='none'}/>
                 <div>
-                  <div style={{ fontSize:12,color:'var(--t2)', marginBottom:2 }}>Logo URL</div>
-                  <a href={result.logo_url} target="_blank" rel="noopener noreferrer" style={{ fontSize:12, color:'var(--pu)', wordBreak:'break-all' }}>{result.logo_url}</a>
+                  <div style={{ fontSize:12,color:'#4a5568', marginBottom:2 }}>Logo URL</div>
+                  <a href={result.logo_url} target="_blank" rel="noopener noreferrer" style={{ fontSize:12, color:'#7c3aed', wordBreak:'break-all' }}>{result.logo_url}</a>
                 </div>
               </div>
             )}
             {!result.bimi_found && (
               <div style={{ background:'#f5f3ff', border:'1px solid #ddd6fe', borderRadius:8, padding:'12px 14px' }}>
-                <div style={{ fontSize:12, fontWeight:600, color:'var(--t1)', marginBottom:6 }}>How to set up BIMI</div>
-                <ol style={{ fontSize:13,color:'var(--t2)', margin:0, paddingLeft:20, lineHeight:2 }}>
+                <div style={{ fontSize:12, fontWeight:600, color:'#1a2332', marginBottom:6 }}>How to set up BIMI</div>
+                <ol style={{ fontSize:13,color:'#4a5568', margin:0, paddingLeft:20, lineHeight:2 }}>
                   <li>Ensure DMARC is at p=quarantine or p=reject</li>
                   <li>Create a square SVG logo (aspect ratio 1:1, &lt;32KB)</li>
                   <li>Host it at a public HTTPS URL</li>
-                  <li>Add TXT record: <code style={{ color:'#f97316' }}>default._bimi.{result.domain}</code> → <code style={{ color:'var(--t1)' }}>v=BIMI1; l=https://yourdomain.com/logo.svg;</code></li>
+                  <li>Add TXT record: <code style={{ color:'#f97316' }}>default._bimi.{result.domain}</code> → <code style={{ color:'#1a2332' }}>v=BIMI1; l=https://yourdomain.com/logo.svg;</code></li>
                   <li>For Gmail display, get a VMC (Verified Mark Certificate) from DigiCert or Entrust</li>
                 </ol>
               </div>
@@ -861,25 +861,25 @@ function MTASTSChecker() {
     setLoading(false)
   }
 
-  const statusDot = (ok) => <span style={{ display:'inline-block', width:8, height:8, borderRadius:'50%', background: ok ? 'var(--or)' : 'var(--pk)', marginRight:6 }}/>
+  const statusDot = (ok) => <span style={{ display:'inline-block', width:8, height:8, borderRadius:'50%', background: ok ? '#0073d1' : '#e53e3e', marginRight:6 }}/>
 
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)' }}>MTA-STS + TLS-RPT checker</span>
+        <span style={{ fontSize:13, fontWeight:600, color:'#1a2332' }}>MTA-STS + TLS-RPT checker</span>
       </div>
       <div style={{ padding:16 }}>
-        <div style={{ fontSize:13,color:'var(--t2)', marginBottom:12, lineHeight:1.6 }}>
+        <div style={{ fontSize:13,color:'#4a5568', marginBottom:12, lineHeight:1.6 }}>
           MTA-STS forces email servers to use TLS when delivering to your domain. TLS-RPT sends you reports when TLS fails. Together they protect against downgrade attacks.
         </div>
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&check()}
-            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
+            placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'#1a2332', outline:'none', fontFamily:'inherit' }}/>
           <button onClick={check} disabled={loading||!domain.trim()} style={{ padding:'8px 16px', background:'rgba(34,211,238,0.12)', border:'1px solid rgba(34,211,238,0.25)', borderRadius:7, color:'#22d3ee', fontSize:12, fontWeight:600, cursor:'pointer' }}>
             {loading ? 'Checking…' : 'Check'}
           </button>
         </div>
-        {error && <div style={{ fontSize:12, color:'var(--pk)', marginBottom:10 }}>{error}</div>}
+        {error && <div style={{ fontSize:12, color:'#e53e3e', marginBottom:10 }}>{error}</div>}
         {result && (
           <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
             <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
@@ -889,20 +889,20 @@ function MTASTSChecker() {
                 { label:'TLS-RPT record', ok:!!result.tls_rpt_record, val:result.tls_rpt_record },
               ].map(item => (
                 <div key={item.label} style={{ padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid var(--border)' }}>
-                  <div style={{ fontSize:12, color:'var(--t1)', marginBottom:item.val ? 5 : 0 }}>{statusDot(item.ok)}{item.label}</div>
-                  {item.val && <div style={{ fontFamily:'monospace', fontSize:10, color:'var(--t2)', marginTop:3, wordBreak:'break-all' }}>{item.val.slice(0,200)}</div>}
-                  {!item.ok && <div style={{ fontSize:12, color:'var(--pk)', marginTop:3 }}>Not configured</div>}
+                  <div style={{ fontSize:12, color:'#1a2332', marginBottom:item.val ? 5 : 0 }}>{statusDot(item.ok)}{item.label}</div>
+                  {item.val && <div style={{ fontFamily:'monospace', fontSize:10, color:'#4a5568', marginTop:3, wordBreak:'break-all' }}>{item.val.slice(0,200)}</div>}
+                  {!item.ok && <div style={{ fontSize:12, color:'#e53e3e', marginTop:3 }}>Not configured</div>}
                 </div>
               ))}
             </div>
             {(!result.mta_sts_record || !result.policy_file) && (
               <div style={{ background:'rgba(34,211,238,0.06)', border:'1px solid rgba(34,211,238,0.2)', borderRadius:8, padding:'12px 14px' }}>
-                <div style={{ fontSize:12, fontWeight:600, color:'var(--t1)', marginBottom:6 }}>How to set up MTA-STS</div>
-                <ol style={{ fontSize:13,color:'var(--t2)', margin:0, paddingLeft:20, lineHeight:2 }}>
+                <div style={{ fontSize:12, fontWeight:600, color:'#1a2332', marginBottom:6 }}>How to set up MTA-STS</div>
+                <ol style={{ fontSize:13,color:'#4a5568', margin:0, paddingLeft:20, lineHeight:2 }}>
                   <li>Host a policy file at <code style={{ color:'#f97316' }}>https://mta-sts.{result.domain}/.well-known/mta-sts.txt</code></li>
-                  <li>Content: <code style={{ color:'var(--t1)' }}>version: STSv1\nmode: enforce\nmx: mail.{result.domain}\nmax_age: 86400</code></li>
-                  <li>Add DNS TXT: <code style={{ color:'#f97316' }}>_mta-sts.{result.domain}</code> → <code style={{ color:'var(--t1)' }}>v=STSv1; id=20240101000000Z;</code></li>
-                  <li>For TLS-RPT add: <code style={{ color:'#f97316' }}>_smtp._tls.{result.domain}</code> → <code style={{ color:'var(--t1)' }}>v=TLSRPTv1; rua=mailto:tls@{result.domain};</code></li>
+                  <li>Content: <code style={{ color:'#1a2332' }}>version: STSv1\nmode: enforce\nmx: mail.{result.domain}\nmax_age: 86400</code></li>
+                  <li>Add DNS TXT: <code style={{ color:'#f97316' }}>_mta-sts.{result.domain}</code> → <code style={{ color:'#1a2332' }}>v=STSv1; id=20240101000000Z;</code></li>
+                  <li>For TLS-RPT add: <code style={{ color:'#f97316' }}>_smtp._tls.{result.domain}</code> → <code style={{ color:'#1a2332' }}>v=TLSRPTv1; rua=mailto:tls@{result.domain};</code></li>
                 </ol>
               </div>
             )}
@@ -939,26 +939,26 @@ function BulkDomainImport({ user }) {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)' }}>Bulk domain import — add up to 50 domains at once</span>
+        <span style={{ fontSize:13, fontWeight:600, color:'#1a2332' }}>Bulk domain import — add up to 50 domains at once</span>
       </div>
       <div style={{ padding:16 }}>
-        <div style={{ fontSize:13,color:'var(--t2)', marginBottom:12 }}>Paste domains one per line, or comma/semicolon separated. URLs are automatically cleaned.</div>
+        <div style={{ fontSize:13,color:'#4a5568', marginBottom:12 }}>Paste domains one per line, or comma/semicolon separated. URLs are automatically cleaned.</div>
         <textarea value={text} onChange={e => setText(e.target.value)} rows={6} placeholder={'example.com\ngoogle.com\nhttps://microsoft.com/\nyourdomain.org'}
-          style={{ width:'100%', padding:'10px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:8, fontSize:12, fontFamily:'monospace', color:'var(--t1)', outline:'none', resize:'vertical', boxSizing:'border-box', marginBottom:10 }}/>
-        {!user && <div style={{ fontSize:12, color:'var(--amber)', marginBottom:10 }}>⚠️ Sign in to import domains to your account</div>}
-        <button onClick={importDomains} disabled={importing || !text.trim() || !user} style={{ padding:'8px 18px', background:'var(--or)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', marginBottom: results.length ? 14 : 0 }}>
+          style={{ width:'100%', padding:'10px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:8, fontSize:12, fontFamily:'monospace', color:'#1a2332', outline:'none', resize:'vertical', boxSizing:'border-box', marginBottom:10 }}/>
+        {!user && <div style={{ fontSize:12, color:'#d97706', marginBottom:10 }}>⚠️ Sign in to import domains to your account</div>}
+        <button onClick={importDomains} disabled={importing || !text.trim() || !user} style={{ padding:'8px 18px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', marginBottom: results.length ? 14 : 0 }}>
           {importing ? 'Importing…' : 'Import domains'}
         </button>
         {results.length > 0 && (
           <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
             {results.map(r => (
               <div key={r.domain} style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 10px', background:`rgba(${r.ok ? '16,185,129' : '239,68,68'},0.06)`, borderRadius:6, border:`1px solid rgba(${r.ok ? '16,185,129' : '239,68,68'},0.15)` }}>
-                <span style={{ fontSize:12, color: r.ok ? 'var(--or)' : 'var(--or)' }}>{r.ok ? '✓' : '—'}</span>
-                <span style={{ fontSize:12, fontFamily:'monospace', color:'var(--t1)', flex:1 }}>{r.domain}</span>
-                <span style={{ fontSize:10, color:'var(--t2)' }}>{r.status}</span>
+                <span style={{ fontSize:12, color: r.ok ? '#0073d1' : '#0073d1' }}>{r.ok ? '✓' : '—'}</span>
+                <span style={{ fontSize:12, fontFamily:'monospace', color:'#1a2332', flex:1 }}>{r.domain}</span>
+                <span style={{ fontSize:10, color:'#4a5568' }}>{r.status}</span>
               </div>
             ))}
-            {done && <div style={{ fontSize:12, color:'var(--t1)', marginTop:6 }}>Done. Go to Dashboard to verify and scan your new domains.</div>}
+            {done && <div style={{ fontSize:12, color:'#1a2332', marginTop:6 }}>Done. Go to Dashboard to verify and scan your new domains.</div>}
           </div>
         )}
       </div>
@@ -1020,28 +1020,28 @@ function DeliverabilityTest({ user }) {
   }
 
   const F = "'Inter',system-ui,sans-serif"
-  const card = { background:'var(--card)', border:'1px solid var(--border)', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }
+  const card = { background:'#ffffff', border:'1px solid var(--border)', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }
 
   return (
     <div>
       <div style={{ ...card, padding:'18px 20px', marginBottom:14 }}>
-        <div style={{ fontSize:14, fontWeight:700, color:'var(--t1)', marginBottom:4, display:'flex', alignItems:'center', gap:8 }}>
+        <div style={{ fontSize:14, fontWeight:700, color:'#1a2332', marginBottom:4, display:'flex', alignItems:'center', gap:8 }}>
           ✉️ Email Deliverability Test
         </div>
-        <div style={{ fontSize:12, color:'var(--t3)', marginBottom:14, lineHeight:1.6 }}>
+        <div style={{ fontSize:12, color:'#8896a7', marginBottom:14, lineHeight:1.6 }}>
           Check if your domain's email configuration will pass spam filters at Gmail, Outlook, and Yahoo. Tests SPF, DKIM, DMARC, blacklists, SSL and MTA-STS in one shot.
         </div>
         <div style={{ display:'flex', gap:8 }}>
           <input value={domain} onChange={e=>setDomain(e.target.value)}
             onKeyDown={e=>e.key==='Enter'&&runTest()}
             placeholder="yourdomain.com"
-            style={{ flex:1, padding:'9px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:8, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:F }}/>
+            style={{ flex:1, padding:'9px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:8, fontSize:13, color:'#1a2332', outline:'none', fontFamily:F }}/>
           <button onClick={runTest} disabled={loading||!domain.trim()}
-            style={{ padding:'9px 20px', background:'var(--card)', color:'var(--t1)', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:loading||!domain.trim()?'not-allowed':'pointer', display:'flex', alignItems:'center', gap:6, opacity:loading||!domain.trim()?0.6:1, fontFamily:F }}>
+            style={{ padding:'9px 20px', background:'#ffffff', color:'#1a2332', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:loading||!domain.trim()?'not-allowed':'pointer', display:'flex', alignItems:'center', gap:6, opacity:loading||!domain.trim()?0.6:1, fontFamily:F }}>
             {loading ? <><div style={{width:12,height:12,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'spin 0.7s linear infinite'}}/> Testing…</> : '▶ Run test'}
           </button>
         </div>
-        {error && <div style={{ marginTop:10, padding:'8px 12px', background:'var(--red-bg)', border:'1px solid var(--pk-bdr)', borderRadius:8, fontSize:12, color:'var(--pk)' }}>{error}</div>}
+        {error && <div style={{ marginTop:10, padding:'8px 12px', background:'#fff5f5', border:'1px solid var(--pk-bdr)', borderRadius:8, fontSize:12, color:'#e53e3e' }}>{error}</div>}
       </div>
 
       {result && (
@@ -1050,14 +1050,14 @@ function DeliverabilityTest({ user }) {
           <div style={{ ...card, padding:'20px 24px', marginBottom:14 }}>
             <div style={{ display:'flex', alignItems:'center', gap:20 }}>
               <div style={{ textAlign:'center', flexShrink:0 }}>
-                <div style={{ fontSize:48, fontWeight:800, color: result.score>=80?'var(--or)':result.score>=60?'var(--or)':'var(--pk)', lineHeight:1, letterSpacing:'-0.04em' }}>{result.score}</div>
-                <div style={{ fontSize:11, color:'var(--t3)', fontWeight:500 }}>/ 100</div>
+                <div style={{ fontSize:48, fontWeight:800, color: result.score>=80?'#0073d1':result.score>=60?'#0073d1':'#e53e3e', lineHeight:1, letterSpacing:'-0.04em' }}>{result.score}</div>
+                <div style={{ fontSize:11, color:'#8896a7', fontWeight:500 }}>/ 100</div>
               </div>
               <div>
-                <div style={{ fontSize:16, fontWeight:700, color:'var(--t1)', marginBottom:4 }}>
+                <div style={{ fontSize:16, fontWeight:700, color:'#1a2332', marginBottom:4 }}>
                   {result.score >= 80 ? '✅ Good deliverability' : result.score >= 60 ? '⚠️ Deliverability issues' : '❌ Poor deliverability'}
                 </div>
-                <div style={{ fontSize:13, color:'var(--t2)', lineHeight:1.6 }}>
+                <div style={{ fontSize:13, color:'#4a5568', lineHeight:1.6 }}>
                   {result.passCount} of {result.total} checks passed for <strong>{result.domain}</strong>.
                   {result.score < 80 && ' Fix the failing checks below to improve inbox placement.'}
                 </div>
@@ -1069,9 +1069,9 @@ function DeliverabilityTest({ user }) {
                     { label:'Apple Mail', pass: result.ea.spf_status==='Pass' },
                   ].map(p => (
                     <span key={p.label} style={{ fontSize:11, padding:'3px 10px', borderRadius:8, fontWeight:600,
-                      background: p.pass ? 'var(--green-bg)' : 'var(--pk-bg)',
-                      color: p.pass ? 'var(--or)' : 'var(--pk)',
-                      border: `1px solid ${p.pass ? 'var(--green-bdr)' : 'var(--red-bdr)'}` }}>
+                      background: p.pass ? '#e8f3fc' : '#fff5f5',
+                      color: p.pass ? '#0073d1' : '#e53e3e',
+                      border: `1px solid ${p.pass ? '#a8d0f0' : '#feb2b2'}` }}>
                       {p.pass ? '✓' : '✗'} {p.label}
                     </span>
                   ))}
@@ -1082,26 +1082,26 @@ function DeliverabilityTest({ user }) {
 
           {/* Checks */}
           <div style={card}>
-            <div style={{ padding:'12px 16px', borderBottom:'1px solid var(--border)', background:'var(--card-hi)' }}>
-              <span style={{ fontSize:12, fontWeight:700, color:'var(--t1)' }}>Deliverability checks</span>
+            <div style={{ padding:'12px 16px', borderBottom:'1px solid var(--border)', background:'#f8fafc' }}>
+              <span style={{ fontSize:12, fontWeight:700, color:'#1a2332' }}>Deliverability checks</span>
             </div>
             {result.checks.map((c,i) => (
               <div key={c.id} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'12px 16px', borderBottom: i < result.checks.length-1 ? '1px solid #f3f4f6' : 'none', background: !c.pass&&!c.warn ? '#fefafa' : 'transparent' }}>
-                <div style={{ width:28, height:28, borderRadius:8, background: c.pass?'var(--or-bg)':c.warn?'var(--amber-bg)':'var(--red-bg)', border:`1px solid ${c.pass?'var(--green-bdr)':c.warn?'var(--amber-bdr)':'var(--red-bdr)'}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, flexShrink:0 }}>
+                <div style={{ width:28, height:28, borderRadius:8, background: c.pass?'#e8f3fc':c.warn?'#fffbeb':'#fff5f5', border:`1px solid ${c.pass?'#a8d0f0':c.warn?'#fcd34d':'#feb2b2'}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, flexShrink:0 }}>
                   {c.icon}
                 </div>
                 <div style={{ flex:1 }}>
                   <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:3 }}>
-                    <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)' }}>{c.label}</span>
+                    <span style={{ fontSize:13, fontWeight:600, color:'#1a2332' }}>{c.label}</span>
                     <span style={{ fontSize:10, fontWeight:600, padding:'2px 7px', borderRadius:8,
-                      background: c.pass?'var(--or-bg)':c.warn?'var(--amber-bg)':'var(--red-bg)',
-                      color: c.pass?'var(--or)':c.warn?'var(--or)':'var(--pk)',
-                      border: `1px solid ${c.pass?'var(--green-bdr)':c.warn?'var(--amber-bdr)':'var(--red-bdr)'}` }}>
+                      background: c.pass?'#e8f3fc':c.warn?'#fffbeb':'#fff5f5',
+                      color: c.pass?'#0073d1':c.warn?'#0073d1':'#e53e3e',
+                      border: `1px solid ${c.pass?'#a8d0f0':c.warn?'#fcd34d':'#feb2b2'}` }}>
                       {c.pass ? '✓ Pass' : c.warn ? '⚠ Warn' : '✗ Fail'}
                     </span>
                   </div>
-                  {c.detail && <div style={{ fontSize:12, fontFamily:'monospace', color:'var(--t2)', marginBottom: c.fix&&!c.pass ? 4 : 0, wordBreak:'break-all' }}>{c.detail}</div>}
-                  {c.fix && !c.pass && <div style={{ fontSize:11, color:'var(--t3)', lineHeight:1.5 }}>💡 {c.fix}</div>}
+                  {c.detail && <div style={{ fontSize:12, fontFamily:'monospace', color:'#4a5568', marginBottom: c.fix&&!c.pass ? 4 : 0, wordBreak:'break-all' }}>{c.detail}</div>}
+                  {c.fix && !c.pass && <div style={{ fontSize:11, color:'#8896a7', lineHeight:1.5 }}>💡 {c.fix}</div>}
                 </div>
               </div>
             ))}
@@ -1123,14 +1123,14 @@ export default function Tools({ user }) {
   const [activeTab, setActiveTab] = useState('generators')
 
   return (
-    <div style={{ background:'var(--page)', minHeight:'100%', fontFamily:"'Inter',system-ui,sans-serif" }}>
+    <div style={{ background:'#f4f6f8', minHeight:'100%', fontFamily:"'Inter',system-ui,sans-serif" }}>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-      <div style={{ padding:'14px 20px', borderBottom:'1px solid var(--border)', background:'var(--card)' }}>
-        <h2 style={{ fontSize:16, fontWeight:700, color:'var(--t1)', marginBottom:12 }}>Tools</h2>
+      <div style={{ padding:'14px 20px', borderBottom:'1px solid var(--border)', background:'#ffffff' }}>
+        <h2 style={{ fontSize:16, fontWeight:700, color:'#1a2332', marginBottom:12 }}>Tools</h2>
         <div style={{ display:'flex', gap:2, flexWrap:'wrap' }}>
           {tabs.map(t => (
             <button key={t.id} onClick={() => setActiveTab(t.id)}
-              style={{ padding:'7px 16px', background:activeTab===t.id?'var(--green-bg)':'transparent', border:`1px solid ${activeTab===t.id?'var(--green-bdr)':'transparent'}`, borderRadius:8, color:activeTab===t.id?'var(--or)':'var(--t2)', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+              style={{ padding:'7px 16px', background:activeTab===t.id?'#e8f3fc':'transparent', border:`1px solid ${activeTab===t.id?'#a8d0f0':'transparent'}`, borderRadius:8, color:activeTab===t.id?'#0073d1':'#4a5568', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
               {t.label}
             </button>
           ))}

@@ -49,17 +49,17 @@ function Alerts({ user }) {
   const unreadCount = alerts.filter(a => !a.read).length
   const criticalCount = alerts.filter(a => a.severity === 'critical').length
 
-  const sevColor = s => s === 'critical' ? 'var(--red)' : s === 'warn' ? 'var(--amber)' : 'var(--blue)'
-  const sevBg = s => s === 'critical' ? 'var(--red-bg)' : s === 'warn' ? 'var(--amber-bg)' : 'var(--blue-bg)'
-  const sevBd = s => s === 'critical' ? 'var(--red-bdr)' : s === 'warn' ? 'var(--amber-bdr)' : 'var(--blue-bdr)'
+  const sevColor = s => s === 'critical' ? '#e53e3e' : s === 'warn' ? '#d97706' : '#0073d1'
+  const sevBg = s => s === 'critical' ? '#fff5f5' : s === 'warn' ? '#fffbeb' : '#e8f3fc'
+  const sevBd = s => s === 'critical' ? '#feb2b2' : s === 'warn' ? '#fcd34d' : '#a8d0f0'
   const formatType = t => t ? t.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase()) : 'Change detected'
 
   return (
-    <div style={{ background:'var(--page)', minHeight:'100%', padding:28 }}>
+    <div style={{ background:'#f4f6f8', minHeight:'100%', padding:28 }}>
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20, flexWrap:'wrap', gap:10 }}>
         <div>
-          <h2 style={{ fontSize:18, fontWeight:700, color:'var(--t1)', margin:0, letterSpacing:'-0.02em' }}>Alerts</h2>
-          <div style={{ fontSize:12, color:'var(--t3)', marginTop:3 }}>
+          <h2 style={{ fontSize:18, fontWeight:700, color:'#1a2332', margin:0, letterSpacing:'-0.02em' }}>Alerts</h2>
+          <div style={{ fontSize:12, color:'#8896a7', marginTop:3 }}>
             {unreadCount > 0 ? `${unreadCount} unread · ` : ''}{alerts.length} total
           </div>
         </div>
@@ -71,12 +71,12 @@ function Alerts({ user }) {
       {alerts.length > 0 && (
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom:16 }}>
           {[
-            { label:'Unread', value:unreadCount, color:'var(--blue)' },
-            { label:'Critical', value:criticalCount, color:'var(--red)' },
-            { label:'Total', value:alerts.length, color:'var(--t1)' },
+            { label:'Unread', value:unreadCount, color:'#0073d1' },
+            { label:'Critical', value:criticalCount, color:'#e53e3e' },
+            { label:'Total', value:alerts.length, color:'#1a2332' },
           ].map(s => (
             <div key={s.label} className="stat-card">
-              <div style={{ fontSize:11, color:'var(--t3)', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:4 }}>{s.label}</div>
+              <div style={{ fontSize:11, color:'#8896a7', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:4 }}>{s.label}</div>
               <div style={{ fontSize:24, fontWeight:800, color:s.color, letterSpacing:'-0.03em' }}>{s.value}</div>
             </div>
           ))}
@@ -92,7 +92,7 @@ function Alerts({ user }) {
             { id:'warn', label:'Warnings' },
           ].map(f => (
             <button key={f.id} onClick={() => setFilter(f.id)}
-              style={{ padding:'5px 12px', background:filter===f.id?'var(--or)':'var(--card)', color:filter===f.id?'#021812':'var(--t2)', border:`1px solid ${filter===f.id?'var(--green-bdr)':'var(--border-md)'}`, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer' }}>
+              style={{ padding:'5px 12px', background:filter===f.id?'#0073d1':'#ffffff', color:filter===f.id?'#021812':'#4a5568', border:`1px solid ${filter===f.id?'#a8d0f0':'#c8d6e5'}`, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer' }}>
               {f.label}
             </button>
           ))}
@@ -100,14 +100,14 @@ function Alerts({ user }) {
       )}
 
       {loading ? (
-        <div style={{ textAlign:'center', padding:48, color:'var(--t3)', fontSize:13 }}>Loading…</div>
+        <div style={{ textAlign:'center', padding:48, color:'#8896a7', fontSize:13 }}>Loading…</div>
       ) : filtered.length === 0 ? (
         <div className="card" style={{ padding:'48px', textAlign:'center' }}>
           <div style={{ fontSize:32, marginBottom:12 }}>🔔</div>
-          <div style={{ fontSize:14, fontWeight:600, color:'var(--t1)', marginBottom:6 }}>
+          <div style={{ fontSize:14, fontWeight:600, color:'#1a2332', marginBottom:6 }}>
             {filter === 'all' ? 'No alerts yet' : `No ${filter} alerts`}
           </div>
-          <div style={{ fontSize:13, color:'var(--t3)' }}>
+          <div style={{ fontSize:13, color:'#8896a7' }}>
             {filter === 'all' ? "We'll notify you when DNS, SSL or security changes are detected." : 'Try switching to "All" to see other alerts.'}
           </div>
         </div>
@@ -115,28 +115,28 @@ function Alerts({ user }) {
         <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
           {filtered.map(a => (
             <div key={a.id} onClick={() => !a.read && markRead(a.id)}
-              style={{ background:'var(--card)', border:`1px solid ${!a.read ? sevBd(a.severity) : 'var(--border)'}`, borderRadius:10, padding:'12px 16px', display:'flex', alignItems:'flex-start', gap:12, cursor:!a.read?'pointer':'default', opacity: a.read ? 0.65 : 1, transition:'all 0.15s' }}>
+              style={{ background:'#ffffff', border:`1px solid ${!a.read ? sevBd(a.severity) : '#e2e8f0'}`, borderRadius:10, padding:'12px 16px', display:'flex', alignItems:'flex-start', gap:12, cursor:!a.read?'pointer':'default', opacity: a.read ? 0.65 : 1, transition:'all 0.15s' }}>
               <div style={{ width:8, height:8, borderRadius:'50%', background:sevColor(a.severity), flexShrink:0, marginTop:5 }}/>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:3, flexWrap:'wrap' }}>
                   {a.domains?.domain_name && (
-                    <span style={{ fontSize:12, fontWeight:700, color:'var(--t1)', fontFamily:'monospace' }}>{a.domains.domain_name}</span>
+                    <span style={{ fontSize:12, fontWeight:700, color:'#1a2332', fontFamily:'monospace' }}>{a.domains.domain_name}</span>
                   )}
                   <span style={{ fontSize:11, padding:'1px 7px', borderRadius:8, background:sevBg(a.severity), color:sevColor(a.severity), border:`1px solid ${sevBd(a.severity)}`, fontWeight:600 }}>
                     {a.severity}
                   </span>
-                  <span style={{ fontSize:11, color:'var(--t3)' }}>{formatType(a.alert_type)}</span>
-                  {!a.read && <span style={{ fontSize:10, padding:'1px 6px', borderRadius:6, background:'var(--blue-bg)', color:'var(--blue)', fontWeight:600 }}>NEW</span>}
+                  <span style={{ fontSize:11, color:'#8896a7' }}>{formatType(a.alert_type)}</span>
+                  {!a.read && <span style={{ fontSize:10, padding:'1px 6px', borderRadius:6, background:'#e8f3fc', color:'#0073d1', fontWeight:600 }}>NEW</span>}
                 </div>
-                <div style={{ fontSize:12, color:'var(--t2)', lineHeight:1.6, marginBottom:(a.before_val||a.after_val)?6:0 }}>{a.message}</div>
+                <div style={{ fontSize:12, color:'#4a5568', lineHeight:1.6, marginBottom:(a.before_val||a.after_val)?6:0 }}>{a.message}</div>
                 {(a.before_val || a.after_val) && (
                   <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-                    {a.before_val && <span style={{ fontSize:11, fontFamily:'monospace', color:'var(--red)', background:'var(--red-bg)', padding:'2px 7px', borderRadius:5 }}>Before: {a.before_val}</span>}
-                    {a.after_val  && <span style={{ fontSize:11, fontFamily:'monospace', color:'var(--or)', background:'var(--green-bg)', padding:'2px 7px', borderRadius:5 }}>After: {a.after_val}</span>}
+                    {a.before_val && <span style={{ fontSize:11, fontFamily:'monospace', color:'#e53e3e', background:'#fff5f5', padding:'2px 7px', borderRadius:5 }}>Before: {a.before_val}</span>}
+                    {a.after_val  && <span style={{ fontSize:11, fontFamily:'monospace', color:'#0073d1', background:'#e8f3fc', padding:'2px 7px', borderRadius:5 }}>After: {a.after_val}</span>}
                   </div>
                 )}
               </div>
-              <div style={{ fontSize:11, color:'var(--t3)', flexShrink:0, textAlign:'right' }}>
+              <div style={{ fontSize:11, color:'#8896a7', flexShrink:0, textAlign:'right' }}>
                 <div>{new Date(a.created_at).toLocaleDateString('en-GB', { day:'numeric', month:'short' })}</div>
                 <div>{new Date(a.created_at).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' })}</div>
               </div>
@@ -162,79 +162,79 @@ function Reports({ user }) {
   }, [user])
 
   return (
-    <div style={{ background:'var(--page)', minHeight:'100%', padding:28 }}>
+    <div style={{ background:'#f4f6f8', minHeight:'100%', padding:28 }}>
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
         <div>
-          <h2 style={{ fontSize:18, fontWeight:700, color:'var(--t1)', margin:0, letterSpacing:'-0.02em' }}>Daily Reports</h2>
-          <div style={{ fontSize:12, color:'var(--t3)', marginTop:3 }}>Automated daily summaries of your domain health</div>
+          <h2 style={{ fontSize:18, fontWeight:700, color:'#1a2332', margin:0, letterSpacing:'-0.02em' }}>Daily Reports</h2>
+          <div style={{ fontSize:12, color:'#8896a7', marginTop:3 }}>Automated daily summaries of your domain health</div>
         </div>
       </div>
 
-      <div style={{ background:'var(--blue-bg)', border:'1px solid var(--blue-bdr)', borderRadius:10, padding:'12px 16px', marginBottom:20, display:'flex', gap:10, alignItems:'flex-start' }}>
+      <div style={{ background:'#e8f3fc', border:'1px solid var(--blue-bdr)', borderRadius:10, padding:'12px 16px', marginBottom:20, display:'flex', gap:10, alignItems:'flex-start' }}>
         <span style={{ fontSize:16 }}>📧</span>
         <div>
-          <div style={{ fontSize:13, fontWeight:600, color:'var(--blue)', marginBottom:2 }}>Daily email digest</div>
-          <div style={{ fontSize:12, color:'var(--t2)', lineHeight:1.6 }}>
+          <div style={{ fontSize:13, fontWeight:600, color:'#0073d1', marginBottom:2 }}>Daily email digest</div>
+          <div style={{ fontSize:12, color:'#4a5568', lineHeight:1.6 }}>
             A daily health summary is emailed every morning. Enable email alerts in <strong>Settings → Notifications</strong>.
           </div>
         </div>
       </div>
 
       {loading ? (
-        <div style={{ textAlign:'center', padding:48, color:'var(--t3)', fontSize:13 }}>Loading…</div>
+        <div style={{ textAlign:'center', padding:48, color:'#8896a7', fontSize:13 }}>Loading…</div>
       ) : snapshots.length === 0 ? (
         <div className="card" style={{ padding:'48px', textAlign:'center' }}>
           <div style={{ fontSize:32, marginBottom:12 }}>📊</div>
-          <div style={{ fontSize:14, fontWeight:600, color:'var(--t1)', marginBottom:6 }}>No reports yet</div>
-          <div style={{ fontSize:13, color:'var(--t3)', maxWidth:360, margin:'0 auto', lineHeight:1.6 }}>
+          <div style={{ fontSize:14, fontWeight:600, color:'#1a2332', marginBottom:6 }}>No reports yet</div>
+          <div style={{ fontSize:13, color:'#8896a7', maxWidth:360, margin:'0 auto', lineHeight:1.6 }}>
             Reports are generated daily once you have monitored domains. Come back tomorrow.
           </div>
         </div>
       ) : snapshots.map(s => {
         const domains = s.domains_json || []
-        const scoreColor = s.avg_score >= 70 ? 'var(--or)' : s.avg_score >= 50 ? 'var(--amber)' : 'var(--red)'
+        const scoreColor = s.avg_score >= 70 ? '#0073d1' : s.avg_score >= 50 ? '#d97706' : '#e53e3e'
         return (
           <div key={s.id} className="card" style={{ marginBottom:10 }}>
             <div className="card-header" style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                <span style={{ fontSize:12, fontWeight:700, color:'var(--t1)' }}>
+                <span style={{ fontSize:12, fontWeight:700, color:'#1a2332' }}>
                   {new Date(s.report_date).toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' })}
                 </span>
                 {s.critical_count > 0 && (
-                  <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:'var(--red-bg)', color:'var(--red)', border:'1px solid var(--red-bdr)', fontWeight:600 }}>{s.critical_count} critical</span>
+                  <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:'#fff5f5', color:'#e53e3e', border:'1px solid var(--red-bdr)', fontWeight:600 }}>{s.critical_count} critical</span>
                 )}
               </div>
               <div style={{ display:'flex', alignItems:'center', gap:6 }}>
                 <span style={{ fontSize:20, fontWeight:800, color:scoreColor }}>{s.avg_score}</span>
                 {s.avg_score_delta !== null && s.avg_score_delta !== undefined && s.avg_score_delta !== 0 && (
-                  <span style={{ fontSize:11, color: s.avg_score_delta > 0 ? 'var(--or)' : 'var(--red)', fontWeight:600 }}>
+                  <span style={{ fontSize:11, color: s.avg_score_delta > 0 ? '#0073d1' : '#e53e3e', fontWeight:600 }}>
                     {s.avg_score_delta > 0 ? '↑' : '↓'}{Math.abs(s.avg_score_delta)}
                   </span>
                 )}
-                <span style={{ fontSize:11, color:'var(--t3)' }}>avg score</span>
+                <span style={{ fontSize:11, color:'#8896a7' }}>avg score</span>
               </div>
             </div>
             <div style={{ padding:'10px 16px' }}>
               <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom: domains.length > 0 ? 12 : 0 }}>
                 {[
                   { label:'Domains', value: s.domain_count || 0 },
-                  { label:'Issues', value: s.total_issues || 0, color: (s.total_issues||0) > 0 ? 'var(--amber)' : 'var(--or)' },
-                  { label:'Critical', value: s.critical_count || 0, color: (s.critical_count||0) > 0 ? 'var(--red)' : 'var(--or)' },
+                  { label:'Issues', value: s.total_issues || 0, color: (s.total_issues||0) > 0 ? '#d97706' : '#0073d1' },
+                  { label:'Critical', value: s.critical_count || 0, color: (s.critical_count||0) > 0 ? '#e53e3e' : '#0073d1' },
                 ].map(m => (
-                  <div key={m.label} style={{ textAlign:'center', padding:'8px', background:'var(--card-hi)', borderRadius:8 }}>
-                    <div style={{ fontSize:18, fontWeight:700, color: m.color || 'var(--t1)' }}>{m.value}</div>
-                    <div style={{ fontSize:11, color:'var(--t3)' }}>{m.label}</div>
+                  <div key={m.label} style={{ textAlign:'center', padding:'8px', background:'#f8fafc', borderRadius:8 }}>
+                    <div style={{ fontSize:18, fontWeight:700, color: m.color || '#1a2332' }}>{m.value}</div>
+                    <div style={{ fontSize:11, color:'#8896a7' }}>{m.label}</div>
                   </div>
                 ))}
               </div>
               {domains.length > 0 && (
                 <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
                   {domains.slice(0,5).map((d, i) => (
-                    <span key={i} style={{ fontSize:11, padding:'2px 8px', borderRadius:6, background:'var(--card-hi)', color:'var(--t1)', fontFamily:'var(--mono)', border:'1px solid var(--border)' }}>
+                    <span key={i} style={{ fontSize:11, padding:'2px 8px', borderRadius:6, background:'#f8fafc', color:'#1a2332', fontFamily:'var(--mono)', border:'1px solid var(--border)' }}>
                       {d.domain_name || d} {d.health_score ? `· ${d.health_score}` : ''}
                     </span>
                   ))}
-                  {domains.length > 5 && <span style={{ fontSize:11, color:'var(--t3)' }}>+{domains.length-5} more</span>}
+                  {domains.length > 5 && <span style={{ fontSize:11, color:'#8896a7' }}>+{domains.length-5} more</span>}
                 </div>
               )}
             </div>
@@ -308,8 +308,8 @@ export default function App() {
   useEffect(() => { if (needsAuth && !user && !loading) setPage('auth') }, [needsAuth, user, loading])
 
   if (loading) return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'var(--page)' }}>
-      <div style={{ width:28, height:28, border:'3px solid #e5e7eb', borderTopColor:'var(--or)', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'#f4f6f8' }}>
+      <div style={{ width:28, height:28, border:'3px solid #e5e7eb', borderTopColor:'#0073d1', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
@@ -330,7 +330,7 @@ export default function App() {
   const sharedDomainProps = { user, domains, selectedDomain, setSelectedDomain }
 
   return (
-    <div style={{ display:'flex', minHeight:'100vh', background:'var(--page)' }}>
+    <div style={{ display:'flex', minHeight:'100vh', background:'#f4f6f8' }}>
       <Sidebar page={page} setPage={setPage} alertCount={alertCount} user={user}/>
       <main style={{ flex:1, minWidth:0, overflowY:'auto', minHeight:'100vh' }} key={page}>
         <div className="page-enter" style={{minHeight:'100%'}}>

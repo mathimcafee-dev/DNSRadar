@@ -5,7 +5,7 @@ import { useAuth } from '../hooks/useAuth'
 export default function Nav({ page, setPage, alertCount = 0 }) {
   const { user, signOut } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
-  const ac = 'var(--or)'
+  const ac = '#0073d1'
   const NavBtn = ({ id, icon: Icon, label, badge }) => (
     <button onClick={() => setPage(id)}
       style={{ display:'flex',alignItems:'center',gap:5,padding:'5px 11px',background:page===id?'rgba(255,107,43,0.12)':'transparent',border:`1px solid ${page===id?'rgba(255,107,43,0.25)':'transparent'}`,borderRadius:7,color:page===id?ac:'rgba(255,255,255,0.5)',fontSize:12,fontWeight:500,cursor:'pointer',transition:'all 0.15s',whiteSpace:'nowrap' }}>
@@ -17,7 +17,7 @@ export default function Nav({ page, setPage, alertCount = 0 }) {
     <nav style={{ background:'#0d1117',borderBottom:'1px solid rgba(255,255,255,0.08)',padding:'0 18px',height:'56px',display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:100,fontFamily:"'Inter',system-ui,sans-serif" }}>
       <div style={{ display:'flex',alignItems:'center',gap:8,cursor:'pointer' }} onClick={() => setPage('landing')}>
         <div style={{ width:30,height:30,background:ac,borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center' }}><Radar size={16} color="#fff"/></div>
-        <span style={{ fontSize:15,fontWeight:700,color:'var(--t1)' }}>DomainRadar</span>
+        <span style={{ fontSize:15,fontWeight:700,color:'#1a2332' }}>DomainRadar</span>
         <span style={{ fontSize:9,background:'rgba(255,107,43,0.15)',color:ac,padding:'1px 7px',borderRadius:10,fontWeight:600,border:'1px solid rgba(255,107,43,0.25)' }}>beta</span>
       </div>
       {user ? (
@@ -36,7 +36,7 @@ export default function Nav({ page, setPage, alertCount = 0 }) {
             </button>
             {menuOpen && (
               <div style={{ position:'absolute',right:0,top:'110%',width:200,background:'#1a2035',border:'1px solid rgba(255,255,255,0.1)',borderRadius:10,boxShadow:'0 12px 32px rgba(0,0,0,0.4)',padding:'4px 0',zIndex:200 }}>
-                <div style={{ padding:'8px 14px 6px',fontSize:11,color:'var(--t2)' }}>{user.email}</div>
+                <div style={{ padding:'8px 14px 6px',fontSize:11,color:'#4a5568' }}>{user.email}</div>
                 <hr style={{ border:'none',borderTop:'1px solid rgba(255,255,255,0.08)',margin:'4px 0' }}/>
                 <button onClick={() => { setPage('settings');setMenuOpen(false) }} style={{ width:'100%',display:'flex',alignItems:'center',gap:8,padding:'8px 14px',background:'none',border:'none',cursor:'pointer',fontSize:13,color:'rgba(255,255,255,0.7)' }}><Settings size={13}/> Settings</button>
                 <button onClick={() => { signOut();setMenuOpen(false) }} style={{ width:'100%',display:'flex',alignItems:'center',gap:8,padding:'8px 14px',background:'none',border:'none',cursor:'pointer',fontSize:13,color:'#ef4444' }}><LogOut size={13}/> Sign out</button>
@@ -47,7 +47,7 @@ export default function Nav({ page, setPage, alertCount = 0 }) {
       ) : (
         <div style={{ display:'flex',gap:8 }}>
           <button onClick={() => setPage('auth')} style={{ padding:'6px 16px',background:'rgba(255,107,43,0.07)',color:'rgba(255,255,255,0.7)',border:'1px solid rgba(255,107,43,0.18)',borderRadius:7,fontSize:12,fontWeight:500,cursor:'pointer' }}>Sign in</button>
-          <button onClick={() => setPage('auth')} style={{ padding:'6px 16px',background:ac,color:'var(--t1)',border:'none',borderRadius:7,fontSize:12,fontWeight:600,cursor:'pointer' }}>Start free</button>
+          <button onClick={() => setPage('auth')} style={{ padding:'6px 16px',background:ac,color:'#1a2332',border:'none',borderRadius:7,fontSize:12,fontWeight:600,cursor:'pointer' }}>Start free</button>
         </div>
       )}
     </nav>

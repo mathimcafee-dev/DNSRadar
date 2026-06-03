@@ -76,7 +76,7 @@ export function Alerts({ user }) {
             <div key={a.id} className="card"
               style={{ padding: '12px 16px', display: 'flex', alignItems: 'flex-start', gap: 12, opacity: a.read ? 0.65 : 1, cursor: a.read ? 'default' : 'pointer' }}
               onClick={() => !a.read && markRead(a.id)}>
-              {!a.read && <div style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--red)', flexShrink: 0, marginTop: 6 }} />}
+              {!a.read && <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#e53e3e', flexShrink: 0, marginTop: 6 }} />}
               {a.read && <div style={{ width: 7, flexShrink: 0 }} />}
               <SevIcon sev={a.severity} />
               <div style={{ flex: 1 }}>
@@ -152,7 +152,7 @@ export function Reports({ user }) {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 22, fontWeight: 700, color: r.avg_score >= 70 ? 'var(--or)' : r.avg_score >= 50 ? 'var(--amber)' : 'var(--red)' }}>{r.avg_score}</div>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: r.avg_score >= 70 ? '#0073d1' : r.avg_score >= 50 ? '#d97706' : '#e53e3e' }}>{r.avg_score}</div>
                     <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>avg score</div>
                   </div>
                   <div>
@@ -162,7 +162,7 @@ export function Reports({ user }) {
                       {r.critical_count > 0 && <span style={{ color: 'var(--red-text)', fontWeight: 500 }}>· {r.critical_count} critical</span>}
                       <span>· {r.total_issues} issues</span>
                       {r.avg_score_delta !== 0 && r.avg_score_delta !== null && (
-                        <span style={{ color: r.avg_score_delta > 0 ? 'var(--or)' : 'var(--red-text)' }}>
+                        <span style={{ color: r.avg_score_delta > 0 ? '#0073d1' : 'var(--red-text)' }}>
                           · {r.avg_score_delta > 0 ? '+' : ''}{r.avg_score_delta} vs prev
                         </span>
                       )}
@@ -247,11 +247,11 @@ export function Settings({ user }) {
             </div>
             <div style={{
               width: 40, height: 22, borderRadius: 11, cursor: 'pointer', position: 'relative',
-              background: alertEmail ? 'var(--or)' : 'var(--gray-300)', transition: 'background 0.2s',
+              background: alertEmail ? '#0073d1' : 'var(--gray-300)', transition: 'background 0.2s',
             }} onClick={() => setAlertEmail(!alertEmail)}>
               <div style={{
                 position: 'absolute', top: 3, left: alertEmail ? 21 : 3,
-                width: 16, height: 16, borderRadius: '50%', background: 'var(--card)', transition: 'left 0.2s',
+                width: 16, height: 16, borderRadius: '50%', background: '#ffffff', transition: 'left 0.2s',
                 boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
               }} />
             </div>

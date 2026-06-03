@@ -3,15 +3,15 @@ import { supabase } from '../lib/supabase'
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import { Upload, AlertTriangle, CheckCircle, ShieldOff, Globe, Mail } from 'lucide-react'
 
-const D = { bg:'#f7f8fa', s:'#ffffff', s2:'var(--card-hi)', b:'var(--border)', t:'#111827', m:'#6b7280', d:'#9ca3af' }
+const D = { bg:'#f7f8fa', s:'#ffffff', s2:'#f8fafc', b:'#e2e8f0', t:'#111827', m:'#6b7280', d:'#9ca3af' }
 const card = { background:D.s, border:'1px solid var(--border)', borderRadius:12, overflow:'hidden' }
 const cardHd = { padding:'11px 16px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between', background:D.s2 }
 
 const TTip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
   return (
-    <div style={{ background:'var(--card-hi)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'10px 14px', fontSize:11 }}>
-      <div style={{ color:'var(--t2)', marginBottom:5 }}>{label}</div>
+    <div style={{ background:'#f8fafc', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'10px 14px', fontSize:11 }}>
+      <div style={{ color:'#4a5568', marginBottom:5 }}>{label}</div>
       {payload.map((p,i) => <div key={i} style={{ color:p.color, marginBottom:2 }}>{p.name}: {p.value?.toLocaleString()}</div>)}
     </div>
   )
@@ -88,7 +88,7 @@ export default function Reports({ user }) {
   const serviceList = Object.values(byService).sort((a,b)=>b.count-a.count).slice(0,8)
 
   const pieData = [
-    { name:'Compliant', value:totalPass, color:'var(--t1)' },
+    { name:'Compliant', value:totalPass, color:'#1a2332' },
     { name:'Failing', value:totalFail, color:'#ff4d6a' },
   ].filter(d=>d.value>0)
 
@@ -100,7 +100,7 @@ export default function Reports({ user }) {
   }))
 
   return (
-    <div style={{ background:'var(--page)', minHeight:'100%', padding:20, fontFamily:"'Inter',system-ui,sans-serif" }}>
+    <div style={{ background:'#f4f6f8', minHeight:'100%', padding:20, fontFamily:"'Inter',system-ui,sans-serif" }}>
       {/* Header */}
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
         <div>
@@ -115,7 +115,7 @@ export default function Reports({ user }) {
             </select>
           )}
           <button onClick={()=>setUploadXML(u=>!u)}
-            style={{ padding:'7px 14px', background:'var(--green-bg)', border:'1px solid rgba(255,107,43,0.3)', borderRadius:8, color:'var(--t1)', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+            style={{ padding:'7px 14px', background:'#e8f3fc', border:'1px solid rgba(255,107,43,0.3)', borderRadius:8, color:'#1a2332', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
             <Upload size={13}/> Upload XML report
           </button>
         </div>
@@ -127,17 +127,17 @@ export default function Reports({ user }) {
           <div style={{ ...cardHd }}><span style={{ fontSize:12, fontWeight:600, color:D.t }}>Upload DMARC aggregate report (XML)</span></div>
           <div style={{ padding:14 }}>
             <div style={{ fontSize:12, color:D.m, marginBottom:10, lineHeight:1.6 }}>
-              Paste the raw XML content from a DMARC aggregate report. Mail servers (Google, Microsoft, Yahoo) send these to the <code style={{ fontFamily:'monospace', color:'var(--t1)' }}>rua=</code> address in your DMARC record. Add <code style={{ fontFamily:'monospace', color:'var(--t1)' }}>rua=mailto:reports@dnsradar.easysecurity.in</code> to your DMARC record to receive them automatically.
+              Paste the raw XML content from a DMARC aggregate report. Mail servers (Google, Microsoft, Yahoo) send these to the <code style={{ fontFamily:'monospace', color:'#1a2332' }}>rua=</code> address in your DMARC record. Add <code style={{ fontFamily:'monospace', color:'#1a2332' }}>rua=mailto:reports@dnsradar.easysecurity.in</code> to your DMARC record to receive them automatically.
             </div>
             <textarea value={xmlInput} onChange={e=>setXmlInput(e.target.value)} rows={8} placeholder="<?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?><feedback>..."
-              style={{ width:'100%', padding:'10px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:12, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
-            {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(255,107,43,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'var(--or)':'#ff4d6a', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
+              style={{ width:'100%', padding:'10px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:12, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
+            {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(255,107,43,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'#0073d1':'#ff4d6a', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
             <div style={{ display:'flex', gap:8, marginTop:8 }}>
               <button onClick={uploadReport} disabled={uploading||!xmlInput}
-                style={{ padding:'7px 16px', background:'var(--or)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', opacity:!xmlInput?0.5:1 }}>
+                style={{ padding:'7px 16px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', opacity:!xmlInput?0.5:1 }}>
                 {uploading?'Parsing…':'Parse & import'}
               </button>
-              <button onClick={()=>{setUploadXML(false);setXmlInput('')}} style={{ padding:'7px 14px', background:'var(--border)', color:D.m, border:'1px solid var(--border)', borderRadius:7, fontSize:12, cursor:'pointer' }}>Cancel</button>
+              <button onClick={()=>{setUploadXML(false);setXmlInput('')}} style={{ padding:'7px 14px', background:'#e2e8f0', color:D.m, border:'1px solid var(--border)', borderRadius:7, fontSize:12, cursor:'pointer' }}>Cancel</button>
             </div>
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function Reports({ user }) {
           <div style={{ fontSize:13, color:D.m, maxWidth:420, margin:'0 auto', lineHeight:1.7 }}>
             To receive aggregate reports automatically, add this to your DMARC record:
           </div>
-          <div style={{ fontFamily:'monospace', fontSize:12, color:'var(--t1)', background:'var(--green-bg)', border:'1px solid var(--border-md)', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
+          <div style={{ fontFamily:'monospace', fontSize:12, color:'#1a2332', background:'#e8f3fc', border:'1px solid var(--border-md)', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
             rua=mailto:reports@dnsradar.easysecurity.in
           </div>
           <div style={{ fontSize:12, color:D.d }}>Or upload an existing XML report above to get started immediately.</div>
@@ -163,9 +163,9 @@ export default function Reports({ user }) {
           <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12, marginBottom:14 }}>
             {[
               { l:'Total emails', v:totalVolume.toLocaleString(), c:D.t, sub:'across all reports' },
-              { l:'Compliance rate', v:`${complianceRate}%`, c:complianceRate>=90?'var(--or)':complianceRate>=70?'#ffb224':'#ff4d6a', sub:`${totalPass.toLocaleString()} passing` },
-              { l:'Failing', v:totalFail.toLocaleString(), c:totalFail>0?'#ff4d6a':'var(--or)', sub:'emails failing DMARC' },
-              { l:'Threats detected', v:threats.length, c:threats.length>0?'#ff4d6a':'var(--or)', sub:'unauthorised sources' },
+              { l:'Compliance rate', v:`${complianceRate}%`, c:complianceRate>=90?'#0073d1':complianceRate>=70?'#ffb224':'#ff4d6a', sub:`${totalPass.toLocaleString()} passing` },
+              { l:'Failing', v:totalFail.toLocaleString(), c:totalFail>0?'#ff4d6a':'#0073d1', sub:'emails failing DMARC' },
+              { l:'Threats detected', v:threats.length, c:threats.length>0?'#ff4d6a':'#0073d1', sub:'unauthorised sources' },
             ].map(k=>(
               <div key={k.l} style={{ ...card, padding:'13px 16px' }}>
                 <div style={{ fontSize:12, color:D.m, marginBottom:4 }}>{k.l}</div>
@@ -233,18 +233,18 @@ export default function Reports({ user }) {
                           <div style={{ fontSize:12, fontWeight:500, color:D.t }}>{s.name}</div>
                         </td>
                         <td style={{ padding:'9px 14px', fontFamily:'monospace', color:D.t, fontWeight:600 }}>{s.count.toLocaleString()}</td>
-                        <td style={{ padding:'9px 14px', color:'var(--t1)', fontFamily:'monospace' }}>{s.pass.toLocaleString()}</td>
+                        <td style={{ padding:'9px 14px', color:'#1a2332', fontFamily:'monospace' }}>{s.pass.toLocaleString()}</td>
                         <td style={{ padding:'9px 14px', color:s.fail>0?'#ff4d6a':D.d, fontFamily:'monospace' }}>{s.fail.toLocaleString()}</td>
                         <td style={{ padding:'9px 14px' }}>
                           <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                            <div style={{ height:5, width:60, background:'var(--border)', borderRadius:3, overflow:'hidden' }}>
-                              <div style={{ height:'100%', width:`${rate}%`, background:rate>=90?'var(--or)':rate>=70?'#ffb224':'#ff4d6a', borderRadius:3 }}/>
+                            <div style={{ height:5, width:60, background:'#e2e8f0', borderRadius:3, overflow:'hidden' }}>
+                              <div style={{ height:'100%', width:`${rate}%`, background:rate>=90?'#0073d1':rate>=70?'#ffb224':'#ff4d6a', borderRadius:3 }}/>
                             </div>
-                            <span style={{ fontSize:12, color:rate>=90?'var(--or)':rate>=70?'#ffb224':'#ff4d6a', fontWeight:600 }}>{rate}%</span>
+                            <span style={{ fontSize:12, color:rate>=90?'#0073d1':rate>=70?'#ffb224':'#ff4d6a', fontWeight:600 }}>{rate}%</span>
                           </div>
                         </td>
                         <td style={{ padding:'9px 14px' }}>
-                          <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${s.fail>0&&rate<50?'239,68,68':'16,185,129'},0.15)`, color:s.fail>0&&rate<50?'#ff4d6a':'var(--or)' }}>
+                          <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${s.fail>0&&rate<50?'239,68,68':'16,185,129'},0.15)`, color:s.fail>0&&rate<50?'#ff4d6a':'#0073d1' }}>
                             {s.fail>0&&rate<50?'Threat':'Legitimate'}
                           </span>
                         </td>
@@ -267,11 +267,11 @@ export default function Reports({ user }) {
                 </div>
                 <div style={{ textAlign:'right' }}>
                   <div style={{ fontSize:13, fontWeight:700, color:D.t }}>{(r.total_volume||0).toLocaleString()} emails</div>
-                  <div style={{ fontSize:10, color:r.fail_count>0?'#ff4d6a':'var(--or)' }}>
+                  <div style={{ fontSize:10, color:r.fail_count>0?'#ff4d6a':'#0073d1' }}>
                     {r.pass_count||0} pass · {r.fail_count||0} fail
                   </div>
                 </div>
-                <div style={{ width:48, textAlign:'right', fontSize:12, fontWeight:700, color:r.total_volume>0?Math.round((r.pass_count/r.total_volume)*100)>=90?'var(--or)':'#ffb224':D.d }}>
+                <div style={{ width:48, textAlign:'right', fontSize:12, fontWeight:700, color:r.total_volume>0?Math.round((r.pass_count/r.total_volume)*100)>=90?'#0073d1':'#ffb224':D.d }}>
                   {r.total_volume > 0 ? Math.round((r.pass_count/r.total_volume)*100)+'%' : '–'}
                 </div>
               </div>

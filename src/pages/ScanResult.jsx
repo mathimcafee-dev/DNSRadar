@@ -8,36 +8,36 @@ const MONO = "'JetBrains Mono','Fira Code',monospace"
 
 // ── Helpers ───────────────────────────────────────────────────────────
 function scoreGrade(s) {
-  if (s >= 90) return { grade:'A+', color:'var(--or)', bg:'var(--green-bg)', ring:'var(--or)' }
-  if (s >= 80) return { grade:'A',  color:'var(--or)', bg:'var(--green-bg)', ring:'var(--or)' }
+  if (s >= 90) return { grade:'A+', color:'#0073d1', bg:'#e8f3fc', ring:'#0073d1' }
+  if (s >= 80) return { grade:'A',  color:'#0073d1', bg:'#e8f3fc', ring:'#0073d1' }
   if (s >= 70) return { grade:'B',  color:'#65a30d', bg:'#f7fee7', ring:'#84cc16' }
-  if (s >= 60) return { grade:'C',  color:'var(--amber)', bg:'var(--or-bg)', ring:'#f59e0b' }
-  if (s >= 50) return { grade:'D',  color:'#ea580c', bg:'var(--or-bg)', ring:'#f97316' }
-  return              { grade:'F',  color:'var(--red)', bg:'var(--pk-bg)', ring:'#ef4444' }
+  if (s >= 60) return { grade:'C',  color:'#d97706', bg:'#e8f3fc', ring:'#f59e0b' }
+  if (s >= 50) return { grade:'D',  color:'#ea580c', bg:'#e8f3fc', ring:'#f97316' }
+  return              { grade:'F',  color:'#e53e3e', bg:'#fff5f5', ring:'#ef4444' }
 }
 
 function StatusChip({ status }) {
   const ok  = ['Pass','Valid','Consistent','Clean','Enforced','Signed','Present','Configured','Blocked','Active','Detected'].includes(status)
   const wn  = ['Warn','Warning','Partial','Quarantine','Testing','Not configured','Missing'].includes(status)
   const info = ['Info','Not found'].includes(status)
-  const color = ok ? 'var(--or)' : wn ? 'var(--or)' : info ? 'var(--cy)' : 'var(--pk)'
-  const bg    = ok ? 'var(--green-bg)'  : wn ? 'var(--or-bg)'  : info ? 'var(--cy-bg)'  : 'var(--pk-bg)'
-  const bd    = ok ? 'var(--green-bdr)'  : wn ? 'var(--amber-bdr)'  : info ? '#bfdbfe'  : 'var(--red-bdr)'
+  const color = ok ? '#0073d1' : wn ? '#0073d1' : info ? '#0284c7' : '#e53e3e'
+  const bg    = ok ? '#e8f3fc'  : wn ? '#e8f3fc'  : info ? '#e0f2fe'  : '#fff5f5'
+  const bd    = ok ? '#a8d0f0'  : wn ? '#fcd34d'  : info ? '#bfdbfe'  : '#feb2b2'
   return <span style={{ fontSize:11, fontWeight:700, padding:'3px 9px', borderRadius:20, background:bg, color, border:`1px solid ${bd}`, whiteSpace:'nowrap' }}>{status || 'Unknown'}</span>
 }
 
 function SevIcon({ sev }) {
-  if (sev === 'critical') return <div style={{ width:28, height:28, borderRadius:7, background:'var(--red-bg)', border:'1px solid var(--pk-bdr)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><XCircle size={14} color="#dc2626"/></div>
-  if (sev === 'warn')     return <div style={{ width:28, height:28, borderRadius:7, background:'var(--amber-bg)', border:'1px solid var(--or-bdr)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><AlertTriangle size={14} color="#d97706"/></div>
-  return                         <div style={{ width:28, height:28, borderRadius:7, background:'var(--cy-bg)', border:'1px solid #bfdbfe', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Info size={14} color="#2563eb"/></div>
+  if (sev === 'critical') return <div style={{ width:28, height:28, borderRadius:7, background:'#fff5f5', border:'1px solid var(--pk-bdr)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><XCircle size={14} color="#dc2626"/></div>
+  if (sev === 'warn')     return <div style={{ width:28, height:28, borderRadius:7, background:'#fffbeb', border:'1px solid var(--or-bdr)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><AlertTriangle size={14} color="#d97706"/></div>
+  return                         <div style={{ width:28, height:28, borderRadius:7, background:'#e0f2fe', border:'1px solid #bfdbfe', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Info size={14} color="#2563eb"/></div>
 }
 
 function Section({ icon: Icon, iconColor, title, badge, badgeOk, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div style={{ background:'var(--card)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', marginBottom:14, boxShadow:'0 1px 4px rgba(0,0,0,0.05)' }}>
+    <div style={{ background:'#ffffff', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', marginBottom:14, boxShadow:'0 1px 4px rgba(0,0,0,0.05)' }}>
       <button onClick={() => setOpen(o=>!o)}
-        style={{ width:'100%', display:'flex', alignItems:'center', gap:10, padding:'14px 18px', background:'var(--card)', border:'none', borderBottom: open ? '1px solid #e5e7eb' : 'none', cursor:'pointer', fontFamily:F, textAlign:'left' }}>
+        style={{ width:'100%', display:'flex', alignItems:'center', gap:10, padding:'14px 18px', background:'#ffffff', border:'none', borderBottom: open ? '1px solid #e5e7eb' : 'none', cursor:'pointer', fontFamily:F, textAlign:'left' }}>
         <div style={{ width:30, height:30, borderRadius:8, background: iconColor+'18', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
           <Icon size={15} color={iconColor}/>
         </div>
@@ -54,12 +54,12 @@ function Row({ label, status, value, note, fix }) {
   return (
     <div style={{ padding:'12px 18px', borderBottom:'1px solid #f3f4f6', display:'flex', alignItems:'flex-start', gap:12, flexWrap:'wrap' }}>
       <div style={{ width:100, flexShrink:0 }}>
-        <span style={{ fontSize:12, fontWeight:700, color:'var(--t2)', fontFamily:MONO }}>{label}</span>
+        <span style={{ fontSize:12, fontWeight:700, color:'#4a5568', fontFamily:MONO }}>{label}</span>
       </div>
       <div style={{ flex:1, minWidth:180 }}>
-        {value && <div style={{ fontSize:12, fontFamily:MONO, color:'var(--cy)', background:'var(--cy-bg)', padding:'5px 10px', borderRadius:6, border:'1px solid var(--border)', marginBottom: note||fix ? 6 : 0, wordBreak:'break-all', lineHeight:1.6 }}>{value.slice(0,120)}{value.length>120?'…':''}</div>}
-        {note && <div style={{ fontSize:12, color:'var(--t3)', lineHeight:1.6 }}>{note}</div>}
-        {fix  && <div style={{ fontSize:12, color:'var(--amber)', marginTop:4, display:'flex', alignItems:'flex-start', gap:5, lineHeight:1.5 }}><AlertTriangle size={12} style={{ flexShrink:0, marginTop:1 }}/> {fix}</div>}
+        {value && <div style={{ fontSize:12, fontFamily:MONO, color:'#0284c7', background:'#e0f2fe', padding:'5px 10px', borderRadius:6, border:'1px solid var(--border)', marginBottom: note||fix ? 6 : 0, wordBreak:'break-all', lineHeight:1.6 }}>{value.slice(0,120)}{value.length>120?'…':''}</div>}
+        {note && <div style={{ fontSize:12, color:'#8896a7', lineHeight:1.6 }}>{note}</div>}
+        {fix  && <div style={{ fontSize:12, color:'#d97706', marginTop:4, display:'flex', alignItems:'flex-start', gap:5, lineHeight:1.5 }}><AlertTriangle size={12} style={{ flexShrink:0, marginTop:1 }}/> {fix}</div>}
       </div>
       <div style={{ flexShrink:0 }}><StatusChip status={status}/></div>
     </div>
@@ -86,9 +86,9 @@ function exportPDF(domain, r) {
   const statusPill = (status) => {
     const ok = ['Pass','Valid','Consistent','Clean','Enforced','Signed','Present','Configured','Blocked','Active'].includes(status)
     const wn = ['Warn','Warning','Partial','Quarantine','Not configured','Missing','Testing'].includes(status)
-    const c  = ok?'var(--or)':wn?'#b45309':'var(--pk)'
-    const bg = ok?'var(--green-bg)':wn?'var(--or-bg)':'var(--pk-bg)'
-    const bd = ok?'var(--green-bdr)':wn?'var(--amber-bdr)':'var(--pk-bdr)'
+    const c  = ok?'#0073d1':wn?'#b45309':'#e53e3e'
+    const bg = ok?'#e8f3fc':wn?'#e8f3fc':'#fff5f5'
+    const bd = ok?'#a8d0f0':wn?'#fcd34d':'#feb2b2'
     return `<span style="background:${bg};color:${c};border:1px solid ${bd};padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;">${status||'—'}</span>`
   }
 
@@ -103,7 +103,7 @@ function exportPDF(domain, r) {
   const complianceRow = (label, ok) => `
     <div class="comp-row">
       <span class="comp-label">${label}</span>
-      <span style="font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;background:${ok?'var(--green-bg)':'var(--pk-bg)'};color:${ok?'var(--or)':'var(--pk)'};border:1px solid ${ok?'var(--green-bdr)':'var(--pk-bdr)'};">${ok?'✓ Pass':'✗ Fail'}</span>
+      <span style="font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;background:${ok?'#e8f3fc':'#fff5f5'};color:${ok?'#0073d1':'#e53e3e'};border:1px solid ${ok?'#a8d0f0':'#feb2b2'};">${ok?'✓ Pass':'✗ Fail'}</span>
     </div>`
 
   const html = `<!DOCTYPE html>
@@ -226,7 +226,7 @@ function exportPDF(domain, r) {
 <div class="breakdown">
   ${[['DNS',r.score_dns,25],['Email Auth',r.score_email,30],['SSL/TLS',r.score_ssl,20],['Propagation',r.score_propagation,10],['Security',r.score_security,10],['Blacklists',r.score_blacklist,5]].map(([l,s,m])=>{
     const pct=Math.round(((s||0)/m)*100)
-    const c=pct>=80?'var(--or)':pct>=60?'var(--or)':'var(--pk)'
+    const c=pct>=80?'#0073d1':pct>=60?'#0073d1':'#e53e3e'
     return `<div class="cat">
       <div class="cat-score" style="color:${c};">${s||0}</div>
       <div class="cat-max">/${m}</div>
@@ -259,9 +259,9 @@ ${issues.length>0 ? `
   </div>
   <div style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
     ${issues.map(iss=>{
-      const c=iss.severity==='critical'?'var(--pk)':iss.severity==='warn'?'#b45309':'var(--cy)'
-      const bg=iss.severity==='critical'?'var(--pk-bg)':iss.severity==='warn'?'var(--or-bg)':'var(--cy-bg)'
-      const bd=iss.severity==='critical'?'var(--pk-bdr)':iss.severity==='warn'?'var(--amber-bdr)':'#bfdbfe'
+      const c=iss.severity==='critical'?'#e53e3e':iss.severity==='warn'?'#b45309':'#0284c7'
+      const bg=iss.severity==='critical'?'#fff5f5':iss.severity==='warn'?'#e8f3fc':'#e0f2fe'
+      const bd=iss.severity==='critical'?'#feb2b2':iss.severity==='warn'?'#fcd34d':'#bfdbfe'
       return `<div class="issue-row" style="background:${iss.severity==='critical'?'#fefafa':'#fff'};">
         <div><span style="display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;background:${bg};color:${c};border:1px solid ${bd};">${iss.severity}</span></div>
         <div style="min-width:70px;font-size:12px;font-weight:700;color:#111;">${iss.type}</div>
@@ -400,10 +400,10 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
 
   if (loading) return (
     <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'70vh', gap:20, fontFamily:F }}>
-      <div style={{ width:52, height:52, border:'3px solid #e5e7eb', borderTopColor:'var(--or)', borderRadius:'50%', animation:'spin 0.8s linear infinite' }}/>
+      <div style={{ width:52, height:52, border:'3px solid #e5e7eb', borderTopColor:'#0073d1', borderRadius:'50%', animation:'spin 0.8s linear infinite' }}/>
       <div>
         <div style={{ fontSize:15, fontWeight:600, color:'#111', marginBottom:4, textAlign:'center' }}>Scanning {domain}</div>
-        <div style={{ fontSize:13, color:'var(--t3)', textAlign:'center' }}>Checking DNS, email auth, SSL, blacklists and propagation…</div>
+        <div style={{ fontSize:13, color:'#8896a7', textAlign:'center' }}>Checking DNS, email auth, SSL, blacklists and propagation…</div>
       </div>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
@@ -413,10 +413,10 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
     <div style={{ maxWidth:480, margin:'80px auto', padding:24, textAlign:'center', fontFamily:F }}>
       <XCircle size={36} color="#dc2626" style={{ marginBottom:12 }}/>
       <div style={{ fontSize:16, fontWeight:700, marginBottom:8 }}>Scan failed</div>
-      <div style={{ fontSize:13, color:'var(--t3)', marginBottom:24 }}>{error}</div>
+      <div style={{ fontSize:13, color:'#8896a7', marginBottom:24 }}>{error}</div>
       <div style={{ display:'flex', gap:10, justifyContent:'center' }}>
         <button onClick={() => setPage('landing')} style={{ padding:'8px 18px', background:'transparent', color:'#555', border:'1px solid var(--border)', borderRadius:8, fontSize:13, cursor:'pointer', fontFamily:F }}>← Back</button>
-        <button onClick={runScan} style={{ padding:'8px 18px', background:'var(--or)', color:'var(--t1)', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Try again</button>
+        <button onClick={runScan} style={{ padding:'8px 18px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Try again</button>
       </div>
     </div>
   )
@@ -429,31 +429,31 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
   const infos    = (r.issues || []).filter(i => i.severity === 'info')
 
   const CATS = [
-    { id:'dns',         label:'DNS',         icon:Globe,   color:'var(--pu)', score:r.score_dns,         max:25 },
-    { id:'email',       label:'Email auth',  icon:Mail,    color:'var(--red)', score:r.score_email,       max:30 },
-    { id:'ssl',         label:'SSL / TLS',   icon:Lock,    color:'var(--or)', score:r.score_ssl,         max:20 },
-    { id:'propagation', label:'Propagation', icon:Network, color:'var(--amber)', score:r.score_propagation, max:10 },
-    { id:'security',    label:'Security',    icon:Shield,  color:'var(--pu)', score:r.score_security,    max:10 },
-    { id:'blacklist',   label:'Blacklists',  icon:Ban,     color:'var(--red)', score:r.score_blacklist,   max:5  },
+    { id:'dns',         label:'DNS',         icon:Globe,   color:'#7c3aed', score:r.score_dns,         max:25 },
+    { id:'email',       label:'Email auth',  icon:Mail,    color:'#e53e3e', score:r.score_email,       max:30 },
+    { id:'ssl',         label:'SSL / TLS',   icon:Lock,    color:'#0073d1', score:r.score_ssl,         max:20 },
+    { id:'propagation', label:'Propagation', icon:Network, color:'#d97706', score:r.score_propagation, max:10 },
+    { id:'security',    label:'Security',    icon:Shield,  color:'#7c3aed', score:r.score_security,    max:10 },
+    { id:'blacklist',   label:'Blacklists',  icon:Ban,     color:'#e53e3e', score:r.score_blacklist,   max:5  },
   ]
 
   return (
-    <div style={{ fontFamily:F, background:'var(--page)', minHeight:'100vh' }}>
+    <div style={{ fontFamily:F, background:'#f4f6f8', minHeight:'100vh' }}>
       <style>{`@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.fade{animation:fadeIn 0.3s ease both}`}</style>
 
       {/* ── TOP BAR ── */}
-      <div style={{ background:'var(--card)', borderBottom:'1px solid var(--border)', padding:'0 24px', height:52, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100 }}>
+      <div style={{ background:'#ffffff', borderBottom:'1px solid var(--border)', padding:'0 24px', height:52, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100 }}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <button onClick={() => setPage('landing')} style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 10px', background:'transparent', border:'none', cursor:'pointer', color:'var(--t3)', fontSize:13, fontFamily:F }}
-            onMouseEnter={e=>{e.currentTarget.style.color='#111'}} onMouseLeave={e=>{e.currentTarget.style.color='var(--t3)'}}>
+          <button onClick={() => setPage('landing')} style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 10px', background:'transparent', border:'none', cursor:'pointer', color:'#8896a7', fontSize:13, fontFamily:F }}
+            onMouseEnter={e=>{e.currentTarget.style.color='#111'}} onMouseLeave={e=>{e.currentTarget.style.color='#8896a7'}}>
             <ArrowLeft size={14}/> Back
           </button>
-          <div style={{ width:1, height:20, background:'var(--border)' }}/>
-          <div style={{ display:'flex', alignItems:'center', gap:7, background:'var(--card)', border:'1px solid var(--border)', borderRadius:20, padding:'4px 12px' }}>
+          <div style={{ width:1, height:20, background:'#e2e8f0' }}/>
+          <div style={{ display:'flex', alignItems:'center', gap:7, background:'#ffffff', border:'1px solid var(--border)', borderRadius:20, padding:'4px 12px' }}>
             <Globe size={12} color="var(--green)"/>
             <span style={{ fontSize:13, fontWeight:600, fontFamily:MONO, color:'#111' }}>{domain}</span>
           </div>
-          <span style={{ fontSize:12, color:'var(--t3)' }}>Scanned just now</span>
+          <span style={{ fontSize:12, color:'#8896a7' }}>Scanned just now</span>
         </div>
         <div style={{ display:'flex', gap:8 }}>
           <button onClick={runScan} style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', background:'transparent', border:'1px solid var(--border)', borderRadius:8, cursor:'pointer', fontSize:12, color:'#555', fontFamily:F }}>
@@ -462,7 +462,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
           <button onClick={() => exportPDF(domain, r)} style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', background:'transparent', border:'1px solid var(--border)', borderRadius:8, cursor:'pointer', fontSize:12, color:'#555', fontFamily:F }}>
             <FileDown size={12}/> Export PDF
           </button>
-          <button onClick={() => setPage(user ? 'dashboard' : 'auth')} style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'var(--or)', color:'var(--t1)', border:'none', borderRadius:8, cursor:'pointer', fontSize:12, fontWeight:700, fontFamily:F }}>
+          <button onClick={() => setPage(user ? 'dashboard' : 'auth')} style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:8, cursor:'pointer', fontSize:12, fontWeight:700, fontFamily:F }}>
             <Bell size={12}/> {user ? 'Monitor this domain' : 'Monitor — sign up free'}
           </button>
         </div>
@@ -471,7 +471,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
       <div style={{ maxWidth:960, margin:'0 auto', padding:'24px 20px' }}>
 
         {/* ── SCORE HERO ── */}
-        <div className="fade" style={{ background:'var(--card)', border:'1px solid var(--border)', borderRadius:16, padding:'28px 28px 24px', marginBottom:16, boxShadow:'0 1px 4px rgba(0,0,0,0.05)' }}>
+        <div className="fade" style={{ background:'#ffffff', border:'1px solid var(--border)', borderRadius:16, padding:'28px 28px 24px', marginBottom:16, boxShadow:'0 1px 4px rgba(0,0,0,0.05)' }}>
           <div style={{ display:'flex', alignItems:'flex-start', gap:24, flexWrap:'wrap' }}>
 
             {/* Score ring */}
@@ -486,23 +486,23 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
 
             {/* Category breakdown */}
             <div style={{ flex:1, minWidth:280 }}>
-              <div style={{ fontSize:12, fontWeight:700, color:'var(--t3)', textTransform:'uppercase', letterSpacing:'0.09em', marginBottom:14 }}>Score breakdown</div>
+              <div style={{ fontSize:12, fontWeight:700, color:'#8896a7', textTransform:'uppercase', letterSpacing:'0.09em', marginBottom:14 }}>Score breakdown</div>
               <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
                 {CATS.map(c => {
                   const pct = Math.round(((c.score||0)/c.max)*100)
-                  const cc  = pct>=80?'var(--or)':pct>=60?'var(--or)':'var(--pk)'
-                  const cbg = pct>=80?'var(--green-bg)':pct>=60?'var(--or-bg)':'var(--pk-bg)'
+                  const cc  = pct>=80?'#0073d1':pct>=60?'#0073d1':'#e53e3e'
+                  const cbg = pct>=80?'#e8f3fc':pct>=60?'#e8f3fc':'#fff5f5'
                   return (
-                    <div key={c.id} style={{ background:'var(--card)', border:`1px solid var(--border)`, borderRadius:10, padding:'12px 14px' }}>
+                    <div key={c.id} style={{ background:'#ffffff', border:`1px solid var(--border)`, borderRadius:10, padding:'12px 14px' }}>
                       <div style={{ display:'flex', alignItems:'center', gap:5, marginBottom:6 }}>
                         <c.icon size={11} color={c.color}/>
-                        <span style={{ fontSize:10, color:'var(--t3)', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.07em' }}>{c.label}</span>
+                        <span style={{ fontSize:10, color:'#8896a7', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.07em' }}>{c.label}</span>
                       </div>
                       <div style={{ display:'flex', alignItems:'baseline', gap:4 }}>
                         <span style={{ fontSize:22, fontWeight:900, color:cc, letterSpacing:'-0.04em', lineHeight:1 }}>{c.score ?? '–'}</span>
-                        <span style={{ fontSize:11, color:'var(--t3)' }}>/{c.max}</span>
+                        <span style={{ fontSize:11, color:'#8896a7' }}>/{c.max}</span>
                       </div>
-                      <div style={{ height:4, background:'var(--border)', borderRadius:2, marginTop:8 }}>
+                      <div style={{ height:4, background:'#e2e8f0', borderRadius:2, marginTop:8 }}>
                         <div style={{ height:'100%', width:`${pct}%`, background:cc, borderRadius:2, transition:'width 1s cubic-bezier(.4,0,.2,1)' }}/>
                       </div>
                     </div>
@@ -515,13 +515,13 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
 
         {/* ── ISSUES PANEL ── */}
         {r.issues?.length > 0 && (
-          <div className="fade" style={{ background:'var(--card)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', marginBottom:16, boxShadow:'0 1px 4px rgba(0,0,0,0.05)', animationDelay:'0.05s' }}>
-            <div style={{ padding:'13px 18px', background:'var(--card)', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:10 }}>
+          <div className="fade" style={{ background:'#ffffff', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', marginBottom:16, boxShadow:'0 1px 4px rgba(0,0,0,0.05)', animationDelay:'0.05s' }}>
+            <div style={{ padding:'13px 18px', background:'#ffffff', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:10 }}>
               <AlertTriangle size={14} color="#d97706"/>
               <span style={{ fontSize:13, fontWeight:700, color:'#111', flex:1 }}>Issues to fix</span>
-              {critical.length > 0 && <span style={{ fontSize:11, fontWeight:700, padding:'2px 9px', borderRadius:20, background:'var(--red-bg)', color:'var(--red)', border:'1px solid var(--pk-bdr)' }}>{critical.length} critical</span>}
-              {warns.length    > 0 && <span style={{ fontSize:11, fontWeight:700, padding:'2px 9px', borderRadius:20, background:'var(--amber-bg)', color:'var(--amber)',  border:'1px solid var(--or-bdr)' }}>{warns.length} warnings</span>}
-              {infos.length    > 0 && <span style={{ fontSize:11, fontWeight:700, padding:'2px 9px', borderRadius:20, background:'var(--cy-bg)', color:'var(--pu)',  border:'1px solid #bfdbfe' }}>{infos.length} info</span>}
+              {critical.length > 0 && <span style={{ fontSize:11, fontWeight:700, padding:'2px 9px', borderRadius:20, background:'#fff5f5', color:'#e53e3e', border:'1px solid var(--pk-bdr)' }}>{critical.length} critical</span>}
+              {warns.length    > 0 && <span style={{ fontSize:11, fontWeight:700, padding:'2px 9px', borderRadius:20, background:'#fffbeb', color:'#d97706',  border:'1px solid var(--or-bdr)' }}>{warns.length} warnings</span>}
+              {infos.length    > 0 && <span style={{ fontSize:11, fontWeight:700, padding:'2px 9px', borderRadius:20, background:'#e0f2fe', color:'#7c3aed',  border:'1px solid #bfdbfe' }}>{infos.length} info</span>}
             </div>
             {r.issues.map((iss, i) => (
               <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'12px 18px', borderBottom: i < r.issues.length-1 ? '1px solid #f3f4f6' : 'none', background: iss.severity==='critical' ? '#fefafa' : '#fff' }}>
@@ -531,8 +531,8 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
                     <span style={{ fontSize:13, fontWeight:700, color:'#111' }}>{iss.type}</span>
                     <StatusChip status={iss.severity === 'critical' ? 'Critical' : iss.severity === 'warn' ? 'Warning' : 'Info'}/>
                   </div>
-                  <div style={{ fontSize:13, color:'var(--t2)', lineHeight:1.6 }}>{iss.message}</div>
-                  {iss.fix && <div style={{ fontSize:12, color:'var(--t3)', marginTop:4, lineHeight:1.6 }}>💡 {iss.fix}</div>}
+                  <div style={{ fontSize:13, color:'#4a5568', lineHeight:1.6 }}>{iss.message}</div>
+                  {iss.fix && <div style={{ fontSize:12, color:'#8896a7', marginTop:4, lineHeight:1.6 }}>💡 {iss.fix}</div>}
                 </div>
               </div>
             ))}
@@ -545,22 +545,22 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
             <div style={{ overflowX:'auto' }}>
               <table style={{ width:'100%', borderCollapse:'collapse' }}>
                 <thead>
-                  <tr style={{ background:'var(--card)', borderBottom:'1px solid var(--border)' }}>
+                  <tr style={{ background:'#ffffff', borderBottom:'1px solid var(--border)' }}>
                     {['Type','TTL','Value','Status'].map(h => (
-                      <th key={h} style={{ padding:'8px 16px', textAlign:'left', fontSize:10, fontWeight:700, color:'var(--t3)', textTransform:'uppercase', letterSpacing:'0.08em' }}>{h}</th>
+                      <th key={h} style={{ padding:'8px 16px', textAlign:'left', fontSize:10, fontWeight:700, color:'#8896a7', textTransform:'uppercase', letterSpacing:'0.08em' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {r.dns_records?.map((rec, i) => (
                     <tr key={i} style={{ borderBottom:'1px solid #f3f4f6' }}
-                      onMouseEnter={e=>e.currentTarget.style.background='var(--hover)'}
+                      onMouseEnter={e=>e.currentTarget.style.background='#f0f7ff'}
                       onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
                       <td style={{ padding:'9px 16px' }}>
-                        <span style={{ fontSize:11, fontWeight:700, padding:'2px 8px', borderRadius:5, background:'var(--card)', color:'var(--t2)', fontFamily:MONO }}>{rec.type}</span>
+                        <span style={{ fontSize:11, fontWeight:700, padding:'2px 8px', borderRadius:5, background:'#ffffff', color:'#4a5568', fontFamily:MONO }}>{rec.type}</span>
                       </td>
-                      <td style={{ padding:'9px 16px', fontSize:12, color:'var(--t3)', fontFamily:MONO }}>{formatTTL(rec.ttl)}</td>
-                      <td style={{ padding:'9px 16px', fontSize:12, color:'var(--t2)', fontFamily:MONO, wordBreak:'break-all', maxWidth:400 }}>{rec.value}</td>
+                      <td style={{ padding:'9px 16px', fontSize:12, color:'#8896a7', fontFamily:MONO }}>{formatTTL(rec.ttl)}</td>
+                      <td style={{ padding:'9px 16px', fontSize:12, color:'#4a5568', fontFamily:MONO, wordBreak:'break-all', maxWidth:400 }}>{rec.value}</td>
                       <td style={{ padding:'9px 16px' }}><StatusChip status="Pass"/></td>
                     </tr>
                   ))}
@@ -590,23 +590,23 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
           <Section icon={Lock} iconColor="var(--green)" title="SSL / TLS Certificate" badge={r.ssl_info?.overall_status}>
             {r.ssl_info?.certs?.length > 0 ? r.ssl_info.certs.map((cert, i) => {
               const days = cert.days_remaining
-              const daysColor = days==null?'#6b7280':days<=7?'var(--pk)':days<=30?'var(--or)':days<=60?'var(--cy)':'var(--or)'
+              const daysColor = days==null?'#6b7280':days<=7?'#e53e3e':days<=30?'#0073d1':days<=60?'#0284c7':'#0073d1'
               const issuer = cert.issuer_org || cert.issuer_cn || 'Unknown CA'
               return (
                 <div key={i}>
                   {/* Expiry highlight */}
-                  <div style={{ margin:'16px 18px', padding:'14px 18px', background: days==null?'var(--card-hi)':days<=30?'var(--pk-bg)':'var(--green-bg)', border:`1px solid ${days==null?'var(--border)':days<=30?'var(--red-bdr)':'var(--green-bdr)'}`, borderRadius:10, display:'flex', alignItems:'center', gap:16, flexWrap:'wrap' }}>
+                  <div style={{ margin:'16px 18px', padding:'14px 18px', background: days==null?'#f8fafc':days<=30?'#fff5f5':'#e8f3fc', border:`1px solid ${days==null?'#e2e8f0':days<=30?'#feb2b2':'#a8d0f0'}`, borderRadius:10, display:'flex', alignItems:'center', gap:16, flexWrap:'wrap' }}>
                     <Lock size={24} color={daysColor}/>
                     <div style={{ flex:1 }}>
                       <div style={{ fontSize:22, fontWeight:900, color:daysColor, letterSpacing:'-0.04em', lineHeight:1 }}>
                         {days==null ? 'Active' : days<=0 ? 'Expired' : `${days} days`}
                       </div>
-                      <div style={{ fontSize:12, color:'var(--t3)', marginTop:3 }}>
+                      <div style={{ fontSize:12, color:'#8896a7', marginTop:3 }}>
                         {cert.expires_at ? `Expires ${new Date(cert.expires_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}` : 'Certificate valid'}
                       </div>
                     </div>
                     <div style={{ textAlign:'right' }}>
-                      <div style={{ fontSize:11, color:'var(--t3)', marginBottom:2 }}>Issued by</div>
+                      <div style={{ fontSize:11, color:'#8896a7', marginBottom:2 }}>Issued by</div>
                       <div style={{ fontSize:13, fontWeight:700, color:'#111' }}>{issuer}</div>
                     </div>
                   </div>
@@ -620,20 +620,20 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
                       ['HSTS',       cert.hsts === 'HSTS enabled' ? '✓ Enabled' : 'Not set'],
                       ['CT logged',  cert.ct_logged ? '✓ Yes' : '—'],
                     ].map(([l,v]) => (
-                      <div key={l} style={{ background:'var(--card)', border:'1px solid var(--border)', borderRadius:8, padding:'10px 12px' }}>
-                        <div style={{ fontSize:10, color:'var(--t3)', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:4 }}>{l}</div>
+                      <div key={l} style={{ background:'#ffffff', border:'1px solid var(--border)', borderRadius:8, padding:'10px 12px' }}>
+                        <div style={{ fontSize:10, color:'#8896a7', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:4 }}>{l}</div>
                         <div style={{ fontSize:13, fontWeight:600, color:'#111' }}>{v}</div>
                       </div>
                     ))}
                   </div>
                   {/* Note */}
-                  <div style={{ margin:'0 18px 18px', padding:'10px 14px', background:'var(--cy-bg)', border:'1px solid #bfdbfe', borderRadius:8, fontSize:12, color:'var(--cy)' }}>
+                  <div style={{ margin:'0 18px 18px', padding:'10px 14px', background:'#e0f2fe', border:'1px solid #bfdbfe', borderRadius:8, fontSize:12, color:'#0284c7' }}>
                     ℹ {r.ssl_info.note || 'HTTPS active — certificate data from Certificate Transparency logs.'}
                   </div>
                 </div>
               )
             }) : (
-              <div style={{ padding:'28px', textAlign:'center', color:'var(--t3)' }}>
+              <div style={{ padding:'28px', textAlign:'center', color:'#8896a7' }}>
                 <Lock size={28} style={{ marginBottom:8, opacity:0.3 }}/>
                 <div style={{ fontSize:13, fontWeight:600 }}>No certificate data</div>
                 <div style={{ fontSize:12, marginTop:4 }}>Run a scan to fetch SSL details</div>
@@ -649,17 +649,17 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
               <div style={{ overflowX:'auto' }}>
                 <table style={{ width:'100%', borderCollapse:'collapse', minWidth:400 }}>
                   <thead>
-                    <tr style={{ background:'var(--card)', borderBottom:'1px solid var(--border)' }}>
-                      <th style={{ padding:'8px 14px', textAlign:'left', fontSize:10, fontWeight:700, color:'var(--t3)', textTransform:'uppercase', letterSpacing:'0.08em' }}>Record</th>
+                    <tr style={{ background:'#ffffff', borderBottom:'1px solid var(--border)' }}>
+                      <th style={{ padding:'8px 14px', textAlign:'left', fontSize:10, fontWeight:700, color:'#8896a7', textTransform:'uppercase', letterSpacing:'0.08em' }}>Record</th>
                       {['🇺🇸 Americas','🇪🇺 Europe','🌏 Asia-Pacific','🇦🇺 Oceania'].map(r => (
-                        <th key={r} style={{ padding:'8px 14px', fontSize:10, fontWeight:700, color:'var(--t3)', textAlign:'center', textTransform:'uppercase', letterSpacing:'0.06em' }}>{r}</th>
+                        <th key={r} style={{ padding:'8px 14px', fontSize:10, fontWeight:700, color:'#8896a7', textAlign:'center', textTransform:'uppercase', letterSpacing:'0.06em' }}>{r}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {r.propagation?.records?.map((rec, i) => (
                       <tr key={i} style={{ borderBottom:'1px solid #f3f4f6' }}>
-                        <td style={{ padding:'9px 14px', fontFamily:MONO, fontSize:12, fontWeight:700, color:'var(--t2)' }}>{rec.type}</td>
+                        <td style={{ padding:'9px 14px', fontFamily:MONO, fontSize:12, fontWeight:700, color:'#4a5568' }}>{rec.type}</td>
                         {['us','eu','apac','au'].map(region => (
                           <td key={region} style={{ padding:'9px 14px', textAlign:'center' }}>
                             <span style={{ fontSize:14 }}>{rec[region]==='pass' ? '✅' : rec[region]==='warn' ? '⚠️' : '–'}</span>
@@ -692,23 +692,23 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
             badge={(r.blacklists?.listed_count||0) > 0 ? `Listed on ${r.blacklists.listed_count}` : 'Clean'}>
             <div style={{ padding:'16px 18px' }}>
               {r.blacklists?.ip && (
-                <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14, padding:'8px 12px', background:'var(--card)', border:'1px solid var(--border)', borderRadius:8, fontSize:12 }}>
+                <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14, padding:'8px 12px', background:'#ffffff', border:'1px solid var(--border)', borderRadius:8, fontSize:12 }}>
                   <Globe size={12} color="#6b7280"/>
-                  <span style={{ color:'var(--t3)' }}>IP address:</span>
+                  <span style={{ color:'#8896a7' }}>IP address:</span>
                   <span style={{ fontFamily:MONO, fontWeight:600, color:'#111' }}>{r.blacklists.ip}</span>
-                  <span style={{ marginLeft:'auto', fontSize:11, color:'var(--t3)' }}>Checked {r.blacklists?.results?.length || 0} lists</span>
+                  <span style={{ marginLeft:'auto', fontSize:11, color:'#8896a7' }}>Checked {r.blacklists?.results?.length || 0} lists</span>
                 </div>
               )}
               {(r.blacklists?.listed_count||0) > 0 && (
-                <div style={{ marginBottom:14, padding:'10px 14px', background:'var(--red-bg)', border:'1px solid var(--pk-bdr)', borderRadius:8, fontSize:13, color:'var(--red)', fontWeight:600 }}>
+                <div style={{ marginBottom:14, padding:'10px 14px', background:'#fff5f5', border:'1px solid var(--pk-bdr)', borderRadius:8, fontSize:13, color:'#e53e3e', fontWeight:600 }}>
                   ⚠ Listed on {r.blacklists.listed_count} blacklist{r.blacklists.listed_count > 1 ? 's' : ''} — email deliverability may be affected. Request delisting from each flagged list.
                 </div>
               )}
               <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))', gap:6 }}>
                 {r.blacklists?.results?.map((bl, i) => (
-                  <div key={i} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'7px 12px', background: bl.listed ? 'var(--pk-bg)' : 'var(--card-hi)', borderRadius:8, border:`1px solid ${bl.listed ? 'var(--red-bdr)' : 'var(--border)'}` }}>
-                    <span style={{ fontSize:11, fontFamily:MONO, color: bl.listed ? 'var(--pk)' : '#6b7280', fontWeight: bl.listed ? 700 : 400 }}>{bl.name}</span>
-                    <span style={{ fontSize:11, fontWeight:700, color: bl.listed ? 'var(--pk)' : 'var(--or)' }}>{bl.listed ? '✗ Listed' : '✓'}</span>
+                  <div key={i} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'7px 12px', background: bl.listed ? '#fff5f5' : '#f8fafc', borderRadius:8, border:`1px solid ${bl.listed ? '#feb2b2' : '#e2e8f0'}` }}>
+                    <span style={{ fontSize:11, fontFamily:MONO, color: bl.listed ? '#e53e3e' : '#6b7280', fontWeight: bl.listed ? 700 : 400 }}>{bl.name}</span>
+                    <span style={{ fontSize:11, fontWeight:700, color: bl.listed ? '#e53e3e' : '#0073d1' }}>{bl.listed ? '✗ Listed' : '✓'}</span>
                   </div>
                 ))}
               </div>
@@ -720,14 +720,14 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
         {!user && (
           <div className="fade" style={{ background:'#111', borderRadius:16, padding:'28px 32px', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:16, animationDelay:'0.26s' }}>
             <div>
-              <div style={{ fontSize:16, fontWeight:700, color:'var(--card-hi)', marginBottom:5 }}>Monitor {domain} continuously</div>
-              <div style={{ fontSize:13, color:'var(--t3)', lineHeight:1.6 }}>Instant alerts when DNS changes, SSL nears expiry, or a blacklisting is detected. Free to start.</div>
+              <div style={{ fontSize:16, fontWeight:700, color:'#f8fafc', marginBottom:5 }}>Monitor {domain} continuously</div>
+              <div style={{ fontSize:13, color:'#8896a7', lineHeight:1.6 }}>Instant alerts when DNS changes, SSL nears expiry, or a blacklisting is detected. Free to start.</div>
             </div>
             <div style={{ display:'flex', gap:8 }}>
-              <button onClick={() => exportPDF(domain, r)} style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 16px', background:'rgba(255,255,255,0.08)', color:'var(--card-hi)', border:'1px solid #374151', borderRadius:9, fontSize:13, cursor:'pointer', fontFamily:F }}>
+              <button onClick={() => exportPDF(domain, r)} style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 16px', background:'rgba(255,255,255,0.08)', color:'#f8fafc', border:'1px solid #374151', borderRadius:9, fontSize:13, cursor:'pointer', fontFamily:F }}>
                 <FileDown size={13}/> Export PDF
               </button>
-              <button onClick={() => setPage('auth')} style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 18px', background:'var(--or)', color:'var(--t1)', border:'none', borderRadius:9, fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:F }}>
+              <button onClick={() => setPage('auth')} style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 18px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:9, fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:F }}>
                 <Bell size={13}/> Start monitoring free →
               </button>
             </div>

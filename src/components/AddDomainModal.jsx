@@ -83,7 +83,7 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
       backdropFilter: 'blur(4px)',
     }} onClick={e => e.target === e.currentTarget && onClose()}>
       <div style={{
-        background: 'var(--card)',
+        background: '#ffffff',
         border: '1px solid var(--border-md)',
         borderRadius: 16,
         width: '100%',
@@ -95,10 +95,10 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
         {/* Header */}
         <div style={{ padding: '20px 20px 0', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)' }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#1a2332' }}>
               {step === 1 ? 'Add a domain' : 'Verify ownership'}
             </div>
-            <div style={{ fontSize: 12, color: 'var(--t2)', marginTop: 3 }}>
+            <div style={{ fontSize: 12, color: '#4a5568', marginTop: 3 }}>
               Step {step} of 2 — {step === 1 ? 'Enter your domain' : 'Add DNS TXT record'}
             </div>
           </div>
@@ -112,7 +112,7 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
           {[1, 2].map(s => (
             <div key={s} style={{
               flex: 1, height: 3, borderRadius: 2,
-              background: s <= step ? 'var(--or)' : 'var(--border)',
+              background: s <= step ? '#0073d1' : '#e2e8f0',
               transition: 'background 0.3s',
             }} />
           ))}
@@ -121,11 +121,11 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
         <div style={{ padding: '20px 20px 20px' }}>
           {step === 1 ? (
             <>
-              <p style={{ fontSize: 13, color: 'var(--t2)', marginBottom: 18, lineHeight: 1.7 }}>
+              <p style={{ fontSize: 13, color: '#4a5568', marginBottom: 18, lineHeight: 1.7 }}>
                 Enter your domain name below. We'll generate a unique TXT record for you to add to your DNS — this proves you own the domain.
               </p>
 
-              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--t1)', display: 'block', marginBottom: 6 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: '#1a2332', display: 'block', marginBottom: 6 }}>
                 Domain name
               </label>
               <input
@@ -137,14 +137,14 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
                 style={{ width: '100%', marginBottom: 8, boxSizing: 'border-box' }}
                 autoFocus
               />
-              <div style={{ fontSize: 11, color: 'var(--t3)', marginBottom: 18, lineHeight: 1.6 }}>
+              <div style={{ fontSize: 11, color: '#8896a7', marginBottom: 18, lineHeight: 1.6 }}>
                 Supports root domains and subdomains — e.g. example.com, mail.example.com
               </div>
 
               {error && (
                 <div style={{
-                  padding: '10px 12px', background: 'var(--red-bg)',
-                  color: 'var(--red)', border: '1px solid var(--red-bdr)',
+                  padding: '10px 12px', background: '#fff5f5',
+                  color: '#e53e3e', border: '1px solid var(--red-bdr)',
                   borderRadius: 8, fontSize: 12, marginBottom: 14,
                 }}>
                   {error}
@@ -164,15 +164,15 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
             <>
               {/* Domain verification banner */}
               <div style={{
-                background: 'var(--green-bg)',
+                background: '#e8f3fc',
                 border: '1px solid var(--green-bdr)',
                 borderRadius: 10, padding: '12px 14px', marginBottom: 18,
                 display: 'flex', alignItems: 'center', gap: 10,
               }}>
                 <Radar size={15} color="var(--green)" style={{ flexShrink: 0 }} />
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--or)' }}>Verifying: {domain}</div>
-                  <div style={{ fontSize: 11, color: 'var(--t2)', marginTop: 2, lineHeight: 1.5 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: '#0073d1' }}>Verifying: {domain}</div>
+                  <div style={{ fontSize: 11, color: '#4a5568', marginTop: 2, lineHeight: 1.5 }}>
                     Add the TXT record below to your DNS provider to confirm ownership.
                   </div>
                 </div>
@@ -182,37 +182,37 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
               <div style={{ marginBottom: 16 }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--t2)', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: '#4a5568', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                       Record type
                     </div>
                     <div style={{
-                      padding: '8px 12px', background: 'var(--card-hi)',
+                      padding: '8px 12px', background: '#f8fafc',
                       border: '1px solid var(--border)', borderRadius: 8,
-                      fontSize: 13, fontFamily: 'var(--mono)', color: 'var(--t1)',
+                      fontSize: 13, fontFamily: 'var(--mono)', color: '#1a2332',
                     }}>TXT</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--t2)', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: '#4a5568', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                       Name / Host
                     </div>
                     <div style={{
-                      padding: '8px 12px', background: 'var(--card-hi)',
+                      padding: '8px 12px', background: '#f8fafc',
                       border: '1px solid var(--border)', borderRadius: 8,
-                      fontSize: 13, fontFamily: 'var(--mono)', color: 'var(--t1)',
+                      fontSize: 13, fontFamily: 'var(--mono)', color: '#1a2332',
                     }}>@ (root)</div>
                   </div>
                 </div>
 
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--t2)', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: '#4a5568', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                     Value
                   </div>
                   <div style={{
                     display: 'flex', alignItems: 'center', gap: 8,
-                    padding: '10px 12px', background: 'var(--card-hi)',
+                    padding: '10px 12px', background: '#f8fafc',
                     border: '1px solid var(--border)', borderRadius: 8,
                   }}>
-                    <span style={{ fontSize: 11, flex: 1, wordBreak: 'break-all', color: 'var(--or)', fontFamily: 'var(--mono)' }}>
+                    <span style={{ fontSize: 11, flex: 1, wordBreak: 'break-all', color: '#0073d1', fontFamily: 'var(--mono)' }}>
                       domainradar-verify={token}
                     </span>
                     <button className="btn btn-ghost btn-sm" onClick={copyToken} style={{ flexShrink: 0, padding: '4px 8px' }}>
@@ -224,9 +224,9 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
 
               {/* Info notice */}
               <div style={{
-                padding: '10px 12px', background: 'var(--blue-bg)',
+                padding: '10px 12px', background: '#e8f3fc',
                 border: '1px solid var(--blue-bdr)',
-                borderRadius: 8, fontSize: 11, color: 'var(--blue)',
+                borderRadius: 8, fontSize: 11, color: '#0073d1',
                 marginBottom: 16, lineHeight: 1.7,
               }}>
                 ℹ After adding the record, click "Verify now". DNS propagation can take a few minutes to several hours. You can close this and verify later from your dashboard.
@@ -234,8 +234,8 @@ export default function AddDomainModal({ onClose, onSuccess, user }) {
 
               {verifyError && (
                 <div style={{
-                  padding: '10px 12px', background: 'var(--amber-bg)',
-                  color: 'var(--amber)', border: '1px solid var(--amber-bdr)',
+                  padding: '10px 12px', background: '#fffbeb',
+                  color: '#d97706', border: '1px solid var(--amber-bdr)',
                   borderRadius: 8, fontSize: 12, marginBottom: 14,
                 }}>
                   {verifyError}
