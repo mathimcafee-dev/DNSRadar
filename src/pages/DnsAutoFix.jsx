@@ -147,7 +147,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
           <p style={{ fontSize:13, color:'var(--t2)', margin:0 }}>Connect your DNS provider. One click to push any missing record directly — no copy-pasting.</p>
         </div>
         <button onClick={() => setShowAdd(true)}
-          style={{ padding:'8px 16px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:8, color:'#92400e', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, flexShrink:0 }}>
+          style={{ padding:'8px 16px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:8, color:'var(--amber)', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, flexShrink:0 }}>
           <Plus size={14}/> Connect DNS provider
         </button>
       </div>
@@ -166,7 +166,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
       {showAdd && (
         <div style={{ ...card, marginBottom:16, border:'1px solid rgba(245,158,11,0.25)' }}>
           <div style={{ padding:'12px 16px', borderBottom:'1px solid var(--border)', background:'rgba(245,158,11,0.06)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-            <span style={{ fontSize:13, fontWeight:600, color:'#92400e' }}>Connect DNS provider</span>
+            <span style={{ fontSize:13, fontWeight:600, color:'var(--amber)' }}>Connect DNS provider</span>
             <button onClick={() => { setShowAdd(false); setForm({}) }} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--t2)' }}>✕</button>
           </div>
           <div style={{ padding:16 }}>
@@ -217,7 +217,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
 
             <div style={{ display:'flex', gap:8, marginTop:4 }}>
               <button onClick={saveCredential} disabled={saving}
-                style={{ padding:'8px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'#92400e', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
+                style={{ padding:'8px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'var(--amber)', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
                 {saving ? <><div style={{ width:12, height:12, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'#d97706', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Saving…</> : <><Shield size={13}/> Save credentials</>}
               </button>
               <button onClick={() => { setShowAdd(false); setForm({}) }} style={{ padding:'8px 14px', background:'transparent', border:'1px solid var(--border)', borderRadius:7, color:'var(--t2)', fontSize:13, cursor:'pointer' }}>Cancel</button>
@@ -233,7 +233,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
             <div style={{ fontSize:15, fontWeight:600, color:'var(--t2)', marginBottom:8 }}>No DNS providers connected</div>
             <div style={{ fontSize:13, color:'var(--t2)', marginBottom:20 }}>Connect Cloudflare, GoDaddy, Route 53, or Namecheap to enable one-click DNS record fixes.</div>
             <button onClick={() => setShowAdd(true)}
-              style={{ padding:'9px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:8, color:'#92400e', fontSize:13, fontWeight:500, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:6 }}>
+              style={{ padding:'9px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:8, color:'var(--amber)', fontSize:13, fontWeight:500, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:6 }}>
               <Plus size={14}/> Connect your first provider
             </button>
           </div>
@@ -248,7 +248,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                     <span style={{ fontSize:24 }}>{provider?.logo}</span>
                     <div style={{ flex:1 }}>
                       <div style={{ fontSize:13, fontWeight:600, color:'var(--t1)' }}>{cred.label || provider?.name}</div>
-                      <div style={{ fontSize:12,color:'var(--t2)', fontFamily:'monospace' }}>{cred.zone_id}</div>
+                      <div style={{ fontSize:12,color:'var(--t1)', fontFamily:'var(--mono)' }}>{cred.zone_id}</div>
                     </div>
                     <div style={{ display:'flex', gap:6 }}>
                       <button onClick={() => testCredential(cred)} disabled={testing === cred.id}
@@ -312,10 +312,10 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                         <span style={{ color:'var(--t1)',wordBreak:'break-all' }}>{record.content}</span>
                       </div>
                       {connectedCreds.length === 0 ? (
-                        <div style={{ fontSize:12, color:'#92400e', display:'flex', alignItems:'center', gap:6 }}>
+                        <div style={{ fontSize:12, color:'var(--amber)', display:'flex', alignItems:'center', gap:6 }}>
                           <AlertTriangle size={12}/>
                           <span>Connect a DNS provider first to enable auto-fix</span>
-                          <button onClick={() => { setActiveTab('credentials'); setShowAdd(true) }} style={{ background:'none', border:'none', color:'#92400e', cursor:'pointer', textDecoration:'underline', fontSize:12 }}>Go to Credentials</button>
+                          <button onClick={() => { setActiveTab('credentials'); setShowAdd(true) }} style={{ background:'none', border:'none', color:'var(--amber)', cursor:'pointer', textDecoration:'underline', fontSize:12 }}>Go to Credentials</button>
                         </div>
                       ) : (
                         <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
@@ -332,7 +332,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                                   </div>
                                 ) : (
                                   <button onClick={() => autoFix(cred, issue)} disabled={fixing[fixKey]}
-                                    style={{ padding:'7px 14px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'#92400e', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
+                                    style={{ padding:'7px 14px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'var(--amber)', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
                                     {fixing[fixKey]?<div style={{ width:12,height:12,border:'2px solid rgba(245,158,11,0.3)',borderTopColor:'#d97706',borderRadius:'50%',animation:'spin 0.7s linear infinite' }}/>:<Zap size={12}/>}
                                     Fix via {provider?.logo} {cred.label || provider?.name}
                                   </button>
@@ -371,7 +371,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                 </thead>
                 <tbody>
                   {changeLog.map((c, i) => (
-                    <tr key={i} style={{ borderBottom:`1px solid #f9fafb` }}>
+                    <tr key={i} style={{ borderBottom:`1px solid var(--border)` }}>
                       <td style={{ padding:'8px 14px', fontFamily:'monospace', color:'var(--t2)', fontSize:11 }}>{new Date(c.created_at).toLocaleString()}</td>
                       <td style={{ padding:'8px 14px', color:'var(--t2)' }}>{c.provider}</td>
                       <td style={{ padding:'8px 14px' }}><span style={{ fontSize:10, padding:'1px 6px', borderRadius:5, background:'rgba(96,165,250,0.15)', color:'#3730a3', fontFamily:'monospace' }}>{c.record_type}</span></td>

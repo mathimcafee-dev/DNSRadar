@@ -5,8 +5,8 @@ const F = "'Inter',-apple-system,BlinkMacSystemFont,sans-serif"
 const VALUES = [
   { icon: Shield,    color:'var(--teal)', bg:'var(--green-bg)', bd:'var(--green-bdr)', title:'Security first',         body:'Every feature exists to make real security improvements, not surface metrics. We explain every finding in plain English with exact remediation steps — because a warning without an action resolves nothing.' },
   { icon: Target,    color:'#2563eb', bg:'#eff6ff', bd:'#bfdbfe', title:'Radical simplicity',      body:'DNS and email authentication are genuinely complex. DomainRadar is designed for domain owners who have never opened a DNS panel, without sacrificing depth for those who have.' },
-  { icon: Zap,       color:'#d97706', bg:'#fffbeb', bd:'#fde68a', title:'Fix, don\'t just flag',   body:'A score without a path to improvement is noise. Auto-fix via Cloudflare API, DMARC journey wizard, SPF flattener, and DKIM rotation guide mean issues get resolved — not just listed.' },
-  { icon: Heart,     color:'#dc2626', bg:'#fef2f2', bd:'#fecaca', title:'Accessible to everyone',  body:'Professional domain security tooling has historically required significant budget and dedicated technical staff. DomainRadar makes the same quality of visibility available to indie developers, small businesses, and nonprofits for free.' },
+  { icon: Zap,       color:'#d97706', bg:'#fffbeb', bd:'var(--amber-bdr)', title:'Fix, don\'t just flag',   body:'A score without a path to improvement is noise. Auto-fix via Cloudflare API, DMARC journey wizard, SPF flattener, and DKIM rotation guide mean issues get resolved — not just listed.' },
+  { icon: Heart,     color:'#dc2626', bg:'#fef2f2', bd:'var(--red-bdr)', title:'Accessible to everyone',  body:'Professional domain security tooling has historically required significant budget and dedicated technical staff. DomainRadar makes the same quality of visibility available to indie developers, small businesses, and nonprofits for free.' },
   { icon: Globe,     color:'#7c3aed', bg:'#f5f3ff', bd:'#ddd6fe', title:'Transparent by default',  body:'Pricing is public. Scan logic is documented. Scores are explained. No black-box ratings, no fabricated urgency, no hidden upsells.' },
   { icon: Code,      color:'#0891b2', bg:'#ecfeff', bd:'#a5f3fc', title:'Built for integration',   body:'Public scan API, documented response types, and working code examples. DomainRadar fits into CI pipelines, client onboarding checklists, and automated reporting workflows.' },
 ]
@@ -52,7 +52,7 @@ export default function About({ setPage }) {
   const scroll = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
   return (
-    <div style={{ fontFamily: F, background: '#fff', color: '#111', minHeight: '100vh' }}>
+    <div style={{ fontFamily: F, background: 'var(--card)', color: '#111', minHeight: '100vh' }}>
       <style>{`
         .sl { font-size:11px; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:0.12em; display:block; margin-bottom:12px; }
         .h1 { font-size:clamp(34px,5.5vw,56px); font-weight:900; letter-spacing:-0.04em; line-height:1.05; }
@@ -77,9 +77,9 @@ export default function About({ setPage }) {
           <button className="nb" onClick={() => scroll('story')}>Our story</button>
           <button className="nb" onClick={() => scroll('coverage')}>Coverage</button>
           <button className="nb" onClick={() => scroll('team')}>Team</button>
-          <div style={{ width:1, height:18, background:'#e5e7eb', margin:'0 6px' }}/>
+          <div style={{ width:1, height:18, background:'var(--border)', margin:'0 6px' }}/>
           <button onClick={() => setPage('landing')} style={{ padding:'6px 12px', background:'transparent', color:'#555', border:'1px solid var(--border)', borderRadius:7, fontSize:13, cursor:'pointer', fontFamily:F }}>← Home</button>
-          <button onClick={() => setPage('auth')} style={{ padding:'6px 14px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Start free</button>
+          <button onClick={() => setPage('auth')} style={{ padding:'6px 14px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Start free</button>
         </div>
       </nav>
 
@@ -97,7 +97,7 @@ export default function About({ setPage }) {
             The product was built on a straightforward observation: the information needed to secure a domain is publicly available and technically accessible, but the tooling to surface it clearly has always been built for large organisations. DomainRadar exists to change that — a full security audit in under 90 seconds, with explanations that make sense and fixes that actually work.
           </p>
           <div style={{ display:'flex', gap:12, flexWrap:'wrap' }}>
-            <button onClick={() => setPage('auth')} style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'11px 24px', background:'#111', color:'#fff', border:'none', borderRadius:9, fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:F }}>
+            <button onClick={() => setPage('auth')} style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'11px 24px', background:'#111', color:'var(--t1)', border:'none', borderRadius:9, fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:F }}>
               Start scanning free <ArrowRight size={14}/>
             </button>
             <button onClick={() => setPage('audit')} style={{ padding:'11px 18px', background:'transparent', color:'var(--t2)', border:'1px solid var(--border)', borderRadius:9, fontSize:13, cursor:'pointer', fontFamily:F }}>
@@ -112,7 +112,7 @@ export default function About({ setPage }) {
         <div style={{ maxWidth:900, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(130px,1fr))', gap:28, textAlign:'center' }}>
           {[['< 90s','Full scan time'],['52','Blacklists checked'],['9','Check categories'],['4','Global resolvers'],['Free','To start, forever'],['1-click','DNS auto-fix']].map(([v,l]) => (
             <div key={l}>
-              <div style={{ fontSize:30, fontWeight:900, color:'#fff', letterSpacing:'-0.04em', lineHeight:1, marginBottom:6 }}>{v}</div>
+              <div style={{ fontSize:30, fontWeight:900, color:'var(--t1)', letterSpacing:'-0.04em', lineHeight:1, marginBottom:6 }}>{v}</div>
               <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)' }}>{l}</div>
             </div>
           ))}
@@ -148,7 +148,7 @@ export default function About({ setPage }) {
           <h2 className="h2" style={{ marginBottom:12 }}>How DomainRadar was built</h2>
           <p className="body" style={{ marginBottom:52, maxWidth:560 }}>A product built from direct experience — the same problems, seen repeatedly, now solved systematically.</p>
           <div style={{ position:'relative' }}>
-            <div style={{ position:'absolute', left:12, top:6, bottom:0, width:1, background:'#e5e7eb' }}/>
+            <div style={{ position:'absolute', left:12, top:6, bottom:0, width:1, background:'var(--border)' }}/>
             {MILESTONES.map((m, i) => (
               <div key={m.title} style={{ position:'relative', paddingLeft:40, paddingBottom: i < MILESTONES.length-1 ? 52 : 0 }}>
                 <div style={{ position:'absolute', left:7, top:4, width:11, height:11, borderRadius:'50%', background:'var(--teal)', border:'2px solid #fafafa' }}/>
@@ -249,7 +249,7 @@ export default function About({ setPage }) {
             Free scan, no account required. Full health score, every issue identified, and exact fix instructions in under 90 seconds.
           </p>
           <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap' }}>
-            <button onClick={() => setPage('auth')} style={{ padding:'12px 28px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:10, fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:F }}>Start free →</button>
+            <button onClick={() => setPage('auth')} style={{ padding:'12px 28px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:10, fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:F }}>Start free →</button>
             <button onClick={() => setPage('audit')} style={{ padding:'12px 20px', background:'var(--card)', color:'var(--t2)', border:'1px solid var(--green-bdr)', borderRadius:10, fontSize:13, cursor:'pointer', fontFamily:F }}>📄 Instant audit</button>
             <button onClick={() => setPage('pricing')} style={{ padding:'12px 20px', background:'transparent', color:'var(--teal)', border:'1px solid var(--green-bdr)', borderRadius:10, fontSize:13, cursor:'pointer', fontFamily:F }}>View pricing</button>
           </div>

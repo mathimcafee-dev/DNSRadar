@@ -17,7 +17,7 @@ export default function Nav({ page, setPage, alertCount = 0 }) {
     <nav style={{ background:'#0d1117',borderBottom:'1px solid rgba(255,255,255,0.08)',padding:'0 18px',height:'56px',display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:100,fontFamily:"'Inter',system-ui,sans-serif" }}>
       <div style={{ display:'flex',alignItems:'center',gap:8,cursor:'pointer' }} onClick={() => setPage('landing')}>
         <div style={{ width:30,height:30,background:ac,borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center' }}><Radar size={16} color="#fff"/></div>
-        <span style={{ fontSize:15,fontWeight:700,color:'#fff' }}>DomainRadar</span>
+        <span style={{ fontSize:15,fontWeight:700,color:'var(--t1)' }}>DomainRadar</span>
         <span style={{ fontSize:9,background:'rgba(26,181,200,0.15)',color:ac,padding:'1px 7px',borderRadius:10,fontWeight:600,border:'1px solid rgba(26,181,200,0.25)' }}>beta</span>
       </div>
       {user ? (
@@ -47,7 +47,7 @@ export default function Nav({ page, setPage, alertCount = 0 }) {
       ) : (
         <div style={{ display:'flex',gap:8 }}>
           <button onClick={() => setPage('auth')} style={{ padding:'6px 16px',background:'rgba(255,255,255,0.06)',color:'rgba(255,255,255,0.7)',border:'1px solid rgba(255,255,255,0.12)',borderRadius:7,fontSize:12,fontWeight:500,cursor:'pointer' }}>Sign in</button>
-          <button onClick={() => setPage('auth')} style={{ padding:'6px 16px',background:ac,color:'#fff',border:'none',borderRadius:7,fontSize:12,fontWeight:600,cursor:'pointer' }}>Start free</button>
+          <button onClick={() => setPage('auth')} style={{ padding:'6px 16px',background:ac,color:'var(--t1)',border:'none',borderRadius:7,fontSize:12,fontWeight:600,cursor:'pointer' }}>Start free</button>
         </div>
       )}
     </nav>

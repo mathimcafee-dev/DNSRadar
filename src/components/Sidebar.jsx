@@ -25,7 +25,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
   const w = collapsed ? 60 : 232
 
   return (
-    <aside style={{ width:w, minWidth:w, height:'100vh', position:'sticky', top:0, background:'#111827', borderRight:'1px solid #1f2937', display:'flex', flexDirection:'column', transition:'width 0.2s cubic-bezier(.4,0,.2,1)', overflow:'hidden', zIndex:100, flexShrink:0, fontFamily:"'Inter',system-ui,sans-serif" }}>
+    <aside style={{ width:w, minWidth:w, height:'100vh', position:'sticky', top:0, background:'var(--card)', borderRight:'1px solid #1f2937', display:'flex', flexDirection:'column', transition:'width 0.2s cubic-bezier(.4,0,.2,1)', overflow:'hidden', zIndex:100, flexShrink:0, fontFamily:"'Inter',system-ui,sans-serif" }}>
 
       {/* Logo */}
       <div style={{ height:56, padding:collapsed?'0':'0 12px 0 16px', display:'flex', alignItems:'center', justifyContent:collapsed?'center':'space-between', borderBottom:'1px solid #1f2937', flexShrink:0 }}>

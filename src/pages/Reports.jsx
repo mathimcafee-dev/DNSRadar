@@ -134,10 +134,10 @@ export default function Reports({ user }) {
             {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(26,181,200,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'var(--teal)':'#ff4d6a', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
             <div style={{ display:'flex', gap:8, marginTop:8 }}>
               <button onClick={uploadReport} disabled={uploading||!xmlInput}
-                style={{ padding:'7px 16px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', opacity:!xmlInput?0.5:1 }}>
+                style={{ padding:'7px 16px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', opacity:!xmlInput?0.5:1 }}>
                 {uploading?'Parsing…':'Parse & import'}
               </button>
-              <button onClick={()=>{setUploadXML(false);setXmlInput('')}} style={{ padding:'7px 14px', background:'#e5e7eb', color:D.m, border:'1px solid var(--border)', borderRadius:7, fontSize:12, cursor:'pointer' }}>Cancel</button>
+              <button onClick={()=>{setUploadXML(false);setXmlInput('')}} style={{ padding:'7px 14px', background:'var(--border)', color:D.m, border:'1px solid var(--border)', borderRadius:7, fontSize:12, cursor:'pointer' }}>Cancel</button>
             </div>
           </div>
         </div>
@@ -228,7 +228,7 @@ export default function Reports({ user }) {
                     const rate = s.count > 0 ? Math.round((s.pass/s.count)*100) : 0
                     const isKnown = s.name !== sources.find(src=>src.source_ip===s.name)?.source_ip
                     return (
-                      <tr key={i} style={{ borderBottom:`1px solid #f9fafb` }}>
+                      <tr key={i} style={{ borderBottom:`1px solid var(--border)` }}>
                         <td style={{ padding:'9px 14px' }}>
                           <div style={{ fontSize:12, fontWeight:500, color:D.t }}>{s.name}</div>
                         </td>
@@ -237,7 +237,7 @@ export default function Reports({ user }) {
                         <td style={{ padding:'9px 14px', color:s.fail>0?'#ff4d6a':D.d, fontFamily:'monospace' }}>{s.fail.toLocaleString()}</td>
                         <td style={{ padding:'9px 14px' }}>
                           <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                            <div style={{ height:5, width:60, background:'#e5e7eb', borderRadius:3, overflow:'hidden' }}>
+                            <div style={{ height:5, width:60, background:'var(--border)', borderRadius:3, overflow:'hidden' }}>
                               <div style={{ height:'100%', width:`${rate}%`, background:rate>=90?'var(--teal)':rate>=70?'#ffb224':'#ff4d6a', borderRadius:3 }}/>
                             </div>
                             <span style={{ fontSize:12, color:rate>=90?'var(--teal)':rate>=70?'#ffb224':'#ff4d6a', fontWeight:600 }}>{rate}%</span>
@@ -260,7 +260,7 @@ export default function Reports({ user }) {
           <div style={card}>
             <div style={{ ...cardHd }}><span style={{ fontSize:12, fontWeight:600, color:D.t }}>Individual reports ({reports.length})</span></div>
             {reports.map(r=>(
-              <div key={r.id} style={{ display:'flex', alignItems:'center', gap:14, padding:'10px 16px', borderBottom:`1px solid #f9fafb` }}>
+              <div key={r.id} style={{ display:'flex', alignItems:'center', gap:14, padding:'10px 16px', borderBottom:`1px solid var(--border)` }}>
                 <div style={{ flex:1 }}>
                   <div style={{ fontSize:12, fontWeight:500, color:D.t }}>{r.org_name || 'Unknown sender'}</div>
                   <div style={{ fontSize:10, color:D.d }}>{r.report_date} · {r.email}</div>

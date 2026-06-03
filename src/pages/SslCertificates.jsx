@@ -66,7 +66,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
         <div style={{ display:'flex', alignItems:'center', gap:8, flexShrink:0 }}>
           <DaysBadge days={cert.days_remaining} expiresAt={cert.expires_at || cert.valid_to}/>
           {cert.chain_valid === false && <span style={{ fontSize:10, padding:'2px 7px', borderRadius:6, background:'rgba(239,68,68,0.12)', color:'#dc2626', border:'1px solid #fecaca', fontWeight:500 }}>Chain error</span>}
-          {cert.weak_cipher_detected && <span style={{ fontSize:10, padding:'2px 7px', borderRadius:6, background:'rgba(245,158,11,0.12)', color:'#92400e', border:'1px solid rgba(245,158,11,0.2)', fontWeight:500 }}>Weak cipher</span>}
+          {cert.weak_cipher_detected && <span style={{ fontSize:10, padding:'2px 7px', borderRadius:6, background:'rgba(245,158,11,0.12)', color:'var(--amber)', border:'1px solid rgba(245,158,11,0.2)', fontWeight:500 }}>Weak cipher</span>}
           <button onClick={handleDelete} disabled={deleting}
             style={{ padding:'5px 7px', background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.15)', borderRadius:7, color:'rgba(239,68,68,0.7)', cursor:'pointer',transition:'background 0.12s', lineHeight:0, flexShrink:0 }}
             title="Delete this SSL record">
@@ -94,7 +94,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
               <div style={{ fontSize:12,color:'var(--t2)', marginBottom:6, fontWeight:500 }}>TLS versions</div>
               <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                 {tlsVersions.map(v => (
-                  <span key={v} style={{ fontSize:12, padding:'2px 8px', borderRadius:6, background:(v==='TLSv1.0'||v==='TLSv1.1')?'#fef2f2':'var(--green-bg)', color:(v==='TLSv1.0'||v==='TLSv1.1')?'#dc2626':'var(--teal)', border:`1px solid ${(v==='TLSv1.0'||v==='TLSv1.1')?'#fecaca':'var(--green-bdr)'}`, fontWeight:500 }}>{v}</span>
+                  <span key={v} style={{ fontSize:12, padding:'2px 8px', borderRadius:6, background:(v==='TLSv1.0'||v==='TLSv1.1')?'#fef2f2':'var(--green-bg)', color:(v==='TLSv1.0'||v==='TLSv1.1')?'#dc2626':'var(--teal)', border:`1px solid ${(v==='TLSv1.0'||v==='TLSv1.1')?'var(--red-bdr)':'var(--green-bdr)'}`, fontWeight:500 }}>{v}</span>
                 ))}
               </div>
             </div>
@@ -259,7 +259,7 @@ export default function SslCertificates({ user }) {
           <button
             onClick={scanManualDomain}
             disabled={manualScanning || !manualDomain.trim()}
-            style={{ padding:'9px 18px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer',transition:'background 0.12s', display:'flex', alignItems:'center', gap:7, opacity: manualScanning || !manualDomain.trim() ? 0.6 : 1 }}>
+            style={{ padding:'9px 18px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer',transition:'background 0.12s', display:'flex', alignItems:'center', gap:7, opacity: manualScanning || !manualDomain.trim() ? 0.6 : 1 }}>
             {manualScanning
               ? <><div style={{ width:13, height:13, border:'2px solid #9ca3af', borderTopColor:'#fff', borderRadius:'50%', animation:'sslspin 0.7s linear infinite' }}/> Scanning…</>
               : <><Plus size={13}/> Check SSL</>
@@ -328,7 +328,7 @@ export default function SslCertificates({ user }) {
           {domains.filter(d=>d.verified&&!certs.find(c=>c.domain_name===d.domain_name)).map(d=>(
             <div key={d.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', background:'var(--card)', border:'1px solid var(--border)', borderRadius:10, marginBottom:6 }}>
               <span style={{ fontSize:13, color:'var(--t2)' }}>{d.domain_name}</span>
-              <button onClick={()=>scanDomain(d)} disabled={scanning} style={{ padding:'5px 14px', background:'#e5e7eb', border:'1px solid var(--border)', borderRadius:6, color:'var(--t2)', fontSize:12, fontWeight:500, cursor:'pointer',transition:'background 0.12s' }}>Scan now</button>
+              <button onClick={()=>scanDomain(d)} disabled={scanning} style={{ padding:'5px 14px', background:'var(--border)', border:'1px solid var(--border)', borderRadius:6, color:'var(--t2)', fontSize:12, fontWeight:500, cursor:'pointer',transition:'background 0.12s' }}>Scan now</button>
             </div>
           ))}
         </div>

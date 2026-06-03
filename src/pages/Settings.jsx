@@ -47,7 +47,7 @@ function WebhookTestButton({ url }) {
 
   return (
     <button onClick={test} disabled={state === 'loading'}
-      style={{ padding:'8px 12px', background: state==='ok'?'var(--green-bg)':state==='fail'?'#fef2f2':'#fff', border:`1px solid ${state==='ok'?'var(--green-bdr)':state==='fail'?'#fecaca':'#e5e7eb'}`, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', color: state==='ok'?'var(--teal)':state==='fail'?'#dc2626':'#374151', fontFamily:'inherit', transition:'all 0.15s', flexShrink:0 }}>
+      style={{ padding:'8px 12px', background: state==='ok'?'var(--green-bg)':state==='fail'?'#fef2f2':'#fff', border:`1px solid ${state==='ok'?'var(--green-bdr)':state==='fail'?'var(--red-bdr)':'#e5e7eb'}`, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', color: state==='ok'?'var(--teal)':state==='fail'?'#dc2626':'#374151', fontFamily:'inherit', transition:'all 0.15s', flexShrink:0 }}>
       {state==='loading' ? '…' : state==='ok' ? '✓ Sent!' : state==='fail' ? '✗ Failed' : 'Test'}
     </button>
   )
@@ -129,7 +129,7 @@ export default function Settings({ user }) {
             <div style={{ ...cardHd }}><Key size={13} color="var(--green)"/> API keys</div>
             <div style={{ padding:16 }}>
               <div style={{ fontSize:13,color:'var(--t2)', marginBottom:12, lineHeight:1.6 }}>
-                Use API keys to access DomainRadar programmatically. Include as <code style={{ fontFamily:'monospace', background:'#e5e7eb', padding:'1px 6px', borderRadius:4 }}>Authorization: Bearer YOUR_KEY</code> header.
+                Use API keys to access DomainRadar programmatically. Include as <code style={{ fontFamily:'monospace', background:'var(--border)', padding:'1px 6px', borderRadius:4 }}>Authorization: Bearer YOUR_KEY</code> header.
               </div>
               {/* Endpoint docs */}
               <div style={{ background:'var(--card-hi)', borderRadius:8, padding:'12px 14px', marginBottom:16, fontFamily:'monospace', fontSize:11 }}>
@@ -169,14 +169,14 @@ export default function Settings({ user }) {
               )}
               {/* Keys list */}
               {apiKeys.map(k => (
-                <div key={k.id} style={{ display:'flex', alignItems:'center', gap:12, padding:'9px 0', borderBottom:`1px solid #f9fafb` }}>
+                <div key={k.id} style={{ display:'flex', alignItems:'center', gap:12, padding:'9px 0', borderBottom:`1px solid var(--border)` }}>
                   <Key size={13} color={k.revoked?D.dim:'var(--teal)'}/>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:12, fontWeight:500, color:k.revoked?D.dim:D.text }}>{k.name}</div>
-                    <div style={{ fontSize:10, color:'var(--t2)', fontFamily:'monospace' }}>{k.key_prefix}… · {k.request_count||0} requests · {k.last_used_at?`Last used ${new Date(k.last_used_at).toLocaleDateString()}`:'Never used'}</div>
+                    <div style={{ fontSize:10, color:'var(--t1)', fontFamily:'var(--mono)' }}>{k.key_prefix}… · {k.request_count||0} requests · {k.last_used_at?`Last used ${new Date(k.last_used_at).toLocaleDateString()}`:'Never used'}</div>
                   </div>
-                  {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'#e5e7eb', color:'var(--t2)' }}>Revoked</span>
-                    : <button onClick={() => revokeKey(k.id)} style={{ padding:'4px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'#dc2626', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}><Trash2 size={10}/> Revoke</button>}
+                  {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'var(--border)', color:'var(--t2)' }}>Revoked</span>
+                    : <button onClick={() => revokeKey(k.id)} style={{ padding:'4px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'var(--red)', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}><Trash2 size={10}/> Revoke</button>}
                 </div>
               ))}
             </div>
@@ -190,7 +190,7 @@ export default function Settings({ user }) {
           <div style={{ padding:16 }}>
             <div style={{ marginBottom:12 }}>
               <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>Email</label>
-              <div style={{ padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:7, fontSize:13, color:'var(--t2)', fontFamily:'monospace' }}>{user?.email}</div>
+              <div style={{ padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:7, fontSize:13, color:'var(--t1)', fontFamily:'var(--mono)' }}>{user?.email}</div>
             </div>
             <div style={{ marginBottom:16 }}>
               <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>Display name</label>
@@ -200,11 +200,11 @@ export default function Settings({ user }) {
             </div>
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={saveProfile} disabled={saving}
-                style={{ padding:'8px 18px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
+                style={{ padding:'8px 18px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
                 {saving ? 'Saving…' : 'Save changes'}
               </button>
               <button onClick={() => { if(window.confirm('Sign out?')) signOut() }}
-                style={{ padding:'8px 14px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:7, color:'#dc2626', fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+                style={{ padding:'8px 14px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:7, color:'var(--red)', fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
                 <LogOut size={13}/> Sign out
               </button>
             </div>
@@ -214,16 +214,16 @@ export default function Settings({ user }) {
 
       {activeTab === 'notifications' && (
         <div>
-        <div style={{ background:'#fffbeb', border:'1px solid #fde68a', borderRadius:10, padding:'12px 16px', marginBottom:16, display:'flex', gap:12, alignItems:'flex-start' }}>
+        <div style={{ background:'var(--amber-bg)', border:'1px solid #fde68a', borderRadius:10, padding:'12px 16px', marginBottom:16, display:'flex', gap:12, alignItems:'flex-start' }}>
           <span style={{ fontSize:16, flexShrink:0 }}>⚙️</span>
           <div>
-            <div style={{ fontSize:13, fontWeight:600, color:'#92400e', marginBottom:4 }}>Supabase Edge Function Secrets Required</div>
+            <div style={{ fontSize:13, fontWeight:600, color:'var(--amber)', marginBottom:4 }}>Supabase Edge Function Secrets Required</div>
             <div style={{ fontSize:12, color:'#78350f', lineHeight:1.6 }}>
               For alerts and reports to work, set these in <strong>Supabase → Edge Functions → Secrets</strong>:
             </div>
             <div style={{ marginTop:8, display:'flex', flexWrap:'wrap', gap:6 }}>
               {['RESEND_API_KEY', 'RESEND_FROM_EMAIL', 'APP_URL'].map(s => (
-                <code key={s} style={{ fontSize:11, background:'#fef3c7', color:'#92400e', padding:'2px 8px', borderRadius:6, border:'1px solid #fde68a', fontFamily:'monospace' }}>{s}</code>
+                <code key={s} style={{ fontSize:11, background:'#fef3c7', color:'var(--amber)', padding:'2px 8px', borderRadius:6, border:'1px solid #fde68a', fontFamily:'monospace' }}>{s}</code>
               ))}
             </div>
             <div style={{ fontSize:11, color:'#78350f', marginTop:6 }}>
@@ -254,7 +254,7 @@ export default function Settings({ user }) {
               <div style={{ fontSize:11, color:'var(--t3)', marginTop:5 }}>We'll POST a JSON payload to this URL when alerts fire.</div>
             </div>
             <button onClick={saveProfile} disabled={saving}
-              style={{ padding:'8px 18px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
+              style={{ padding:'8px 18px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
               {saving ? 'Saving…' : 'Save'}
             </button>
           </div>
@@ -314,7 +314,7 @@ function TeamSection({ user }) {
             <option value="editor">Editor</option>
             <option value="admin">Admin</option>
           </select>
-          <button onClick={invite} disabled={saving||!email.trim()} style={{ padding:'8px 16px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap' }}>
+          <button onClick={invite} disabled={saving||!email.trim()} style={{ padding:'8px 16px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap' }}>
             {saving ? 'Sending…' : 'Invite'}
           </button>
         </div>

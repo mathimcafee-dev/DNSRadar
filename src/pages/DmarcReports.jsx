@@ -78,7 +78,7 @@ function PolicyWizard({ domain, currentPolicy, ruaAddress }) {
   const [msg, setMsg] = useState('')
 
   const policies = [
-    { p: 'none', label: 'None (monitor)', color: '#6b7280', desc: 'Emails pass regardless. You receive reports to see who is sending on your behalf. Start here.', risk: 'Low', visibility: 'Full' },
+    { p: 'none', label: 'None (monitor)', color: 'var(--t3)', desc: 'Emails pass regardless. You receive reports to see who is sending on your behalf. Start here.', risk: 'Low', visibility: 'Full' },
     { p: 'quarantine', label: 'Quarantine', color: '#d97706', desc: 'Unauthenticated emails go to spam. Legitimate senders must pass SPF or DKIM.', risk: 'Medium', visibility: 'Full' },
     { p: 'reject', label: 'Reject (enforce)', color: 'var(--teal)', desc: 'Unauthenticated emails are blocked entirely. Maximum protection — use only after monitoring confirms all senders pass.', risk: 'High if misconfigured', visibility: 'Full' },
   ]
@@ -120,7 +120,7 @@ function PolicyWizard({ domain, currentPolicy, ruaAddress }) {
               </div>
             </div>
             <div style={{ fontSize:12, color:'var(--t2)', lineHeight:1.6 }}>
-              ⚠️ Before upgrading to <strong style={{ color:'var(--t2)' }}>{nextPolicy.p}</strong>: ensure all your sending sources appear in your DMARC reports with <span style={{ color:'var(--t1)' }}>pass</span> status. If any legitimate sender shows <span style={{ color:'#dc2626' }}>fail</span>, fix it first.
+              ⚠️ Before upgrading to <strong style={{ color:'var(--t2)' }}>{nextPolicy.p}</strong>: ensure all your sending sources appear in your DMARC reports with <span style={{ color:'var(--t1)' }}>pass</span> status. If any legitimate sender shows <span style={{ color:'var(--red)' }}>fail</span>, fix it first.
             </div>
           </>
         ) : (
@@ -163,7 +163,7 @@ function UploadXMLModal({ domain, onClose, onSuccess }) {
           <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer',transition:'background 0.15s', color:'var(--t2)', fontSize:18 }}>×</button>
         </div>
         <div style={{ marginBottom:12 }}>
-          <button onClick={() => fileRef.current?.click()} style={{ padding:'7px 14px', background:'#e5e7eb', border:'1px solid var(--border)', borderRadius:7, color:'var(--t1)', fontSize:12, cursor:'pointer',transition:'background 0.15s', marginBottom:10 }}>
+          <button onClick={() => fileRef.current?.click()} style={{ padding:'7px 14px', background:'var(--border)', border:'1px solid var(--border)', borderRadius:7, color:'var(--t1)', fontSize:12, cursor:'pointer',transition:'background 0.15s', marginBottom:10 }}>
             {file ? `📎 ${file.name}` : '📎 Select .xml / .gz file'}
           </button>
           <input ref={fileRef} type="file" accept=".xml,.gz,.zip" style={{ display:'none' }} onChange={e => setFile(e.target.files[0])}/>
@@ -172,12 +172,12 @@ function UploadXMLModal({ domain, onClose, onSuccess }) {
           <textarea value={xml} onChange={e => setXml(e.target.value)} placeholder="Or paste XML content here..." rows={8}
             style={{ width:'100%', padding:'10px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:8, fontSize:12, fontFamily:'monospace', color:'var(--t1)', outline:'none', resize:'vertical', boxSizing:'border-box' }}/>
         )}
-        {error && <div style={{ fontSize:12, color:'#dc2626', marginTop:8 }}>{error}</div>}
+        {error && <div style={{ fontSize:12, color:'var(--red)', marginTop:8 }}>{error}</div>}
         <div style={{ display:'flex', gap:8, marginTop:14 }}>
-          <button onClick={upload} disabled={loading} style={{ flex:1, padding:'9px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer',transition:'background 0.15s' }}>
+          <button onClick={upload} disabled={loading} style={{ flex:1, padding:'9px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer',transition:'background 0.15s' }}>
             {loading ? 'Processing…' : 'Upload & parse'}
           </button>
-          <button onClick={onClose} style={{ padding:'9px 16px', background:'#e5e7eb', border:'1px solid var(--border)', borderRadius:8, color:'var(--t2)', fontSize:13, cursor:'pointer',transition:'background 0.15s' }}>Cancel</button>
+          <button onClick={onClose} style={{ padding:'9px 16px', background:'var(--border)', border:'1px solid var(--border)', borderRadius:8, color:'var(--t2)', fontSize:13, cursor:'pointer',transition:'background 0.15s' }}>Cancel</button>
         </div>
       </div>
     </div>
@@ -270,7 +270,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
           {[7,30,90].map(r => (
             <button key={r} onClick={() => setRange(r)} style={{ padding:'5px 12px', background:range===r?'var(--green-bg)':'#f9fafb', border:`1px solid ${range===r?'rgba(26,181,200,0.3)':'#e5e7eb'}`, borderRadius:7, color:range===r?'var(--teal)':D.muted, fontSize:12, fontWeight:500, cursor:'pointer',transition:'background 0.15s' }}>{r}d</button>
           ))}
-          <button onClick={() => setShowUpload(true)} style={{ padding:'5px 12px', background:'#e5e7eb', border:'1px solid var(--border)', borderRadius:7, color:'var(--t1)', fontSize:12, cursor:'pointer',transition:'background 0.15s', display:'flex', alignItems:'center', gap:5 }}><Upload size={11}/> Upload XML</button>
+          <button onClick={() => setShowUpload(true)} style={{ padding:'5px 12px', background:'var(--border)', border:'1px solid var(--border)', borderRadius:7, color:'var(--t1)', fontSize:12, cursor:'pointer',transition:'background 0.15s', display:'flex', alignItems:'center', gap:5 }}><Upload size={11}/> Upload XML</button>
           <button onClick={fetchData} style={{ padding:'5px 10px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, color:'var(--t2)', cursor:'pointer',transition:'background 0.15s' }}><RefreshCw size={12}/></button>
         </div>
       </div>
@@ -293,7 +293,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
             Add the RUA address above to your DMARC record. Reports arrive automatically within 24–48 hours.
             Or upload a report XML manually to test immediately.
           </p>
-          <button onClick={() => setShowUpload(true)} style={{ padding:'8px 20px', background:'var(--teal)', border:'none', borderRadius:8, color:'#fff', fontSize:13, fontWeight:600, cursor:'pointer',transition:'background 0.15s' }}>
+          <button onClick={() => setShowUpload(true)} style={{ padding:'8px 20px', background:'var(--teal)', border:'none', borderRadius:8, color:'var(--t1)', fontSize:13, fontWeight:600, cursor:'pointer',transition:'background 0.15s' }}>
             Upload test XML now
           </button>
         </div>
@@ -364,7 +364,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
                       {!s.threat && <CheckCircle size={12} color="var(--green)" style={{ flexShrink:0 }}/>}
                       <div style={{ flex:1, minWidth:0 }}>
                         <div style={{ fontSize:12, fontWeight:500, color:'var(--t1)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{s.name}</div>
-                        <div style={{ height:4, borderRadius:2, background:'#e5e7eb', marginTop:4, overflow:'hidden' }}>
+                        <div style={{ height:4, borderRadius:2, background:'var(--border)', marginTop:4, overflow:'hidden' }}>
                           <div style={{ height:'100%', width:`${pct}%`, background: pct >= 90 ? 'var(--teal)' : pct >= 70 ? '#d97706' : '#dc2626', borderRadius:2 }}/>
                         </div>
                       </div>
@@ -446,7 +446,7 @@ export default function DmarcReports({ user }) {
         <h2 style={{ fontSize: 16, fontWeight: 700, color: D.text, margin: 0 }}>DMARC Reports</h2>
         {domains.length > 0 && (
           <select value={selectedId || ''} onChange={e => setSelectedId(e.target.value)}
-            style={{ padding: '5px 10px', background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 7, fontSize: 12, color: '#111827', cursor: 'pointer', outline: 'none' }}>
+            style={{ padding: '5px 10px', background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 7, fontSize: 12, color: 'var(--t1)', cursor: 'pointer', outline: 'none' }}>
             {domains.map(d => <option key={d.id} value={d.id}>{d.domain_name}</option>)}
           </select>
         )}

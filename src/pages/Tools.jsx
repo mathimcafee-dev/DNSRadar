@@ -98,7 +98,7 @@ function SPFGenerator() {
             <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:8 }}>Email providers</label>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6 }}>
               {PROVIDERS.map(p => (
-                <label key={p.key} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 10px', background:providers[p.key] ? 'var(--green-bg)' : '#f9fafb', border:`1px solid ${providers[p.key] ? 'var(--green-bdr)' : '#e5e7eb'}`, borderRadius:7, cursor:'pointer', fontSize:12, color:'var(--t1)' }}>
+                <label key={p.key} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 10px', background:providers[p.key] ? 'var(--teal-bg)' : 'var(--card-hi)', border:`1px solid ${providers[p.key] ? 'var(--teal-bdr)' : 'var(--border)'}`, borderRadius:7, cursor:'pointer', fontSize:12, color:'var(--t1)' }}>
                   <input type="checkbox" checked={providers[p.key]} onChange={e => setProviders(prev => ({ ...prev, [p.key]: e.target.checked }))}
                     style={{ accentColor:'var(--teal)', width:14, height:14 }}/>
                   {p.label}
@@ -116,14 +116,14 @@ function SPFGenerator() {
             <div style={{ display:'flex', gap:6 }}>
               {[['~all','SoftFail (recommended)'],['−all','HardFail (strict)'],['?all','Neutral']].map(([v, l]) => (
                 <button key={v} onClick={() => setQualifier(v)}
-                  style={{ padding:'6px 12px', background:qualifier === v ? 'var(--green-bg)' : '#f9fafb', border:`1px solid ${qualifier === v ? 'var(--teal)' : '#e5e7eb'}`, borderRadius:6, color:qualifier === v ? 'var(--teal)' : '#374151', fontSize:12, cursor:'pointer', fontFamily:'monospace' }}>
+                  style={{ padding:'6px 12px', background:qualifier === v ? 'var(--teal-bg)' : 'var(--card-hi)', border:`1px solid ${qualifier === v ? 'var(--teal)' : '#e5e7eb'}`, borderRadius:6, color:qualifier === v ? 'var(--teal)' : 'var(--t2)', fontSize:12, cursor:'pointer', fontFamily:'monospace' }}>
                   {v} <span style={{ fontFamily:'inherit', fontSize:10, opacity:0.7 }}>— {l}</span>
                 </button>
               ))}
             </div>
           </div>
           {/* Lookup counter */}
-          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12, padding:'8px 12px', background:`lookupCount >= 8 ? '#fef2f2' : lookupCount >= 6 ? '#fffbeb' : 'var(--green-bg)'`, borderRadius:7, border:`1px solid lookupCount >= 8 ? '#fecaca' : lookupCount >= 6 ? '#fde68a' : 'var(--green-bdr)'` }}>
+          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12, padding:'8px 12px', background:lookupCount >= 8 ? 'var(--red-bg)' : lookupCount >= 6 ? 'var(--amber-bg)' : 'var(--lime-bg)', borderRadius:7, border:`1px solid lookupCount >= 8 ? 'var(--red-bdr)' : lookupCount >= 6 ? 'var(--amber-bdr)' : 'var(--green-bdr)'` }}>
             <AlertTriangle size={13} color={lookupCount >= 8 ? '#dc2626' : lookupCount >= 6 ? '#d97706' : 'var(--teal)'}/>
             <span style={{ fontSize:12, color: lookupCount >= 8 ? '#dc2626' : lookupCount >= 6 ? '#d97706' : 'var(--teal)' }}>
               DNS lookups: {lookupCount}/10 {lookupCount >= 8 ? '— near limit! Consider SPF flattening' : lookupCount >= 6 ? '— getting close to RFC 7208 limit' : '— well within limit'}
@@ -186,7 +186,7 @@ function DMARCGenerator({ presetPolicy }) {
               <div style={{ display:'flex', gap:5 }}>
                 {['none','quarantine','reject'].map(p => (
                   <button key={p} onClick={() => setPolicy(p)}
-                    style={{ flex:1, padding:'7px 4px', background:policy === p ? `rgba(${p === 'reject' ? '16,185,129' : p === 'quarantine' ? '245,158,11' : '239,68,68'},0.15)` : '#f9fafb', border:`1px solid ${policy === p ? policyColor : D.border}`, borderRadius:6, color:policy === p ? policyColor : '#374151', fontSize:12, cursor:'pointer', fontWeight:policy === p ? 600 : 400 }}>
+                    style={{ flex:1, padding:'7px 4px', background:policy === p ? `rgba(${p === 'reject' ? '26,181,200' : p === 'quarantine' ? '251,191,36' : '239,68,68'},0.15)` : 'var(--card-hi)', border:`1px solid ${policy === p ? policyColor : D.border}`, borderRadius:6, color:policy === p ? policyColor : 'var(--t2)', fontSize:12, cursor:'pointer', fontWeight:policy === p ? 600 : 400 }}>
                     {p}
                   </button>
                 ))}
@@ -216,7 +216,7 @@ function DMARCGenerator({ presetPolicy }) {
               <div style={{ display:'flex', gap:5 }}>
                 {[['r','Relaxed'],['s','Strict']].map(([v,l]) => (
                   <button key={v} onClick={() => setAdkim(v)}
-                    style={{ flex:1, padding:'6px', background:adkim===v?'rgba(99,102,241,0.15)':'#f9fafb', border:`1px solid ${adkim===v?'rgba(99,102,241,0.4)':D.border}`, borderRadius:6, color:adkim===v?'#818cf8':D.muted, fontSize:12, cursor:'pointer' }}>
+                    style={{ flex:1, padding:'6px', background:adkim===v?'var(--purple-bg)':'var(--card-hi)', border:`1px solid ${adkim===v?'var(--purple-bdr)':'var(--border)'}`, borderRadius:6, color:adkim===v?'var(--purple)':'var(--t2)', fontSize:12, cursor:'pointer' }}>
                     {v} — {l}
                   </button>
                 ))}
@@ -227,7 +227,7 @@ function DMARCGenerator({ presetPolicy }) {
               <div style={{ display:'flex', gap:5 }}>
                 {[['r','Relaxed'],['s','Strict']].map(([v,l]) => (
                   <button key={v} onClick={() => setAspf(v)}
-                    style={{ flex:1, padding:'6px', background:aspf===v?'rgba(99,102,241,0.15)':'#f9fafb', border:`1px solid ${aspf===v?'rgba(99,102,241,0.4)':D.border}`, borderRadius:6, color:aspf===v?'#818cf8':D.muted, fontSize:12, cursor:'pointer' }}>
+                    style={{ flex:1, padding:'6px', background:aspf===v?'var(--purple-bg)':'var(--card-hi)', border:`1px solid ${aspf===v?'var(--purple-bdr)':'var(--border)'}`, borderRadius:6, color:aspf===v?'var(--purple)':'var(--t2)', fontSize:12, cursor:'pointer' }}>
                     {v} — {l}
                   </button>
                 ))}
@@ -299,7 +299,7 @@ function DKIMTool() {
               onKeyDown={e => e.key === 'Enter' && scan()}
               style={{ flex:1, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
             <button onClick={scan} disabled={loading || !domain}
-              style={{ padding:'8px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'#92400e', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !domain ? 0.5 : 1 }}>
+              style={{ padding:'8px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'var(--amber)', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !domain ? 0.5 : 1 }}>
               {loading ? <><div style={{ width:13, height:13, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'#d97706', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Scanning {SELECTORS.length} selectors…</> : <><Zap size={13}/> Discover</>}
             </button>
           </div>
@@ -316,9 +316,9 @@ function DKIMTool() {
                     <div key={r.selector} style={{ padding:'10px 14px', background:'rgba(245,158,11,0.06)', border:'1px solid rgba(245,158,11,0.2)', borderRadius:8 }}>
                       <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:6 }}>
                         <CheckCircle size={14} color="var(--green)"/>
-                        <span style={{ fontFamily:'monospace', fontSize:13, fontWeight:600, color:'#92400e' }}>{r.selector}</span>
+                        <span style={{ fontFamily:'monospace', fontSize:13, fontWeight:600, color:'var(--amber)' }}>{r.selector}</span>
                         <span style={{ fontSize:12,color:'var(--t2)' }}>._domainkey.{domain}</span>
-                        {r.keySize && <span style={{ fontSize:12, padding:'2px 8px', borderRadius:8, background:r.keySize >= 2048 ? 'var(--green-bg)' : '#fffbeb', color:r.keySize >= 2048 ? 'var(--teal)' : '#92400e' }}>{r.keySize}-bit</span>}
+                        {r.keySize && <span style={{ fontSize:12, padding:'2px 8px', borderRadius:8, background:r.keySize >= 2048 ? 'var(--lime-bg)' : 'var(--amber-bg)', color:r.keySize >= 2048 ? 'var(--lime)' : 'var(--amber)' }}>{r.keySize}-bit</span>}
                       </div>
                       <div style={{ fontFamily:'monospace', fontSize:10, color:'var(--t2)', wordBreak:'break-all', lineHeight:1.5 }}>{r.raw?.slice(0, 120)}…</div>
                     </div>
@@ -383,7 +383,7 @@ function EmailHeaderAnalyser() {
             <span style={{ fontSize:12, fontWeight:700, color:'var(--t1)', fontFamily:'monospace' }}>{label}</span>
             <span style={{ fontSize:10, padding:'1px 7px', borderRadius:8, background:`rgba(${pass ? '16,185,129' : fail ? '239,68,68' : '245,158,11'},0.15)`, color }}>{status}</span>
           </div>
-          {value && <div style={{ fontSize:10, color:'var(--t2)', fontFamily:'monospace', wordBreak:'break-all' }}>{value}</div>}
+          {value && <div style={{ fontSize:10, color:'var(--t1)', fontFamily:'var(--mono)', wordBreak:'break-all' }}>{value}</div>}
         </div>
       </div>
     )
@@ -433,7 +433,7 @@ function EmailHeaderAnalyser() {
                 <div style={{ padding:'8px 14px' }}>
                   <div style={{ fontSize:12,color:'var(--t2)', marginBottom:6 }}>Routing path ({result.receivedFrom.length} hops)</div>
                   {result.receivedFrom.map((r, i) => (
-                    <div key={i} style={{ fontSize:10, color:'var(--t2)', fontFamily:'monospace', padding:'3px 0', borderBottom:`1px solid rgba(255,255,255,0.03)` }}>{r.slice(0, 100)}</div>
+                    <div key={i} style={{ fontSize:10, color:'var(--t1)', fontFamily:'var(--mono)', padding:'3px 0', borderBottom:`1px solid rgba(255,255,255,0.03)` }}>{r.slice(0, 100)}</div>
                   ))}
                 </div>
               )}
@@ -516,7 +516,7 @@ function BulkScanner() {
           </div>
           {scanning && (
             <div style={{ marginBottom:12 }}>
-              <div style={{ height:4, background:'#e5e7eb', borderRadius:2, overflow:'hidden' }}>
+              <div style={{ height:4, background:'var(--border)', borderRadius:2, overflow:'hidden' }}>
                 <div style={{ height:'100%', width:`${progress}%`, background:'#22d3ee', borderRadius:2, transition:'width 0.3s ease' }}/>
               </div>
             </div>
@@ -533,7 +533,7 @@ function BulkScanner() {
                 </thead>
                 <tbody>
                   {results.map(r => (
-                    <tr key={r.domain} style={{ borderBottom:`1px solid #f9fafb` }}>
+                    <tr key={r.domain} style={{ borderBottom:`1px solid var(--border)` }}>
                       <td style={{ padding:'8px 12px', fontFamily:'monospace', color:'var(--t1)' }}>{r.domain}</td>
                       <td style={{ padding:'8px 12px', fontWeight:700, color: r.score >= 70 ? 'var(--teal)' : r.score >= 50 ? '#92400e' : r.score ? '#dc2626' : '#6b7280' }}>{r.score ?? '–'}</td>
                       {[r.spf, r.dmarc, r.ssl].map((v, i) => {
@@ -586,7 +586,7 @@ function SPFFlattener() {
         <div style={{ display:'flex', gap:8, marginBottom:12 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&flatten()}
             placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
-          <button onClick={flatten} disabled={loading||!domain.trim()} style={{ padding:'8px 18px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
+          <button onClick={flatten} disabled={loading||!domain.trim()} style={{ padding:'8px 18px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
             {loading ? <div style={{ width:12, height:12, border:'2px solid #9ca3af', borderTopColor:'#fff', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> : <Zap size={13}/>}
             Flatten
           </button>
@@ -602,7 +602,7 @@ function SPFFlattener() {
                 </div>
               ))}
             </div>
-            {result.warning && <div style={{ fontSize:12, color:'#92400e', marginBottom:10, padding:'6px 10px', background:'rgba(245,158,11,0.08)', borderRadius:6 }}>⚠️ {result.warning}</div>}
+            {result.warning && <div style={{ fontSize:12, color:'var(--amber)', marginBottom:10, padding:'6px 10px', background:'rgba(245,158,11,0.08)', borderRadius:6 }}>⚠️ {result.warning}</div>}
             <div style={{ marginBottom:8 }}>
               <div style={{ fontSize:12,color:'var(--t2)', marginBottom:5 }}>Original record</div>
               <div style={{ fontFamily:'monospace', fontSize:12, color:'var(--t2)', background:'var(--card-hi)', padding:'8px 12px', borderRadius:7, wordBreak:'break-all', lineHeight:1.6 }}>{result.original}</div>
@@ -632,7 +632,7 @@ function SPFFlattener() {
                       alert('Hosted SPF record copied! Replace your current SPF record with this in your DNS. Then email us at support@dnsradar.easysecurity.in with your domain so we can configure the hosted record.')
                     } catch { alert('Copy: v=spf1 include:spf.dnsradar.easysecurity.in ~all') }
                   }}
-                  style={{ padding:'7px 14px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>
+                  style={{ padding:'7px 14px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>
                   📋 Copy hosted SPF record
                 </button>
                 <a href="mailto:support@dnsradar.easysecurity.in?subject=Hosted SPF setup&body=Please configure hosted SPF for my domain."
@@ -702,9 +702,9 @@ function DKIMRotation() {
               {selectors.map(s => (
                 <div key={s.selector} style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid var(--border)', marginBottom:6 }}>
                   <code style={{ fontSize:12, color:'#1e1b4b', fontWeight:600 }}>{s.selector}</code>
-                  <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background: s.key_size >= 2048 ? 'var(--green-bg)' : '#fffbeb', color: s.key_size >= 2048 ? 'var(--teal)' : '#92400e', fontWeight:600 }}>{s.key_size || '?'}-bit</span>
+                  <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background: s.key_size >= 2048 ? 'var(--lime-bg)' : 'var(--amber-bg)', color: s.key_size >= 2048 ? 'var(--lime)' : 'var(--amber)', fontWeight:600 }}>{s.key_size || '?'}-bit</span>
                   <span style={{ fontSize:12,color:'var(--t2)' }}>TTL {s.ttl}s</span>
-                  {s.key_size < 2048 && <span style={{ fontSize:10, color:'#92400e', marginLeft:'auto' }}>⚠️ Upgrade to 2048-bit</span>}
+                  {s.key_size < 2048 && <span style={{ fontSize:10, color:'var(--amber)', marginLeft:'auto' }}>⚠️ Upgrade to 2048-bit</span>}
                 </div>
               ))}
             </div>
@@ -945,8 +945,8 @@ function BulkDomainImport({ user }) {
         <div style={{ fontSize:13,color:'var(--t2)', marginBottom:12 }}>Paste domains one per line, or comma/semicolon separated. URLs are automatically cleaned.</div>
         <textarea value={text} onChange={e => setText(e.target.value)} rows={6} placeholder={'example.com\ngoogle.com\nhttps://microsoft.com/\nyourdomain.org'}
           style={{ width:'100%', padding:'10px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:8, fontSize:12, fontFamily:'monospace', color:'var(--t1)', outline:'none', resize:'vertical', boxSizing:'border-box', marginBottom:10 }}/>
-        {!user && <div style={{ fontSize:12, color:'#92400e', marginBottom:10 }}>⚠️ Sign in to import domains to your account</div>}
-        <button onClick={importDomains} disabled={importing || !text.trim() || !user} style={{ padding:'8px 18px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', marginBottom: results.length ? 14 : 0 }}>
+        {!user && <div style={{ fontSize:12, color:'var(--amber)', marginBottom:10 }}>⚠️ Sign in to import domains to your account</div>}
+        <button onClick={importDomains} disabled={importing || !text.trim() || !user} style={{ padding:'8px 18px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', marginBottom: results.length ? 14 : 0 }}>
           {importing ? 'Importing…' : 'Import domains'}
         </button>
         {results.length > 0 && (
@@ -1037,11 +1037,11 @@ function DeliverabilityTest({ user }) {
             placeholder="yourdomain.com"
             style={{ flex:1, padding:'9px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:8, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:F }}/>
           <button onClick={runTest} disabled={loading||!domain.trim()}
-            style={{ padding:'9px 20px', background:'#111827', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:loading||!domain.trim()?'not-allowed':'pointer', display:'flex', alignItems:'center', gap:6, opacity:loading||!domain.trim()?0.6:1, fontFamily:F }}>
+            style={{ padding:'9px 20px', background:'var(--card)', color:'var(--t1)', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:loading||!domain.trim()?'not-allowed':'pointer', display:'flex', alignItems:'center', gap:6, opacity:loading||!domain.trim()?0.6:1, fontFamily:F }}>
             {loading ? <><div style={{width:12,height:12,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'spin 0.7s linear infinite'}}/> Testing…</> : '▶ Run test'}
           </button>
         </div>
-        {error && <div style={{ marginTop:10, padding:'8px 12px', background:'#fef2f2', border:'1px solid #fecaca', borderRadius:8, fontSize:12, color:'#dc2626' }}>{error}</div>}
+        {error && <div style={{ marginTop:10, padding:'8px 12px', background:'var(--red-bg)', border:'1px solid #fecaca', borderRadius:8, fontSize:12, color:'#dc2626' }}>{error}</div>}
       </div>
 
       {result && (
@@ -1071,7 +1071,7 @@ function DeliverabilityTest({ user }) {
                     <span key={p.label} style={{ fontSize:11, padding:'3px 10px', borderRadius:8, fontWeight:600,
                       background: p.pass ? 'var(--green-bg)' : '#fef2f2',
                       color: p.pass ? 'var(--teal)' : '#dc2626',
-                      border: `1px solid ${p.pass ? 'var(--green-bdr)' : '#fecaca'}` }}>
+                      border: `1px solid ${p.pass ? 'var(--green-bdr)' : 'var(--red-bdr)'}` }}>
                       {p.pass ? '✓' : '✗'} {p.label}
                     </span>
                   ))}
@@ -1087,16 +1087,16 @@ function DeliverabilityTest({ user }) {
             </div>
             {result.checks.map((c,i) => (
               <div key={c.id} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'12px 16px', borderBottom: i < result.checks.length-1 ? '1px solid #f3f4f6' : 'none', background: !c.pass&&!c.warn ? '#fefafa' : 'transparent' }}>
-                <div style={{ width:28, height:28, borderRadius:8, background: c.pass?'var(--green-bg)':c.warn?'#fffbeb':'#fef2f2', border:`1px solid ${c.pass?'var(--green-bdr)':c.warn?'#fde68a':'#fecaca'}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, flexShrink:0 }}>
+                <div style={{ width:28, height:28, borderRadius:8, background: c.pass?'var(--teal-bg)':c.warn?'var(--amber-bg)':'var(--red-bg)', border:`1px solid ${c.pass?'var(--green-bdr)':c.warn?'var(--amber-bdr)':'var(--red-bdr)'}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, flexShrink:0 }}>
                   {c.icon}
                 </div>
                 <div style={{ flex:1 }}>
                   <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:3 }}>
                     <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)' }}>{c.label}</span>
                     <span style={{ fontSize:10, fontWeight:600, padding:'2px 7px', borderRadius:8,
-                      background: c.pass?'var(--green-bg)':c.warn?'#fffbeb':'#fef2f2',
+                      background: c.pass?'var(--teal-bg)':c.warn?'var(--amber-bg)':'var(--red-bg)',
                       color: c.pass?'var(--teal)':c.warn?'#d97706':'#dc2626',
-                      border: `1px solid ${c.pass?'var(--green-bdr)':c.warn?'#fde68a':'#fecaca'}` }}>
+                      border: `1px solid ${c.pass?'var(--green-bdr)':c.warn?'var(--amber-bdr)':'var(--red-bdr)'}` }}>
                       {c.pass ? '✓ Pass' : c.warn ? '⚠ Warn' : '✗ Fail'}
                     </span>
                   </div>
@@ -1130,7 +1130,7 @@ export default function Tools({ user }) {
         <div style={{ display:'flex', gap:2, flexWrap:'wrap' }}>
           {tabs.map(t => (
             <button key={t.id} onClick={() => setActiveTab(t.id)}
-              style={{ padding:'7px 16px', background:activeTab===t.id?'var(--green-bg)':'transparent', border:`1px solid ${activeTab===t.id?'var(--green-bdr)':'transparent'}`, borderRadius:8, color:activeTab===t.id?'var(--teal)':'#374151', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+              style={{ padding:'7px 16px', background:activeTab===t.id?'var(--green-bg)':'transparent', border:`1px solid ${activeTab===t.id?'var(--green-bdr)':'transparent'}`, borderRadius:8, color:activeTab===t.id?'var(--teal)':'var(--t2)', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
               {t.label}
             </button>
           ))}

@@ -44,7 +44,7 @@ export default function AuditReport({ setPage, setScanDomain, setScanType }) {
               onBlur={e => e.target.style.borderColor='#e5e7eb'}
             />
           </div>
-          <button type="submit" style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'13px 22px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:10, fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:F, whiteSpace:'nowrap', boxShadow:'0 2px 8px rgba(26,181,200,0.25)' }}>
+          <button type="submit" style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'13px 22px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:10, fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:F, whiteSpace:'nowrap', boxShadow:'0 2px 8px rgba(26,181,200,0.25)' }}>
             Run audit <ArrowRight size={15}/>
           </button>
         </form>

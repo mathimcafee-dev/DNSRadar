@@ -10,7 +10,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       <div style={{ color:'var(--t3)', marginBottom:6, fontSize:11 }}>{label}</div>
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
         <div style={{ width:8, height:8, borderRadius:'50%', background: d?.overall >= 70 ? 'var(--teal)' : d?.overall >= 50 ? '#f59e0b' : '#ef4444' }}/>
-        <span style={{ color:'#fff', fontWeight:600 }}>Overall: {d?.overall}</span>
+        <span style={{ color:'var(--t1)', fontWeight:600 }}>Overall: {d?.overall}</span>
       </div>
       {[['DNS','#3b82f6'],['Email','#ef4444'],['SSL','var(--teal)'],['Security','#a78bfa']].map(([k,c]) => (
         <div key={k} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:2 }}>

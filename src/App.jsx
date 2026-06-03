@@ -230,7 +230,7 @@ function Reports({ user }) {
               {domains.length > 0 && (
                 <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
                   {domains.slice(0,5).map((d, i) => (
-                    <span key={i} style={{ fontSize:11, padding:'2px 8px', borderRadius:6, background:'var(--card-hi)', color:'var(--t2)', fontFamily:'monospace', border:'1px solid var(--border)' }}>
+                    <span key={i} style={{ fontSize:11, padding:'2px 8px', borderRadius:6, background:'var(--card-hi)', color:'var(--t1)', fontFamily:'var(--mono)', border:'1px solid var(--border)' }}>
                       {d.domain_name || d} {d.health_score ? `· ${d.health_score}` : ''}
                     </span>
                   ))}
@@ -308,7 +308,7 @@ export default function App() {
   useEffect(() => { if (needsAuth && !user && !loading) setPage('auth') }, [needsAuth, user, loading])
 
   if (loading) return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'#f7f8fa' }}>
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'var(--page)' }}>
       <div style={{ width:28, height:28, border:'3px solid #e5e7eb', borderTopColor:'var(--teal)', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
@@ -330,7 +330,7 @@ export default function App() {
   const sharedDomainProps = { user, domains, selectedDomain, setSelectedDomain }
 
   return (
-    <div style={{ display:'flex', minHeight:'100vh', background:'#f7f8fa' }}>
+    <div style={{ display:'flex', minHeight:'100vh', background:'var(--page)' }}>
       <Sidebar page={page} setPage={setPage} alertCount={alertCount} user={user}/>
       <main style={{ flex:1, minWidth:0, overflowY:'auto', minHeight:'100vh' }} key={page}>
         <div className="page-enter" style={{minHeight:'100%'}}>

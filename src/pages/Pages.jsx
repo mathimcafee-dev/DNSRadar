@@ -251,7 +251,7 @@ export function Settings({ user }) {
             }} onClick={() => setAlertEmail(!alertEmail)}>
               <div style={{
                 position: 'absolute', top: 3, left: alertEmail ? 21 : 3,
-                width: 16, height: 16, borderRadius: '50%', background: '#fff', transition: 'left 0.2s',
+                width: 16, height: 16, borderRadius: '50%', background: 'var(--card)', transition: 'left 0.2s',
                 boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
               }} />
             </div>

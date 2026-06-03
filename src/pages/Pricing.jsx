@@ -94,13 +94,13 @@ export default function Pricing({ setPage }) {
       <nav style={{ background:'var(--card)', borderBottom:'1px solid var(--border)', padding:'0 32px', height:56, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }} onClick={() => setPage('landing')}>
           <div style={{ width:28, height:28, background:'var(--teal)', borderRadius:7, display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <span style={{ color:'#fff', fontSize:14, fontWeight:900 }}>D</span>
+            <span style={{ color:'var(--t1)', fontSize:14, fontWeight:900 }}>D</span>
           </div>
           <span style={{ fontSize:14, fontWeight:800, letterSpacing:'-0.02em' }}>DomainRadar</span>
         </div>
         <div style={{ display:'flex', gap:8 }}>
           <button onClick={() => setPage('landing')} style={{ padding:'6px 14px', background:'transparent', color:'#555', border:'1px solid var(--border)', borderRadius:7, fontSize:13, cursor:'pointer', fontFamily:F }}>← Back</button>
-          <button onClick={() => setPage('auth')} style={{ padding:'6px 14px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Start free</button>
+          <button onClick={() => setPage('auth')} style={{ padding:'6px 14px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:7, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Start free</button>
         </div>
       </nav>
 
@@ -120,7 +120,7 @@ export default function Pricing({ setPage }) {
           {PLANS.map((plan, i) => (
             <div key={plan.name} className="fade" style={{ animationDelay:`${i*0.08}s`, position:'relative', background:'var(--card)', border: plan.badge ? '2px solid var(--green)' : '1px solid #e5e7eb', borderRadius:16, padding:'28px 26px', display:'flex', flexDirection:'column' }}>
               {plan.badge && (
-                <div style={{ position:'absolute', top:-12, left:'50%', transform:'translateX(-50%)', background:'var(--teal)', color:'#fff', fontSize:11, fontWeight:700, padding:'3px 14px', borderRadius:20, whiteSpace:'nowrap' }}>
+                <div style={{ position:'absolute', top:-12, left:'50%', transform:'translateX(-50%)', background:'var(--teal)', color:'var(--t1)', fontSize:11, fontWeight:700, padding:'3px 14px', borderRadius:20, whiteSpace:'nowrap' }}>
                   {plan.badge}
                 </div>
               )}
@@ -134,7 +134,7 @@ export default function Pricing({ setPage }) {
               </div>
               <div style={{ flex:1, marginBottom:24 }}>
                 {plan.features.map(f => (
-                  <div key={f} style={{ display:'flex', alignItems:'flex-start', gap:9, padding:'6px 0', borderBottom:'1px solid #f9fafb' }}>
+                  <div key={f} style={{ display:'flex', alignItems:'flex-start', gap:9, padding:'6px 0', borderBottom:'1px solid var(--border)' }}>
                     <CheckCircle size={14} color="var(--green)" style={{ flexShrink:0, marginTop:2 }}/>
                     <span style={{ fontSize:13, color:'var(--t2)', lineHeight:1.5 }}>{f}</span>
                   </div>
@@ -180,7 +180,7 @@ export default function Pricing({ setPage }) {
           <h2 style={{ fontSize:22, fontWeight:800, letterSpacing:'-0.03em', marginBottom:10, color:'#111' }}>Questions about pricing?</h2>
           <p style={{ fontSize:14, color:'#4b7a57', marginBottom:24, lineHeight:1.6 }}>All plans come with a 14-day free trial. No credit card required to start. Cancel anytime.</p>
           <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap' }}>
-            <button onClick={() => setPage('auth')} style={{ padding:'10px 24px', background:'var(--teal)', color:'#fff', border:'none', borderRadius:9, fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:F }}>Start free trial →</button>
+            <button onClick={() => setPage('auth')} style={{ padding:'10px 24px', background:'var(--teal)', color:'var(--t1)', border:'none', borderRadius:9, fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:F }}>Start free trial →</button>
             <button onClick={() => setPage('about')} style={{ padding:'10px 20px', background:'transparent', color:'var(--t2)', border:'1px solid var(--green-bdr)', borderRadius:9, fontSize:13, cursor:'pointer', fontFamily:F }}>Learn about us</button>
           </div>
         </div>

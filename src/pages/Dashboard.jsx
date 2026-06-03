@@ -163,7 +163,7 @@ function AutoFixBanner({ userId, setPage }) {
         <span style={{fontSize:16}}>🔑</span>
         <span style={{color:'var(--amber)'}}>Connect Cloudflare or GoDaddy to enable <strong>one-click auto-fix</strong> for DNS issues.</span>
       </div>
-      <button onClick={()=>setPage('autofix')} style={{padding:'5px 12px',background:'#111827',color:'#fff',border:'none',borderRadius:7,fontSize:11,fontWeight:600,cursor:'pointer',whiteSpace:'nowrap',fontFamily:'inherit'}}>
+      <button onClick={()=>setPage('autofix')} style={{padding:'5px 12px',background:'var(--card)',color:'var(--t1)',border:'none',borderRadius:7,fontSize:11,fontWeight:600,cursor:'pointer',whiteSpace:'nowrap',fontFamily:'inherit'}}>
         Add credentials →
       </button>
     </div>
@@ -245,7 +245,7 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
   }
 
   if (state === 'no-cred') return (
-    <button onClick={()=>setState('idle')} style={{fontSize:11,color:'#d97706',background:'var(--amber-bg)',border:'1px solid var(--amber-bdr)',borderRadius:6,padding:'3px 9px',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
+    <button onClick={()=>setState('idle')} style={{fontSize:11,color:'var(--amber)',background:'var(--amber-bg)',border:'1px solid var(--amber-bdr)',borderRadius:6,padding:'3px 9px',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
       Add DNS credentials first
     </button>
   )
@@ -310,7 +310,7 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
 
           <div style={{display:'flex',gap:6,marginTop:4}}>
             <button onClick={execute} disabled={issueType==='CAA'&&caaVendors.length===0}
-              style={{flex:1,padding:'8px',background: caaVendors.length===0&&issueType==='CAA'?'#9ca3af':'#111827',color:'#fff',border:'none',borderRadius:8,cursor: caaVendors.length===0&&issueType==='CAA'?'not-allowed':'pointer',fontSize:12,fontWeight:600,fontFamily:'inherit'}}>
+              style={{flex:1,padding:'8px',background: caaVendors.length===0&&issueType==='CAA'?'#9ca3af':'#111827',color:'var(--t1)',border:'none',borderRadius:8,cursor: caaVendors.length===0&&issueType==='CAA'?'not-allowed':'pointer',fontSize:12,fontWeight:600,fontFamily:'inherit'}}>
               ⚡ Push {issueType==='CAA'&&caaVendors.length>1?`${caaVendors.length} records`:'record'}
             </button>
             <button onClick={()=>setShowConfirm(false)} style={{padding:'8px 12px',background:'var(--card-hi)',color:'var(--t2)',border:'1px solid var(--border)',borderRadius:8,cursor:'pointer',fontSize:12,fontFamily:'inherit'}}>
@@ -320,7 +320,7 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
         </div>
       )}
       <button onClick={state==='idle'?loadCred:undefined} disabled={state==='loading'||state==='success'}
-        style={{padding:'5px 12px',background:state==='success'?'var(--green-bg)':state==='error'?'#fef2f2':'var(--green-bg)',border:`1px solid ${state==='success'?'var(--green-bdr)':state==='error'?'#fecaca':'var(--green-bdr)'}`,borderRadius:7,color:state==='success'?'var(--teal)':state==='error'?'#dc2626':'var(--teal)',fontSize:11,fontWeight:600,cursor:state==='idle'?'pointer':'default',whiteSpace:'nowrap',display:'flex',alignItems:'center',gap:5,fontFamily:'inherit',transition:'all 0.15s'}}
+        style={{padding:'5px 12px',background:state==='success'?'var(--green-bg)':state==='error'?'#fef2f2':'var(--green-bg)',border:`1px solid ${state==='success'?'var(--green-bdr)':state==='error'?'var(--red-bdr)':'var(--green-bdr)'}`,borderRadius:7,color:state==='success'?'var(--teal)':state==='error'?'#dc2626':'var(--teal)',fontSize:11,fontWeight:600,cursor:state==='idle'?'pointer':'default',whiteSpace:'nowrap',display:'flex',alignItems:'center',gap:5,fontFamily:'inherit',transition:'all 0.15s'}}
         onMouseEnter={e=>{if(state==='idle')e.currentTarget.style.background='var(--green-bg)'}}
         onMouseLeave={e=>{if(state==='idle')e.currentTarget.style.background='var(--green-bg)'}}>
         {state==='loading'&&<div style={{width:10,height:10,border:'2px solid #d1d5db',borderTopColor:'var(--teal)',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>}
@@ -424,7 +424,7 @@ function DeleteModal({ domain, onConfirm, onCancel, loading }) {
         </div>
         <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
           <button onClick={onCancel} style={{padding:'8px 16px',background:'var(--card-hi)',color:'var(--t2)',border:'1px solid var(--border)',borderRadius:8,cursor:'pointer',fontSize:13}}>Cancel</button>
-          <button onClick={onConfirm} disabled={loading} style={{padding:'8px 16px',background:'#ff4d6a',color:'#fff',border:'none',borderRadius:8,cursor:'pointer',fontSize:13,fontWeight:500}}>
+          <button onClick={onConfirm} disabled={loading} style={{padding:'8px 16px',background:'#ff4d6a',color:'var(--t1)',border:'none',borderRadius:8,cursor:'pointer',fontSize:13,fontWeight:500}}>
             {loading?'Deleting…':'Delete forever'}
           </button>
         </div>
@@ -440,7 +440,7 @@ function SBadge({ status }) {
   const fail=['missing','fail','error','listed','not signed','not configured'].some(p=>s.includes(p))
   const warn=!pass&&!fail
   return (
-    <span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:pass?'var(--green-bg)':fail?'#fef2f2':'#fffbeb',color:pass?'var(--teal)':fail?'#dc2626':'#d97706',border:`1px solid ${pass?'var(--green-bdr)':fail?'#fecaca':'#fde68a'}`,fontWeight:500,whiteSpace:'nowrap'}}>
+    <span style={{fontSize:10,padding:'2px 8px',borderRadius:8,background:pass?'var(--green-bg)':fail?'#fef2f2':'#fffbeb',color:pass?'var(--teal)':fail?'#dc2626':'#d97706',border:`1px solid ${pass?'var(--green-bdr)':fail?'var(--red-bdr)':'var(--amber-bdr)'}`,fontWeight:500,whiteSpace:'nowrap'}}>
       {status||'–'}
     </span>
   )
@@ -454,7 +454,7 @@ function IssuesPanel({ issues, critical, warns, scan, selected, user, setPage })
 
   const allClear = issues.length === 0
   const headerBg = allClear ? 'var(--green-bg)' : critical.length > 0 ? '#fef2f2' : '#fffbeb'
-  const headerBd = allClear ? 'var(--green-bdr)' : critical.length > 0 ? '#fecaca' : '#fde68a'
+  const headerBd = allClear ? 'var(--green-bdr)' : critical.length > 0 ? 'var(--red-bdr)' : 'var(--amber-bdr)'
   const headerColor = allClear ? 'var(--teal)' : critical.length > 0 ? '#dc2626' : '#d97706'
 
   return (
@@ -467,7 +467,7 @@ function IssuesPanel({ issues, critical, warns, scan, selected, user, setPage })
 
         {/* Icon */}
         <div style={{width:30, height:30, borderRadius:8, flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center',
-          background: allClear ? 'var(--green-bg)' : critical.length > 0 ? '#fecaca' : '#fde68a',
+          background: allClear ? 'var(--green-bg)' : critical.length > 0 ? 'var(--red-bdr)' : 'var(--amber-bdr)',
           border: `1px solid ${headerBd}`}}>
           {allClear
             ? <CheckCircle size={15} color="var(--green)"/>
@@ -493,8 +493,8 @@ function IssuesPanel({ issues, critical, warns, scan, selected, user, setPage })
 
         {/* Badge pills */}
         <div style={{display:'flex', gap:5, alignItems:'center'}}>
-          {critical.length > 0 && <span style={{fontSize:10, padding:'2px 7px', borderRadius:8, background:'#fef2f2', color:'#dc2626', border:'1px solid #fecaca', fontWeight:600}}>{critical.length} critical</span>}
-          {warns.length > 0    && <span style={{fontSize:10, padding:'2px 7px', borderRadius:8, background:'#fffbeb', color:'#d97706', border:'1px solid #fde68a', fontWeight:600}}>{warns.length} warn</span>}
+          {critical.length > 0 && <span style={{fontSize:10, padding:'2px 7px', borderRadius:8, background:'var(--red-bg)', color:'var(--red)', border:'1px solid #fecaca', fontWeight:600}}>{critical.length} critical</span>}
+          {warns.length > 0    && <span style={{fontSize:10, padding:'2px 7px', borderRadius:8, background:'var(--amber-bg)', color:'var(--amber)', border:'1px solid #fde68a', fontWeight:600}}>{warns.length} warn</span>}
           <span style={{fontSize:12, color:'var(--t3)', transform: expanded?'rotate(180deg)':'none', transition:'transform 0.2s', display:'inline-block', marginLeft:4}}>▼</span>
         </div>
       </div>
@@ -521,7 +521,7 @@ function IssuesPanel({ issues, critical, warns, scan, selected, user, setPage })
             const canAutoFix = ['SPF','DMARC','CAA'].includes(iss.type) && fixVal
             const sevColor = iss.severity==='critical'?'#dc2626':iss.severity==='warn'?'#d97706':'#2563eb'
             const sevBg    = iss.severity==='critical'?'#fef2f2':iss.severity==='warn'?'#fffbeb':'#eff6ff'
-            const sevBd    = iss.severity==='critical'?'#fecaca':iss.severity==='warn'?'#fde68a':'#bfdbfe'
+            const sevBd    = iss.severity==='critical'?'var(--red-bdr)':iss.severity==='warn'?'var(--amber-bdr)':'#bfdbfe'
             return (
               <div key={i} style={{display:'flex', alignItems:'flex-start', gap:12, padding:'12px 16px',
                 borderBottom: i < issues.length-1 ? '1px solid #f3f4f6' : 'none',
@@ -690,7 +690,7 @@ function OnboardingChecklist({ scan, domain, setPage, setActiveTab }) {
               <div style={{width:22, height:22, borderRadius:'50%', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center',
                 background: step.done ? 'var(--teal)' : '#f3f4f6',
                 border: step.done ? 'none' : '2px solid #d1d5db'}}>
-                {step.done && <span style={{color:'#fff', fontSize:11, fontWeight:800}}>✓</span>}
+                {step.done && <span style={{color:'var(--t1)', fontSize:11, fontWeight:800}}>✓</span>}
               </div>
               <span style={{flex:1, fontSize:12, color: step.done?'#9ca3af':'#111827',
                 fontWeight: step.done ? 400 : 500,
@@ -782,11 +782,11 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
 
   const cats=scan?[
     {label:'DNS records',icon:Globe,color:'#3730a3',bg:'#eff6ff',score:scan.score_dns,max:25,tab:'dns'},
-    {label:'Email auth',icon:Mail,color:'#dc2626',bg:'#fef2f2',score:scan.score_email,max:30,tab:'email'},
+    {label:'Email auth',icon:Mail,color:'var(--red)',bg:'#fef2f2',score:scan.score_email,max:30,tab:'email'},
     {label:'SSL / TLS',icon:Lock,color:'var(--t1)',bg:'var(--green-bg)',score:scan.score_ssl,max:20},
-    {label:'Propagation',icon:Globe,color:'#d97706',bg:'#fffbeb',score:scan.score_propagation,max:10,tab:'propagation'},
+    {label:'Propagation',icon:Globe,color:'var(--amber)',bg:'#fffbeb',score:scan.score_propagation,max:10,tab:'propagation'},
     {label:'Security',icon:Shield,color:'#4338ca',bg:'#f5f3ff',score:scan.score_security,max:10,tab:'overview'},
-    {label:'Blacklists',icon:Ban,color:'#dc2626',bg:'#fef2f2',score:scan.score_blacklist,max:5,tab:'blacklists'},
+    {label:'Blacklists',icon:Ban,color:'var(--red)',bg:'#fef2f2',score:scan.score_blacklist,max:5,tab:'blacklists'},
   ]:[]
 
   const tabs=['overview','email','ssl','propagation','blacklists','dns']
@@ -811,7 +811,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
       <div className="no-print" style={{width:220,flexShrink:0,background:'var(--card)',borderRight:'1px solid #e4e7ec',display:'flex',flexDirection:'column'}}>
         <div style={{padding:12,borderBottom:'1px solid var(--border)'}}>
           <button onClick={()=>setShowAdd(true)}
-            style={{width:'100%',padding:'8px 12px',background:'#111827',border:'none',borderRadius:9,color:'#ffffff',fontSize:13,fontWeight:500,cursor:'pointer',display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}>
+            style={{width:'100%',padding:'8px 12px',background:'var(--card)',border:'none',borderRadius:9,color:'var(--t1)',fontSize:13,fontWeight:500,cursor:'pointer',display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}>
             <Plus size={14}/> Add domain
           </button>
         </div>
@@ -857,7 +857,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
           <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',flexDirection:'column',gap:16}}>
             <Shield size={56} color="#e5e7eb"/>
             <div style={{fontSize:16,fontWeight:500,color:'var(--t2)'}}>Add a domain to get started</div>
-            <button onClick={()=>setShowAdd(true)} style={{padding:'10px 22px',background:'#111827',color:'#ffffff',border:'none',borderRadius:8,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',gap:6}}><Plus size={15}/> Add your first domain</button>
+            <button onClick={()=>setShowAdd(true)} style={{padding:'10px 22px',background:'var(--card)',color:'var(--t1)',border:'none',borderRadius:8,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',gap:6}}><Plus size={15}/> Add your first domain</button>
           </div>
         ):(
           <div>
@@ -869,8 +869,8 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     <h2 style={{fontSize:17,fontWeight:700,color:'var(--t1)',margin:0,letterSpacing:'-0.02em'}}>{selected.domain_name}</h2>
                     {selected.verified&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'var(--green-bg)',color:'var(--t1)',border:'1px solid var(--green-bdr)',fontWeight:600}}>Verified</span>}
                     {selected.paused&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'var(--card-hi)',color:'var(--t2)',border:'1px solid var(--border)',fontWeight:500}}>Paused</span>}
-                    {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#fef2f2',color:'#dc2626',border:'1px solid #fecaca',fontWeight:600}}>{critical.length} critical</span>}
-                    {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#fffbeb',color:'#d97706',border:'1px solid #fde68a',fontWeight:600}}>{warns.length} warnings</span>}
+                    {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'var(--red-bg)',color:'var(--red)',border:'1px solid #fecaca',fontWeight:600}}>{critical.length} critical</span>}
+                    {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'var(--amber-bg)',color:'var(--amber)',border:'1px solid #fde68a',fontWeight:600}}>{warns.length} warnings</span>}
                   </div>
                   <div style={{fontSize:12,color:'var(--t2)',display:'flex',gap:14,flexWrap:'wrap',marginBottom:10}}>
                     {scan?.blacklists?.ip&&<span style={{fontFamily:'monospace',color:'#0f172a'}}>{scan.blacklists.ip}</span>}
@@ -892,7 +892,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 {/* Actions */}
                 <div style={{display:'flex',flexDirection:'column',gap:6,alignSelf:'flex-start'}}>
                   <button onClick={()=>triggerScan(selected)} disabled={scanning[selected.id]}
-                    style={{padding:'8px 18px',background:'#111827',color:'#ffffff',letterSpacing:'-0.01em',border:'none',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:600,display:'flex',alignItems:'center',gap:5}}>
+                    style={{padding:'8px 18px',background:'var(--card)',color:'var(--t1)',letterSpacing:'-0.01em',border:'none',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:600,display:'flex',alignItems:'center',gap:5}}>
                     {scanning[selected.id]?<><div style={{width:12,height:12,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>Scanning…</>:<><RefreshCw size={12}/>Scan now</>}
                   </button>
                   <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
@@ -968,7 +968,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       <div style={{padding:'8px 16px'}}>
                         {cats.map((c,i)=>(
                           <div key={c.label} style={{animationDelay:`${i*50}ms`}} className='stagger-1' onClick={()=>c.tab&&setActiveTab(c.tab)} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 6px',borderBottom:'1px solid var(--border)',cursor:'pointer',borderRadius:6,transition:'background 0.12s'}}
-                            onMouseEnter={e=>e.currentTarget.style.background='var(--card-hi)'}
+                            onMouseEnter={e=>e.currentTarget.style.background='var(--hover)'}
                             onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
                             <div style={{width:26,height:26,borderRadius:7,background:c.bg,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
                               <c.icon size={13} color={c.color}/>
@@ -1079,7 +1079,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       return (
                         <div key={i} style={{padding:'16px'}}>
                           {/* Big expiry highlight */}
-                          <div style={{display:'flex',alignItems:'center',gap:16,marginBottom:16,padding:'14px 16px',background:days===null?'#f9fafb':days<=30?'#fef2f2':'var(--green-bg)',borderRadius:10,border:`1px solid ${days===null?'#e5e7eb':days<=30?'#fecaca':'var(--green-bdr)'}`}}>
+                          <div style={{display:'flex',alignItems:'center',gap:16,marginBottom:16,padding:'14px 16px',background:days===null?'#f9fafb':days<=30?'#fef2f2':'var(--green-bg)',borderRadius:10,border:`1px solid ${days===null?'#e5e7eb':days<=30?'var(--red-bdr)':'var(--green-bdr)'}`}}>
                             <Lock size={28} color={daysColor}/>
                             <div style={{flex:1}}>
                               <div style={{fontSize:22,fontWeight:800,color:daysColor,letterSpacing:'-0.04em',lineHeight:1}}>
@@ -1180,7 +1180,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                           const allPass = scan.propagation.records?.every(r => r[reg.key]==='pass')
                           const c = allPass ? 'var(--teal)' : '#dc2626'
                           const bg = allPass ? 'var(--green-bg)' : '#fef2f2'
-                          const bd = allPass ? 'var(--green-bdr)' : '#fecaca'
+                          const bd = allPass ? 'var(--green-bdr)' : 'var(--red-bdr)'
                           return (
                             <div key={reg.key} style={{position:'absolute',top:reg.top,left:reg.left,transform:'translate(-50%,-50%)',textAlign:'center',filter:'drop-shadow(0 2px 6px rgba(0,0,0,0.25))'}}>
                               {/* Pin body */}
@@ -1211,7 +1211,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                         ].map(reg => {
                           const allPass = scan.propagation.records?.every(r => r[reg.key]==='pass')
                           return (
-                            <div key={reg.key} style={{background:allPass?'var(--green-bg)':'#fef2f2',borderRadius:10,padding:'10px 12px',border:`1px solid ${allPass?'var(--green-bdr)':'#fecaca'}`}}>
+                            <div key={reg.key} style={{background:allPass?'var(--green-bg)':'#fef2f2',borderRadius:10,padding:'10px 12px',border:`1px solid ${allPass?'var(--green-bdr)':'var(--red-bdr)'}`}}>
                               <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:6}}>
                                 <span style={{fontSize:16}}>{reg.flag}</span>
                                 <div>
@@ -1269,7 +1269,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                   {listed.length>0&&(
                     <div style={card}>
                       <div style={cardHd}>
-                        <span style={{fontSize:12,fontWeight:700,color:'#dc2626',display:'flex',alignItems:'center',gap:6}}>
+                        <span style={{fontSize:12,fontWeight:700,color:'var(--red)',display:'flex',alignItems:'center',gap:6}}>
                           <div style={{width:8,height:8,borderRadius:'50%',background:'#dc2626'}}/> Listed on {listed.length} blacklist{listed.length!==1?'s':''}
                         </span>
                         <span style={{fontSize:11,color:'var(--t3)'}}>Click to request removal</span>
@@ -1278,7 +1278,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                         {listed.map(bl=>{
                           const url=DELIST[bl.name]?.(ip)||null
                           return (
-                            <div key={bl.name} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 12px',marginBottom:6,background:'#fef2f2',borderRadius:9,border:'1px solid #fecaca'}}>
+                            <div key={bl.name} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 12px',marginBottom:6,background:'var(--red-bg)',borderRadius:9,border:'1px solid #fecaca'}}>
                               <div style={{display:'flex',alignItems:'center',gap:8}}>
                                 <div style={{width:8,height:8,borderRadius:'50%',background:'#dc2626',flexShrink:0}}/>
                                 <div>
@@ -1287,7 +1287,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                                 </div>
                               </div>
                               {url
-                                ? <a href={url} target='_blank' rel='noopener noreferrer' style={{display:'inline-flex',alignItems:'center',gap:5,padding:'7px 14px',background:'#111827',color:'#fff',borderRadius:7,fontSize:12,fontWeight:600,textDecoration:'none',whiteSpace:'nowrap',flexShrink:0}}>Request removal →</a>
+                                ? <a href={url} target='_blank' rel='noopener noreferrer' style={{display:'inline-flex',alignItems:'center',gap:5,padding:'7px 14px',background:'var(--card)',color:'var(--t1)',borderRadius:7,fontSize:12,fontWeight:600,textDecoration:'none',whiteSpace:'nowrap',flexShrink:0}}>Request removal →</a>
                                 : <span style={{fontSize:11,color:'var(--t3)',flexShrink:0}}>Manual removal required</span>
                               }
                             </div>
@@ -1312,7 +1312,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                       {scan.blacklists.results?.map(bl=>(
                         <div key={bl.name} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 14px',borderBottom:'1px solid var(--border)',background:bl.listed?'#fef2f2':'transparent'}}>
                           <span style={{fontSize:11,fontFamily:'monospace',color:bl.listed?'#dc2626':'#374151',fontWeight:bl.listed?600:400}}>{bl.name}</span>
-                          <span style={{fontSize:10,fontWeight:600,padding:'2px 7px',borderRadius:6,background:bl.listed?'#fecaca':'var(--green-bg)',color:bl.listed?'#991b1b':'var(--green-bdr)'}}>{bl.listed?'Listed':'Clean'}</span>
+                          <span style={{fontSize:10,fontWeight:600,padding:'2px 7px',borderRadius:6,background:bl.listed?'var(--red-bdr)':'var(--green-bg)',color:bl.listed?'#991b1b':'var(--green-bdr)'}}>{bl.listed?'Listed':'Clean'}</span>
                         </div>
                       ))}
                     </div>
