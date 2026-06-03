@@ -187,23 +187,27 @@ export default function Settings({ user }) {
       {activeTab === 'profile' && (
         <div style={card}>
           <div style={{ ...cardHd }}><Users size={13} color="#a78bfa"/> Profile</div>
-          <div style={{ padding:16 }}>
-            <div style={{ marginBottom:12 }}>
-              <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:5 }}>Email</label>
-              <div style={{ padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:7, fontSize:13, color:'#1a2332', fontFamily:'var(--mono)' }}>{user?.email}</div>
-            </div>
+          <div style={{ padding:20 }}>
+
+            {/* Email — read only */}
             <div style={{ marginBottom:16 }}>
-              <label style={{ fontSize:12,color:'#4a5568', display:'block', marginBottom:5 }}>Display name</label>
+              <label style={{ fontSize:12, fontWeight:600, color:'#4a5568', display:'block', marginBottom:5 }}>Email</label>
+              <div style={{ padding:'9px 12px', background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:7, fontSize:13, color:'#8896a7', fontFamily:'monospace' }}>{user?.email}</div>
+            </div>
+
+            {/* Display name */}
+            <div style={{ marginBottom:20, paddingBottom:20, borderBottom:'1px solid #e2e8f0' }}>
+              <label style={{ fontSize:12, fontWeight:600, color:'#4a5568', display:'block', marginBottom:5 }}>Display name</label>
               <input value={profile.full_name||''} onChange={e => setProfile(p => ({ ...p, full_name: e.target.value }))}
                 placeholder="Your name"
-                style={{ width:'100%', padding:'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'#1a2332', outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'#ffffff', border:'1.5px solid #c8d6e5', borderRadius:7, fontSize:13, color:'#1a2332', outline:'none', fontFamily:'inherit' }}/>
             </div>
-            <div style={{ display:'flex', gap:8 }}>
-              {/* SSL expiry alert threshold */}
+
+            {/* SSL expiry alert threshold */}
             <div style={{ marginBottom:20, paddingBottom:20, borderBottom:'1px solid #e2e8f0' }}>
               <div style={{ fontSize:13, fontWeight:600, color:'#1a2332', marginBottom:4 }}>SSL expiry alerts</div>
               <div style={{ fontSize:12, color:'#8896a7', marginBottom:12 }}>Get email alerts when SSL certificates are about to expire.</div>
-              <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+              <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginBottom:8 }}>
                 {[7,14,30,60].map(days => (
                   <button key={days} onClick={() => setProfile(p => ({ ...p, ssl_alert_days: days }))}
                     style={{ padding:'6px 16px', background:(profile.ssl_alert_days||30)===days?'#0073d1':'#ffffff', color:(profile.ssl_alert_days||30)===days?'#ffffff':'#4a5568', border:`1px solid ${(profile.ssl_alert_days||30)===days?'#0073d1':'#c8d6e5'}`, borderRadius:7, fontSize:12, fontWeight:(profile.ssl_alert_days||30)===days?700:400, cursor:'pointer', transition:'all 0.15s' }}>
@@ -211,20 +215,25 @@ export default function Settings({ user }) {
                   </button>
                 ))}
               </div>
-              <div style={{ fontSize:11, color:'#8896a7', marginTop:8 }}>
-                You'll receive alerts at 30 days, 7 days, and 1 day before expiry regardless of this setting. This controls when the first alert is sent.
+              <div style={{ fontSize:11, color:'#8896a7', lineHeight:1.6 }}>
+                You'll receive alerts at your chosen threshold, 7 days, and 1 day before expiry.
               </div>
             </div>
 
-            <button onClick={saveProfile} disabled={saving}
-                style={{ padding:'8px 18px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
+            {/* Actions */}
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <button onClick={saveProfile} disabled={saving}
+                style={{ padding:'9px 22px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:7, fontSize:13, fontWeight:600, cursor:saving?'not-allowed':'pointer', opacity:saving?0.7:1, transition:'all 0.15s' }}>
                 {saving ? 'Saving…' : 'Save changes'}
               </button>
-              <button onClick={() => { if(window.confirm('Sign out?')) signOut() }}
-                style={{ padding:'8px 14px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:7, color:'#e53e3e', fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+              <button onClick={() => { if(window.confirm('Sign out of DomainRadar?')) signOut() }}
+                style={{ padding:'8px 14px', background:'transparent', border:'1px solid #feb2b2', borderRadius:7, color:'#e53e3e', fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:5, fontFamily:'inherit', transition:'all 0.15s' }}
+                onMouseEnter={e => e.currentTarget.style.background='#fff5f5'}
+                onMouseLeave={e => e.currentTarget.style.background='transparent'}>
                 <LogOut size={13}/> Sign out
               </button>
             </div>
+
           </div>
         </div>
       )}
