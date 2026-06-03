@@ -116,7 +116,7 @@ function SPFGenerator() {
             <div style={{ display:'flex', gap:6 }}>
               {[['~all','SoftFail (recommended)'],['−all','HardFail (strict)'],['?all','Neutral']].map(([v, l]) => (
                 <button key={v} onClick={() => setQualifier(v)}
-                  style={{ padding:'6px 12px', background:qualifier === v ? 'var(--or-bg)' : 'var(--card-hi)', border:`1px solid ${qualifier === v ? 'var(--or)' : '#e5e7eb'}`, borderRadius:6, color:qualifier === v ? 'var(--or)' : 'var(--t2)', fontSize:12, cursor:'pointer', fontFamily:'monospace' }}>
+                  style={{ padding:'6px 12px', background:qualifier === v ? 'var(--or-bg)' : 'var(--card-hi)', border:`1px solid ${qualifier === v ? 'var(--or)' : 'var(--border)'}`, borderRadius:6, color:qualifier === v ? 'var(--or)' : 'var(--t2)', fontSize:12, cursor:'pointer', fontFamily:'monospace' }}>
                   {v} <span style={{ fontFamily:'inherit', fontSize:10, opacity:0.7 }}>— {l}</span>
                 </button>
               ))}
@@ -124,8 +124,8 @@ function SPFGenerator() {
           </div>
           {/* Lookup counter */}
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12, padding:'8px 12px', background:lookupCount >= 8 ? 'var(--red-bg)' : lookupCount >= 6 ? 'var(--amber-bg)' : 'var(--cy-bg)', borderRadius:7, border:`1px solid lookupCount >= 8 ? 'var(--red-bdr)' : lookupCount >= 6 ? 'var(--amber-bdr)' : 'var(--green-bdr)'` }}>
-            <AlertTriangle size={13} color={lookupCount >= 8 ? '#dc2626' : lookupCount >= 6 ? '#d97706' : 'var(--or)'}/>
-            <span style={{ fontSize:12, color: lookupCount >= 8 ? '#dc2626' : lookupCount >= 6 ? '#d97706' : 'var(--or)' }}>
+            <AlertTriangle size={13} color={lookupCount >= 8 ? 'var(--pk)' : lookupCount >= 6 ? 'var(--or)' : 'var(--or)'}/>
+            <span style={{ fontSize:12, color: lookupCount >= 8 ? 'var(--pk)' : lookupCount >= 6 ? 'var(--or)' : 'var(--or)' }}>
               DNS lookups: {lookupCount}/10 {lookupCount >= 8 ? '— near limit! Consider SPF flattening' : lookupCount >= 6 ? '— getting close to RFC 7208 limit' : '— well within limit'}
             </span>
           </div>
@@ -161,7 +161,7 @@ function DMARCGenerator({ presetPolicy }) {
   }
 
   const record = build()
-  const policyColor = policy === 'reject' ? 'var(--or)' : policy === 'quarantine' ? '#d97706' : '#dc2626'
+  const policyColor = policy === 'reject' ? 'var(--or)' : policy === 'quarantine' ? 'var(--or)' : 'var(--pk)'
 
   return (
     <div style={card}>
@@ -300,7 +300,7 @@ function DKIMTool() {
               style={{ flex:1, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
             <button onClick={scan} disabled={loading || !domain}
               style={{ padding:'8px 20px', background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:7, color:'var(--amber)', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, opacity: !domain ? 0.5 : 1 }}>
-              {loading ? <><div style={{ width:13, height:13, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'#d97706', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Scanning {SELECTORS.length} selectors…</> : <><Zap size={13}/> Discover</>}
+              {loading ? <><div style={{ width:13, height:13, border:'2px solid rgba(245,158,11,0.3)', borderTopColor:'var(--or)', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/> Scanning {SELECTORS.length} selectors…</> : <><Zap size={13}/> Discover</>}
             </button>
           </div>
           <div style={{ fontSize:12,color:'var(--t2)', marginBottom:12 }}>Checks {SELECTORS.length} known selectors via Cloudflare DoH</div>
@@ -371,7 +371,7 @@ function EmailHeaderAnalyser() {
   }
 
   const StatusDot = ({ pass, fail, label, value }) => {
-    const color = pass ? 'var(--or)' : fail ? '#dc2626' : '#d97706'
+    const color = pass ? 'var(--or)' : fail ? 'var(--pk)' : 'var(--or)'
     const status = pass ? 'Pass' : fail ? 'Fail' : 'Unknown'
     return (
       <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'10px 14px', borderBottom:'1px solid var(--border)' }}>
@@ -535,13 +535,13 @@ function BulkScanner() {
                   {results.map(r => (
                     <tr key={r.domain} style={{ borderBottom:`1px solid var(--border)` }}>
                       <td style={{ padding:'8px 12px', fontFamily:'monospace', color:'var(--t1)' }}>{r.domain}</td>
-                      <td style={{ padding:'8px 12px', fontWeight:700, color: r.score >= 70 ? 'var(--or)' : r.score >= 50 ? '#92400e' : r.score ? '#dc2626' : '#6b7280' }}>{r.score ?? '–'}</td>
+                      <td style={{ padding:'8px 12px', fontWeight:700, color: r.score >= 70 ? 'var(--or)' : r.score >= 50 ? 'var(--or)' : r.score ? 'var(--pk)' : '#6b7280' }}>{r.score ?? '–'}</td>
                       {[r.spf, r.dmarc, r.ssl].map((v, i) => {
                         const p = ['pass','valid','pass'].includes(v?.toLowerCase())
                         const f = ['missing','fail','fail'].includes(v?.toLowerCase())
-                        return <td key={i} style={{ padding:'8px 12px' }}><span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${p ? '16,185,129' : f ? '239,68,68' : '245,158,11'},0.12)`, color: p ? 'var(--or)' : f ? '#dc2626' : '#92400e' }}>{v ?? '–'}</span></td>
+                        return <td key={i} style={{ padding:'8px 12px' }}><span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:`rgba(${p ? '16,185,129' : f ? '239,68,68' : '245,158,11'},0.12)`, color: p ? 'var(--or)' : f ? 'var(--pk)' : 'var(--or)' }}>{v ?? '–'}</span></td>
                       })}
-                      <td style={{ padding:'8px 12px', color: r.issues > 0 ? '#dc2626' : 'var(--or)', fontWeight:600 }}>{r.issues ?? '–'}</td>
+                      <td style={{ padding:'8px 12px', color: r.issues > 0 ? 'var(--pk)' : 'var(--or)', fontWeight:600 }}>{r.issues ?? '–'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -595,7 +595,7 @@ function SPFFlattener() {
         {result && (
           <>
             <div style={{ display:'flex', gap:8, marginBottom:10, flexWrap:'wrap' }}>
-              {[['IPs resolved', result.ip_count, 'var(--or)'], ['Lookups after', result.lookup_count_after, result.lookup_count_after === 0 ? 'var(--or)' : '#d97706'], ['Original lookups', '10 limit', '#6b7280']].map(([l,v,c]) => (
+              {[['IPs resolved', result.ip_count, 'var(--or)'], ['Lookups after', result.lookup_count_after, result.lookup_count_after === 0 ? 'var(--or)' : 'var(--or)'], ['Original lookups', '10 limit', '#6b7280']].map(([l,v,c]) => (
                 <div key={l} style={{ background:'var(--card-hi)', borderRadius:8, padding:'8px 12px', border:'1px solid var(--border)' }}>
                   <div style={{ fontSize:16, fontWeight:700, color:c }}>{v}</div>
                   <div style={{ fontSize:10, color:'var(--t2)' }}>{l}</div>
@@ -690,7 +690,7 @@ function DKIMRotation() {
         <div style={{ display:'flex', gap:8, marginBottom:14 }}>
           <input value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter'&&checkSelectors()}
             placeholder="yourdomain.com" style={{ flex:1, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
-          <button onClick={checkSelectors} disabled={checking||!domain.trim()} style={{ padding:'8px 16px', background:'rgba(59,130,246,0.15)', border:'1px solid rgba(59,130,246,0.3)', borderRadius:7, color:'#3730a3', fontSize:12, fontWeight:600, cursor:'pointer' }}>
+          <button onClick={checkSelectors} disabled={checking||!domain.trim()} style={{ padding:'8px 16px', background:'rgba(59,130,246,0.15)', border:'1px solid rgba(59,130,246,0.3)', borderRadius:7, color:'var(--pu)', fontSize:12, fontWeight:600, cursor:'pointer' }}>
             {checking ? 'Scanning…' : 'Find selectors'}
           </button>
         </div>
@@ -791,7 +791,7 @@ function BIMIChecker() {
               ].map(s => (
                 <div key={s.label} style={{ flex:1, minWidth:140, padding:'10px 12px', borderRadius:8, background: s.ok ? 'rgba(255,107,43,0.08)' : 'rgba(239,68,68,0.08)', border:`1px solid ${s.ok ? 'rgba(255,107,43,0.2)' : 'rgba(239,68,68,0.2)'}` }}>
                   <div style={{ fontSize:10, color:'var(--t2)', marginBottom:3 }}>{s.label}</div>
-                  <div style={{ fontSize:12, fontWeight:600, color: s.ok ? 'var(--or)' : '#dc2626' }}>{s.ok ? s.yes : s.no}</div>
+                  <div style={{ fontSize:12, fontWeight:600, color: s.ok ? 'var(--or)' : 'var(--pk)' }}>{s.ok ? s.yes : s.no}</div>
                 </div>
               ))}
             </div>
@@ -806,7 +806,7 @@ function BIMIChecker() {
                 <img src={result.logo_url} alt="BIMI logo" style={{ width:40, height:40, objectFit:'contain', background:'var(--card)', borderRadius:6, padding:2 }} onError={e => e.target.style.display='none'}/>
                 <div>
                   <div style={{ fontSize:12,color:'var(--t2)', marginBottom:2 }}>Logo URL</div>
-                  <a href={result.logo_url} target="_blank" rel="noopener noreferrer" style={{ fontSize:12, color:'#3730a3', wordBreak:'break-all' }}>{result.logo_url}</a>
+                  <a href={result.logo_url} target="_blank" rel="noopener noreferrer" style={{ fontSize:12, color:'var(--pu)', wordBreak:'break-all' }}>{result.logo_url}</a>
                 </div>
               </div>
             )}
@@ -861,7 +861,7 @@ function MTASTSChecker() {
     setLoading(false)
   }
 
-  const statusDot = (ok) => <span style={{ display:'inline-block', width:8, height:8, borderRadius:'50%', background: ok ? 'var(--or)' : '#dc2626', marginRight:6 }}/>
+  const statusDot = (ok) => <span style={{ display:'inline-block', width:8, height:8, borderRadius:'50%', background: ok ? 'var(--or)' : 'var(--pk)', marginRight:6 }}/>
 
   return (
     <div style={card}>
@@ -953,7 +953,7 @@ function BulkDomainImport({ user }) {
           <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
             {results.map(r => (
               <div key={r.domain} style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 10px', background:`rgba(${r.ok ? '16,185,129' : '239,68,68'},0.06)`, borderRadius:6, border:`1px solid rgba(${r.ok ? '16,185,129' : '239,68,68'},0.15)` }}>
-                <span style={{ fontSize:12, color: r.ok ? 'var(--or)' : '#d97706' }}>{r.ok ? '✓' : '—'}</span>
+                <span style={{ fontSize:12, color: r.ok ? 'var(--or)' : 'var(--or)' }}>{r.ok ? '✓' : '—'}</span>
                 <span style={{ fontSize:12, fontFamily:'monospace', color:'var(--t1)', flex:1 }}>{r.domain}</span>
                 <span style={{ fontSize:10, color:'var(--t2)' }}>{r.status}</span>
               </div>
@@ -1050,7 +1050,7 @@ function DeliverabilityTest({ user }) {
           <div style={{ ...card, padding:'20px 24px', marginBottom:14 }}>
             <div style={{ display:'flex', alignItems:'center', gap:20 }}>
               <div style={{ textAlign:'center', flexShrink:0 }}>
-                <div style={{ fontSize:48, fontWeight:800, color: result.score>=80?'var(--or)':result.score>=60?'#d97706':'#dc2626', lineHeight:1, letterSpacing:'-0.04em' }}>{result.score}</div>
+                <div style={{ fontSize:48, fontWeight:800, color: result.score>=80?'var(--or)':result.score>=60?'var(--or)':'var(--pk)', lineHeight:1, letterSpacing:'-0.04em' }}>{result.score}</div>
                 <div style={{ fontSize:11, color:'var(--t3)', fontWeight:500 }}>/ 100</div>
               </div>
               <div>
@@ -1069,8 +1069,8 @@ function DeliverabilityTest({ user }) {
                     { label:'Apple Mail', pass: result.ea.spf_status==='Pass' },
                   ].map(p => (
                     <span key={p.label} style={{ fontSize:11, padding:'3px 10px', borderRadius:8, fontWeight:600,
-                      background: p.pass ? 'var(--green-bg)' : '#fef2f2',
-                      color: p.pass ? 'var(--or)' : '#dc2626',
+                      background: p.pass ? 'var(--green-bg)' : 'var(--pk-bg)',
+                      color: p.pass ? 'var(--or)' : 'var(--pk)',
                       border: `1px solid ${p.pass ? 'var(--green-bdr)' : 'var(--red-bdr)'}` }}>
                       {p.pass ? '✓' : '✗'} {p.label}
                     </span>
@@ -1095,7 +1095,7 @@ function DeliverabilityTest({ user }) {
                     <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)' }}>{c.label}</span>
                     <span style={{ fontSize:10, fontWeight:600, padding:'2px 7px', borderRadius:8,
                       background: c.pass?'var(--or-bg)':c.warn?'var(--amber-bg)':'var(--red-bg)',
-                      color: c.pass?'var(--or)':c.warn?'#d97706':'#dc2626',
+                      color: c.pass?'var(--or)':c.warn?'var(--or)':'var(--pk)',
                       border: `1px solid ${c.pass?'var(--green-bdr)':c.warn?'var(--amber-bdr)':'var(--red-bdr)'}` }}>
                       {c.pass ? '✓ Pass' : c.warn ? '⚠ Warn' : '✗ Fail'}
                     </span>

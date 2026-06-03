@@ -11,17 +11,17 @@ function scoreGrade(s) {
   if (s >= 90) return { grade:'A+', color:'var(--or)', bg:'var(--green-bg)', ring:'var(--or)' }
   if (s >= 80) return { grade:'A',  color:'var(--or)', bg:'var(--green-bg)', ring:'var(--or)' }
   if (s >= 70) return { grade:'B',  color:'#65a30d', bg:'#f7fee7', ring:'#84cc16' }
-  if (s >= 60) return { grade:'C',  color:'var(--amber)', bg:'#fffbeb', ring:'#f59e0b' }
-  if (s >= 50) return { grade:'D',  color:'#ea580c', bg:'#fff7ed', ring:'#f97316' }
-  return              { grade:'F',  color:'var(--red)', bg:'#fef2f2', ring:'#ef4444' }
+  if (s >= 60) return { grade:'C',  color:'var(--amber)', bg:'var(--or-bg)', ring:'#f59e0b' }
+  if (s >= 50) return { grade:'D',  color:'#ea580c', bg:'var(--or-bg)', ring:'#f97316' }
+  return              { grade:'F',  color:'var(--red)', bg:'var(--pk-bg)', ring:'#ef4444' }
 }
 
 function StatusChip({ status }) {
   const ok  = ['Pass','Valid','Consistent','Clean','Enforced','Signed','Present','Configured','Blocked','Active','Detected'].includes(status)
   const wn  = ['Warn','Warning','Partial','Quarantine','Testing','Not configured','Missing'].includes(status)
   const info = ['Info','Not found'].includes(status)
-  const color = ok ? 'var(--or)' : wn ? '#d97706' : info ? '#2563eb' : '#dc2626'
-  const bg    = ok ? 'var(--green-bg)'  : wn ? '#fffbeb'  : info ? '#eff6ff'  : '#fef2f2'
+  const color = ok ? 'var(--or)' : wn ? 'var(--or)' : info ? 'var(--cy)' : 'var(--pk)'
+  const bg    = ok ? 'var(--green-bg)'  : wn ? 'var(--or-bg)'  : info ? 'var(--cy-bg)'  : 'var(--pk-bg)'
   const bd    = ok ? 'var(--green-bdr)'  : wn ? 'var(--amber-bdr)'  : info ? '#bfdbfe'  : 'var(--red-bdr)'
   return <span style={{ fontSize:11, fontWeight:700, padding:'3px 9px', borderRadius:20, background:bg, color, border:`1px solid ${bd}`, whiteSpace:'nowrap' }}>{status || 'Unknown'}</span>
 }
@@ -29,7 +29,7 @@ function StatusChip({ status }) {
 function SevIcon({ sev }) {
   if (sev === 'critical') return <div style={{ width:28, height:28, borderRadius:7, background:'var(--red-bg)', border:'1px solid var(--pk-bdr)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><XCircle size={14} color="#dc2626"/></div>
   if (sev === 'warn')     return <div style={{ width:28, height:28, borderRadius:7, background:'var(--amber-bg)', border:'1px solid var(--or-bdr)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><AlertTriangle size={14} color="#d97706"/></div>
-  return                         <div style={{ width:28, height:28, borderRadius:7, background:'#eff6ff', border:'1px solid #bfdbfe', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Info size={14} color="#2563eb"/></div>
+  return                         <div style={{ width:28, height:28, borderRadius:7, background:'var(--cy-bg)', border:'1px solid #bfdbfe', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Info size={14} color="#2563eb"/></div>
 }
 
 function Section({ icon: Icon, iconColor, title, badge, badgeOk, children, defaultOpen = true }) {
@@ -86,9 +86,9 @@ function exportPDF(domain, r) {
   const statusPill = (status) => {
     const ok = ['Pass','Valid','Consistent','Clean','Enforced','Signed','Present','Configured','Blocked','Active'].includes(status)
     const wn = ['Warn','Warning','Partial','Quarantine','Not configured','Missing','Testing'].includes(status)
-    const c  = ok?'var(--or)':wn?'#b45309':'#dc2626'
-    const bg = ok?'var(--green-bg)':wn?'#fffbeb':'#fef2f2'
-    const bd = ok?'var(--green-bdr)':wn?'var(--amber-bdr)':'#fca5a5'
+    const c  = ok?'var(--or)':wn?'#b45309':'var(--pk)'
+    const bg = ok?'var(--green-bg)':wn?'var(--or-bg)':'var(--pk-bg)'
+    const bd = ok?'var(--green-bdr)':wn?'var(--amber-bdr)':'var(--pk-bdr)'
     return `<span style="background:${bg};color:${c};border:1px solid ${bd};padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;">${status||'—'}</span>`
   }
 
@@ -103,7 +103,7 @@ function exportPDF(domain, r) {
   const complianceRow = (label, ok) => `
     <div class="comp-row">
       <span class="comp-label">${label}</span>
-      <span style="font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;background:${ok?'var(--green-bg)':'#fef2f2'};color:${ok?'var(--or)':'#dc2626'};border:1px solid ${ok?'var(--green-bdr)':'#fca5a5'};">${ok?'✓ Pass':'✗ Fail'}</span>
+      <span style="font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;background:${ok?'var(--green-bg)':'var(--pk-bg)'};color:${ok?'var(--or)':'var(--pk)'};border:1px solid ${ok?'var(--green-bdr)':'var(--pk-bdr)'};">${ok?'✓ Pass':'✗ Fail'}</span>
     </div>`
 
   const html = `<!DOCTYPE html>
@@ -226,7 +226,7 @@ function exportPDF(domain, r) {
 <div class="breakdown">
   ${[['DNS',r.score_dns,25],['Email Auth',r.score_email,30],['SSL/TLS',r.score_ssl,20],['Propagation',r.score_propagation,10],['Security',r.score_security,10],['Blacklists',r.score_blacklist,5]].map(([l,s,m])=>{
     const pct=Math.round(((s||0)/m)*100)
-    const c=pct>=80?'var(--or)':pct>=60?'#d97706':'#dc2626'
+    const c=pct>=80?'var(--or)':pct>=60?'var(--or)':'var(--pk)'
     return `<div class="cat">
       <div class="cat-score" style="color:${c};">${s||0}</div>
       <div class="cat-max">/${m}</div>
@@ -259,9 +259,9 @@ ${issues.length>0 ? `
   </div>
   <div style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
     ${issues.map(iss=>{
-      const c=iss.severity==='critical'?'#dc2626':iss.severity==='warn'?'#b45309':'#2563eb'
-      const bg=iss.severity==='critical'?'#fef2f2':iss.severity==='warn'?'#fffbeb':'#eff6ff'
-      const bd=iss.severity==='critical'?'#fca5a5':iss.severity==='warn'?'var(--amber-bdr)':'#bfdbfe'
+      const c=iss.severity==='critical'?'var(--pk)':iss.severity==='warn'?'#b45309':'var(--cy)'
+      const bg=iss.severity==='critical'?'var(--pk-bg)':iss.severity==='warn'?'var(--or-bg)':'var(--cy-bg)'
+      const bd=iss.severity==='critical'?'var(--pk-bdr)':iss.severity==='warn'?'var(--amber-bdr)':'#bfdbfe'
       return `<div class="issue-row" style="background:${iss.severity==='critical'?'#fefafa':'#fff'};">
         <div><span style="display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;background:${bg};color:${c};border:1px solid ${bd};">${iss.severity}</span></div>
         <div style="min-width:70px;font-size:12px;font-weight:700;color:#111;">${iss.type}</div>
@@ -429,11 +429,11 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
   const infos    = (r.issues || []).filter(i => i.severity === 'info')
 
   const CATS = [
-    { id:'dns',         label:'DNS',         icon:Globe,   color:'#3730a3', score:r.score_dns,         max:25 },
+    { id:'dns',         label:'DNS',         icon:Globe,   color:'var(--pu)', score:r.score_dns,         max:25 },
     { id:'email',       label:'Email auth',  icon:Mail,    color:'var(--red)', score:r.score_email,       max:30 },
     { id:'ssl',         label:'SSL / TLS',   icon:Lock,    color:'var(--or)', score:r.score_ssl,         max:20 },
     { id:'propagation', label:'Propagation', icon:Network, color:'var(--amber)', score:r.score_propagation, max:10 },
-    { id:'security',    label:'Security',    icon:Shield,  color:'#7c3aed', score:r.score_security,    max:10 },
+    { id:'security',    label:'Security',    icon:Shield,  color:'var(--pu)', score:r.score_security,    max:10 },
     { id:'blacklist',   label:'Blacklists',  icon:Ban,     color:'var(--red)', score:r.score_blacklist,   max:5  },
   ]
 
@@ -490,8 +490,8 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
               <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
                 {CATS.map(c => {
                   const pct = Math.round(((c.score||0)/c.max)*100)
-                  const cc  = pct>=80?'var(--or)':pct>=60?'#d97706':'#dc2626'
-                  const cbg = pct>=80?'var(--green-bg)':pct>=60?'#fffbeb':'#fef2f2'
+                  const cc  = pct>=80?'var(--or)':pct>=60?'var(--or)':'var(--pk)'
+                  const cbg = pct>=80?'var(--green-bg)':pct>=60?'var(--or-bg)':'var(--pk-bg)'
                   return (
                     <div key={c.id} style={{ background:'var(--card)', border:`1px solid var(--border)`, borderRadius:10, padding:'12px 14px' }}>
                       <div style={{ display:'flex', alignItems:'center', gap:5, marginBottom:6 }}>
@@ -521,7 +521,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
               <span style={{ fontSize:13, fontWeight:700, color:'#111', flex:1 }}>Issues to fix</span>
               {critical.length > 0 && <span style={{ fontSize:11, fontWeight:700, padding:'2px 9px', borderRadius:20, background:'var(--red-bg)', color:'var(--red)', border:'1px solid var(--pk-bdr)' }}>{critical.length} critical</span>}
               {warns.length    > 0 && <span style={{ fontSize:11, fontWeight:700, padding:'2px 9px', borderRadius:20, background:'var(--amber-bg)', color:'var(--amber)',  border:'1px solid var(--or-bdr)' }}>{warns.length} warnings</span>}
-              {infos.length    > 0 && <span style={{ fontSize:11, fontWeight:700, padding:'2px 9px', borderRadius:20, background:'#eff6ff', color:'var(--pu)',  border:'1px solid #bfdbfe' }}>{infos.length} info</span>}
+              {infos.length    > 0 && <span style={{ fontSize:11, fontWeight:700, padding:'2px 9px', borderRadius:20, background:'var(--cy-bg)', color:'var(--pu)',  border:'1px solid #bfdbfe' }}>{infos.length} info</span>}
             </div>
             {r.issues.map((iss, i) => (
               <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'12px 18px', borderBottom: i < r.issues.length-1 ? '1px solid #f3f4f6' : 'none', background: iss.severity==='critical' ? '#fefafa' : '#fff' }}>
@@ -590,12 +590,12 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
           <Section icon={Lock} iconColor="var(--green)" title="SSL / TLS Certificate" badge={r.ssl_info?.overall_status}>
             {r.ssl_info?.certs?.length > 0 ? r.ssl_info.certs.map((cert, i) => {
               const days = cert.days_remaining
-              const daysColor = days==null?'#6b7280':days<=7?'#dc2626':days<=30?'#d97706':days<=60?'#2563eb':'var(--or)'
+              const daysColor = days==null?'#6b7280':days<=7?'var(--pk)':days<=30?'var(--or)':days<=60?'var(--cy)':'var(--or)'
               const issuer = cert.issuer_org || cert.issuer_cn || 'Unknown CA'
               return (
                 <div key={i}>
                   {/* Expiry highlight */}
-                  <div style={{ margin:'16px 18px', padding:'14px 18px', background: days==null?'#f9fafb':days<=30?'#fef2f2':'var(--green-bg)', border:`1px solid ${days==null?'#e5e7eb':days<=30?'var(--red-bdr)':'var(--green-bdr)'}`, borderRadius:10, display:'flex', alignItems:'center', gap:16, flexWrap:'wrap' }}>
+                  <div style={{ margin:'16px 18px', padding:'14px 18px', background: days==null?'var(--card-hi)':days<=30?'var(--pk-bg)':'var(--green-bg)', border:`1px solid ${days==null?'var(--border)':days<=30?'var(--red-bdr)':'var(--green-bdr)'}`, borderRadius:10, display:'flex', alignItems:'center', gap:16, flexWrap:'wrap' }}>
                     <Lock size={24} color={daysColor}/>
                     <div style={{ flex:1 }}>
                       <div style={{ fontSize:22, fontWeight:900, color:daysColor, letterSpacing:'-0.04em', lineHeight:1 }}>
@@ -627,7 +627,7 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
                     ))}
                   </div>
                   {/* Note */}
-                  <div style={{ margin:'0 18px 18px', padding:'10px 14px', background:'#eff6ff', border:'1px solid #bfdbfe', borderRadius:8, fontSize:12, color:'#1d4ed8' }}>
+                  <div style={{ margin:'0 18px 18px', padding:'10px 14px', background:'var(--cy-bg)', border:'1px solid #bfdbfe', borderRadius:8, fontSize:12, color:'var(--cy)' }}>
                     ℹ {r.ssl_info.note || 'HTTPS active — certificate data from Certificate Transparency logs.'}
                   </div>
                 </div>
@@ -706,9 +706,9 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
               )}
               <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))', gap:6 }}>
                 {r.blacklists?.results?.map((bl, i) => (
-                  <div key={i} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'7px 12px', background: bl.listed ? '#fef2f2' : '#f9fafb', borderRadius:8, border:`1px solid ${bl.listed ? 'var(--red-bdr)' : '#e5e7eb'}` }}>
-                    <span style={{ fontSize:11, fontFamily:MONO, color: bl.listed ? '#dc2626' : '#6b7280', fontWeight: bl.listed ? 700 : 400 }}>{bl.name}</span>
-                    <span style={{ fontSize:11, fontWeight:700, color: bl.listed ? '#dc2626' : 'var(--or)' }}>{bl.listed ? '✗ Listed' : '✓'}</span>
+                  <div key={i} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'7px 12px', background: bl.listed ? 'var(--pk-bg)' : 'var(--card-hi)', borderRadius:8, border:`1px solid ${bl.listed ? 'var(--red-bdr)' : 'var(--border)'}` }}>
+                    <span style={{ fontSize:11, fontFamily:MONO, color: bl.listed ? 'var(--pk)' : '#6b7280', fontWeight: bl.listed ? 700 : 400 }}>{bl.name}</span>
+                    <span style={{ fontSize:11, fontWeight:700, color: bl.listed ? 'var(--pk)' : 'var(--or)' }}>{bl.listed ? '✗ Listed' : '✓'}</span>
                   </div>
                 ))}
               </div>
@@ -720,11 +720,11 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
         {!user && (
           <div className="fade" style={{ background:'#111', borderRadius:16, padding:'28px 32px', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:16, animationDelay:'0.26s' }}>
             <div>
-              <div style={{ fontSize:16, fontWeight:700, color:'#f9fafb', marginBottom:5 }}>Monitor {domain} continuously</div>
+              <div style={{ fontSize:16, fontWeight:700, color:'var(--card-hi)', marginBottom:5 }}>Monitor {domain} continuously</div>
               <div style={{ fontSize:13, color:'var(--t3)', lineHeight:1.6 }}>Instant alerts when DNS changes, SSL nears expiry, or a blacklisting is detected. Free to start.</div>
             </div>
             <div style={{ display:'flex', gap:8 }}>
-              <button onClick={() => exportPDF(domain, r)} style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 16px', background:'rgba(255,255,255,0.08)', color:'#f9fafb', border:'1px solid #374151', borderRadius:9, fontSize:13, cursor:'pointer', fontFamily:F }}>
+              <button onClick={() => exportPDF(domain, r)} style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 16px', background:'rgba(255,255,255,0.08)', color:'var(--card-hi)', border:'1px solid #374151', borderRadius:9, fontSize:13, cursor:'pointer', fontFamily:F }}>
                 <FileDown size={13}/> Export PDF
               </button>
               <button onClick={() => setPage('auth')} style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 18px', background:'var(--or)', color:'var(--t1)', border:'none', borderRadius:9, fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:F }}>

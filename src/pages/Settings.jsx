@@ -47,7 +47,7 @@ function WebhookTestButton({ url }) {
 
   return (
     <button onClick={test} disabled={state === 'loading'}
-      style={{ padding:'8px 12px', background: state==='ok'?'var(--green-bg)':state==='fail'?'#fef2f2':'#fff', border:`1px solid ${state==='ok'?'var(--green-bdr)':state==='fail'?'var(--red-bdr)':'#e5e7eb'}`, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', color: state==='ok'?'var(--or)':state==='fail'?'#dc2626':'#374151', fontFamily:'inherit', transition:'all 0.15s', flexShrink:0 }}>
+      style={{ padding:'8px 12px', background: state==='ok'?'var(--green-bg)':state==='fail'?'var(--pk-bg)':'#fff', border:`1px solid ${state==='ok'?'var(--green-bdr)':state==='fail'?'var(--red-bdr)':'var(--border)'}`, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', color: state==='ok'?'var(--or)':state==='fail'?'var(--pk)':'#374151', fontFamily:'inherit', transition:'all 0.15s', flexShrink:0 }}>
       {state==='loading' ? '…' : state==='ok' ? '✓ Sent!' : state==='fail' ? '✗ Failed' : 'Test'}
     </button>
   )
@@ -140,7 +140,7 @@ export default function Settings({ user }) {
                   ['GET','?action=history&domain=example.com','Scan history'],
                 ].map(([m,ep,desc]) => (
                   <div key={ep} style={{ display:'flex', gap:10, marginBottom:4 }}>
-                    <span style={{ color:'#3730a3', width:30 }}>{m}</span>
+                    <span style={{ color:'var(--pu)', width:30 }}>{m}</span>
                     <span style={{ color:'var(--or)', flex:1 }}>{ep}</span>
                     <span style={{ color:'var(--t2)' }}>{desc}</span>
                   </div>
@@ -274,7 +274,7 @@ function TeamSection({ user }) {
   const [role, setRole] = useState('viewer')
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
-  const D = { surface:'#ffffff', surface2:'#f9fafb', border:'#e5e7eb', text:'#111827', muted:'#374151', dim:'#6b7280' }
+  const D = { surface:'#ffffff', surface2:'var(--card-hi)', border:'var(--border)', text:'#111827', muted:'#374151', dim:'#6b7280' }
   const card = { background:'var(--card)', border:'1px solid var(--border)', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }
   const cardHd = { padding:'11px 16px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:7, background:'var(--card)', fontSize:13, fontWeight:600, color:'var(--t1)' }
   const input = { width:'100%', padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
@@ -300,7 +300,7 @@ function TeamSection({ user }) {
     setMembers(m => m.filter(x => x.id !== id))
   }
 
-  const statusColor = { pending:'#d97706', active:'var(--or)', rejected:'#dc2626' }
+  const statusColor = { pending:'var(--or)', active:'var(--or)', rejected:'var(--pk)' }
   const roleColor   = { admin:'#a855f7', editor:'#3d9bff', viewer:'#6b7280' }
 
   return (
@@ -323,7 +323,7 @@ function TeamSection({ user }) {
           <div style={{ textAlign:'center', padding:'24px', color:'var(--t2)', fontSize:12 }}>No team members yet. Invite someone above.</div>
         ) : members.map(m => (
           <div key={m.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid var(--border)', marginBottom:6 }}>
-            <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(59,130,246,0.15)', color:'#3730a3', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:700, flexShrink:0 }}>{m.member_email?.[0]?.toUpperCase()}</div>
+            <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(59,130,246,0.15)', color:'var(--pu)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:700, flexShrink:0 }}>{m.member_email?.[0]?.toUpperCase()}</div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontSize:12, fontWeight:500, color:'var(--t1)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{m.member_email}</div>
               <div style={{ fontSize:10, color:'var(--t2)' }}>{m.accepted_at ? `Joined ${new Date(m.accepted_at).toLocaleDateString()}` : `Invited ${new Date(m.invited_at).toLocaleDateString()}`}</div>

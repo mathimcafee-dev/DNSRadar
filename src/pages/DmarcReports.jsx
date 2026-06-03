@@ -79,7 +79,7 @@ function PolicyWizard({ domain, currentPolicy, ruaAddress }) {
 
   const policies = [
     { p: 'none', label: 'None (monitor)', color: 'var(--t3)', desc: 'Emails pass regardless. You receive reports to see who is sending on your behalf. Start here.', risk: 'Low', visibility: 'Full' },
-    { p: 'quarantine', label: 'Quarantine', color: '#d97706', desc: 'Unauthenticated emails go to spam. Legitimate senders must pass SPF or DKIM.', risk: 'Medium', visibility: 'Full' },
+    { p: 'quarantine', label: 'Quarantine', color: 'var(--or)', desc: 'Unauthenticated emails go to spam. Legitimate senders must pass SPF or DKIM.', risk: 'Medium', visibility: 'Full' },
     { p: 'reject', label: 'Reject (enforce)', color: 'var(--or)', desc: 'Unauthenticated emails are blocked entirely. Maximum protection — use only after monitoring confirms all senders pass.', risk: 'High if misconfigured', visibility: 'Full' },
   ]
   const currentIdx = policies.findIndex(p => p.p === currentPolicy) ?? 0
@@ -251,8 +251,8 @@ function DmarcReportsInner({ user, selectedDomain }) {
   const topCountries = Object.values(countryBreakdown).sort((a, b) => b.count - a.count).slice(0, 8)
 
   const donutData = totalVolume > 0
-    ? [{ name: 'Pass', value: totalPass, color: 'var(--or)' }, { name: 'Fail', value: totalFail, color: '#dc2626' }]
-    : [{ name: 'No data', value: 1, color: '#e5e7eb' }]
+    ? [{ name: 'Pass', value: totalPass, color: 'var(--or)' }, { name: 'Fail', value: totalFail, color: 'var(--pk)' }]
+    : [{ name: 'No data', value: 1, color: 'var(--border)' }]
 
   const hasData = totalVolume > 0
 
@@ -268,7 +268,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
         </div>
         <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
           {[7,30,90].map(r => (
-            <button key={r} onClick={() => setRange(r)} style={{ padding:'5px 12px', background:range===r?'var(--green-bg)':'#f9fafb', border:`1px solid ${range===r?'rgba(255,107,43,0.3)':'#e5e7eb'}`, borderRadius:7, color:range===r?'var(--or)':D.muted, fontSize:12, fontWeight:500, cursor:'pointer',transition:'background 0.15s' }}>{r}d</button>
+            <button key={r} onClick={() => setRange(r)} style={{ padding:'5px 12px', background:range===r?'var(--green-bg)':'var(--card-hi)', border:`1px solid ${range===r?'rgba(255,107,43,0.3)':'var(--border)'}`, borderRadius:7, color:range===r?'var(--or)':D.muted, fontSize:12, fontWeight:500, cursor:'pointer',transition:'background 0.15s' }}>{r}d</button>
           ))}
           <button onClick={() => setShowUpload(true)} style={{ padding:'5px 12px', background:'var(--border)', border:'1px solid var(--border)', borderRadius:7, color:'var(--t1)', fontSize:12, cursor:'pointer',transition:'background 0.15s', display:'flex', alignItems:'center', gap:5 }}><Upload size={11}/> Upload XML</button>
           <button onClick={fetchData} style={{ padding:'5px 10px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, color:'var(--t2)', cursor:'pointer',transition:'background 0.15s' }}><RefreshCw size={12}/></button>
@@ -303,9 +303,9 @@ function DmarcReportsInner({ user, selectedDomain }) {
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))', gap:10 }}>
             {[
               { label:'Total messages', value:totalVolume.toLocaleString(), color:'var(--t1)' },
-              { label:'Pass rate', value:`${passRate}%`, color: passRate >= 90 ? 'var(--or)' : passRate >= 70 ? '#d97706' : '#dc2626' },
+              { label:'Pass rate', value:`${passRate}%`, color: passRate >= 90 ? 'var(--or)' : passRate >= 70 ? 'var(--or)' : 'var(--pk)' },
               { label:'Passing', value:totalPass.toLocaleString(), color:'var(--t1)' },
-              { label:'Failing', value:totalFail.toLocaleString(), color: totalFail > 0 ? '#dc2626' : '#6b7280' },
+              { label:'Failing', value:totalFail.toLocaleString(), color: totalFail > 0 ? 'var(--pk)' : '#6b7280' },
             ].map(s => (
               <div key={s.label} style={{ background:'var(--card)', border:'1px solid var(--border)', borderRadius:10, padding:'12px 14px' }}>
                 <div style={{ fontSize:20, fontWeight:700, color:s.color, marginBottom:2 }}>{s.value}</div>
@@ -344,7 +344,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
                   </Pie>
                 </PieChart>
                 <div style={{ textAlign:'center' }}>
-                  <div style={{ fontSize:22, fontWeight:700, color: passRate >= 90 ? 'var(--or)' : passRate >= 70 ? '#d97706' : '#dc2626' }}>{passRate}%</div>
+                  <div style={{ fontSize:22, fontWeight:700, color: passRate >= 90 ? 'var(--or)' : passRate >= 70 ? 'var(--or)' : 'var(--pk)' }}>{passRate}%</div>
                   <div style={{ fontSize:12, color:'var(--t2)' }}>pass rate</div>
                 </div>
               </div>
@@ -365,12 +365,12 @@ function DmarcReportsInner({ user, selectedDomain }) {
                       <div style={{ flex:1, minWidth:0 }}>
                         <div style={{ fontSize:12, fontWeight:500, color:'var(--t1)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{s.name}</div>
                         <div style={{ height:4, borderRadius:2, background:'var(--border)', marginTop:4, overflow:'hidden' }}>
-                          <div style={{ height:'100%', width:`${pct}%`, background: pct >= 90 ? 'var(--or)' : pct >= 70 ? '#d97706' : '#dc2626', borderRadius:2 }}/>
+                          <div style={{ height:'100%', width:`${pct}%`, background: pct >= 90 ? 'var(--or)' : pct >= 70 ? 'var(--or)' : 'var(--pk)', borderRadius:2 }}/>
                         </div>
                       </div>
                       <div style={{ fontSize:12, color:'var(--t2)', flexShrink:0, textAlign:'right' }}>
                         <div>{s.count.toLocaleString()} msgs</div>
-                        <div style={{ color: pct >= 90 ? 'var(--or)' : '#d97706' }}>{pct}% pass</div>
+                        <div style={{ color: pct >= 90 ? 'var(--or)' : 'var(--or)' }}>{pct}% pass</div>
                       </div>
                     </div>
                   )
@@ -391,7 +391,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
                     <YAxis dataKey="country" type="category" tick={{ fill:'#6b7280', fontSize:10 }} axisLine={false} tickLine={false} width={80}/>
                     <Tooltip content={<VTooltip/>}/>
                     <Bar dataKey="count" name="Messages" fill="#3b82f6" radius={[0,4,4,0]}>
-                      {topCountries.map((e, i) => <Cell key={i} fill={e.threats > 0 ? '#dc2626' : '#3d9bff'}/>)}
+                      {topCountries.map((e, i) => <Cell key={i} fill={e.threats > 0 ? 'var(--pk)' : '#3d9bff'}/>)}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>

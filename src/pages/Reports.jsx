@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase'
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import { Upload, AlertTriangle, CheckCircle, ShieldOff, Globe, Mail } from 'lucide-react'
 
-const D = { bg:'#f7f8fa', s:'#ffffff', s2:'#f9fafb', b:'#e5e7eb', t:'#111827', m:'#6b7280', d:'#9ca3af' }
+const D = { bg:'#f7f8fa', s:'#ffffff', s2:'var(--card-hi)', b:'var(--border)', t:'#111827', m:'#6b7280', d:'#9ca3af' }
 const card = { background:D.s, border:'1px solid var(--border)', borderRadius:12, overflow:'hidden' }
 const cardHd = { padding:'11px 16px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between', background:D.s2 }
 
