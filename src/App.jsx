@@ -13,6 +13,7 @@ import DnsAutoFix from './pages/DnsAutoFix'
 import SslCertificates from './pages/SslCertificates'
 import Settings from './pages/Settings'
 import AuditReport from './pages/AuditReport'
+import Reports from './pages/Reports'
 import Pricing from './pages/Pricing'
 import About from './pages/About'
 import Developer from './pages/Developer'
@@ -149,102 +150,6 @@ function Alerts({ user }) {
   )
 }
 
-function Reports({ user }) {
-  const [snapshots, setSnapshots] = useState([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    supabase.from('report_snapshots')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('report_date', { ascending: false })
-      .limit(30)
-      .then(({ data }) => { setSnapshots(data || []); setLoading(false) })
-  }, [user])
-
-  return (
-    <div style={{ background:'#f4f6f8', minHeight:'100%', padding:28 }}>
-      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
-        <div>
-          <h2 style={{ fontSize:18, fontWeight:700, color:'#1a2332', margin:0, letterSpacing:'-0.02em' }}>Daily Reports</h2>
-          <div style={{ fontSize:12, color:'#8896a7', marginTop:3 }}>Automated daily summaries of your domain health</div>
-        </div>
-      </div>
-
-      <div style={{ background:'#e8f3fc', border:'1px solid var(--blue-bdr)', borderRadius:10, padding:'12px 16px', marginBottom:20, display:'flex', gap:10, alignItems:'flex-start' }}>
-        <span style={{ fontSize:16 }}>📧</span>
-        <div>
-          <div style={{ fontSize:13, fontWeight:600, color:'#0073d1', marginBottom:2 }}>Daily email digest</div>
-          <div style={{ fontSize:12, color:'#4a5568', lineHeight:1.6 }}>
-            A daily health summary is emailed every morning. Enable email alerts in <strong>Settings → Notifications</strong>.
-          </div>
-        </div>
-      </div>
-
-      {loading ? (
-        <div style={{ textAlign:'center', padding:48, color:'#8896a7', fontSize:13 }}>Loading…</div>
-      ) : snapshots.length === 0 ? (
-        <div className="card" style={{ padding:'48px', textAlign:'center' }}>
-          <div style={{ fontSize:32, marginBottom:12 }}>📊</div>
-          <div style={{ fontSize:14, fontWeight:600, color:'#1a2332', marginBottom:6 }}>No reports yet</div>
-          <div style={{ fontSize:13, color:'#8896a7', maxWidth:360, margin:'0 auto', lineHeight:1.6 }}>
-            Reports are generated daily once you have monitored domains. Come back tomorrow.
-          </div>
-        </div>
-      ) : snapshots.map(s => {
-        const domains = s.domains_json || []
-        const scoreColor = s.avg_score >= 70 ? '#0073d1' : s.avg_score >= 50 ? '#d97706' : '#e53e3e'
-        return (
-          <div key={s.id} className="card" style={{ marginBottom:10 }}>
-            <div className="card-header" style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-              <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                <span style={{ fontSize:12, fontWeight:700, color:'#1a2332' }}>
-                  {new Date(s.report_date).toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' })}
-                </span>
-                {s.critical_count > 0 && (
-                  <span style={{ fontSize:10, padding:'2px 7px', borderRadius:8, background:'#fff5f5', color:'#e53e3e', border:'1px solid var(--red-bdr)', fontWeight:600 }}>{s.critical_count} critical</span>
-                )}
-              </div>
-              <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                <span style={{ fontSize:20, fontWeight:800, color:scoreColor }}>{s.avg_score}</span>
-                {s.avg_score_delta !== null && s.avg_score_delta !== undefined && s.avg_score_delta !== 0 && (
-                  <span style={{ fontSize:11, color: s.avg_score_delta > 0 ? '#0073d1' : '#e53e3e', fontWeight:600 }}>
-                    {s.avg_score_delta > 0 ? '↑' : '↓'}{Math.abs(s.avg_score_delta)}
-                  </span>
-                )}
-                <span style={{ fontSize:11, color:'#8896a7' }}>avg score</span>
-              </div>
-            </div>
-            <div style={{ padding:'10px 16px' }}>
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom: domains.length > 0 ? 12 : 0 }}>
-                {[
-                  { label:'Domains', value: s.domain_count || 0 },
-                  { label:'Issues', value: s.total_issues || 0, color: (s.total_issues||0) > 0 ? '#d97706' : '#0073d1' },
-                  { label:'Critical', value: s.critical_count || 0, color: (s.critical_count||0) > 0 ? '#e53e3e' : '#0073d1' },
-                ].map(m => (
-                  <div key={m.label} style={{ textAlign:'center', padding:'8px', background:'#f8fafc', borderRadius:8 }}>
-                    <div style={{ fontSize:18, fontWeight:700, color: m.color || '#1a2332' }}>{m.value}</div>
-                    <div style={{ fontSize:11, color:'#8896a7' }}>{m.label}</div>
-                  </div>
-                ))}
-              </div>
-              {domains.length > 0 && (
-                <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-                  {domains.slice(0,5).map((d, i) => (
-                    <span key={i} style={{ fontSize:11, padding:'2px 8px', borderRadius:6, background:'#f8fafc', color:'#1a2332', fontFamily:'var(--mono)', border:'1px solid var(--border)' }}>
-                      {d.domain_name || d} {d.health_score ? `· ${d.health_score}` : ''}
-                    </span>
-                  ))}
-                  {domains.length > 5 && <span style={{ fontSize:11, color:'#8896a7' }}>+{domains.length-5} more</span>}
-                </div>
-              )}
-            </div>
-          </div>
-        )
-      })}
-    </div>
-  )
-}
 
 export default function App() {
   const { user, loading } = useAuth()
@@ -351,7 +256,7 @@ export default function App() {
 
   return (
     <div style={{ display:'flex', minHeight:'100vh', background:'#f4f6f8' }}>
-      <Sidebar page={page} setPage={setPage} alertCount={alertCount} user={user}/>
+      <Sidebar page={page} setPage={setPage} alertCount={alertCount} user={user} domains={domains} selectedDomain={selectedDomain} onDomainSelect={d=>{setSelectedDomain(d);setPage('dashboard')}}/>
       <main style={{ flex:1, minWidth:0, overflowY:'auto', minHeight:'100vh', paddingBottom:'env(safe-area-inset-bottom)' }} key={page}>
         <ErrorBoundary>
         <div className="page-enter" style={{minHeight:'100%'}}>
