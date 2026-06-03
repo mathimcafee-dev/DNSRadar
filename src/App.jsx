@@ -176,6 +176,7 @@ export default function App() {
   const [scanDomain, setScanDomain] = useState('')
   const [scanType, setScanType] = useState('website')
   const [alertCount, setAlertCount] = useState(0)
+  const [dmarcTab, setDmarcTab] = useState('reports')
   const [domains, setDomains] = useState([])
   const [selectedDomain, setSelectedDomain] = useState(null)
 
@@ -256,12 +257,12 @@ export default function App() {
 
   return (
     <div style={{ display:'flex', minHeight:'100vh', background:'#f4f6f8' }}>
-      <Sidebar page={page} setPage={setPage} alertCount={alertCount} user={user} domains={domains} selectedDomain={selectedDomain} onDomainSelect={d=>{setSelectedDomain(d);setPage('dashboard')}}/>
+      <Sidebar page={page} setPage={setPage} alertCount={alertCount} user={user} domains={domains} selectedDomain={selectedDomain} onDomainSelect={d=>{setSelectedDomain(d);setPage('dashboard')}} onSubNav={(pageId,tab)=>{setPage(pageId);if(pageId==='dmarc'&&tab)setDmarcTab(tab)}}/>
       <main style={{ flex:1, minWidth:0, overflowY:'auto', minHeight:'100vh', paddingBottom:'env(safe-area-inset-bottom)' }} key={page}>
         <ErrorBoundary>
         <div className="page-enter" style={{minHeight:'100%'}}>
         {page === 'dashboard' && <Dashboard {...sharedDomainProps} setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>}
-        {page === 'dmarc'     && <DmarcReports user={user}/>}
+        {page === 'dmarc'     && <DmarcReports user={user} activeTab={dmarcTab} setActiveTab={setDmarcTab}/>}
         {page === 'autofix'   && <DnsAutoFix user={user} domains={domains} selectedDomain={selectedDomain} onScanTrigger={() => setPage('dashboard')}/>}
         {page === 'ssl'       && <SslCertificates user={user}/>}
         {page === 'tools'     && <Tools user={user}/>}

@@ -173,7 +173,7 @@ function SetupProgress({ domains, collapsed, setPage }) {
 }
 
 // ── Main Sidebar ──────────────────────────────────────────────────────
-export default function Sidebar({ page, setPage, alertCount = 0, user, domains = [], selectedDomain, onDomainSelect }) {
+export default function Sidebar({ page, setPage, alertCount = 0, user, domains = [], selectedDomain, onDomainSelect, onSubNav }) {
   const { signOut } = useAuth()
   const [userOpen, setUserOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
@@ -221,7 +221,9 @@ export default function Sidebar({ page, setPage, alertCount = 0, user, domains =
         {hasSub && subOpen && !effCollapsed && (
           <div style={{ marginLeft:8, marginRight:8, borderLeft:'2px solid rgba(255,255,255,0.15)', marginLeft:20, paddingLeft:6, marginBottom:2 }}>
             {item.sub.map(s => (
-              <div key={s.label} style={{ padding:'5px 10px', fontSize:11, color:'rgba(255,255,255,0.65)', cursor:'pointer', borderRadius:6, fontWeight:400, transition:'all 0.1s' }}
+              <div key={s.label}
+                onClick={() => onSubNav ? onSubNav(item.id, s.tab) : setPage(item.id)}
+                style={{ padding:'5px 10px', fontSize:11, color:'rgba(255,255,255,0.65)', cursor:'pointer', borderRadius:6, fontWeight:400, transition:'all 0.1s' }}
                 onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
                 onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; e.currentTarget.style.background = 'transparent' }}>
                 {s.label}

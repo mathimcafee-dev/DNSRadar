@@ -72,6 +72,50 @@ function RuaSetupCard({ ruaAddress }) {
   )
 }
 
+function RuaContent({ user }) {
+  const [ruaAddress, setRuaAddress] = useState('')
+  const [copied, setCopied] = useState(false)
+  useEffect(() => {
+    supabase.from('profiles').select('rua_token').eq('id', user.id).single().then(async ({ data }) => {
+      let token = data?.rua_token
+      if (!token) { token = crypto.randomUUID().replace(/-/g,'').slice(0,24); await supabase.from('profiles').update({ rua_token: token }).eq('id', user.id) }
+      if (token) setRuaAddress(`${token}@rua.domainmaster.site`)
+    })
+  }, [user.id])
+
+  if (!ruaAddress) return <div style={{ padding:40, textAlign:'center', color:'#8896a7', fontSize:13 }}>Loading…</div>
+  return <RuaSetupCard ruaAddress={ruaAddress}/>
+}
+
+function WizardContent({ user, selectedDomain }) {
+  const [domains, setDomains] = useState([])
+  const [sel, setSel] = useState(selectedDomain || null)
+  const [ruaAddress, setRuaAddress] = useState('')
+  const [currentPolicy, setCurrentPolicy] = useState('none')
+
+  useEffect(() => {
+    supabase.from('domains').select('*, scan_results(email_auth)').eq('user_id', user.id).then(({ data }) => { setDomains(data||[]); if (data?.length && !sel) setSel(data[0]) })
+    supabase.from('profiles').select('rua_token').eq('id', user.id).single().then(async ({ data }) => { if (data?.rua_token) setRuaAddress(`${data.rua_token}@rua.domainmaster.site`) })
+  }, [user.id])
+
+  useEffect(() => { if (sel) { const p = sel.scan_results?.[0]?.email_auth?.dmarc_raw?.match(/p=(\w+)/)?.[1]; setCurrentPolicy(p || 'none') } }, [sel])
+
+  return (
+    <div>
+      {domains.length > 1 && (
+        <div style={{ marginBottom:16 }}>
+          <label style={{ fontSize:12, fontWeight:600, color:'#4a5568', display:'block', marginBottom:6 }}>Select domain</label>
+          <select value={sel?.id||''} onChange={e => setSel(domains.find(d=>d.id===e.target.value))} style={{ padding:'8px 12px', border:'1.5px solid #c8d6e5', borderRadius:7, fontSize:13, background:'#fff', color:'#1a2332', maxWidth:300 }}>
+            {domains.map(d => <option key={d.id} value={d.id}>{d.domain_name}</option>)}
+          </select>
+        </div>
+      )}
+      {sel && <PolicyWizard domain={sel} currentPolicy={currentPolicy} ruaAddress={ruaAddress}/>}
+      {!sel && <div style={{ padding:40, textAlign:'center', color:'#8896a7', fontSize:13 }}>Add a domain to use the policy wizard.</div>}
+    </div>
+  )
+}
+
 function PolicyWizard({ domain, currentPolicy, ruaAddress }) {
   const [step, setStep] = useState(0)
   const [saving, setSaving] = useState(false)
@@ -450,7 +494,13 @@ function DmarcReportsInner({ user, selectedDomain }) {
   )
 }
 
-export default function DmarcReports({ user }) {
+export default function DmarcReports({ user, activeTab = 'reports', setActiveTab }) {
+  // Tab definitions
+  const TABS = [
+    { id:'reports', label:'Aggregate reports' },
+    { id:'wizard',  label:'Policy wizard' },
+    { id:'setup',   label:'RUA setup' },
+  ]
   const [domains, setDomains] = useState([])
   const [selectedId, setSelectedId] = useState(null)
 
