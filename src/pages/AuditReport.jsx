@@ -19,7 +19,7 @@ export default function AuditReport({ setPage, setScanDomain, setScanType }) {
   }
 
   return (
-    <div style={{ fontFamily:F, background:'#fafafa', minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'40px 24px' }}>
+    <div style={{ fontFamily:F, background:'var(--page)', minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'40px 24px' }}>
       <div style={{ maxWidth:520, width:'100%', textAlign:'center' }}>
         <div style={{ width:48, height:48, background:'#16a34a', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 20px' }}>
           <Radar size={24} color="#fff" strokeWidth={2.5}/>
@@ -28,7 +28,7 @@ export default function AuditReport({ setPage, setScanDomain, setScanType }) {
         <h1 style={{ fontSize:'clamp(26px,5vw,40px)', fontWeight:900, letterSpacing:'-0.04em', lineHeight:1.1, marginBottom:16 }}>
           Full domain security audit
         </h1>
-        <p style={{ fontSize:15, color:'#6b7280', lineHeight:1.7, marginBottom:32, maxWidth:420, margin:'0 auto 32px' }}>
+        <p style={{ fontSize:15, color:'var(--t3)', lineHeight:1.7, marginBottom:32, maxWidth:420, margin:'0 auto 32px' }}>
           SPF, DKIM, DMARC, SSL, blacklists, propagation — all in one scan. No account required. Export a full PDF report when done.
         </p>
         <form onSubmit={go} style={{ display:'flex', gap:8, marginBottom:12 }}>
@@ -39,7 +39,7 @@ export default function AuditReport({ setPage, setScanDomain, setScanType }) {
               onChange={e => setDomain(e.target.value)}
               placeholder="yourdomain.com"
               autoFocus
-              style={{ width:'100%', padding:'13px 14px 13px 36px', background:'#fff', border:'1.5px solid #e5e7eb', borderRadius:10, fontSize:15, fontFamily:MONO, color:'#111', outline:'none', boxSizing:'border-box', boxShadow:'0 2px 8px rgba(0,0,0,0.06)' }}
+              style={{ width:'100%', padding:'13px 14px 13px 36px', background:'var(--card)', border:'1.5px solid #e5e7eb', borderRadius:10, fontSize:15, fontFamily:MONO, color:'#111', outline:'none', boxSizing:'border-box', boxShadow:'0 2px 8px rgba(0,0,0,0.06)' }}
               onFocus={e => e.target.style.borderColor='#16a34a'}
               onBlur={e => e.target.style.borderColor='#e5e7eb'}
             />
@@ -48,16 +48,16 @@ export default function AuditReport({ setPage, setScanDomain, setScanType }) {
             Run audit <ArrowRight size={15}/>
           </button>
         </form>
-        <p style={{ fontSize:12, color:'#9ca3af', marginBottom:32 }}>No account needed · Results in 90 seconds · PDF export included</p>
+        <p style={{ fontSize:12, color:'var(--t3)', marginBottom:32 }}>No account needed · Results in 90 seconds · PDF export included</p>
         <div style={{ display:'flex', gap:20, justifyContent:'center', flexWrap:'wrap', marginBottom:40 }}>
           {['SPF & DKIM & DMARC','SSL certificate','Blacklists (52)','DNS propagation','Security checks','Health score'].map(f => (
-            <div key={f} style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'#6b7280' }}>
+            <div key={f} style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'var(--t3)' }}>
               <div style={{ width:6, height:6, borderRadius:'50%', background:'#16a34a' }}/>
               {f}
             </div>
           ))}
         </div>
-        <button onClick={() => setPage('landing')} style={{ fontSize:13, color:'#9ca3af', background:'transparent', border:'none', cursor:'pointer', fontFamily:F }}>
+        <button onClick={() => setPage('landing')} style={{ fontSize:13, color:'var(--t3)', background:'transparent', border:'none', cursor:'pointer', fontFamily:F }}>
           ← Back to home
         </button>
       </div>

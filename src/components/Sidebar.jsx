@@ -46,7 +46,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
           </div>
         )}
         {!collapsed && (
-          <button onClick={() => setCollapsed(true)} style={{ background:'none', border:'none', cursor:'pointer', color:'#4b5563', padding:4, borderRadius:6, lineHeight:0 }}
+          <button onClick={() => setCollapsed(true)} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--t3)', padding:4, borderRadius:6, lineHeight:0 }}
             onMouseEnter={e => e.currentTarget.style.color='#9ca3af'}
             onMouseLeave={e => e.currentTarget.style.color='#4b5563'}>
             <ChevronRight size={14}/>
@@ -59,7 +59,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
         {user && SECTIONS.map((section, si) => (
           <div key={si} style={{ marginBottom:2 }}>
             {section.label && !collapsed && (
-              <div style={{ padding:'10px 16px 4px', fontSize:10, fontWeight:700, color:'#4b5563', textTransform:'uppercase', letterSpacing:'0.1em' }}>
+              <div style={{ padding:'10px 16px 4px', fontSize:10, fontWeight:700, color:'var(--t3)', textTransform:'uppercase', letterSpacing:'0.1em' }}>
                 {section.label}
               </div>
             )}
@@ -87,7 +87,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
         {!user && (
           <div style={{ padding:'16px 10px', display:'flex', flexDirection:'column', gap:7 }}>
             <button onClick={() => setPage('auth')} style={{ padding:'9px', background:'#16a34a', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:"'Inter',system-ui" }}>Start free</button>
-            <button onClick={() => setPage('auth')} style={{ padding:'9px', background:'#1f2937', color:'#6b7280', border:'1px solid #374151', borderRadius:8, fontSize:13, cursor:'pointer', fontFamily:"'Inter',system-ui" }}>Sign in</button>
+            <button onClick={() => setPage('auth')} style={{ padding:'9px', background:'#1f2937', color:'var(--t3)', border:'1px solid #374151', borderRadius:8, fontSize:13, cursor:'pointer', fontFamily:"'Inter',system-ui" }}>Sign in</button>
           </div>
         )}
       </nav>
@@ -118,7 +118,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
                 <>
                   <div style={{ flex:1, minWidth:0, textAlign:'left' }}>
                     <div style={{ fontSize:12, fontWeight:600, color:'#f9fafb', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', letterSpacing:'-0.01em' }}>{user.email?.split('@')[0]}</div>
-                    <div style={{ fontSize:10, color:'#4b5563', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{user.email}</div>
+                    <div style={{ fontSize:10, color:'var(--t3)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{user.email}</div>
                   </div>
                   <ChevronDown size={12} color="#4b5563" style={{ flexShrink:0, transform:userOpen?'rotate(180deg)':'none', transition:'transform 0.15s' }}/>
                 </>
@@ -126,9 +126,9 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
             </button>
             {userOpen && (
               <div style={{ position:'absolute', bottom:'calc(100% + 6px)', left:0, right:0, background:'#1f2937', border:'1px solid #374151', borderRadius:10, boxShadow:'0 -8px 24px rgba(0,0,0,0.4)', padding:'4px', zIndex:200, minWidth:190 }}>
-                <div style={{ padding:'8px 10px 6px', fontSize:11, color:'#4b5563', borderBottom:'1px solid #374151', marginBottom:4 }}>{user.email}</div>
+                <div style={{ padding:'8px 10px 6px', fontSize:11, color:'var(--t3)', borderBottom:'1px solid #374151', marginBottom:4 }}>{user.email}</div>
                 {[
-                  { label:'Settings', icon:Settings, fn:()=>{setPage('settings');setUserOpen(false)}, color:'#6b7280' },
+                  { label:'Settings', icon:Settings, fn:()=>{setPage('settings');setUserOpen(false)}, color:'var(--t3)' },
                   { label:'Sign out', icon:LogOut,   fn:()=>{signOut();setUserOpen(false)},           color:'#fca5a5' },
                 ].map(item => (
                   <button key={item.label} onClick={item.fn}
@@ -142,7 +142,7 @@ export default function Sidebar({ page, setPage, alertCount = 0, user }) {
             )}
           </div>
           {collapsed && (
-            <button onClick={() => setCollapsed(false)} style={{ width:'100%', display:'flex', justifyContent:'center', padding:'8px 0', background:'none', border:'none', cursor:'pointer', color:'#4b5563', marginTop:4 }}
+            <button onClick={() => setCollapsed(false)} style={{ width:'100%', display:'flex', justifyContent:'center', padding:'8px 0', background:'none', border:'none', cursor:'pointer', color:'var(--t3)', marginTop:4 }}
               onMouseEnter={e => e.currentTarget.style.color='#9ca3af'}
               onMouseLeave={e => e.currentTarget.style.color='#4b5563'}>
               <ChevronRight size={14} style={{ transform:'rotate(180deg)' }}/>

@@ -41,7 +41,7 @@ export default function DmarcJourney({ currentPolicy, onGenerate }) {
                 <div style={{ fontSize:12, fontWeight:active ? 600 : 400, color: active ? step.color : done ? '#10b981' : 'rgba(255,255,255,0.3)' }}>
                   {step.label}
                 </div>
-                <div style={{ fontSize:10, color:'#9ca3af', marginTop:2 }}>{step.risk}</div>
+                <div style={{ fontSize:10, color:'var(--t3)', marginTop:2 }}>{step.risk}</div>
               </div>
               {i < STEPS.length - 1 && (
                 <div style={{ flex:1, height:2, background: i < currentIdx ? 'rgba(16,185,129,0.4)' : 'rgba(255,255,255,0.08)', margin:'0 8px', marginBottom:28 }}/>
@@ -58,9 +58,9 @@ export default function DmarcJourney({ currentPolicy, onGenerate }) {
             <div style={{ fontSize:12, fontWeight:600, color:current.color, marginBottom:3 }}>
               Current: p={current.key} — {current.risk}
             </div>
-            <div style={{ fontSize:11, color:'#6b7280' }}>{current.desc}</div>
+            <div style={{ fontSize:11, color:'var(--t3)' }}>{current.desc}</div>
             {next && (
-              <div style={{ fontSize:11, color:'#6b7280', marginTop:4, display:'flex', alignItems:'center', gap:4 }}>
+              <div style={{ fontSize:11, color:'var(--t3)', marginTop:4, display:'flex', alignItems:'center', gap:4 }}>
                 <ArrowRight size={10}/>
                 Next: upgrade to <strong style={{ color:next.color }}>p={next.key}</strong> for {next.risk.toLowerCase()}
               </div>

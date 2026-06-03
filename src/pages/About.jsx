@@ -65,7 +65,7 @@ export default function About({ setPage }) {
       `}</style>
 
       {/* NAV */}
-      <nav style={{ background:'#fff', borderBottom:'1px solid #e5e7eb', padding:'0 32px', height:56, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100 }}>
+      <nav style={{ background:'var(--card)', borderBottom:'1px solid var(--border)', padding:'0 32px', height:56, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100 }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }} onClick={() => setPage('landing')}>
           <div style={{ width:30, height:30, background:'#16a34a', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center' }}>
             <Radar size={15} color="#fff" strokeWidth={2.5}/>
@@ -78,13 +78,13 @@ export default function About({ setPage }) {
           <button className="nb" onClick={() => scroll('coverage')}>Coverage</button>
           <button className="nb" onClick={() => scroll('team')}>Team</button>
           <div style={{ width:1, height:18, background:'#e5e7eb', margin:'0 6px' }}/>
-          <button onClick={() => setPage('landing')} style={{ padding:'6px 12px', background:'transparent', color:'#555', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, cursor:'pointer', fontFamily:F }}>← Home</button>
+          <button onClick={() => setPage('landing')} style={{ padding:'6px 12px', background:'transparent', color:'#555', border:'1px solid var(--border)', borderRadius:7, fontSize:13, cursor:'pointer', fontFamily:F }}>← Home</button>
           <button onClick={() => setPage('auth')} style={{ padding:'6px 14px', background:'#16a34a', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Start free</button>
         </div>
       </nav>
 
       {/* HERO */}
-      <section style={{ padding:'88px 24px 72px', background:'#fafafa', borderBottom:'1px solid #e5e7eb' }}>
+      <section style={{ padding:'88px 24px 72px', background:'var(--card-hi)', borderBottom:'1px solid var(--border)' }}>
         <div style={{ maxWidth:780, margin:'0 auto' }}>
           <span className="sl">About DomainRadar</span>
           <h1 className="h1" style={{ marginBottom:28 }}>
@@ -100,7 +100,7 @@ export default function About({ setPage }) {
             <button onClick={() => setPage('auth')} style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'11px 24px', background:'#111', color:'#fff', border:'none', borderRadius:9, fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:F }}>
               Start scanning free <ArrowRight size={14}/>
             </button>
-            <button onClick={() => setPage('audit')} style={{ padding:'11px 18px', background:'transparent', color:'#374151', border:'1px solid #e5e7eb', borderRadius:9, fontSize:13, cursor:'pointer', fontFamily:F }}>
+            <button onClick={() => setPage('audit')} style={{ padding:'11px 18px', background:'transparent', color:'var(--t2)', border:'1px solid var(--border)', borderRadius:9, fontSize:13, cursor:'pointer', fontFamily:F }}>
               📄 Try instant audit
             </button>
           </div>
@@ -120,7 +120,7 @@ export default function About({ setPage }) {
       </div>
 
       {/* MISSION */}
-      <section id="mission" style={{ padding:'88px 24px', background:'#fff' }}>
+      <section id="mission" style={{ padding:'88px 24px', background:'var(--card)' }}>
         <div style={{ maxWidth:780, margin:'0 auto' }}>
           <span className="sl">Mission</span>
           <h2 className="h2" style={{ marginBottom:32 }}>Why DomainRadar exists</h2>
@@ -142,7 +142,7 @@ export default function About({ setPage }) {
       </section>
 
       {/* STORY */}
-      <section id="story" style={{ padding:'88px 24px', background:'#fafafa', borderTop:'1px solid #e5e7eb', borderBottom:'1px solid #e5e7eb' }}>
+      <section id="story" style={{ padding:'88px 24px', background:'var(--card-hi)', borderTop:'1px solid #e5e7eb', borderBottom:'1px solid var(--border)' }}>
         <div style={{ maxWidth:780, margin:'0 auto' }}>
           <span className="sl">Our story</span>
           <h2 className="h2" style={{ marginBottom:12 }}>How DomainRadar was built</h2>
@@ -162,7 +162,7 @@ export default function About({ setPage }) {
       </section>
 
       {/* VALUES */}
-      <section style={{ padding:'88px 24px', background:'#fff' }}>
+      <section style={{ padding:'88px 24px', background:'var(--card)' }}>
         <div style={{ maxWidth:960, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:56 }}>
             <span className="sl" style={{ textAlign:'center' }}>Principles</span>
@@ -170,12 +170,12 @@ export default function About({ setPage }) {
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(270px,1fr))', gap:18 }}>
             {VALUES.map(v => (
-              <div key={v.title} className="hc" style={{ background:'#fafafa', border:`1px solid ${v.bd}`, borderTop:`3px solid ${v.color}`, borderRadius:14, padding:'24px 22px' }}>
+              <div key={v.title} className="hc" style={{ background:'var(--card-hi)', border:`1px solid ${v.bd}`, borderTop:`3px solid ${v.color}`, borderRadius:14, padding:'24px 22px' }}>
                 <div style={{ width:40, height:40, borderRadius:10, background:v.bg, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:14 }}>
                   <v.icon size={19} color={v.color}/>
                 </div>
                 <div style={{ fontSize:15, fontWeight:700, color:'#111', marginBottom:9 }}>{v.title}</div>
-                <div style={{ fontSize:13, color:'#6b7280', lineHeight:1.75 }}>{v.body}</div>
+                <div style={{ fontSize:13, color:'var(--t3)', lineHeight:1.75 }}>{v.body}</div>
               </div>
             ))}
           </div>
@@ -183,22 +183,22 @@ export default function About({ setPage }) {
       </section>
 
       {/* COVERAGE */}
-      <section id="coverage" style={{ padding:'88px 24px', background:'#fafafa', borderTop:'1px solid #e5e7eb' }}>
+      <section id="coverage" style={{ padding:'88px 24px', background:'var(--card-hi)', borderTop:'1px solid #e5e7eb' }}>
         <div style={{ maxWidth:960, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:52 }}>
             <span className="sl" style={{ textAlign:'center' }}>What we check</span>
             <h2 className="h2" style={{ marginBottom:12 }}>Complete domain security coverage</h2>
-            <p style={{ fontSize:15, color:'#6b7280', maxWidth:460, margin:'0 auto' }}>All checks run in parallel. Full results in under 90 seconds. No prior configuration required.</p>
+            <p style={{ fontSize:15, color:'var(--t3)', maxWidth:460, margin:'0 auto' }}>All checks run in parallel. Full results in under 90 seconds. No prior configuration required.</p>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:16 }}>
             {CHECKS.map(c => (
-              <div key={c.label} className="hc" style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:12, padding:'20px 22px', display:'flex', gap:14, alignItems:'flex-start' }}>
+              <div key={c.label} className="hc" style={{ background:'var(--card)', border:'1px solid var(--border)', borderRadius:12, padding:'20px 22px', display:'flex', gap:14, alignItems:'flex-start' }}>
                 <div style={{ width:38, height:38, borderRadius:9, background:'#f0fdf4', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                   <c.icon size={17} color="#16a34a"/>
                 </div>
                 <div>
                   <div style={{ fontSize:14, fontWeight:700, color:'#111', marginBottom:5 }}>{c.label}</div>
-                  <div style={{ fontSize:13, color:'#6b7280', lineHeight:1.7 }}>{c.desc}</div>
+                  <div style={{ fontSize:13, color:'var(--t3)', lineHeight:1.7 }}>{c.desc}</div>
                 </div>
               </div>
             ))}
@@ -207,11 +207,11 @@ export default function About({ setPage }) {
       </section>
 
       {/* TEAM */}
-      <section id="team" style={{ padding:'88px 24px', background:'#fff', borderTop:'1px solid #e5e7eb' }}>
+      <section id="team" style={{ padding:'88px 24px', background:'var(--card)', borderTop:'1px solid #e5e7eb' }}>
         <div style={{ maxWidth:780, margin:'0 auto' }}>
           <span className="sl">The team</span>
           <h2 className="h2" style={{ marginBottom:36 }}>Who built DomainRadar</h2>
-          <div style={{ background:'#fafafa', border:'1px solid #e5e7eb', borderRadius:16, padding:'36px', marginBottom:28 }}>
+          <div style={{ background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:16, padding:'36px', marginBottom:28 }}>
             <div style={{ display:'flex', gap:24, alignItems:'flex-start', flexWrap:'wrap' }}>
               <div style={{ width:64, height:64, borderRadius:16, background:'#f0fdf4', border:'1.5px solid #86efac', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                 <Shield size={28} color="#16a34a"/>
@@ -219,10 +219,10 @@ export default function About({ setPage }) {
               <div style={{ flex:1, minWidth:220 }}>
                 <div style={{ fontSize:20, fontWeight:900, color:'#111', letterSpacing:'-0.03em', marginBottom:4 }}>Spartan</div>
                 <div style={{ fontSize:13, fontWeight:600, color:'#16a34a', marginBottom:20 }}>Founder · Domain Security Specialist</div>
-                <p style={{ fontSize:14, color:'#374151', lineHeight:1.9, marginBottom:14 }}>
+                <p style={{ fontSize:14, color:'var(--t2)', lineHeight:1.9, marginBottom:14 }}>
                   Extensive background in digital security, public key infrastructure, and email authentication — advising enterprise clients and partner networks on domain security strategy, certificate management, and email deliverability across global markets.
                 </p>
-                <p style={{ fontSize:14, color:'#374151', lineHeight:1.9, marginBottom:22 }}>
+                <p style={{ fontSize:14, color:'var(--t2)', lineHeight:1.9, marginBottom:22 }}>
                   DomainRadar was built to address a gap observed consistently across that work: the same preventable security failures — misconfigured authentication records, unmonitored blacklist listings, expiring certificates — affecting organisations that lacked the right tooling to detect them early. The goal was a product that applies deep domain security expertise in a form accessible to every domain owner.
                 </p>
                 <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
@@ -233,7 +233,7 @@ export default function About({ setPage }) {
               </div>
             </div>
           </div>
-          <p style={{ fontSize:13, color:'#9ca3af', textAlign:'center', lineHeight:1.7 }}>
+          <p style={{ fontSize:13, color:'var(--t3)', textAlign:'center', lineHeight:1.7 }}>
             Questions or feedback?{' '}
             <a href="mailto:support@dnsradar.easysecurity.in" style={{ color:'#16a34a', textDecoration:'none', fontWeight:600 }}>support@dnsradar.easysecurity.in</a>
           </p>
@@ -250,7 +250,7 @@ export default function About({ setPage }) {
           </p>
           <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap' }}>
             <button onClick={() => setPage('auth')} style={{ padding:'12px 28px', background:'#16a34a', color:'#fff', border:'none', borderRadius:10, fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:F }}>Start free →</button>
-            <button onClick={() => setPage('audit')} style={{ padding:'12px 20px', background:'#fff', color:'#374151', border:'1px solid #bbf7d0', borderRadius:10, fontSize:13, cursor:'pointer', fontFamily:F }}>📄 Instant audit</button>
+            <button onClick={() => setPage('audit')} style={{ padding:'12px 20px', background:'var(--card)', color:'var(--t2)', border:'1px solid #bbf7d0', borderRadius:10, fontSize:13, cursor:'pointer', fontFamily:F }}>📄 Instant audit</button>
             <button onClick={() => setPage('pricing')} style={{ padding:'12px 20px', background:'transparent', color:'#15803d', border:'1px solid #86efac', borderRadius:10, fontSize:13, cursor:'pointer', fontFamily:F }}>View pricing</button>
           </div>
         </div>

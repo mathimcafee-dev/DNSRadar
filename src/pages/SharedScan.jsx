@@ -18,7 +18,7 @@ function Score({ value }) {
       </svg>
       <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
         <div style={{ fontSize:24, fontWeight:800, color, letterSpacing:'-0.03em', lineHeight:1 }}>{value}</div>
-        <div style={{ fontSize:10, color:'#9ca3af', fontWeight:500 }}>/ 100</div>
+        <div style={{ fontSize:10, color:'var(--t3)', fontWeight:500 }}>/ 100</div>
       </div>
     </div>
   )
@@ -37,12 +37,12 @@ function StatusBadge({ status }) {
 
 function Section({ title, icon: Icon, color, children }) {
   return (
-    <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden', marginBottom:14, boxShadow:'0 1px 3px rgba(0,0,0,0.05)' }}>
-      <div style={{ padding:'12px 16px', borderBottom:'1px solid #f0f2f5', background:'#fafafa', display:'flex', alignItems:'center', gap:8 }}>
+    <div style={{ background:'var(--card)', border:'1px solid var(--border)', borderRadius:12, overflow:'hidden', marginBottom:14, boxShadow:'0 1px 3px rgba(0,0,0,0.05)' }}>
+      <div style={{ padding:'12px 16px', borderBottom:'1px solid var(--border)', background:'var(--card-hi)', display:'flex', alignItems:'center', gap:8 }}>
         <div style={{ width:28, height:28, borderRadius:8, background:color+'18', display:'flex', alignItems:'center', justifyContent:'center' }}>
           <Icon size={14} color={color}/>
         </div>
-        <span style={{ fontSize:13, fontWeight:600, color:'#111827' }}>{title}</span>
+        <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)' }}>{title}</span>
       </div>
       <div style={{ padding:'14px 16px' }}>{children}</div>
     </div>
@@ -52,9 +52,9 @@ function Section({ title, icon: Icon, color, children }) {
 function Row({ label, value, status }) {
   return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'7px 0', borderBottom:'1px solid #f9fafb' }}>
-      <span style={{ fontSize:12, color:'#6b7280', fontWeight:500 }}>{label}</span>
+      <span style={{ fontSize:12, color:'var(--t3)', fontWeight:500 }}>{label}</span>
       <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-        {value && <span style={{ fontSize:12, color:'#374151', fontFamily:'monospace', maxWidth:300, textAlign:'right', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{value}</span>}
+        {value && <span style={{ fontSize:12, color:'var(--t2)', fontFamily:'monospace', maxWidth:300, textAlign:'right', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{value}</span>}
         {status && <StatusBadge status={status}/>}
       </div>
     </div>
@@ -96,21 +96,21 @@ export default function SharedScan({ shareId, setPage }) {
   }, [shareId])
 
   if (loading) return (
-    <div style={{ minHeight:'100vh', background:'#f7f8fa', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:F }}>
+    <div style={{ minHeight:'100vh', background:'var(--page)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:F }}>
       <div style={{ textAlign:'center' }}>
         <div style={{ width:32, height:32, border:'3px solid #e5e7eb', borderTopColor:'#16a34a', borderRadius:'50%', animation:'spin 0.7s linear infinite', margin:'0 auto 12px' }}/>
-        <div style={{ fontSize:13, color:'#6b7280' }}>Loading shared scan…</div>
+        <div style={{ fontSize:13, color:'var(--t3)' }}>Loading shared scan…</div>
       </div>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
 
   if (error) return (
-    <div style={{ minHeight:'100vh', background:'#f7f8fa', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:F }}>
+    <div style={{ minHeight:'100vh', background:'var(--page)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:F }}>
       <div style={{ textAlign:'center', padding:24 }}>
         <AlertTriangle size={32} color="#d97706" style={{ margin:'0 auto 12px' }}/>
-        <div style={{ fontSize:16, fontWeight:600, color:'#111827', marginBottom:6 }}>Link not found</div>
-        <div style={{ fontSize:13, color:'#6b7280', marginBottom:20 }}>{error}</div>
+        <div style={{ fontSize:16, fontWeight:600, color:'var(--t1)', marginBottom:6 }}>Link not found</div>
+        <div style={{ fontSize:13, color:'var(--t3)', marginBottom:20 }}>{error}</div>
         <button onClick={() => setPage('landing')} style={{ padding:'9px 20px', background:'#111827', color:'#fff', border:'none', borderRadius:8, cursor:'pointer', fontSize:13, fontWeight:600, fontFamily:F }}>
           Go to DomainRadar
         </button>
@@ -126,17 +126,17 @@ export default function SharedScan({ shareId, setPage }) {
   const issues = scan?.issues || []
 
   return (
-    <div style={{ minHeight:'100vh', background:'#f7f8fa', fontFamily:F }}>
+    <div style={{ minHeight:'100vh', background:'var(--page)', fontFamily:F }}>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
 
       {/* Navbar */}
-      <div style={{ background:'#fff', borderBottom:'1px solid #e5e7eb', padding:'0 24px', height:54, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+      <div style={{ background:'var(--card)', borderBottom:'1px solid var(--border)', padding:'0 24px', height:54, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
         <div style={{ display:'flex', alignItems:'center', gap:9 }}>
           <div style={{ width:28, height:28, background:'#16a34a', borderRadius:7, display:'flex', alignItems:'center', justifyContent:'center' }}>
             <Radar size={14} color="#fff"/>
           </div>
-          <span style={{ fontSize:14, fontWeight:700, color:'#111827', letterSpacing:'-0.02em' }}>DomainRadar</span>
-          <span style={{ fontSize:11, color:'#9ca3af' }}>· Shared scan</span>
+          <span style={{ fontSize:14, fontWeight:700, color:'var(--t1)', letterSpacing:'-0.02em' }}>DomainRadar</span>
+          <span style={{ fontSize:11, color:'var(--t3)' }}>· Shared scan</span>
         </div>
         <button onClick={() => setPage('landing')} style={{ display:'flex', alignItems:'center', gap:6, background:'#111827', color:'#fff', border:'none', borderRadius:8, padding:'7px 16px', fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:F }}>
           Try DomainRadar free →
@@ -146,11 +146,11 @@ export default function SharedScan({ shareId, setPage }) {
       <div style={{ maxWidth:860, margin:'0 auto', padding:'24px 20px' }}>
 
         {/* Header */}
-        <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:14, padding:'20px 24px', marginBottom:16, display:'flex', alignItems:'center', gap:20, boxShadow:'0 1px 3px rgba(0,0,0,0.05)' }}>
+        <div style={{ background:'var(--card)', border:'1px solid var(--border)', borderRadius:14, padding:'20px 24px', marginBottom:16, display:'flex', alignItems:'center', gap:20, boxShadow:'0 1px 3px rgba(0,0,0,0.05)' }}>
           {scan?.health_score != null && <Score value={scan.health_score}/>}
           <div style={{ flex:1 }}>
-            <div style={{ fontSize:22, fontWeight:800, color:'#111827', letterSpacing:'-0.03em', marginBottom:4 }}>{data.domain_name}</div>
-            <div style={{ fontSize:12, color:'#6b7280', marginBottom:10 }}>
+            <div style={{ fontSize:22, fontWeight:800, color:'var(--t1)', letterSpacing:'-0.03em', marginBottom:4 }}>{data.domain_name}</div>
+            <div style={{ fontSize:12, color:'var(--t3)', marginBottom:10 }}>
               Scanned {scan?.scanned_at ? new Date(scan.scanned_at).toLocaleString('en-GB', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—'}
             </div>
             <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
@@ -178,8 +178,8 @@ export default function SharedScan({ shareId, setPage }) {
               <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'9px 0', borderBottom: i < issues.length-1 ? '1px solid #f3f4f6' : 'none' }}>
                 <div style={{ width:8, height:8, borderRadius:'50%', background: issue.severity === 'critical' ? '#dc2626' : issue.severity === 'warn' ? '#d97706' : '#3b82f6', flexShrink:0, marginTop:4 }}/>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:'#111827', marginBottom:2 }}>{issue.type} — {issue.message}</div>
-                  {issue.fix && <div style={{ fontSize:12, color:'#6b7280' }}>{issue.fix}</div>}
+                  <div style={{ fontSize:13, fontWeight:600, color:'var(--t1)', marginBottom:2 }}>{issue.type} — {issue.message}</div>
+                  {issue.fix && <div style={{ fontSize:12, color:'var(--t3)' }}>{issue.fix}</div>}
                 </div>
               </div>
             ))}

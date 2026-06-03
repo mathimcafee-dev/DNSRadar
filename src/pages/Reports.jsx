@@ -4,14 +4,14 @@ import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { Upload, AlertTriangle, CheckCircle, ShieldOff, Globe, Mail } from 'lucide-react'
 
 const D = { bg:'#f7f8fa', s:'#ffffff', s2:'#f9fafb', b:'#e5e7eb', t:'#111827', m:'#6b7280', d:'#9ca3af' }
-const card = { background:D.s, border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden' }
-const cardHd = { padding:'11px 16px', borderBottom:'1px solid #e5e7eb', display:'flex', alignItems:'center', justifyContent:'space-between', background:D.s2 }
+const card = { background:D.s, border:'1px solid var(--border)', borderRadius:12, overflow:'hidden' }
+const cardHd = { padding:'11px 16px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between', background:D.s2 }
 
 const TTip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
   return (
-    <div style={{ background:'#f9fafb', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'10px 14px', fontSize:11 }}>
-      <div style={{ color:'#374151', marginBottom:5 }}>{label}</div>
+    <div style={{ background:'var(--card-hi)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'10px 14px', fontSize:11 }}>
+      <div style={{ color:'var(--t2)', marginBottom:5 }}>{label}</div>
       {payload.map((p,i) => <div key={i} style={{ color:p.color, marginBottom:2 }}>{p.name}: {p.value?.toLocaleString()}</div>)}
     </div>
   )
@@ -88,7 +88,7 @@ export default function Reports({ user }) {
   const serviceList = Object.values(byService).sort((a,b)=>b.count-a.count).slice(0,8)
 
   const pieData = [
-    { name:'Compliant', value:totalPass, color:'#111827' },
+    { name:'Compliant', value:totalPass, color:'var(--t1)' },
     { name:'Failing', value:totalFail, color:'#ff4d6a' },
   ].filter(d=>d.value>0)
 
@@ -100,7 +100,7 @@ export default function Reports({ user }) {
   }))
 
   return (
-    <div style={{ background:'#f7f8fa', minHeight:'100%', padding:20, fontFamily:"'Inter',system-ui,sans-serif" }}>
+    <div style={{ background:'var(--page)', minHeight:'100%', padding:20, fontFamily:"'Inter',system-ui,sans-serif" }}>
       {/* Header */}
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
         <div>
@@ -110,12 +110,12 @@ export default function Reports({ user }) {
         <div style={{ display:'flex', gap:8 }}>
           {domains.length > 1 && (
             <select value={selectedDomain} onChange={e=>setSelectedDomain(e.target.value)}
-              style={{ padding:'7px 12px', background:D.s, border:'1px solid #e5e7eb', borderRadius:8, fontSize:12, color:D.t, outline:'none' }}>
+              style={{ padding:'7px 12px', background:D.s, border:'1px solid var(--border)', borderRadius:8, fontSize:12, color:D.t, outline:'none' }}>
               {domains.map(d=><option key={d.id} value={d.id}>{d.domain_name}</option>)}
             </select>
           )}
           <button onClick={()=>setUploadXML(u=>!u)}
-            style={{ padding:'7px 14px', background:'#dcfce7', border:'1px solid rgba(16,185,129,0.3)', borderRadius:8, color:'#111827', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+            style={{ padding:'7px 14px', background:'#dcfce7', border:'1px solid rgba(16,185,129,0.3)', borderRadius:8, color:'var(--t1)', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
             <Upload size={13}/> Upload XML report
           </button>
         </div>
@@ -127,17 +127,17 @@ export default function Reports({ user }) {
           <div style={{ ...cardHd }}><span style={{ fontSize:12, fontWeight:600, color:D.t }}>Upload DMARC aggregate report (XML)</span></div>
           <div style={{ padding:14 }}>
             <div style={{ fontSize:12, color:D.m, marginBottom:10, lineHeight:1.6 }}>
-              Paste the raw XML content from a DMARC aggregate report. Mail servers (Google, Microsoft, Yahoo) send these to the <code style={{ fontFamily:'monospace', color:'#111827' }}>rua=</code> address in your DMARC record. Add <code style={{ fontFamily:'monospace', color:'#111827' }}>rua=mailto:reports@dnsradar.easysecurity.in</code> to your DMARC record to receive them automatically.
+              Paste the raw XML content from a DMARC aggregate report. Mail servers (Google, Microsoft, Yahoo) send these to the <code style={{ fontFamily:'monospace', color:'var(--t1)' }}>rua=</code> address in your DMARC record. Add <code style={{ fontFamily:'monospace', color:'var(--t1)' }}>rua=mailto:reports@dnsradar.easysecurity.in</code> to your DMARC record to receive them automatically.
             </div>
             <textarea value={xmlInput} onChange={e=>setXmlInput(e.target.value)} rows={8} placeholder="<?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?><feedback>..."
-              style={{ width:'100%', padding:'10px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
+              style={{ width:'100%', padding:'10px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:12, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
             {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(16,185,129,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'#00e5a0':'#ff4d6a', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
             <div style={{ display:'flex', gap:8, marginTop:8 }}>
               <button onClick={uploadReport} disabled={uploading||!xmlInput}
                 style={{ padding:'7px 16px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', opacity:!xmlInput?0.5:1 }}>
                 {uploading?'Parsing…':'Parse & import'}
               </button>
-              <button onClick={()=>{setUploadXML(false);setXmlInput('')}} style={{ padding:'7px 14px', background:'#e5e7eb', color:D.m, border:'1px solid #e5e7eb', borderRadius:7, fontSize:12, cursor:'pointer' }}>Cancel</button>
+              <button onClick={()=>{setUploadXML(false);setXmlInput('')}} style={{ padding:'7px 14px', background:'#e5e7eb', color:D.m, border:'1px solid var(--border)', borderRadius:7, fontSize:12, cursor:'pointer' }}>Cancel</button>
             </div>
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function Reports({ user }) {
           <div style={{ fontSize:13, color:D.m, maxWidth:420, margin:'0 auto', lineHeight:1.7 }}>
             To receive aggregate reports automatically, add this to your DMARC record:
           </div>
-          <div style={{ fontFamily:'monospace', fontSize:12, color:'#111827', background:'#f0fdf4', border:'1px solid #d1d5db', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
+          <div style={{ fontFamily:'monospace', fontSize:12, color:'var(--t1)', background:'#f0fdf4', border:'1px solid var(--border-md)', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
             rua=mailto:reports@dnsradar.easysecurity.in
           </div>
           <div style={{ fontSize:12, color:D.d }}>Or upload an existing XML report above to get started immediately.</div>
@@ -220,7 +220,7 @@ export default function Reports({ user }) {
               <table style={{ width:'100%', borderCollapse:'collapse', fontSize:12 }}>
                 <thead><tr style={{ background:'rgba(255,255,255,0.02)' }}>
                   {['Source','Volume','Compliant','Failing','Rate','Status'].map(h=>(
-                    <th key={h} style={{ textAlign:'left', padding:'7px 14px', fontSize:10, fontWeight:600, color:D.m, textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid #e5e7eb' }}>{h}</th>
+                    <th key={h} style={{ textAlign:'left', padding:'7px 14px', fontSize:10, fontWeight:600, color:D.m, textTransform:'uppercase', letterSpacing:'0.06em', borderBottom:'1px solid var(--border)' }}>{h}</th>
                   ))}
                 </tr></thead>
                 <tbody>
@@ -233,7 +233,7 @@ export default function Reports({ user }) {
                           <div style={{ fontSize:12, fontWeight:500, color:D.t }}>{s.name}</div>
                         </td>
                         <td style={{ padding:'9px 14px', fontFamily:'monospace', color:D.t, fontWeight:600 }}>{s.count.toLocaleString()}</td>
-                        <td style={{ padding:'9px 14px', color:'#111827', fontFamily:'monospace' }}>{s.pass.toLocaleString()}</td>
+                        <td style={{ padding:'9px 14px', color:'var(--t1)', fontFamily:'monospace' }}>{s.pass.toLocaleString()}</td>
                         <td style={{ padding:'9px 14px', color:s.fail>0?'#ff4d6a':D.d, fontFamily:'monospace' }}>{s.fail.toLocaleString()}</td>
                         <td style={{ padding:'9px 14px' }}>
                           <div style={{ display:'flex', alignItems:'center', gap:6 }}>

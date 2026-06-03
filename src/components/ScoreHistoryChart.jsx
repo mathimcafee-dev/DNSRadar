@@ -7,7 +7,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   const d = payload[0]?.payload
   return (
     <div style={{ background:'#1a2035', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'10px 14px', fontSize:12 }}>
-      <div style={{ color:'#6b7280', marginBottom:6, fontSize:11 }}>{label}</div>
+      <div style={{ color:'var(--t3)', marginBottom:6, fontSize:11 }}>{label}</div>
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
         <div style={{ width:8, height:8, borderRadius:'50%', background: d?.overall >= 70 ? '#10b981' : d?.overall >= 50 ? '#f59e0b' : '#ef4444' }}/>
         <span style={{ color:'#fff', fontWeight:600 }}>Overall: {d?.overall}</span>
@@ -15,7 +15,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       {[['DNS','#3b82f6'],['Email','#ef4444'],['SSL','#10b981'],['Security','#a78bfa']].map(([k,c]) => (
         <div key={k} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:2 }}>
           <div style={{ width:6, height:6, borderRadius:'50%', background:c }}/>
-          <span style={{ color:'#6b7280' }}>{k}: {d?.[k.toLowerCase()]}</span>
+          <span style={{ color:'var(--t3)' }}>{k}: {d?.[k.toLowerCase()]}</span>
         </div>
       ))}
     </div>
@@ -51,15 +51,15 @@ export default function ScoreHistoryChart({ domainId }) {
   }, [domainId])
 
   if (loading) return (
-    <div style={{ height:180, display:'flex', alignItems:'center', justifyContent:'center', color:'#9ca3af', fontSize:12 }}>
+    <div style={{ height:180, display:'flex', alignItems:'center', justifyContent:'center', color:'var(--t3)', fontSize:12 }}>
       Loading history…
     </div>
   )
 
   if (data.length < 2) return (
     <div style={{ height:180, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8 }}>
-      <div style={{ fontSize:13, color:'#6b7280' }}>Not enough data yet</div>
-      <div style={{ fontSize:11, color:'#9ca3af' }}>Run at least 2 scans to see history</div>
+      <div style={{ fontSize:13, color:'var(--t3)' }}>Not enough data yet</div>
+      <div style={{ fontSize:11, color:'var(--t3)' }}>Run at least 2 scans to see history</div>
     </div>
   )
 
@@ -72,7 +72,7 @@ export default function ScoreHistoryChart({ domainId }) {
     <div>
       <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:12 }}>
         <div>
-          <div style={{ fontSize:11, color:'#6b7280', marginBottom:2 }}>Score trend</div>
+          <div style={{ fontSize:11, color:'var(--t3)', marginBottom:2 }}>Score trend</div>
           <div style={{ display:'flex', alignItems:'baseline', gap:6 }}>
             <span style={{ fontSize:24, fontWeight:700, color:scoreColor }}>{latest}</span>
             {delta !== 0 && (
@@ -84,7 +84,7 @@ export default function ScoreHistoryChart({ domainId }) {
         </div>
         <div style={{ display:'flex', gap:12, marginLeft:'auto', fontSize:10 }}>
           {[['Overall','#10b981'],['DNS','#3b82f6'],['Email','#ef4444'],['SSL','#a78bfa']].map(([l,c]) => (
-            <span key={l} style={{ display:'flex', alignItems:'center', gap:4, color:'#6b7280' }}>
+            <span key={l} style={{ display:'flex', alignItems:'center', gap:4, color:'var(--t3)' }}>
               <span style={{ width:8, height:2, background:c, borderRadius:1, display:'inline-block' }}/>
               {l}
             </span>

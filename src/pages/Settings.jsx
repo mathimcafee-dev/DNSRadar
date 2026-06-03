@@ -3,15 +3,15 @@ import { Key, Plus, Trash2, Eye, EyeOff, Copy, Check, Users, Mail, Bell, LogOut,
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 
-const D = { bg:'#f7f8fa', surface:'#ffffff', surface2:'#f9fafb', border:'#e5e7eb', text:'#111827', muted:'#374151', dim:'#6b7280' }
-const card = { background:'#ffffff', border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden', marginBottom:16 }
-const cardHd = { padding:'12px 16px', borderBottom:'1px solid #f0f2f5', display:'flex', alignItems:'center', justifyContent:'space-between', background:'#fafafa' }
+const D = { bg:'var(--page)', surface:'var(--card)', surface2:'var(--card-hi)', border:'var(--border)', text:'var(--t1)', muted:'var(--t2)', dim:'var(--t3)' }
+const card = { background:'var(--card)', border:'1px solid var(--border-md)', borderRadius:12, overflow:'hidden', marginBottom:16 }
+const cardHd = { padding:'12px 16px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'var(--card-hi)' }
 
 function CopyBtn({ text }) {
   const [c,setC]=useState(false)
   return (
     <button onClick={() => { navigator.clipboard.writeText(text); setC(true); setTimeout(()=>setC(false),2000) }}
-      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid #86efac', borderRadius:5, color:'#111827', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
+      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid #86efac', borderRadius:5, color:'var(--t1)', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
       {c?<><Check size={11}/>Copied</>:<><Copy size={11}/>Copy</>}
     </button>
   )
@@ -110,11 +110,11 @@ export default function Settings({ user }) {
   }
 
   return (
-    <div style={{ background:'#f7f8fa', minHeight:'100%', padding:20, fontFamily:"'Inter',system-ui,sans-serif", maxWidth:800 }}>
-      <h2 style={{ fontSize:17, fontWeight:700, color:'#111827', marginBottom:20 }}>Settings</h2>
+    <div style={{ background:'var(--page)', minHeight:'100%', padding:20, fontFamily:"'Inter',system-ui,sans-serif", maxWidth:800 }}>
+      <h2 style={{ fontSize:17, fontWeight:700, color:'var(--t1)', marginBottom:20 }}>Settings</h2>
 
       {/* Tabs */}
-      <div style={{ display:'flex', gap:0, borderBottom:'1px solid #e5e7eb', marginBottom:20 }}>
+      <div style={{ display:'flex', gap:0, borderBottom:'1px solid var(--border)', marginBottom:20 }}>
         {['api','profile','notifications','team'].map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
             style={{ padding:'8px 16px', background:'transparent', border:'none', borderBottom:`2px solid ${activeTab===t?'#16a34a':'transparent'}`, cursor:'pointer', fontSize:12, fontWeight:activeTab===t?600:400, color:activeTab===t?'#16a34a':'#374151', textTransform:'capitalize', transition:'all 0.15s', marginBottom:-1 }}>
@@ -128,12 +128,12 @@ export default function Settings({ user }) {
           <div style={card}>
             <div style={{ ...cardHd }}><Key size={13} color="#16a34a"/> API keys</div>
             <div style={{ padding:16 }}>
-              <div style={{ fontSize:13,color:'#374151', marginBottom:12, lineHeight:1.6 }}>
+              <div style={{ fontSize:13,color:'var(--t2)', marginBottom:12, lineHeight:1.6 }}>
                 Use API keys to access DomainRadar programmatically. Include as <code style={{ fontFamily:'monospace', background:'#e5e7eb', padding:'1px 6px', borderRadius:4 }}>Authorization: Bearer YOUR_KEY</code> header.
               </div>
               {/* Endpoint docs */}
-              <div style={{ background:'#f1f5f9', borderRadius:8, padding:'12px 14px', marginBottom:16, fontFamily:'monospace', fontSize:11 }}>
-                <div style={{ color:'#374151', marginBottom:6 }}>Base URL: https://kbfgnbhjczicpjqxbxjj.supabase.co/functions/v1/api-scan</div>
+              <div style={{ background:'var(--card-hi)', borderRadius:8, padding:'12px 14px', marginBottom:16, fontFamily:'monospace', fontSize:11 }}>
+                <div style={{ color:'var(--t2)', marginBottom:6 }}>Base URL: https://kbfgnbhjczicpjqxbxjj.supabase.co/functions/v1/api-scan</div>
                 {[
                   ['GET','?action=scan&domain=example.com','Full DNS scan'],
                   ['GET','?action=domains','List your domains'],
@@ -142,28 +142,28 @@ export default function Settings({ user }) {
                   <div key={ep} style={{ display:'flex', gap:10, marginBottom:4 }}>
                     <span style={{ color:'#3730a3', width:30 }}>{m}</span>
                     <span style={{ color:'#15803d', flex:1 }}>{ep}</span>
-                    <span style={{ color:'#374151' }}>{desc}</span>
+                    <span style={{ color:'var(--t2)' }}>{desc}</span>
                   </div>
                 ))}
               </div>
               {/* Create new key */}
               <div style={{ display:'flex', gap:8, marginBottom:16 }}>
                 <input value={newKeyName} onChange={e => setNewKeyName(e.target.value)} placeholder="Key name (e.g. CI/CD pipeline)"
-                  style={{ flex:1, padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}
+                  style={{ flex:1, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}
                   onKeyDown={e => e.key==='Enter'&&createApiKey()}/>
                 <button onClick={createApiKey} disabled={!newKeyName.trim()}
-                  style={{ padding:'8px 16px', background:'#dcfce7', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'#111827', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
+                  style={{ padding:'8px 16px', background:'#dcfce7', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'var(--t1)', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
                   <Plus size={13}/> Generate
                 </button>
               </div>
               {/* Show newly created key */}
               {createdKey && (
-                <div style={{ padding:'12px 14px', background:'#f0fdf4', border:'1px solid #d1d5db', borderRadius:8, marginBottom:16 }}>
-                  <div style={{ fontSize:12, fontWeight:600, color:'#111827', marginBottom:6 }}>✓ Key created — copy it now, it won't be shown again</div>
+                <div style={{ padding:'12px 14px', background:'#f0fdf4', border:'1px solid var(--border-md)', borderRadius:8, marginBottom:16 }}>
+                  <div style={{ fontSize:12, fontWeight:600, color:'var(--t1)', marginBottom:6 }}>✓ Key created — copy it now, it won't be shown again</div>
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    <code style={{ flex:1, fontFamily:'monospace', fontSize:12, color:'#111827', background:'#f1f5f9', padding:'6px 10px', borderRadius:6, wordBreak:'break-all' }}>{createdKey.key}</code>
+                    <code style={{ flex:1, fontFamily:'monospace', fontSize:12, color:'var(--t1)', background:'var(--card-hi)', padding:'6px 10px', borderRadius:6, wordBreak:'break-all' }}>{createdKey.key}</code>
                     <CopyBtn text={createdKey.key}/>
-                    <button onClick={() => setCreatedKey(null)} style={{ background:'none', border:'none', cursor:'pointer', color:'#374151', fontSize:16 }}>✕</button>
+                    <button onClick={() => setCreatedKey(null)} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--t2)', fontSize:16 }}>✕</button>
                   </div>
                 </div>
               )}
@@ -173,9 +173,9 @@ export default function Settings({ user }) {
                   <Key size={13} color={k.revoked?D.dim:'#16a34a'}/>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:12, fontWeight:500, color:k.revoked?D.dim:D.text }}>{k.name}</div>
-                    <div style={{ fontSize:10, color:'#374151', fontFamily:'monospace' }}>{k.key_prefix}… · {k.request_count||0} requests · {k.last_used_at?`Last used ${new Date(k.last_used_at).toLocaleDateString()}`:'Never used'}</div>
+                    <div style={{ fontSize:10, color:'var(--t2)', fontFamily:'monospace' }}>{k.key_prefix}… · {k.request_count||0} requests · {k.last_used_at?`Last used ${new Date(k.last_used_at).toLocaleDateString()}`:'Never used'}</div>
                   </div>
-                  {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'#e5e7eb', color:'#374151' }}>Revoked</span>
+                  {k.revoked ? <span style={{ fontSize:10, padding:'2px 8px', borderRadius:8, background:'#e5e7eb', color:'var(--t2)' }}>Revoked</span>
                     : <button onClick={() => revokeKey(k.id)} style={{ padding:'4px 10px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:6, color:'#dc2626', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}><Trash2 size={10}/> Revoke</button>}
                 </div>
               ))}
@@ -189,14 +189,14 @@ export default function Settings({ user }) {
           <div style={{ ...cardHd }}><Users size={13} color="#a78bfa"/> Profile</div>
           <div style={{ padding:16 }}>
             <div style={{ marginBottom:12 }}>
-              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Email</label>
-              <div style={{ padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:7, fontSize:13, color:'#374151', fontFamily:'monospace' }}>{user?.email}</div>
+              <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>Email</label>
+              <div style={{ padding:'8px 12px', background:'rgba(255,255,255,0.03)', borderRadius:7, fontSize:13, color:'var(--t2)', fontFamily:'monospace' }}>{user?.email}</div>
             </div>
             <div style={{ marginBottom:16 }}>
-              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Display name</label>
+              <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>Display name</label>
               <input value={profile.full_name||''} onChange={e => setProfile(p => ({ ...p, full_name: e.target.value }))}
                 placeholder="Your name"
-                style={{ width:'100%', padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit' }}/>
+                style={{ width:'100%', padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={saveProfile} disabled={saving}
@@ -239,19 +239,19 @@ export default function Settings({ user }) {
             <label style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16, cursor:'pointer' }}>
               <input type="checkbox" checked={profile.alert_email !== false} onChange={e => setProfile(p => ({ ...p, alert_email: e.target.checked }))} style={{ accentColor:'#16a34a', width:16, height:16 }}/>
               <div>
-                <div style={{ fontSize:13, fontWeight:500, color:'#111827' }}>Email alerts</div>
-                <div style={{ fontSize:12,color:'#374151' }}>Get notified when a domain score changes or new issues are detected</div>
+                <div style={{ fontSize:13, fontWeight:500, color:'var(--t1)' }}>Email alerts</div>
+                <div style={{ fontSize:12,color:'var(--t2)' }}>Get notified when a domain score changes or new issues are detected</div>
               </div>
             </label>
             <div style={{ marginBottom:16 }}>
-              <label style={{ fontSize:12,color:'#374151', display:'block', marginBottom:5 }}>Webhook URL (Slack, Teams, custom)</label>
+              <label style={{ fontSize:12,color:'var(--t2)', display:'block', marginBottom:5 }}>Webhook URL (Slack, Teams, custom)</label>
               <div style={{ display:'flex', gap:8 }}>
                 <input value={profile.alert_webhook||''} onChange={e => setProfile(p => ({ ...p, alert_webhook: e.target.value }))}
                   placeholder="https://hooks.slack.com/services/..."
-                  style={{ flex:1, padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'monospace' }}/>
+                  style={{ flex:1, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'monospace' }}/>
                 <WebhookTestButton url={profile.alert_webhook}/>
               </div>
-              <div style={{ fontSize:11, color:'#6b7280', marginTop:5 }}>We'll POST a JSON payload to this URL when alerts fire.</div>
+              <div style={{ fontSize:11, color:'var(--t3)', marginTop:5 }}>We'll POST a JSON payload to this URL when alerts fire.</div>
             </div>
             <button onClick={saveProfile} disabled={saving}
               style={{ padding:'8px 18px', background:'#16a34a', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
@@ -275,9 +275,9 @@ function TeamSection({ user }) {
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
   const D = { surface:'#ffffff', surface2:'#f9fafb', border:'#e5e7eb', text:'#111827', muted:'#374151', dim:'#6b7280' }
-  const card = { background:'#ffffff', border:'1px solid #e5e7eb', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }
-  const cardHd = { padding:'11px 16px', borderBottom:'1px solid #e5e7eb', display:'flex', alignItems:'center', gap:7, background:'#ffffff', fontSize:13, fontWeight:600, color:'#111827' }
-  const input = { width:'100%', padding:'8px 12px', background:'#f1f5f9', border:'1px solid #e5e7eb', borderRadius:7, fontSize:13, color:'#111827', outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
+  const card = { background:'var(--card)', border:'1px solid var(--border)', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }
+  const cardHd = { padding:'11px 16px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:7, background:'var(--card)', fontSize:13, fontWeight:600, color:'var(--t1)' }
+  const input = { width:'100%', padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit', boxSizing:'border-box' }
 
   useEffect(() => { load() }, [user.id])
 
@@ -318,15 +318,15 @@ function TeamSection({ user }) {
             {saving ? 'Sending…' : 'Invite'}
           </button>
         </div>
-        {msg && <div style={{ fontSize:12, color:'#111827', marginBottom:12, padding:'6px 10px', background:'#f0fdf4', borderRadius:6 }}>{msg}</div>}
+        {msg && <div style={{ fontSize:12, color:'var(--t1)', marginBottom:12, padding:'6px 10px', background:'#f0fdf4', borderRadius:6 }}>{msg}</div>}
         {members.length === 0 ? (
-          <div style={{ textAlign:'center', padding:'24px', color:'#374151', fontSize:12 }}>No team members yet. Invite someone above.</div>
+          <div style={{ textAlign:'center', padding:'24px', color:'var(--t2)', fontSize:12 }}>No team members yet. Invite someone above.</div>
         ) : members.map(m => (
-          <div key={m.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid #e5e7eb', marginBottom:6 }}>
+          <div key={m.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'rgba(255,255,255,0.03)', borderRadius:8, border:'1px solid var(--border)', marginBottom:6 }}>
             <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(59,130,246,0.15)', color:'#3730a3', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:700, flexShrink:0 }}>{m.member_email?.[0]?.toUpperCase()}</div>
             <div style={{ flex:1, minWidth:0 }}>
-              <div style={{ fontSize:12, fontWeight:500, color:'#111827', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{m.member_email}</div>
-              <div style={{ fontSize:10, color:'#374151' }}>{m.accepted_at ? `Joined ${new Date(m.accepted_at).toLocaleDateString()}` : `Invited ${new Date(m.invited_at).toLocaleDateString()}`}</div>
+              <div style={{ fontSize:12, fontWeight:500, color:'var(--t1)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{m.member_email}</div>
+              <div style={{ fontSize:10, color:'var(--t2)' }}>{m.accepted_at ? `Joined ${new Date(m.accepted_at).toLocaleDateString()}` : `Invited ${new Date(m.invited_at).toLocaleDateString()}`}</div>
             </div>
             <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background:`${roleColor[m.role]||'#6b7280'}18`, color:roleColor[m.role]||'#6b7280', fontWeight:600, border:`1px solid ${roleColor[m.role]||'#6b7280'}30` }}>{m.role}</span>
             <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, background:`${statusColor[m.status]||'#6b7280'}18`, color:statusColor[m.status]||'#6b7280', fontWeight:600 }}>{m.status}</span>

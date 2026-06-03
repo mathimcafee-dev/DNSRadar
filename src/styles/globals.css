@@ -209,3 +209,38 @@ select option { background: var(--card); }
 /* Utils */
 .mono { font-family: var(--mono); }
 .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── Light-theme alias variables (maps old hardcoded palette to dark theme) ── */
+:root {
+  --surface:     var(--card);
+  --surface2:    var(--card-hi);
+  --bg:          var(--page);
+  --text:        var(--t1);
+  --muted:       var(--t2);
+  --dim:         var(--t3);
+  --bdr:         var(--border);
+  --bdr-md:      var(--border-md);
+
+  /* light-theme color overrides used across pages */
+  --gray-50:     var(--card-hi);
+  --gray-100:    var(--card-hi);
+  --gray-200:    var(--border);
+  --gray-300:    var(--border-md);
+  --gray-400:    var(--t3);
+  --gray-500:    var(--t3);
+  --gray-600:    var(--t2);
+  --gray-700:    var(--t2);
+  --gray-800:    var(--t1);
+  --gray-900:    var(--t1);
+
+  --green-light: var(--green-bg);
+  --green-mid:   var(--green-bdr);
+  --green-dark:  var(--green);
+
+  --red-light:   var(--red-bg);
+  --red-text:    var(--red);
+  --amber-light: var(--amber-bg);
+  --amber-text:  var(--amber);
+  --blue-light:  var(--blue-bg);
+  --blue-text:   var(--blue);
+}

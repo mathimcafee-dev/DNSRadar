@@ -17,7 +17,7 @@ function CopyBtn({ text }) {
 function CodeBlock({ code, lang = '' }) {
   return (
     <div style={{ position:'relative', background:'#0d1117', borderRadius:10, padding:'16px 18px', marginBottom:16, border:'1px solid #1f2937', overflow:'hidden' }}>
-      {lang && <div style={{ fontSize:10, color:'#4b5563', fontFamily:MONO, marginBottom:10, textTransform:'uppercase', letterSpacing:'0.09em' }}>{lang}</div>}
+      {lang && <div style={{ fontSize:10, color:'var(--t3)', fontFamily:MONO, marginBottom:10, textTransform:'uppercase', letterSpacing:'0.09em' }}>{lang}</div>}
       <pre style={{ margin:0, fontFamily:MONO, fontSize:13, color:'#e5e7eb', lineHeight:1.7, overflowX:'auto', whiteSpace:'pre-wrap', wordBreak:'break-all' }}>{code}</pre>
       <CopyBtn text={code}/>
     </div>
@@ -94,7 +94,7 @@ export default function Developer({ setPage }) {
           <span style={{ fontSize:10, background:'rgba(74,222,128,0.12)', color:'#4ade80', padding:'2px 8px', borderRadius:8, fontWeight:600, border:'1px solid rgba(74,222,128,0.2)' }}>Developer</span>
         </div>
         <div style={{ display:'flex', gap:8 }}>
-          <button onClick={() => setPage('landing')} style={{ padding:'6px 14px', background:'rgba(255,255,255,0.05)', color:'#9ca3af', border:'1px solid #374151', borderRadius:7, fontSize:13, cursor:'pointer', fontFamily:F }}>← Home</button>
+          <button onClick={() => setPage('landing')} style={{ padding:'6px 14px', background:'rgba(255,255,255,0.05)', color:'var(--t3)', border:'1px solid #374151', borderRadius:7, fontSize:13, cursor:'pointer', fontFamily:F }}>← Home</button>
           <button onClick={() => setPage('auth')} style={{ padding:'6px 14px', background:'#16a34a', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:F }}>Start free</button>
         </div>
       </nav>
@@ -107,7 +107,7 @@ export default function Developer({ setPage }) {
           <h1 style={{ fontSize:'clamp(32px,5vw,52px)', fontWeight:900, letterSpacing:'-0.04em', color:'#f9fafb', lineHeight:1.1, marginBottom:18 }}>
             Build with DomainRadar
           </h1>
-          <p style={{ fontSize:16, color:'#9ca3af', lineHeight:1.8, maxWidth:580 }}>
+          <p style={{ fontSize:16, color:'var(--t3)', lineHeight:1.8, maxWidth:580 }}>
             DomainRadar's scan engine runs on Supabase Edge Functions (Deno). The public scan endpoints are open — no API key required for basic scans. Full API access with authentication coming in Agency plan.
           </p>
         </div>
@@ -115,10 +115,10 @@ export default function Developer({ setPage }) {
         {/* Mission (developer framing) */}
         <div className="fade" style={{ background:'#111827', border:'1px solid #1f2937', borderLeft:'4px solid #16a34a', borderRadius:'0 12px 12px 0', padding:'20px 24px', marginBottom:48 }}>
           <div style={{ fontSize:12, fontWeight:700, color:'#4ade80', marginBottom:8, textTransform:'uppercase', letterSpacing:'0.09em' }}>Why this exists</div>
-          <p style={{ fontSize:14, color:'#9ca3af', lineHeight:1.8, margin:0 }}>
+          <p style={{ fontSize:14, color:'var(--t3)', lineHeight:1.8, margin:0 }}>
             I built DomainRadar because I was tired of watching small businesses and indie developers get blacklisted, spoofed, or have their sites go down over expired certificates — problems that are completely preventable with the right tooling. The scan engine checks 50+ things in parallel in under 90 seconds. The auto-fix layer means zero DNS knowledge required to resolve most issues.
           </p>
-          <div style={{ marginTop:12, fontSize:12, color:'#4b5563' }}>— Spartan, PKI Specialist & Founder · DigiCert Partner APAC · Netherlands</div>
+          <div style={{ marginTop:12, fontSize:12, color:'var(--t3)' }}>— Spartan, PKI Specialist & Founder · DigiCert Partner APAC · Netherlands</div>
         </div>
 
         {/* Tech stack */}
@@ -131,7 +131,7 @@ export default function Developer({ setPage }) {
                   <span style={{ width:6, height:6, borderRadius:'50%', background:'#16a34a', display:'inline-block' }}/>
                   {s.name}
                 </div>
-                <div style={{ fontSize:12, color:'#6b7280', lineHeight:1.6 }}>{s.desc}</div>
+                <div style={{ fontSize:12, color:'var(--t3)', lineHeight:1.6 }}>{s.desc}</div>
               </div>
             ))}
           </div>
@@ -140,7 +140,7 @@ export default function Developer({ setPage }) {
         {/* Quick start */}
         <div className="fade" style={{ marginBottom:56 }}>
           <h2 style={{ fontSize:22, fontWeight:800, color:'#f9fafb', letterSpacing:'-0.03em', marginBottom:20 }}>Quick start</h2>
-          <p style={{ fontSize:14, color:'#9ca3af', marginBottom:16, lineHeight:1.7 }}>Run a full DNS scan on any domain in one fetch call — no API key required:</p>
+          <p style={{ fontSize:14, color:'var(--t3)', marginBottom:16, lineHeight:1.7 }}>Run a full DNS scan on any domain in one fetch call — no API key required:</p>
           <CodeBlock lang="bash" code={`curl -X POST ${SUPABASE_URL}/functions/v1/dns-scan \\
   -H "Content-Type: application/json" \\
   -d '{"domain": "yourdomain.com", "save_to_db": false}'`}/>
@@ -158,7 +158,7 @@ console.log(data.issues)            // [{type:'DMARC', severity:'warn', ...}]`}/
         {/* Endpoints */}
         <div className="fade" style={{ marginBottom:56 }}>
           <h2 style={{ fontSize:22, fontWeight:800, color:'#f9fafb', letterSpacing:'-0.03em', marginBottom:8 }}>Endpoints</h2>
-          <p style={{ fontSize:13, color:'#6b7280', marginBottom:24 }}>Base URL: <code style={{ fontFamily:MONO, background:'#111827', padding:'2px 8px', borderRadius:5, color:'#4ade80' }}>{SUPABASE_URL}/functions/v1</code></p>
+          <p style={{ fontSize:13, color:'var(--t3)', marginBottom:24 }}>Base URL: <code style={{ fontFamily:MONO, background:'#111827', padding:'2px 8px', borderRadius:5, color:'#4ade80' }}>{SUPABASE_URL}/functions/v1</code></p>
           {ENDPOINTS.map(ep => (
             <div key={ep.path} style={{ background:'#111827', border:'1px solid #1f2937', borderRadius:14, overflow:'hidden', marginBottom:20 }}>
               <div style={{ padding:'14px 18px', borderBottom:'1px solid #1f2937', display:'flex', alignItems:'center', gap:10 }}>
@@ -166,10 +166,10 @@ console.log(data.issues)            // [{type:'DMARC', severity:'warn', ...}]`}/
                 <code style={{ fontFamily:MONO, fontSize:13, color:'#f9fafb' }}>{ep.path}</code>
               </div>
               <div style={{ padding:'14px 18px' }}>
-                <p style={{ fontSize:13, color:'#9ca3af', marginBottom:16, lineHeight:1.7 }}>{ep.desc}</p>
-                <div style={{ fontSize:11, color:'#4b5563', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.09em', fontWeight:600 }}>Request body</div>
+                <p style={{ fontSize:13, color:'var(--t3)', marginBottom:16, lineHeight:1.7 }}>{ep.desc}</p>
+                <div style={{ fontSize:11, color:'var(--t3)', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.09em', fontWeight:600 }}>Request body</div>
                 <CodeBlock code={ep.body}/>
-                <div style={{ fontSize:11, color:'#4b5563', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.09em', fontWeight:600 }}>Response</div>
+                <div style={{ fontSize:11, color:'var(--t3)', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.09em', fontWeight:600 }}>Response</div>
                 <CodeBlock lang="json" code={ep.response}/>
               </div>
             </div>
@@ -232,7 +232,7 @@ console.log(data.issues)            // [{type:'DMARC', severity:'warn', ...}]`}/
                 <div style={{ width:6, height:6, borderRadius:'50%', background:'#4ade80', flexShrink:0, marginTop:5 }}/>
                 <div>
                   <span style={{ fontSize:13, fontWeight:600, color:'#f9fafb' }}>{k}: </span>
-                  <span style={{ fontSize:13, color:'#9ca3af' }}>{v}</span>
+                  <span style={{ fontSize:13, color:'var(--t3)' }}>{v}</span>
                 </div>
               </div>
             ))}
@@ -243,7 +243,7 @@ console.log(data.issues)            // [{type:'DMARC', severity:'warn', ...}]`}/
         <div className="fade" style={{ textAlign:'center', padding:'40px 32px', background:'#111827', border:'1px solid #1f2937', borderRadius:16 }}>
           <Code size={32} color="#4ade80" style={{ marginBottom:14 }}/>
           <h2 style={{ fontSize:20, fontWeight:800, color:'#f9fafb', letterSpacing:'-0.02em', marginBottom:10 }}>Want to contribute?</h2>
-          <p style={{ fontSize:13, color:'#9ca3af', lineHeight:1.7, marginBottom:24, maxWidth:440, margin:'0 auto 24px' }}>
+          <p style={{ fontSize:13, color:'var(--t3)', lineHeight:1.7, marginBottom:24, maxWidth:440, margin:'0 auto 24px' }}>
             DomainRadar is in active development. We welcome bug reports, feature requests, and pull requests. The edge function source is included in the repository.
           </p>
           <div style={{ display:'flex', gap:10, justifyContent:'center', flexWrap:'wrap' }}>
