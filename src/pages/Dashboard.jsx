@@ -3,6 +3,7 @@ import { Plus, Globe, Trash2, RefreshCw, Shield, Pause, Play, Clock, Mail, Lock,
 import { supabase } from '../lib/supabase'
 import AddDomainModal from '../components/AddDomainModal'
 import NotificationBell from '../components/NotificationBell'
+import WorldMap from '../components/WorldMap'
 import ScoreHistoryChart from '../components/ScoreHistoryChart'
 import DmarcJourney from '../components/DmarcJourney'
 import { timeAgo, getScoreColor } from '../lib/scoreEngine'
@@ -1378,11 +1379,11 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
 
               {/* ══ PROPAGATION ══════════════════════════════ */}
               {activeTab==='propagation'&&scan?.propagation&&(()=>{
-                const REGIONS = [
-                  {key:'us',   label:'N. America',  resolver:'Cloudflare · 1.1.1.1',   x:'20%', y:'34%'},
-                  {key:'eu',   label:'Europe',       resolver:'Google · 8.8.8.8',        x:'48%', y:'24%'},
-                  {key:'apac', label:'Asia Pacific', resolver:'Quad9 · 9.9.9.9',         x:'75%', y:'32%'},
-                  {key:'au',   label:'Australia',    resolver:'OpenDNS · 208.67.222.222', x:'78%', y:'65%'},
+                const REGION_META = [
+                  {key:'us',   label:'N. America',  resolver:'Cloudflare · 1.1.1.1'},
+                  {key:'eu',   label:'Europe',       resolver:'Google · 8.8.8.8'},
+                  {key:'apac', label:'Asia Pacific', resolver:'Quad9 · 9.9.9.9'},
+                  {key:'au',   label:'Australia',    resolver:'OpenDNS · 208.67.222.222'},
                 ]
                 const allConsistent = scan.propagation.consistent
                 const regionPass = (key) => scan.propagation.records?.every(r => r[key]==='pass')
@@ -1390,9 +1391,8 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 return (
                 <div style={{display:'flex',flexDirection:'column',gap:14}}>
 
-                  {/* Map card */}
-                  <div style={{...card}}>
-                    <div style={{...cardHd}}>
+                  <div style={card}>
+                    <div style={cardHd}>
                       <span style={{fontSize:12,fontWeight:700,color:'#1a2332',display:'flex',alignItems:'center',gap:6}}>
                         <Globe size={13} color='#0073d1'/> Global propagation status
                       </span>
@@ -1402,124 +1402,21 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     </div>
 
                     {/* World map */}
-                    <div style={{padding:'0 0 8px',background:'#ffffff'}}>
-                      <div style={{position:'relative',borderRadius:'0 0 10px 10px',overflow:'hidden',background:'linear-gradient(160deg,#e8f3fc 0%,#d4eaf8 100%)',margin:'0'}}>
-                        {/* SVG World map silhouette */}
-                        <svg viewBox="0 0 1010 527" style={{width:'100%',display:'block'}} xmlns="http://www.w3.org/2000/svg">
-                          {/* Ocean background */}
-                          <rect width="1010" height="527" fill="#dceefb"/>
-                          {/* World landmass — simplified Mercator outline paths */}
-                          <g fill="#1a7fd4" opacity="0.92">
-                            {/* North America */}
-                            <path d="M85,62 L95,55 L120,50 L140,48 L165,52 L180,60 L195,58 L210,65 L215,80 L205,95 L195,110 L185,130 L175,150 L160,165 L148,180 L140,195 L125,205 L110,210 L95,215 L80,210 L70,200 L65,185 L60,170 L58,155 L60,140 L65,125 L70,110 L75,95 L78,78 Z"/>
-                            {/* Central America */}
-                            <path d="M140,210 L155,215 L165,222 L170,235 L162,240 L150,235 L140,225 Z"/>
-                            {/* Greenland */}
-                            <path d="M160,20 L180,15 L200,18 L210,28 L205,40 L190,45 L175,42 L165,35 Z"/>
-                            {/* South America */}
-                            <path d="M155,252 L175,245 L195,248 L210,260 L220,278 L225,298 L228,318 L225,340 L218,358 L208,372 L195,382 L180,385 L165,378 L155,365 L148,348 L145,330 L145,310 L148,290 L150,270 Z"/>
-                            {/* Europe */}
-                            <path d="M420,52 L435,48 L450,45 L468,48 L480,55 L488,65 L485,78 L475,88 L460,92 L445,95 L430,90 L420,80 L415,68 Z"/>
-                            {/* Scandinavia */}
-                            <path d="M452,28 L465,22 L480,25 L488,35 L485,48 L472,52 L460,48 L450,40 Z"/>
-                            {/* UK */}
-                            <path d="M408,52 L418,48 L424,55 L420,65 L410,68 L404,60 Z"/>
-                            {/* Africa */}
-                            <path d="M440,118 L460,112 L480,115 L498,125 L512,140 L520,158 L525,178 L525,198 L522,218 L515,238 L505,255 L492,268 L478,275 L462,278 L448,272 L436,260 L428,244 L422,226 L418,208 L416,188 L418,168 L422,148 L430,132 Z"/>
-                            {/* Madagascar */}
-                            <path d="M530,218 L538,212 L544,220 L542,234 L535,240 L528,232 Z"/>
-                            {/* Russia */}
-                            <path d="M490,28 L530,20 L580,18 L630,22 L680,28 L720,32 L750,38 L775,42 L790,52 L780,65 L760,72 L735,75 L710,78 L685,75 L660,72 L635,70 L610,68 L585,65 L560,62 L535,58 L510,52 L495,42 Z"/>
-                            {/* Central Asia */}
-                            <path d="M560,75 L600,72 L640,75 L670,82 L680,95 L670,108 L650,115 L625,118 L600,115 L578,108 L562,98 Z"/>
-                            {/* China/East Asia */}
-                            <path d="M660,72 L700,68 L738,72 L762,80 L778,92 L782,108 L775,122 L758,132 L738,138 L715,140 L692,138 L672,130 L658,118 L650,105 L652,90 Z"/>
-                            {/* India */}
-                            <path d="M595,118 L618,115 L635,120 L645,135 L648,152 L642,168 L630,178 L615,182 L600,178 L588,165 L582,150 L582,135 Z"/>
-                            {/* Southeast Asia */}
-                            <path d="M715,140 L745,138 L768,145 L782,158 L785,172 L775,182 L758,185 L738,180 L720,168 L710,155 Z"/>
-                            {/* Japan */}
-                            <path d="M780,75 L790,70 L800,75 L798,85 L788,88 L780,83 Z"/>
-                            {/* Indonesia */}
-                            <path d="M730,185 L755,182 L778,188 L790,198 L788,210 L775,215 L752,212 L730,205 L720,195 Z"/>
-                            <path d="M795,200 L815,195 L832,202 L835,215 L825,222 L808,220 L795,210 Z"/>
-                            {/* Middle East */}
-                            <path d="M520,100 L545,95 L565,98 L578,108 L575,122 L560,130 L542,132 L525,125 L515,112 Z"/>
-                            {/* Australia */}
-                            <path d="M738,295 L768,288 L800,290 L828,298 L848,312 L858,330 L858,348 L850,364 L835,375 L815,380 L792,378 L770,370 L750,358 L736,342 L728,324 L728,308 Z"/>
-                            {/* New Zealand */}
-                            <path d="M868,358 L878,350 L886,358 L884,370 L875,375 L866,368 Z"/>
-                            {/* Caribbean */}
-                            <path d="M168,192 L180,188 L190,192 L192,200 L182,204 L170,200 Z"/>
-                            {/* Philippines */}
-                            <path d="M770,155 L780,150 L788,158 L785,168 L775,172 L768,164 Z"/>
-                          </g>
-
-                          {/* Graticule lines — subtle */}
-                          <g stroke="#b8d8f0" strokeWidth="0.5" opacity="0.5">
-                            <line x1="0" y1="263" x2="1010" y2="263"/>
-                          </g>
-                          <text x="8" y="270" fontSize="9" fill="#8bb8d8" opacity="0.7">0°</text>
-
-                          {/* Resolver pins — positioned on map */}
-                          {REGIONS.map(reg => {
-                            const pass = regionPass(reg.key)
-                            const pinX = parseFloat(reg.x) / 100 * 1010
-                            const pinY = parseFloat(reg.y) / 100 * 527
-                            const pinColor = pass ? '#ffffff' : '#ff4444'
-                            const pinStroke = pass ? '#0059a5' : '#cc0000'
-                            const dotColor = pass ? '#0059a5' : '#e53e3e'
-                            return (
-                              <g key={reg.key} transform={`translate(${pinX},${pinY})`}>
-                                {/* Map pin shape */}
-                                <path d="M0,-26 C-10,-26 -18,-18 -18,-8 C-18,6 0,22 0,22 C0,22 18,6 18,-8 C18,-18 10,-26 0,-26 Z"
-                                  fill={pass ? '#1a7fd4' : '#e53e3e'}
-                                  stroke="#ffffff"
-                                  strokeWidth="2.5"
-                                  style={{filter:'drop-shadow(0 2px 4px rgba(0,0,0,0.25))'}}
-                                />
-                                {/* Inner circle */}
-                                <circle cx="0" cy="-8" r="7" fill="#ffffff" opacity="0.95"/>
-                                {/* Status indicator */}
-                                {pass
-                                  ? <path d="M-4,-8 L-1,-5 L5,-12" stroke={dotColor} strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                                  : <><line x1="-3" y1="-11" x2="3" y2="-5" stroke={pinColor} strokeWidth="2.5" strokeLinecap="round"/><line x1="3" y1="-11" x2="-3" y2="-5" stroke={pinColor} strokeWidth="2.5" strokeLinecap="round"/></>
-                                }
-                                {/* Label */}
-                                <rect x="-32" y="24" width="64" height="16" rx="8" fill="rgba(255,255,255,0.92)" stroke={pass?'#a8d0f0':'#feb2b2'} strokeWidth="1"/>
-                                <text x="0" y="35" textAnchor="middle" fontSize="8.5" fill={pass?'#0059a5':'#c53030'} fontWeight="700" fontFamily="'Plus Jakarta Sans',system-ui">{reg.label}</text>
-                              </g>
-                            )
-                          })}
-                        </svg>
-
-                        {/* Legend */}
-                        <div style={{position:'absolute',bottom:10,right:12,display:'flex',gap:12,background:'rgba(255,255,255,0.88)',borderRadius:8,padding:'5px 12px',border:'1px solid #e2e8f0',backdropFilter:'blur(4px)'}}>
-                          <span style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'#4a5568',fontWeight:500}}>
-                            <svg width="12" height="16" viewBox="0 0 12 16"><path d="M6,0 C2.7,0 0,2.7 0,6 C0,10.5 6,16 6,16 C6,16 12,10.5 12,6 C12,2.7 9.3,0 6,0Z" fill="#1a7fd4"/><circle cx="6" cy="6" r="3" fill="white"/></svg>
-                            Propagated
-                          </span>
-                          <span style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'#4a5568',fontWeight:500}}>
-                            <svg width="12" height="16" viewBox="0 0 12 16"><path d="M6,0 C2.7,0 0,2.7 0,6 C0,10.5 6,16 6,16 C6,16 12,10.5 12,6 C12,2.7 9.3,0 6,0Z" fill="#e53e3e"/><circle cx="6" cy="6" r="3" fill="white"/></svg>
-                            Inconsistent
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                    <WorldMap regionStatus={regionPass}/>
 
                     {/* Resolver cards */}
                     <div style={{padding:'14px',display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10}}>
-                      {REGIONS.map(reg => {
+                      {REGION_META.map(reg => {
                         const pass = regionPass(reg.key)
                         return (
                           <div key={reg.key} style={{background:'#ffffff',border:`1.5px solid ${pass?'#a8d0f0':'#feb2b2'}`,borderRadius:10,padding:'12px',borderTop:`3px solid ${pass?'#0073d1':'#e53e3e'}`}}>
-                            <div style={{fontSize:12,fontWeight:700,color:'#1a2332',marginBottom:3}}>{reg.label}</div>
+                            <div style={{fontSize:12,fontWeight:700,color:'#1a2332',marginBottom:2}}>{reg.label}</div>
                             <div style={{fontSize:10,color:'#8896a7',fontFamily:'monospace',marginBottom:8}}>{reg.resolver}</div>
-                            <div style={{display:'inline-flex',alignItems:'center',gap:5,padding:'3px 8px',borderRadius:10,background:pass?'#e8f3fc':'#fff5f5',border:`1px solid ${pass?'#a8d0f0':'#feb2b2'}`}}>
+                            <div style={{display:'inline-flex',alignItems:'center',gap:5,padding:'3px 8px',borderRadius:10,background:pass?'#e8f3fc':'#fff5f5',border:`1px solid ${pass?'#a8d0f0':'#feb2b2'}`,marginBottom:8}}>
                               <div style={{width:6,height:6,borderRadius:'50%',background:pass?'#0073d1':'#e53e3e'}}/>
                               <span style={{fontSize:10,fontWeight:700,color:pass?'#0073d1':'#e53e3e'}}>{pass?'Propagated':'Inconsistent'}</span>
                             </div>
-                            <div style={{display:'flex',flexWrap:'wrap',gap:3,marginTop:8}}>
+                            <div style={{display:'flex',flexWrap:'wrap',gap:3}}>
                               {scan.propagation.records?.map(rec=>{
                                 const ok=rec[reg.key]==='pass'
                                 return <span key={rec.type} style={{fontSize:9,fontFamily:'monospace',fontWeight:700,padding:'1px 5px',borderRadius:3,background:ok?'#e8f3fc':'#fff5f5',color:ok?'#0059a5':'#c53030',border:`1px solid ${ok?'#a8d0f0':'#feb2b2'}`}}>{rec.type}</span>
@@ -1531,7 +1428,6 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     </div>
                   </div>
 
-                  {/* Record breakdown table */}
                   {scan.propagation.records?.length > 0 && (
                     <div style={card}>
                       <div style={cardHd}>
@@ -1542,7 +1438,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                         <table style={{width:'100%',borderCollapse:'collapse',fontSize:12}}>
                           <thead>
                             <tr style={{background:'#fafbfc'}}>
-                              {['Record type','N. America 🇺🇸','Europe 🇪🇺','Asia Pacific 🌏','Australia 🇦🇺','Overall'].map(h=>(
+                              {['Record','N. America 🇺🇸','Europe 🇪🇺','Asia Pacific 🌏','Australia 🇦🇺','Status'].map(h=>(
                                 <th key={h} style={{textAlign:'left',padding:'8px 14px',fontSize:10,fontWeight:700,color:'#8896a7',borderBottom:'1.5px solid #e2e8f0',textTransform:'uppercase',letterSpacing:'0.07em',whiteSpace:'nowrap'}}>{h}</th>
                               ))}
                             </tr>
