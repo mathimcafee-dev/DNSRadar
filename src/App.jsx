@@ -17,6 +17,7 @@ import Pricing from './pages/Pricing'
 import About from './pages/About'
 import Developer from './pages/Developer'
 import './styles/globals.css'
+import ErrorBoundary from './components/ErrorBoundary'
 
 function Alerts({ user }) {
   const [alerts, setAlerts] = useState([])
@@ -296,12 +297,31 @@ export default function App() {
     return () => sub.unsubscribe()
   }, [user])
 
+  async function fetchDomainsFull() {
+    if (!user) return
+    const { data } = await supabase.from('domains')
+      .select(`*, scan_results(id,health_score,score_dns,score_email,score_ssl,score_propagation,score_security,score_blacklist,email_auth,ssl_info,security,propagation,blacklists,issues,dns_records,scanned_at):scanned_at.desc.limit(1)`)
+      .eq('user_id', user.id).order('created_at', { ascending: false })
+    setDomains(data || [])
+    if (data?.length && !selectedDomain) setSelectedDomain(data[0])
+  }
+
   useEffect(() => {
     if (!user) return
-    supabase.from('domains').select(`*, scan_results(id,health_score,score_dns,score_email,score_ssl,score_propagation,score_security,score_blacklist,email_auth,ssl_info,security,propagation,blacklists,issues,dns_records,scanned_at):scanned_at.desc.limit(1)`).eq('user_id', user.id).order('created_at', { ascending: false }).then(({ data }) => {
-      setDomains(data || [])
-      if (data?.length && !selectedDomain) setSelectedDomain(data[0])
-    })
+    fetchDomainsFull()
+    // Realtime: refresh domains when a new scan_result is inserted
+    const scanSub = supabase.channel('app-scan-results')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'scan_results' }, () => {
+        fetchDomainsFull()
+      })
+      .subscribe()
+    // Realtime: refresh when domain is added/updated
+    const domainSub = supabase.channel('app-domains')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'domains', filter: `user_id=eq.${user.id}` }, () => {
+        fetchDomainsFull()
+      })
+      .subscribe()
+    return () => { scanSub.unsubscribe(); domainSub.unsubscribe() }
   }, [user])
 
   const needsAuth = ['dashboard','tools','dmarc','autofix','ssl','alerts','reports','settings'].includes(page)
@@ -332,7 +352,8 @@ export default function App() {
   return (
     <div style={{ display:'flex', minHeight:'100vh', background:'#f4f6f8' }}>
       <Sidebar page={page} setPage={setPage} alertCount={alertCount} user={user}/>
-      <main style={{ flex:1, minWidth:0, overflowY:'auto', minHeight:'100vh' }} key={page}>
+      <main style={{ flex:1, minWidth:0, overflowY:'auto', minHeight:'100vh', paddingBottom:'env(safe-area-inset-bottom)' }} key={page}>
+        <ErrorBoundary>
         <div className="page-enter" style={{minHeight:'100%'}}>
         {page === 'dashboard' && <Dashboard {...sharedDomainProps} setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>}
         {page === 'dmarc'     && <DmarcReports user={user}/>}
@@ -344,6 +365,7 @@ export default function App() {
         {page === 'settings'  && <Settings user={user}/>}
         {page === 'audit'     && <AuditReport setPage={setPage} setScanDomain={setScanDomain} setScanType={setScanType}/>}
         </div>
+        </ErrorBoundary>
       </main>
     </div>
   )

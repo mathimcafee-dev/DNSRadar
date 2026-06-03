@@ -1120,7 +1120,8 @@ export default function Tools({ user }) {
     { id:'advanced',       label:'Advanced' },
     { id:'import',         label:'Bulk import' },
   ]
-  const [activeTab, setActiveTab] = useState('generators')
+  const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem('tools_tab') || 'generators')
+  useEffect(() => { sessionStorage.setItem('tools_tab', activeTab) }, [activeTab])
 
   return (
     <div style={{ background:'#f4f6f8', minHeight:'100%', fontFamily:"'Inter',system-ui,sans-serif" }}>

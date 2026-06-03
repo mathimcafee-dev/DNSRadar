@@ -77,7 +77,7 @@ export default function Settings({ user }) {
 
   async function saveProfile() {
     setSaving(true)
-    await supabase.from('profiles').update({ full_name: profile.full_name, alert_email: profile.alert_email, alert_webhook: profile.alert_webhook }).eq('id', user.id)
+    await supabase.from('profiles').update({ full_name: profile.full_name, alert_email: profile.alert_email, alert_webhook: profile.alert_webhook, ssl_alert_days: profile.ssl_alert_days || 30 }).eq('id', user.id)
     setSaving(false)
   }
 
@@ -199,7 +199,24 @@ export default function Settings({ user }) {
                 style={{ width:'100%', padding:'8px 12px', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'#1a2332', outline:'none', fontFamily:'inherit' }}/>
             </div>
             <div style={{ display:'flex', gap:8 }}>
-              <button onClick={saveProfile} disabled={saving}
+              {/* SSL expiry alert threshold */}
+            <div style={{ marginBottom:20, paddingBottom:20, borderBottom:'1px solid #e2e8f0' }}>
+              <div style={{ fontSize:13, fontWeight:600, color:'#1a2332', marginBottom:4 }}>SSL expiry alerts</div>
+              <div style={{ fontSize:12, color:'#8896a7', marginBottom:12 }}>Get email alerts when SSL certificates are about to expire.</div>
+              <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+                {[7,14,30,60].map(days => (
+                  <button key={days} onClick={() => setProfile(p => ({ ...p, ssl_alert_days: days }))}
+                    style={{ padding:'6px 16px', background:(profile.ssl_alert_days||30)===days?'#0073d1':'#ffffff', color:(profile.ssl_alert_days||30)===days?'#ffffff':'#4a5568', border:`1px solid ${(profile.ssl_alert_days||30)===days?'#0073d1':'#c8d6e5'}`, borderRadius:7, fontSize:12, fontWeight:(profile.ssl_alert_days||30)===days?700:400, cursor:'pointer', transition:'all 0.15s' }}>
+                    {days} days
+                  </button>
+                ))}
+              </div>
+              <div style={{ fontSize:11, color:'#8896a7', marginTop:8 }}>
+                You'll receive alerts at 30 days, 7 days, and 1 day before expiry regardless of this setting. This controls when the first alert is sent.
+              </div>
+            </div>
+
+            <button onClick={saveProfile} disabled={saving}
                 style={{ padding:'8px 18px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
                 {saving ? 'Saving…' : 'Save changes'}
               </button>
@@ -253,6 +270,23 @@ export default function Settings({ user }) {
               </div>
               <div style={{ fontSize:11, color:'#8896a7', marginTop:5 }}>We'll POST a JSON payload to this URL when alerts fire.</div>
             </div>
+            {/* SSL expiry alert threshold */}
+            <div style={{ marginBottom:20, paddingBottom:20, borderBottom:'1px solid #e2e8f0' }}>
+              <div style={{ fontSize:13, fontWeight:600, color:'#1a2332', marginBottom:4 }}>SSL expiry alerts</div>
+              <div style={{ fontSize:12, color:'#8896a7', marginBottom:12 }}>Get email alerts when SSL certificates are about to expire.</div>
+              <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+                {[7,14,30,60].map(days => (
+                  <button key={days} onClick={() => setProfile(p => ({ ...p, ssl_alert_days: days }))}
+                    style={{ padding:'6px 16px', background:(profile.ssl_alert_days||30)===days?'#0073d1':'#ffffff', color:(profile.ssl_alert_days||30)===days?'#ffffff':'#4a5568', border:`1px solid ${(profile.ssl_alert_days||30)===days?'#0073d1':'#c8d6e5'}`, borderRadius:7, fontSize:12, fontWeight:(profile.ssl_alert_days||30)===days?700:400, cursor:'pointer', transition:'all 0.15s' }}>
+                    {days} days
+                  </button>
+                ))}
+              </div>
+              <div style={{ fontSize:11, color:'#8896a7', marginTop:8 }}>
+                You'll receive alerts at 30 days, 7 days, and 1 day before expiry regardless of this setting. This controls when the first alert is sent.
+              </div>
+            </div>
+
             <button onClick={saveProfile} disabled={saving}
               style={{ padding:'8px 18px', background:'#0073d1', color:'#ffffff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
               {saving ? 'Saving…' : 'Save'}

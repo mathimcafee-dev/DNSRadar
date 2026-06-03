@@ -221,3 +221,12 @@ select option { background:#fff; color:var(--t1); }
   --amber-light:var(--amber-bg); --amber-text:var(--amber);
   --blue-light:var(--cyan-bg); --blue-text:var(--cyan);
 }
+
+/* ── Mobile bottom nav clearance ── */
+@media (max-width: 767px) {
+  main { padding-bottom: 68px !important; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet: ensure content doesn't overflow with collapsed sidebar */
+  .page-enter { min-width: 0; }
+}

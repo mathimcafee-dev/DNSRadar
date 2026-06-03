@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { Plus, Globe, Trash2, RefreshCw, Shield, Pause, Play, Clock, Mail, Lock, Ban, AlertTriangle, CheckCircle, Zap, FileDown, Share2, Copy, Check } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import AddDomainModal from '../components/AddDomainModal'
+import NotificationBell from '../components/NotificationBell'
 import ScoreHistoryChart from '../components/ScoreHistoryChart'
 import DmarcJourney from '../components/DmarcJourney'
 import { timeAgo, getScoreColor } from '../lib/scoreEngine'
@@ -609,22 +610,32 @@ function IssuesPanel({ issues, critical, warns, scan, selected, user, setPage })
 // ─── Embeddable badge button ─────────────────────────────────────────
 function BadgeButton({ domain, score }) {
   const [show, setShow] = useState(false)
-  const [copied, setCopied] = useState(false)
+  const [copiedMd, setCopiedMd] = useState(false)
+  const [copiedHtml, setCopiedHtml] = useState(false)
+  const [copiedUrl, setCopiedUrl] = useState(false)
+  const ref = useRef(null)
 
-  const color = score >= 70 ? '16a34a' : score >= 50 ? 'd97706' : 'dc2626'
+  const color = score >= 70 ? '0073d1' : score >= 50 ? 'd97706' : 'e53e3e'
   const label = score >= 70 ? 'Good' : score >= 50 ? 'Fair' : 'Poor'
-  const badgeUrl = `https://img.shields.io/badge/DNS%20Health-${score}%2F100%20${encodeURIComponent(label)}-${color}?style=flat-square&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQyIDAtOC0zLjU4LTgtOHMzLjU4LTggOC04IDggMy41OCA4IDgtMy41OCA4LTggOHoiLz48L3N2Zz4=`
+  const badgeUrl = `https://img.shields.io/badge/DNS%20Health-${score}%2F100%20${encodeURIComponent(label)}-${color}?style=flat-square`
   const markdownBadge = `[![DNS Health](${badgeUrl})](https://dns-radar.vercel.app)`
   const htmlBadge = `<a href="https://dns-radar.vercel.app"><img src="${badgeUrl}" alt="DNS Health: ${score}/100"/></a>`
 
-  function copy(text) {
+  useEffect(() => {
+    if (!show) return
+    const handler = e => { if (ref.current && !ref.current.contains(e.target)) setShow(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [show])
+
+  function copy(text, setter) {
     navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    setter(true)
+    setTimeout(() => setter(false), 2000)
   }
 
   return (
-    <div style={{position:'relative', flexShrink:0}}>
+    <div ref={ref} style={{position:'relative', flexShrink:0}}>
       <button onClick={() => setShow(s => !s)}
         style={{padding:'6px 12px', background:'#ffffff', color:'#555', border:'1px solid #e4e7ec', borderRadius:7, cursor:'pointer', fontSize:12, fontWeight:500, display:'flex', alignItems:'center', gap:4, transition:'background 0.15s'}}>
         🏅 Badge
@@ -640,17 +651,26 @@ function BadgeButton({ domain, score }) {
             <div style={{flex:1, fontFamily:'monospace', fontSize:10, color:'#4a5568', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:6, padding:'6px 8px', wordBreak:'break-all', lineHeight:1.5}}>
               {markdownBadge.slice(0, 80)}…
             </div>
-            <button onClick={() => copy(markdownBadge)} style={{padding:'6px 10px', background:'#e8f3fc', color:'#0073d1', border:'1px solid var(--green-bdr)', borderRadius:7, fontSize:11, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit'}}>
-              {copied ? '✓' : 'Copy'}
+            <button onClick={() => copy(markdownBadge, setCopiedMd)} style={{padding:'6px 10px', background:'#e8f3fc', color:'#0073d1', border:'1px solid #a8d0f0', borderRadius:7, fontSize:11, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit'}}>
+              {copiedMd ? '✓' : 'Copy'}
             </button>
           </div>
-          <div style={{fontSize:11, color:'#8896a7', marginBottom:6}}>HTML</div>
-          <div style={{display:'flex', gap:6}}>
-            <div style={{flex:1, fontFamily:'monospace', fontSize:10, color:'#4a5568', background:'#f8fafc', border:'1px solid var(--border)', borderRadius:6, padding:'6px 8px', wordBreak:'break-all', lineHeight:1.5}}>
+          <div style={{fontSize:11, color:'#8896a7', marginBottom:6}}>HTML embed</div>
+          <div style={{display:'flex', gap:6, marginBottom:10}}>
+            <div style={{flex:1, fontFamily:'monospace', fontSize:10, color:'#4a5568', background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:6, padding:'6px 8px', wordBreak:'break-all', lineHeight:1.5}}>
               {htmlBadge.slice(0, 80)}…
             </div>
-            <button onClick={() => copy(htmlBadge)} style={{padding:'6px 10px', background:'#e8f3fc', color:'#0073d1', border:'1px solid var(--green-bdr)', borderRadius:7, fontSize:11, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit'}}>
-              {copied ? '✓' : 'Copy'}
+            <button onClick={() => copy(htmlBadge, setCopiedHtml)} style={{padding:'6px 10px', background:'#e8f3fc', color:'#0073d1', border:'1px solid #a8d0f0', borderRadius:7, fontSize:11, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit'}}>
+              {copiedHtml ? '✓' : 'Copy'}
+            </button>
+          </div>
+          <div style={{fontSize:11, color:'#8896a7', marginBottom:6}}>Direct URL</div>
+          <div style={{display:'flex', gap:6}}>
+            <div style={{flex:1, fontFamily:'monospace', fontSize:10, color:'#4a5568', background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:6, padding:'6px 8px', wordBreak:'break-all', lineHeight:1.5}}>
+              {badgeUrl.slice(0, 80)}…
+            </div>
+            <button onClick={() => copy(badgeUrl, setCopiedUrl)} style={{padding:'6px 10px', background:'#e8f3fc', color:'#0073d1', border:'1px solid #a8d0f0', borderRadius:7, fontSize:11, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit'}}>
+              {copiedUrl ? '✓' : 'Copy'}
             </button>
           </div>
           <div style={{fontSize:11, color:'#8896a7', marginTop:10, lineHeight:1.5}}>
@@ -769,8 +789,13 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
   const [deleteTarget,setDeleteTarget]=useState(null)
   const [deleteLoading,setDeleteLoading]=useState(false)
   const [activeTab,setActiveTab]=useState('overview')
+  const [dnsFilter,setDnsFilter]=useState('ALL')
+  const [fleetView,setFleetView]=useState(false)
+  const [sortCol,setSortCol]=useState('score')
+  const [sortDir,setSortDir]=useState('desc')
 
   useEffect(()=>{if(user)fetchDomains()},[user])
+  useEffect(()=>{setDnsFilter('ALL')},[selected?.id])
 
   async function fetchDomains() {
     setLoading(true)
@@ -902,7 +927,107 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
 
       {/* ── MAIN ─────────────────────────────────────────────── */}
       <div style={{flex:1,overflowY:'auto',background:'#f4f6f8'}}>
-        {!selected?(
+        {/* ── FLEET COMPARISON VIEW ── */}
+        {fleetView && domains.length > 0 && (() => {
+          const cols = [
+            {key:'domain', label:'Domain',      sort:false},
+            {key:'score',  label:'Score',       sort:true},
+            {key:'dns',    label:'DNS',         sort:true},
+            {key:'email',  label:'Email',       sort:true},
+            {key:'ssl',    label:'SSL',         sort:true},
+            {key:'prop',   label:'Propagation', sort:true},
+            {key:'sec',    label:'Security',    sort:true},
+            {key:'bl',     label:'Blacklists',  sort:true},
+            {key:'issues', label:'Issues',      sort:true},
+          ]
+          const rows = domains.map(d => {
+            const s = d.scan_results?.[0]
+            return {
+              id: d.id, domain: d.domain_name, verified: d.verified,
+              score: s?.health_score ?? null,
+              dns: s?.score_dns ?? null, email: s?.score_email ?? null,
+              ssl: s?.score_ssl ?? null, prop: s?.score_propagation ?? null,
+              sec: s?.score_security ?? null, bl: s?.score_blacklist ?? null,
+              issues: (s?.issues||[]).length,
+              scanned: s?.scanned_at,
+            }
+          })
+          const sorted = [...rows].sort((a,b) => {
+            const va = a[sortCol] ?? -1, vb = b[sortCol] ?? -1
+            return sortDir==='desc' ? vb - va : va - vb
+          })
+          const sc = v => v === null ? '#c8d6e5' : v >= 70 ? '#0073d1' : v >= 50 ? '#d97706' : '#e53e3e'
+          const sbg = v => v === null ? '#f8fafc' : v >= 70 ? '#e8f3fc' : v >= 50 ? '#fffbeb' : '#fff5f5'
+          const toggle = col => { if(sortCol===col){setSortDir(d=>d==='desc'?'asc':'desc')}else{setSortCol(col);setSortDir('desc')} }
+
+          return (
+          <div style={{padding:'16px 20px'}}>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14}}>
+              <div>
+                <div style={{fontSize:15,fontWeight:700,color:'#1a2332'}}>Fleet overview</div>
+                <div style={{fontSize:11,color:'#8896a7',marginTop:2}}>{domains.length} domain{domains.length!==1?'s':''} · click a row to inspect</div>
+              </div>
+              <button onClick={()=>setFleetView(false)} style={{padding:'6px 14px',background:'#ffffff',color:'#4a5568',border:'1px solid #c8d6e5',borderRadius:7,fontSize:12,cursor:'pointer'}}>← Detail view</button>
+            </div>
+            <div style={{background:'#ffffff',border:'1px solid #e2e8f0',borderRadius:12,overflow:'hidden',boxShadow:'0 1px 4px rgba(0,0,0,0.05)'}}>
+              <div style={{overflowX:'auto'}}>
+                <table style={{width:'100%',borderCollapse:'collapse',fontSize:12}}>
+                  <thead>
+                    <tr style={{background:'#fafbfc'}}>
+                      {cols.map(col => (
+                        <th key={col.key}
+                          onClick={col.sort ? ()=>toggle(col.key) : undefined}
+                          style={{textAlign:'left',padding:'10px 14px',fontSize:10,fontWeight:700,color:sortCol===col.key?'#0073d1':'#8896a7',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #e2e8f0',cursor:col.sort?'pointer':'default',whiteSpace:'nowrap',userSelect:'none',transition:'color 0.15s'}}>
+                          {col.label}{sortCol===col.key ? (sortDir==='desc'?' ↓':' ↑') : ''}
+                        </th>
+                      ))}
+                      <th style={{textAlign:'left',padding:'10px 14px',fontSize:10,fontWeight:700,color:'#8896a7',textTransform:'uppercase',letterSpacing:'0.07em',borderBottom:'1.5px solid #e2e8f0',whiteSpace:'nowrap'}}>Last Scan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sorted.map((row,i) => (
+                      <tr key={row.id}
+                        onClick={()=>{const d=domains.find(x=>x.id===row.id);if(d){setSelected(d);setFleetView(false)}}}
+                        style={{borderBottom:'1px solid #f1f5f9',background:i%2===0?'#ffffff':'#fafbfc',cursor:'pointer',transition:'background 0.1s'}}
+                        onMouseEnter={e=>e.currentTarget.style.background='#f0f7ff'}
+                        onMouseLeave={e=>e.currentTarget.style.background=i%2===0?'#ffffff':'#fafbfc'}>
+                        <td style={{padding:'10px 14px'}}>
+                          <div style={{display:'flex',alignItems:'center',gap:7}}>
+                            <div style={{width:6,height:6,borderRadius:'50%',background:row.score===null?'#c8d6e5':sc(row.score),flexShrink:0}}/>
+                            <span style={{fontFamily:'monospace',fontWeight:600,color:'#1a2332',fontSize:12}}>{row.domain}</span>
+                            {!row.verified&&<span style={{fontSize:9,background:'#fffbeb',color:'#b45309',border:'1px solid #fcd34d',padding:'1px 5px',borderRadius:4,fontWeight:600}}>unverified</span>}
+                          </div>
+                        </td>
+                        {['score','dns','email','ssl','prop','sec','bl'].map(key => (
+                          <td key={key} style={{padding:'10px 14px'}}>
+                            {row[key]===null ? <span style={{color:'#c8d6e5',fontSize:11}}>–</span> : (
+                              <div>
+                                <div style={{fontSize:13,fontWeight:700,color:sc(row[key])}}>{row[key]}</div>
+                                <div style={{height:3,background:'#f1f5f9',borderRadius:2,marginTop:3,width:40}}>
+                                  <div style={{height:'100%',width:`${row[key]}%`,background:sc(row[key]),borderRadius:2,transition:'width 0.4s'}}/>
+                                </div>
+                              </div>
+                            )}
+                          </td>
+                        ))}
+                        <td style={{padding:'10px 14px'}}>
+                          {row.issues > 0
+                            ? <span style={{fontSize:11,padding:'2px 8px',borderRadius:10,background:'#fff5f5',color:'#e53e3e',border:'1px solid #feb2b2',fontWeight:600}}>{row.issues}</span>
+                            : <span style={{fontSize:11,color:'#0073d1'}}>✓</span>}
+                        </td>
+                        <td style={{padding:'10px 14px',color:'#8896a7',fontSize:11,whiteSpace:'nowrap'}}>
+                          {row.scanned ? new Date(row.scanned).toLocaleDateString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '–'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          )
+        })()}
+        {!fleetView && !selected?(
           <div style={{display:'flex',alignItems:'center',justifyContent:'center',padding:'40px 24px',minHeight:'60vh'}}>
             <div style={{width:'100%',maxWidth:540}}>
               {/* Hero */}
@@ -944,7 +1069,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               </div>
             </div>
           </div>
-        ):(
+        ):(!fleetView && selected)?(
           <div>
             {/* ── DOMAIN HEADER ── */}
             <div className="no-print" style={{padding:'14px 20px',borderBottom:'1px solid #e4e7ec',background:'#ffffff'}}>
@@ -980,7 +1105,8 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 {/* Actions */}
                 <div style={{display:'flex',flexDirection:'column',gap:6,alignSelf:'flex-start'}}>
                   <RescanButton domain={selected} user={user} onComplete={fetchDomains}/>
-                  <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
+                  <div style={{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center'}}>
+                    <NotificationBell user={user} setPage={setPage}/>
                     {[
                       {icon:selected.paused?Play:Pause,label:selected.paused?'Resume':'Pause',fn:async()=>{await supabase.from('domains').update({paused:!selected.paused}).eq('id',selected.id);fetchDomains()}},
                       {icon:FileDown,label:'PDF',fn:()=>exportCompliancePDF(selected, scan)},
@@ -1423,27 +1549,49 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               })()}
 
               {/* ══ DNS RECORDS ═══════════════════════════════ */}
-              {activeTab==='dns'&&scan?.dns_records&&(
+              {activeTab==='dns'&&scan?.dns_records&&(()=>{
+                const types=['ALL',...[...new Set(scan.dns_records.map(r=>r.type))].sort()]
+                const filtered=dnsFilter==='ALL'?scan.dns_records:scan.dns_records.filter(r=>r.type===dnsFilter)
+                const typeColor={'A':'#3b82f6','AAAA':'#6366f1','MX':'#0073d1','TXT':'#d97706','CNAME':'#7c3aed','NS':'#0284c7','CAA':'#16a34a','SOA':'#8896a7','SRV':'#e53e3e'}
+                return (
                 <div style={card}>
                   <div style={cardHd}>
                     <span style={{fontSize:12,fontWeight:700,color:'#1a2332'}}>DNS records</span>
-                    <span style={{fontSize:12,color:'#4a5568'}}>{scan.dns_records.length} found</span>
+                    <span style={{fontSize:12,color:'#4a5568'}}>{filtered.length} of {scan.dns_records.length}</span>
+                  </div>
+                  {/* Type filter pills */}
+                  <div style={{padding:'10px 16px',borderBottom:'1px solid #e2e8f0',display:'flex',gap:6,flexWrap:'wrap',background:'#fafbfc'}}>
+                    {types.map(t=>{
+                      const cnt=t==='ALL'?scan.dns_records.length:scan.dns_records.filter(r=>r.type===t).length
+                      return (
+                        <button key={t} onClick={()=>setDnsFilter(t)}
+                          style={{padding:'3px 10px',background:dnsFilter===t?'#0073d1':'#ffffff',color:dnsFilter===t?'#ffffff':typeColor[t]||'#4a5568',border:`1px solid ${dnsFilter===t?'#0073d1':typeColor[t]||'#c8d6e5'}`,borderRadius:20,fontSize:11,fontWeight:600,cursor:'pointer',transition:'all 0.12s',fontFamily:'inherit'}}>
+                          {t} <span style={{opacity:0.7,fontWeight:400}}>{cnt}</span>
+                        </button>
+                      )
+                    })}
                   </div>
                   <div style={{overflowX:'auto'}}>
                     <table style={{width:'100%',borderCollapse:'collapse',fontSize:12}}>
                       <thead>
-                        <tr style={{background:'rgba(255,255,255,0.02)'}}>
+                        <tr style={{background:'#fafbfc'}}>
                           {['Type','Value','TTL','Status'].map(h=>(
-                            <th key={h} style={{textAlign:'left',padding:'8px 16px',fontSize:10,fontWeight:600,color:'#4a5568',textTransform:'uppercase',letterSpacing:'0.06em',borderBottom:'1px solid var(--border)'}}>{h}</th>
+                            <th key={h} style={{textAlign:'left',padding:'8px 16px',fontSize:10,fontWeight:700,color:'#8896a7',textTransform:'uppercase',letterSpacing:'0.06em',borderBottom:'1px solid #e2e8f0'}}>{h}</th>
                           ))}
                         </tr>
                       </thead>
                       <tbody>
-                        {scan.dns_records.map((r,i)=>(
-                          <tr key={i} style={{borderBottom:`1px solid rgba(255,255,255,0.04)`}}>
-                            <td style={{padding:'9px 16px'}}><span style={{fontSize:10,padding:'2px 8px',borderRadius:5,background:'rgba(96,165,250,0.15)',color:'#7c3aed',fontFamily:'monospace',fontWeight:700}}>{r.type}</span></td>
-                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'#1a2332',fontSize:12,maxWidth:380,wordBreak:'break-all'}}>{r.value}</td>
-                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'#4a5568',fontSize:12,whiteSpace:'nowrap'}}>{r.ttl}s</td>
+                        {filtered.length===0?(
+                          <tr><td colSpan={4} style={{padding:'24px',textAlign:'center',color:'#8896a7',fontSize:13}}>No {dnsFilter} records found</td></tr>
+                        ):filtered.map((r,i)=>(
+                          <tr key={i} style={{borderBottom:'1px solid #f1f5f9',background:i%2===0?'#ffffff':'#fafbfc',transition:'background 0.1s'}}
+                            onMouseEnter={e=>e.currentTarget.style.background='#f0f7ff'}
+                            onMouseLeave={e=>e.currentTarget.style.background=i%2===0?'#ffffff':'#fafbfc'}>
+                            <td style={{padding:'9px 16px',whiteSpace:'nowrap'}}>
+                              <span style={{fontSize:10,padding:'2px 8px',borderRadius:5,background:(typeColor[r.type]||'#4a5568')+'18',color:typeColor[r.type]||'#4a5568',fontFamily:'monospace',fontWeight:700}}>{r.type}</span>
+                            </td>
+                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'#1a2332',fontSize:11,maxWidth:380,wordBreak:'break-all'}}>{r.value}</td>
+                            <td style={{padding:'9px 16px',fontFamily:'monospace',color:'#8896a7',fontSize:11,whiteSpace:'nowrap'}}>{r.ttl}s</td>
                             <td style={{padding:'9px 16px'}}><SBadge status={r.status||'Pass'}/></td>
                           </tr>
                         ))}
@@ -1451,11 +1599,12 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     </table>
                   </div>
                 </div>
-              )}
+                )
+              })()}
 
             </div>
           </div>
-        )}
+        ):null}
       </div>
 
       {showAdd&&<AddDomainModal user={user} onClose={()=>setShowAdd(false)} onSuccess={fetchDomains}/>}
