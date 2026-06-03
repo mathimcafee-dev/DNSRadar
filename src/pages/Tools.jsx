@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Wand2, Shield, Key, Mail, Upload, Copy, Check, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Zap } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
