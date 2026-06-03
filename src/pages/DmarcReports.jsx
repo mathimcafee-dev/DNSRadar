@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 import { Shield, Mail, AlertTriangle, CheckCircle, Globe, Upload, Copy, Check, ChevronDown, ChevronUp, RefreshCw, Zap, Info, ExternalLink } from 'lucide-react'
 
 const D = { bg:'#f4f6f8', surface:'#ffffff', surface2:'#f8fafc', border:'#e2e8f0', text:'#1a2332', muted:'#4a5568', dim:'#8896a7' }
-const card = { background:'#ffffff', border:'1px solid var(--border-md)', borderRadius:12, overflow:'hidden', boxShadow:'0 4px 16px rgba(0,0,0,0.3)' }
+const card = { background:'#ffffff', border:'1px solid var(--border-md)', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }
 const cardHd = { padding:'12px 16px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'#f8fafc' }
 
 const VTooltip = ({ active, payload, label }) => {
@@ -26,7 +26,7 @@ function CopyBtn({ text }) {
   const [c,setC] = useState(false)
   return (
     <button onClick={() => { navigator.clipboard.writeText(text); setC(true); setTimeout(() => setC(false), 2000) }}
-      style={{ padding:'4px 10px', background:'#e8f3fc', border:'1px solid var(--green-bdr)', borderRadius:6, color:'#1a2332', fontSize:12, fontWeight:600, cursor:'pointer',transition:'background 0.15s', display:'flex', alignItems:'center', gap:5, flexShrink:0 }}>
+      style={{ padding:'4px 10px', background:'#e8f3fc', border:'1px solid #a8d0f0', borderRadius:6, color:'#0059a5', fontSize:12, fontWeight:600, cursor:'pointer',transition:'background 0.15s', display:'flex', alignItems:'center', gap:5, flexShrink:0 }}>
       {c ? <><Check size={11}/>Copied</> : <><Copy size={11}/>Copy</>}
     </button>
   )
@@ -283,19 +283,42 @@ function DmarcReportsInner({ user, selectedDomain }) {
 
       {loading ? (
         <div style={{ display:'flex', justifyContent:'center', padding:40 }}>
-          <div style={{ width:28, height:28, border:'3px solid rgba(255,107,43,0.2)', borderTopColor:'#0073d1', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
+          <div style={{ width:28, height:28, border:'3px solid #e2e8f0', borderTopColor:'#0073d1', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
         </div>
       ) : !hasData ? (
-        <div style={{ ...card, padding:'48px 24px', textAlign:'center' }}>
-          <Mail size={40} color={D.dim} style={{ marginBottom:12 }}/>
-          <div style={{ fontSize:14, fontWeight:600, color:'#1a2332', marginBottom:8 }}>No DMARC data yet for this domain</div>
-          <p style={{ fontSize:13, color:'#4a5568', maxWidth:420, margin:'0 auto 16px', lineHeight:1.6 }}>
-            Add the RUA address above to your DMARC record. Reports arrive automatically within 24–48 hours.
-            Or upload a report XML manually to test immediately.
-          </p>
-          <button onClick={() => setShowUpload(true)} style={{ padding:'8px 20px', background:'#0073d1', border:'none', borderRadius:8, color:'#1a2332', fontSize:13, fontWeight:600, cursor:'pointer',transition:'background 0.15s' }}>
-            Upload test XML now
-          </button>
+        <div style={{ ...card, padding:'32px 28px' }}>
+          <div style={{ textAlign:'center', marginBottom:28 }}>
+            <div style={{ width:52, height:52, background:'#e8f3fc', borderRadius:14, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 14px' }}>
+              <Mail size={26} color="#0073d1"/>
+            </div>
+            <div style={{ fontSize:16, fontWeight:700, color:'#1a2332', marginBottom:6 }}>No DMARC reports yet</div>
+            <div style={{ fontSize:13, color:'#4a5568', maxWidth:440, margin:'0 auto', lineHeight:1.65 }}>
+              Follow these 3 steps to start receiving aggregate reports from Google, Microsoft and other mail providers.
+            </div>
+          </div>
+          <div style={{ display:'flex', flexDirection:'column', gap:12, maxWidth:520, margin:'0 auto 24px' }}>
+            {[
+              { n:1, title:'Copy your unique RUA address', body: ruaAddress ? ruaAddress : 'Loading…', mono:true, done:false },
+              { n:2, title:'Add it to your DMARC DNS record', body:`v=DMARC1; p=none; rua=mailto:${ruaAddress || 'your-address@inbound.dnsradar.app'}; adkim=r; aspf=r`, mono:true, done:false },
+              { n:3, title:'Wait 24–48 hours', body:'Google, Microsoft and other mail providers send daily aggregate reports automatically.', mono:false, done:false },
+            ].map(step => (
+              <div key={step.n} style={{ display:'flex', gap:14, padding:'14px 16px', background:'#f8fafc', borderRadius:10, border:'1px solid #e2e8f0' }}>
+                <div style={{ width:26, height:26, borderRadius:'50%', background:'#0073d1', color:'#ffffff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:700, flexShrink:0, marginTop:1 }}>{step.n}</div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:13, fontWeight:600, color:'#1a2332', marginBottom:5 }}>{step.title}</div>
+                  {step.mono
+                    ? <div style={{ fontSize:11, fontFamily:'monospace', color:'#0059a5', background:'#ffffff', padding:'6px 10px', borderRadius:6, border:'1px solid #e2e8f0', wordBreak:'break-all', lineHeight:1.6 }}>{step.body}</div>
+                    : <div style={{ fontSize:12, color:'#4a5568', lineHeight:1.6 }}>{step.body}</div>
+                  }
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ textAlign:'center' }}>
+            <button onClick={() => setShowUpload(true)} style={{ padding:'9px 22px', background:'#0073d1', border:'none', borderRadius:8, color:'#ffffff', fontSize:13, fontWeight:600, cursor:'pointer' }}>
+              Or upload a report XML now →
+            </button>
+          </div>
         </div>
       ) : (
         <>

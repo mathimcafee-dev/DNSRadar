@@ -3,7 +3,7 @@ import { Wand2, Shield, Key, Mail, Upload, Copy, Check, AlertTriangle, CheckCirc
 import { supabase } from '../lib/supabase'
 
 const D = { bg:'#f4f6f8', surface:'#ffffff', surface2:'#f8fafc', border:'#e2e8f0', text:'#1a2332', muted:'#4a5568', dim:'#8896a7' }
-const card = { background:'#ffffff', border:'1px solid var(--border-md)', borderRadius:12, overflow:'hidden', boxShadow:'0 4px 16px rgba(0,0,0,0.3)' }
+const card = { background:'#ffffff', border:'1px solid var(--border-md)', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }
 const cardHd = { padding:'12px 16px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'#f8fafc' }
 
 function CopyBtn({ text }) {

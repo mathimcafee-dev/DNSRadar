@@ -382,6 +382,7 @@ ${issues.length>0 ? `
 export default function ScanResult({ domain, scanType, setPage, user }) {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [scanStep, setScanStep] = useState(0)
   const [error, setError]   = useState('')
 
   useEffect(() => { if (domain) runScan() }, [domain])
@@ -398,14 +399,69 @@ export default function ScanResult({ domain, scanType, setPage, user }) {
     finally { setLoading(false) }
   }
 
+  const SCAN_STEPS = [
+    'Resolving domain…',
+    'Checking DNS records…',
+    'Analysing email auth (SPF, DKIM, DMARC)…',
+    'Checking SSL certificate…',
+    'Scanning 52 blacklists…',
+    'Testing global propagation…',
+    'Calculating health score…',
+  ]
+  useEffect(() => {
+    if (!loading) return
+    setScanStep(0)
+    const timers = [800,2000,4000,6500,9000,11500,14000].map((ms,i) =>
+      setTimeout(() => setScanStep(i), ms)
+    )
+    return () => timers.forEach(clearTimeout)
+  }, [loading])
+
   if (loading) return (
-    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'70vh', gap:20, fontFamily:F }}>
-      <div style={{ width:52, height:52, border:'3px solid #e5e7eb', borderTopColor:'#0073d1', borderRadius:'50%', animation:'spin 0.8s linear infinite' }}/>
-      <div>
-        <div style={{ fontSize:15, fontWeight:600, color:'#111', marginBottom:4, textAlign:'center' }}>Scanning {domain}</div>
-        <div style={{ fontSize:13, color:'#8896a7', textAlign:'center' }}>Checking DNS, email auth, SSL, blacklists and propagation…</div>
+    <div style={{ maxWidth:600, margin:'60px auto', padding:'0 24px', fontFamily:F }}>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}} @keyframes shimmer{0%{background-position:-600px 0}100%{background-position:600px 0}}`}</style>
+      {/* Header skeleton */}
+      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:32, padding:'20px 24px', background:'#ffffff', borderRadius:12, border:'1px solid #e2e8f0' }}>
+        <div style={{ width:72, height:72, borderRadius:14, background:'#e2e8f0', animation:'shimmer 1.4s infinite', backgroundImage:'linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%)', backgroundSize:'600px 100%', flexShrink:0 }}/>
+        <div style={{ flex:1 }}>
+          <div style={{ height:20, width:'60%', borderRadius:6, background:'#e2e8f0', marginBottom:10, animation:'shimmer 1.4s infinite', backgroundImage:'linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%)', backgroundSize:'600px 100%' }}/>
+          <div style={{ height:14, width:'40%', borderRadius:6, background:'#e2e8f0', animation:'shimmer 1.4s infinite 0.1s', backgroundImage:'linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%)', backgroundSize:'600px 100%' }}/>
+        </div>
       </div>
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+      {/* Progress steps */}
+      <div style={{ background:'#ffffff', borderRadius:12, border:'1px solid #e2e8f0', padding:'20px 24px', marginBottom:20 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16 }}>
+          <div style={{ width:20, height:20, border:'2px solid #e2e8f0', borderTopColor:'#0073d1', borderRadius:'50%', animation:'spin 0.7s linear infinite', flexShrink:0 }}/>
+          <span style={{ fontSize:14, fontWeight:600, color:'#1a2332' }}>Scanning {domain}</span>
+        </div>
+        <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+          {SCAN_STEPS.map((step, i) => (
+            <div key={i} style={{ display:'flex', alignItems:'center', gap:10 }}>
+              <div style={{ width:18, height:18, borderRadius:'50%', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center',
+                background: i < scanStep ? '#0073d1' : i === scanStep ? '#e8f3fc' : '#f4f6f8',
+                border: i < scanStep ? 'none' : i === scanStep ? '2px solid #0073d1' : '1.5px solid #e2e8f0',
+                transition:'all 0.3s'
+              }}>
+                {i < scanStep && <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 3" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>}
+                {i === scanStep && <div style={{ width:6, height:6, borderRadius:'50%', background:'#0073d1', animation:'pulse 1s ease-in-out infinite' }}/>}
+              </div>
+              <span style={{ fontSize:12, color: i <= scanStep ? '#1a2332' : '#8896a7', fontWeight: i === scanStep ? 600 : 400, transition:'color 0.3s' }}>{step}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Skeleton cards */}
+      {[1,2,3].map(i => (
+        <div key={i} style={{ background:'#ffffff', borderRadius:12, border:'1px solid #e2e8f0', padding:'16px 20px', marginBottom:10 }}>
+          <div style={{ display:'flex', gap:12, alignItems:'center' }}>
+            <div style={{ width:30, height:30, borderRadius:8, background:'#e2e8f0', backgroundImage:'linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%)', backgroundSize:'600px 100%', animation:`shimmer 1.4s ${i*0.15}s infinite`, flexShrink:0 }}/>
+            <div style={{ flex:1 }}>
+              <div style={{ height:13, width:'35%', borderRadius:5, background:'#e2e8f0', backgroundImage:'linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%)', backgroundSize:'600px 100%', animation:`shimmer 1.4s ${i*0.1}s infinite`, marginBottom:8 }}/>
+              <div style={{ height:11, width:'70%', borderRadius:5, background:'#e2e8f0', backgroundImage:'linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%)', backgroundSize:'600px 100%', animation:`shimmer 1.4s ${i*0.05}s infinite` }}/>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   )
 

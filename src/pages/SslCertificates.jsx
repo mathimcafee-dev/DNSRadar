@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase'
 import { Lock, RefreshCw, ChevronDown, ChevronUp, Search, Trash2, Plus } from 'lucide-react'
 
 const D = { bg:'#f4f6f8', surface:'#ffffff', surface2:'#f8fafc', border:'#e2e8f0', text:'#1a2332', muted:'#4a5568', dim:'#8896a7' }
-const card = { background:'#ffffff', border:'1px solid var(--border-md)', borderRadius:12, overflow:'hidden', boxShadow:'0 4px 16px rgba(0,0,0,0.3)' }
+const card = { background:'#ffffff', border:'1px solid var(--border-md)', borderRadius:12, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }
 
 function daysColor(days) {
   if (days == null) return '#6b7280'

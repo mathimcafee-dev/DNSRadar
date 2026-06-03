@@ -6,6 +6,22 @@ import ScoreHistoryChart from '../components/ScoreHistoryChart'
 import DmarcJourney from '../components/DmarcJourney'
 import { timeAgo, getScoreColor } from '../lib/scoreEngine'
 
+function formatIssueType(t) {
+  const MAP = {
+    'SPF_missing':'SPF Record','SPF_fail':'SPF Record','SPF_warn':'SPF Record',
+    'DMARC_missing':'DMARC Policy','DMARC_fail':'DMARC Policy','DMARC_warn':'DMARC Policy',
+    'DKIM_missing':'DKIM Signing','DKIM_fail':'DKIM Signing',
+    'CAA_missing':'CAA Record','CAA_fail':'CAA Record',
+    'DNSSEC_missing':'DNSSEC','DNSSEC_warn':'DNSSEC',
+    'blacklist':'Blacklist','blacklist_listing':'Blacklist',
+    'SSL_expiring':'SSL Expiry','SSL_expired':'SSL Expired','SSL_invalid':'SSL Certificate',
+    'MX_missing':'MX Record','A_missing':'A Record',
+  }
+  if (!t) return 'Issue'
+  return MAP[t] || t.replace(/_/g,' ').replace(/\w/g,ch=>ch.toUpperCase())
+}
+
+
 // ─── Auto-fix button ──────────────────────────────────────────────────
 
 // ─── Compliance PDF export ────────────────────────────────────────────
@@ -55,8 +71,8 @@ function exportCompliancePDF(domain, scan) {
     .score-num { font-size: 40px; font-weight: 800; color: ${scoreColor}; line-height: 1; }
     .score-label { font-size: 11px; color: ${scoreColor}; font-weight: 600; margin-top: 4px; }
     .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #f3f4f6; font-size: 11px; color: #9ca3af; display: flex; justify-content: space-between; }
-    .compliance-box { background: #1c160e; border: 1px solid rgba(255,107,43,0.18); border-radius: 8px; padding: 14px 16px; margin-bottom: 20px; }
-    .compliance-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 12px; color: #374151; border-bottom: 0.5px solid #e5e7eb; }
+    .compliance-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; margin-bottom: 20px; }
+    .compliance-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 12px; color: #1a2332; border-bottom: 0.5px solid #e2e8f0; }
     .compliance-item:last-child { border-bottom: none; }
     @media print { body { padding: 20px; } }
   </style>
@@ -154,7 +170,7 @@ function AutoFixBanner({ userId, setPage }) {
   if (hasCred) return (
     <div style={{margin:'0 16px 4px',padding:'9px 12px',background:'#e8f3fc',border:'1px solid var(--green-bdr)',borderRadius:8,display:'flex',alignItems:'center',gap:8,fontSize:12}}>
       <span style={{fontSize:16}}>⚡</span>
-      <span style={{color:'#a8d0f0',fontWeight:500}}>DNS credentials connected — click <strong>Auto-fix</strong> on any issue to push the record directly to your DNS provider.</span>
+      <span style={{color:'#0059a5',fontWeight:500}}>DNS credentials connected — click <strong>Auto-fix</strong> on any issue to push the record directly to your DNS provider.</span>
     </div>
   )
   return (
@@ -169,6 +185,39 @@ function AutoFixBanner({ userId, setPage }) {
     </div>
   )
 }
+
+
+// ─── Rescan now button ─────────────────────────────────────────────────
+function RescanButton({ domain, user, onComplete }) {
+  const [scanning, setScanning] = useState(false)
+  const [done, setDone] = useState(false)
+  const [err, setErr] = useState(false)
+
+  async function rescan() {
+    if (scanning) return
+    setScanning(true); setDone(false); setErr(false)
+    try {
+      const { data, error } = await supabase.functions.invoke('dns-scan', {
+        body: { domain: domain.domain_name, scan_type: 'website', save_to_db: true, domain_id: domain.id }
+      })
+      if (error || data?.error) throw new Error(error?.message || data?.error)
+      setDone(true)
+      setTimeout(() => setDone(false), 3000)
+      if (onComplete) onComplete(data)
+    } catch(e) {
+      setErr(true)
+      setTimeout(() => setErr(false), 3000)
+    } finally { setScanning(false) }
+  }
+
+  return (
+    <button onClick={rescan} disabled={scanning}
+      style={{ padding:'6px 14px', background: done?'#e8f3fc':err?'#fff5f5':'#0073d1', color: done?'#0059a5':err?'#c53030':'#ffffff', border: done?'1px solid #a8d0f0':err?'1px solid #feb2b2':'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:scanning?'wait':'pointer', display:'flex', alignItems:'center', gap:6, transition:'all 0.2s', whiteSpace:'nowrap', fontFamily:'inherit' }}>
+      {scanning ? <><RefreshCw size={12} style={{ animation:'spin 0.7s linear infinite' }}/> Scanning…</> : done ? <>✓ Done</> : err ? <>✗ Failed — retry</> : <><RefreshCw size={12}/> Scan now</>}
+    </button>
+  )
+}
+
 
 const CAA_VENDORS = [
   { id:'letsencrypt', label:"Let's Encrypt", domain:'letsencrypt.org',  icon:'🔒', note:'Free, auto-renewal' },
@@ -531,7 +580,7 @@ function IssuesPanel({ issues, critical, warns, scan, selected, user, setPage })
                 </div>
                 <div style={{flex:1, minWidth:0}}>
                   <div style={{display:'flex', alignItems:'center', gap:7, marginBottom:3, flexWrap:'wrap'}}>
-                    <span style={{fontSize:13, fontWeight:700, color:'#1a2332'}}>{iss.type}</span>
+                    <span style={{fontSize:13, fontWeight:700, color:'#1a2332'}}>{formatIssueType(iss.type)}</span>
                     <span style={{fontSize:10, padding:'2px 7px', borderRadius:8, background:sevBg, color:sevColor, border:`1px solid ${sevBd}`, fontWeight:600}}>{iss.severity}</span>
                   </div>
                   <div style={{fontSize:12, color:'#4a5568', lineHeight:1.6, marginBottom:canAutoFix?6:0}}>{iss.message}</div>
@@ -854,10 +903,46 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
       {/* ── MAIN ─────────────────────────────────────────────── */}
       <div style={{flex:1,overflowY:'auto',background:'#f4f6f8'}}>
         {!selected?(
-          <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',flexDirection:'column',gap:16}}>
-            <Shield size={56} color="var(--border)"/>
-            <div style={{fontSize:16,fontWeight:500,color:'#4a5568'}}>Add a domain to get started</div>
-            <button onClick={()=>setShowAdd(true)} style={{padding:'10px 22px',background:'#ffffff',color:'#1a2332',border:'none',borderRadius:8,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',gap:6}}><Plus size={15}/> Add your first domain</button>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'center',padding:'40px 24px',minHeight:'60vh'}}>
+            <div style={{width:'100%',maxWidth:540}}>
+              {/* Hero */}
+              <div style={{textAlign:'center',marginBottom:32}}>
+                <div style={{width:64,height:64,background:'#e8f3fc',borderRadius:18,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px'}}>
+                  <Shield size={30} color="#0073d1"/>
+                </div>
+                <h2 style={{fontSize:22,fontWeight:800,color:'#1a2332',marginBottom:8,letterSpacing:'-0.02em'}}>Welcome to DomainRadar</h2>
+                <p style={{fontSize:14,color:'#4a5568',lineHeight:1.7,maxWidth:400,margin:'0 auto'}}>
+                  Monitor your domain's DNS health, email security, SSL certificates and blacklist status — all in one place.
+                </p>
+              </div>
+              {/* Steps */}
+              <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:28}}>
+                {[
+                  {n:1,icon:'🌐',title:'Add your domain',      body:'Enter any domain you own or manage.',          done:false,active:true},
+                  {n:2,icon:'✅',title:'Verify ownership',     body:'Add a TXT record to prove you own the domain.', done:false,active:false},
+                  {n:3,icon:'🔍',title:'Run first scan',       body:'Full DNS, email, SSL and blacklist audit.',     done:false,active:false},
+                  {n:4,icon:'🔧',title:'Fix critical issues',  body:'One-click auto-fix via Cloudflare.',            done:false,active:false},
+                  {n:5,icon:'🔔',title:'Enable monitoring',    body:'Get alerted when anything changes.',            done:false,active:false},
+                ].map(step => (
+                  <div key={step.n} style={{display:'flex',gap:14,padding:'12px 16px',background:step.active?'#e8f3fc':'#f8fafc',border:`1px solid ${step.active?'#a8d0f0':'#e2e8f0'}`,borderRadius:10,alignItems:'flex-start',opacity:step.active?1:0.6}}>
+                    <div style={{width:32,height:32,borderRadius:'50%',background:step.active?'#0073d1':'#e2e8f0',color:step.active?'#ffffff':'#8896a7',display:'flex',alignItems:'center',justifyContent:'center',fontSize:13,fontWeight:700,flexShrink:0}}>{step.n}</div>
+                    <div>
+                      <div style={{fontSize:13,fontWeight:600,color:step.active?'#1a2332':'#4a5568',marginBottom:2}}>{step.icon} {step.title}</div>
+                      <div style={{fontSize:12,color:'#8896a7'}}>{step.body}</div>
+                    </div>
+                    {step.active&&<div style={{marginLeft:'auto',fontSize:11,color:'#0073d1',fontWeight:600,flexShrink:0,marginTop:2}}>← Start here</div>}
+                  </div>
+                ))}
+              </div>
+              <div style={{display:'flex',gap:10,justifyContent:'center'}}>
+                <button onClick={()=>setShowAdd(true)} style={{padding:'11px 28px',background:'#0073d1',color:'#ffffff',border:'none',borderRadius:9,fontSize:14,fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',gap:7}}>
+                  <Plus size={16}/> Add your first domain
+                </button>
+                <button onClick={()=>{setScanDomain('');setPage('scan')}} style={{padding:'11px 20px',background:'#ffffff',color:'#4a5568',border:'1px solid #c8d6e5',borderRadius:9,fontSize:13,fontWeight:500,cursor:'pointer'}}>
+                  Scan without account →
+                </button>
+              </div>
+            </div>
           </div>
         ):(
           <div>
@@ -867,7 +952,10 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 <div style={{flex:1}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4,flexWrap:'wrap'}}>
                     <h2 style={{fontSize:17,fontWeight:700,color:'#1a2332',margin:0,letterSpacing:'-0.02em'}}>{selected.domain_name}</h2>
-                    {selected.verified&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#e8f3fc',color:'#1a2332',border:'1px solid var(--green-bdr)',fontWeight:600}}>Verified</span>}
+                    {selected.verified
+                      ? <span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#e8f3fc',color:'#0059a5',border:'1px solid #a8d0f0',fontWeight:600}}>✓ Verified</span>
+                      : <span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#fffbeb',color:'#b45309',border:'1px solid #fcd34d',fontWeight:600}}>⏳ Pending verification</span>
+                    }
                     {selected.paused&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#f8fafc',color:'#4a5568',border:'1px solid var(--border)',fontWeight:500}}>Paused</span>}
                     {critical.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#fff5f5',color:'#e53e3e',border:'1px solid var(--pk-bdr)',fontWeight:600}}>{critical.length} critical</span>}
                     {warns.length>0&&<span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'#fffbeb',color:'#d97706',border:'1px solid var(--or-bdr)',fontWeight:600}}>{warns.length} warnings</span>}
@@ -891,10 +979,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 {scan&&<Gauge score={scan.health_score} size={130}/>}
                 {/* Actions */}
                 <div style={{display:'flex',flexDirection:'column',gap:6,alignSelf:'flex-start'}}>
-                  <button onClick={()=>triggerScan(selected)} disabled={scanning[selected.id]}
-                    style={{padding:'8px 18px',background:'#ffffff',color:'#1a2332',letterSpacing:'-0.01em',border:'none',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:600,display:'flex',alignItems:'center',gap:5}}>
-                    {scanning[selected.id]?<><div style={{width:12,height:12,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'dsh-spin 0.7s linear infinite'}}/>Scanning…</>:<><RefreshCw size={12}/>Scan now</>}
-                  </button>
+                  <RescanButton domain={selected} user={user} onComplete={fetchDomains}/>
                   <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
                     {[
                       {icon:selected.paused?Play:Pause,label:selected.paused?'Resume':'Pause',fn:async()=>{await supabase.from('domains').update({paused:!selected.paused}).eq('id',selected.id);fetchDomains()}},
@@ -915,6 +1000,22 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
             <div style={{padding:20,display:'flex',flexDirection:'column',gap:14}}>
 
               {/* ══ OVERVIEW ══════════════════════════════════ */}
+              {/* Unverified banner */}
+              {!selected.verified && (
+                <div style={{margin:'16px 20px 0',padding:'14px 18px',background:'#fffbeb',border:'1px solid #fcd34d',borderRadius:10,display:'flex',alignItems:'flex-start',gap:12}}>
+                  <div style={{fontSize:20,flexShrink:0}}>⏳</div>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:13,fontWeight:700,color:'#92400e',marginBottom:4}}>Domain not yet verified</div>
+                    <div style={{fontSize:12,color:'#b45309',lineHeight:1.6,marginBottom:10}}>
+                      You need to add a TXT record to prove you own this domain before monitoring begins and scan results appear.
+                    </div>
+                    <button onClick={()=>setShowAdd(true)}
+                      style={{padding:'7px 16px',background:'#d97706',color:'#ffffff',border:'none',borderRadius:7,fontSize:12,fontWeight:600,cursor:'pointer',fontFamily:'inherit'}}>
+                      Verify ownership →
+                    </button>
+                  </div>
+                </div>
+              )}
               {activeTab==='overview'&&scan&&(
                 <>
                   <OnboardingChecklist scan={scan} domain={selected} setPage={setPage} setActiveTab={setActiveTab}/>
@@ -1017,7 +1118,7 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
                       {['1h','6h','24h','off'].map(iv=>(
                         <button key={iv} onClick={()=>updateInterval(selected.id,iv)}
-                          style={{padding:'7px 16px',background:selected.monitor_interval===iv?'#e8f3fc':'#fff',border:`1px solid ${selected.monitor_interval===iv?'#0073d1':'#e2e8f0'}`,borderRadius:8,color:selected.monitor_interval===iv?'#a8d0f0':'#374151',fontSize:12,fontWeight:500,cursor:'pointer'}}>
+                          style={{padding:'7px 16px',background:selected.monitor_interval===iv?'#e8f3fc':'#fff',border:`1px solid ${selected.monitor_interval===iv?'#0073d1':'#e2e8f0'}`,borderRadius:8,color:selected.monitor_interval===iv?'#0059a5':'#4a5568',fontSize:12,fontWeight:selected.monitor_interval===iv?700:500,cursor:'pointer'}}>
                           {iv==='off'?'Off (manual)':iv==='1h'?'Every hour':iv==='6h'?'Every 6 hours':'Every 24 hours'}
                         </button>
                       ))}
@@ -1042,14 +1143,14 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     const canFix = isMissing && r.fixType && r.fixVal
                     return (
                     <div key={r.name} style={{display:'flex',alignItems:'flex-start',gap:14,padding:'12px 16px',borderBottom:'1px solid var(--border)',background:isMissing&&r.fixType?'#fefafa':'transparent'}}>
-                      <div style={{width:60,flexShrink:0}}>
-                        <div style={{fontSize:13,fontWeight:700,color:'#1a2332',fontFamily:'monospace'}}>{r.name}</div>
+                      <div style={{width:84,flexShrink:0,minWidth:84}}>
+                        <div style={{fontSize:12,fontWeight:700,color:'#0073d1',fontFamily:'monospace',letterSpacing:'0.04em',textTransform:'uppercase'}}>{r.name}</div>
                         {r.extra&&<div style={{fontSize:10,color:'#4a5568',marginTop:3}}>{r.extra}</div>}
                       </div>
                       <div style={{flex:1}}>
                         {r.val&&<div style={{fontSize:12,fontFamily:'monospace',color:'#1a2332',marginBottom:4,wordBreak:'break-all',padding:'4px 8px',background:'#f8fafc',borderRadius:5,border:'1px solid var(--border)'}}>{r.val}</div>}
                         {r.note&&<div style={{fontSize:12,color:'#4a5568',lineHeight:1.5}}>{r.note}</div>}
-                        {r.suggest&&<div style={{marginTop:5,padding:'6px 10px',background:'#e8f3fc',border:'1px solid var(--green-bdr)',borderRadius:6,fontSize:12,fontFamily:'monospace',color:'#a8d0f0',wordBreak:'break-all'}}>✦ {r.suggest}</div>}
+                        {r.suggest&&<div style={{marginTop:5,padding:'6px 10px',background:'#e8f3fc',border:'1px solid var(--green-bdr)',borderRadius:6,fontSize:12,fontFamily:'monospace',color:'#0059a5',wordBreak:'break-all'}}>✦ Suggestion: {r.suggest}</div>}
                       </div>
                       <div style={{display:'flex',alignItems:'center',gap:7,flexShrink:0}}>
                         <SBadge status={r.status}/>

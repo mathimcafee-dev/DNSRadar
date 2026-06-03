@@ -11,7 +11,7 @@ function CopyBtn({ text }) {
   const [c,setC]=useState(false)
   return (
     <button onClick={() => { navigator.clipboard.writeText(text); setC(true); setTimeout(()=>setC(false),2000) }}
-      style={{ padding:'4px 10px', background:'rgba(255,107,43,0.1)', border:'1px solid var(--green-bdr)', borderRadius:5, color:'#1a2332', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
+      style={{ padding:'4px 10px', background:'#e8f3fc', border:'1px solid #a8d0f0', borderRadius:5, color:'#0059a5', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
       {c?<><Check size={11}/>Copied</>:<><Copy size={11}/>Copy</>}
     </button>
   )

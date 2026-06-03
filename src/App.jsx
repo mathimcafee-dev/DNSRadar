@@ -92,7 +92,7 @@ function Alerts({ user }) {
             { id:'warn', label:'Warnings' },
           ].map(f => (
             <button key={f.id} onClick={() => setFilter(f.id)}
-              style={{ padding:'5px 12px', background:filter===f.id?'#0073d1':'#ffffff', color:filter===f.id?'#021812':'#4a5568', border:`1px solid ${filter===f.id?'#a8d0f0':'#c8d6e5'}`, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer' }}>
+              style={{ padding:'5px 12px', background:filter===f.id?'#0073d1':'#ffffff', color:filter===f.id?'#ffffff':'#4a5568', border:`1px solid ${filter===f.id?'#a8d0f0':'#c8d6e5'}`, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer' }}>
               {f.label}
             </button>
           ))}
