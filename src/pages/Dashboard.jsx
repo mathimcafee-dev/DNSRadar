@@ -1379,134 +1379,150 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
               {/* ══ PROPAGATION ══════════════════════════════ */}
               {activeTab==='propagation'&&scan?.propagation&&(()=>{
                 const REGIONS = [
-                  {key:'us',   label:'N. America',  resolver:'Cloudflare · 1.1.1.1',  icon:'🇺🇸', cx:22,  cy:42},
-                  {key:'eu',   label:'Europe',       resolver:'Google · 8.8.8.8',      icon:'🇪🇺', cx:50,  cy:32},
-                  {key:'apac', label:'Asia Pacific', resolver:'Quad9 · 9.9.9.9',       icon:'🌏', cx:76,  cy:40},
-                  {key:'au',   label:'Australia',    resolver:'OpenDNS · 208.67.222.222',icon:'🇦🇺', cx:80,  cy:68},
+                  {key:'us',   label:'N. America',  resolver:'Cloudflare · 1.1.1.1',   x:'20%', y:'34%'},
+                  {key:'eu',   label:'Europe',       resolver:'Google · 8.8.8.8',        x:'48%', y:'24%'},
+                  {key:'apac', label:'Asia Pacific', resolver:'Quad9 · 9.9.9.9',         x:'75%', y:'32%'},
+                  {key:'au',   label:'Australia',    resolver:'OpenDNS · 208.67.222.222', x:'78%', y:'65%'},
                 ]
                 const allConsistent = scan.propagation.consistent
-                const regionStatus = (key) => scan.propagation.records?.every(r => r[key]==='pass')
+                const regionPass = (key) => scan.propagation.records?.every(r => r[key]==='pass')
 
                 return (
                 <div style={{display:'flex',flexDirection:'column',gap:14}}>
 
-                  {/* Header summary card */}
-                  <div style={{...card,padding:'20px 24px'}}>
-                    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:20}}>
-                      <div style={{display:'flex',alignItems:'center',gap:10}}>
-                        <div style={{width:40,height:40,borderRadius:10,background:allConsistent?'#e8f3fc':'#fff5f5',display:'flex',alignItems:'center',justifyContent:'center',border:`1px solid ${allConsistent?'#a8d0f0':'#feb2b2'}`}}>
-                          <Globe size={20} color={allConsistent?'#0073d1':'#e53e3e'}/>
-                        </div>
-                        <div>
-                          <div style={{fontSize:14,fontWeight:700,color:'#1a2332'}}>Global propagation status</div>
-                          <div style={{fontSize:12,color:'#8896a7',marginTop:1}}>{scan.propagation.records?.length||0} record types across 4 resolvers</div>
-                        </div>
-                      </div>
-                      <div style={{textAlign:'right'}}>
-                        <div style={{display:'inline-flex',alignItems:'center',gap:6,padding:'6px 14px',borderRadius:20,background:allConsistent?'#e8f3fc':'#fff5f5',border:`1px solid ${allConsistent?'#a8d0f0':'#feb2b2'}`}}>
-                          <div style={{width:8,height:8,borderRadius:'50%',background:allConsistent?'#0073d1':'#e53e3e'}}/>
-                          <span style={{fontSize:12,fontWeight:700,color:allConsistent?'#0073d1':'#e53e3e'}}>{allConsistent?'Consistent globally':'Inconsistent — check records'}</span>
-                        </div>
-                      </div>
+                  {/* Map card */}
+                  <div style={{...card}}>
+                    <div style={{...cardHd}}>
+                      <span style={{fontSize:12,fontWeight:700,color:'#1a2332',display:'flex',alignItems:'center',gap:6}}>
+                        <Globe size={13} color='#0073d1'/> Global propagation status
+                      </span>
+                      <span style={{display:'inline-flex',alignItems:'center',gap:5,fontSize:11,fontWeight:600,padding:'3px 10px',borderRadius:20,background:allConsistent?'#e8f3fc':'#fff5f5',color:allConsistent?'#0073d1':'#e53e3e',border:`1px solid ${allConsistent?'#a8d0f0':'#feb2b2'}`}}>
+                        <span style={{width:6,height:6,borderRadius:'50%',background:allConsistent?'#0073d1':'#e53e3e',display:'inline-block'}}/>{allConsistent?'Consistent':'Inconsistent'}
+                      </span>
                     </div>
 
-                    {/* Visual world map — clean SVG dots on geographic positions */}
-                    <div style={{position:'relative',background:'#f0f7ff',borderRadius:12,border:'1px solid #e2e8f0',padding:'28px 20px',marginBottom:20,overflow:'hidden'}}>
-                      {/* Subtle grid lines for geography feel */}
-                      <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none'}} viewBox="0 0 100 100" preserveAspectRatio="none">
-                        {[20,40,60,80].map(x=><line key={x} x1={x} y1="0" x2={x} y2="100" stroke="#dce8f5" strokeWidth="0.3"/>)}
-                        {[25,50,75].map(y=><line key={y} x1="0" y1={y} x2="100" y2={y} stroke="#dce8f5" strokeWidth="0.3"/>)}
-                        {/* Equator */}
-                        <line x1="0" y1="50" x2="100" y2="50" stroke="#c8d6e5" strokeWidth="0.5" strokeDasharray="2,2"/>
-                        {/* Tropic of Cancer / Capricorn hints */}
-                        <line x1="0" y1="38" x2="100" y2="38" stroke="#e8f0f8" strokeWidth="0.3"/>
-                        <line x1="0" y1="62" x2="100" y2="62" stroke="#e8f0f8" strokeWidth="0.3"/>
-                      </svg>
+                    {/* World map */}
+                    <div style={{padding:'0 0 8px',background:'#ffffff'}}>
+                      <div style={{position:'relative',borderRadius:'0 0 10px 10px',overflow:'hidden',background:'linear-gradient(160deg,#e8f3fc 0%,#d4eaf8 100%)',margin:'0'}}>
+                        {/* SVG World map silhouette */}
+                        <svg viewBox="0 0 1010 527" style={{width:'100%',display:'block'}} xmlns="http://www.w3.org/2000/svg">
+                          {/* Ocean background */}
+                          <rect width="1010" height="527" fill="#dceefb"/>
+                          {/* World landmass — simplified Mercator outline paths */}
+                          <g fill="#1a7fd4" opacity="0.92">
+                            {/* North America */}
+                            <path d="M85,62 L95,55 L120,50 L140,48 L165,52 L180,60 L195,58 L210,65 L215,80 L205,95 L195,110 L185,130 L175,150 L160,165 L148,180 L140,195 L125,205 L110,210 L95,215 L80,210 L70,200 L65,185 L60,170 L58,155 L60,140 L65,125 L70,110 L75,95 L78,78 Z"/>
+                            {/* Central America */}
+                            <path d="M140,210 L155,215 L165,222 L170,235 L162,240 L150,235 L140,225 Z"/>
+                            {/* Greenland */}
+                            <path d="M160,20 L180,15 L200,18 L210,28 L205,40 L190,45 L175,42 L165,35 Z"/>
+                            {/* South America */}
+                            <path d="M155,252 L175,245 L195,248 L210,260 L220,278 L225,298 L228,318 L225,340 L218,358 L208,372 L195,382 L180,385 L165,378 L155,365 L148,348 L145,330 L145,310 L148,290 L150,270 Z"/>
+                            {/* Europe */}
+                            <path d="M420,52 L435,48 L450,45 L468,48 L480,55 L488,65 L485,78 L475,88 L460,92 L445,95 L430,90 L420,80 L415,68 Z"/>
+                            {/* Scandinavia */}
+                            <path d="M452,28 L465,22 L480,25 L488,35 L485,48 L472,52 L460,48 L450,40 Z"/>
+                            {/* UK */}
+                            <path d="M408,52 L418,48 L424,55 L420,65 L410,68 L404,60 Z"/>
+                            {/* Africa */}
+                            <path d="M440,118 L460,112 L480,115 L498,125 L512,140 L520,158 L525,178 L525,198 L522,218 L515,238 L505,255 L492,268 L478,275 L462,278 L448,272 L436,260 L428,244 L422,226 L418,208 L416,188 L418,168 L422,148 L430,132 Z"/>
+                            {/* Madagascar */}
+                            <path d="M530,218 L538,212 L544,220 L542,234 L535,240 L528,232 Z"/>
+                            {/* Russia */}
+                            <path d="M490,28 L530,20 L580,18 L630,22 L680,28 L720,32 L750,38 L775,42 L790,52 L780,65 L760,72 L735,75 L710,78 L685,75 L660,72 L635,70 L610,68 L585,65 L560,62 L535,58 L510,52 L495,42 Z"/>
+                            {/* Central Asia */}
+                            <path d="M560,75 L600,72 L640,75 L670,82 L680,95 L670,108 L650,115 L625,118 L600,115 L578,108 L562,98 Z"/>
+                            {/* China/East Asia */}
+                            <path d="M660,72 L700,68 L738,72 L762,80 L778,92 L782,108 L775,122 L758,132 L738,138 L715,140 L692,138 L672,130 L658,118 L650,105 L652,90 Z"/>
+                            {/* India */}
+                            <path d="M595,118 L618,115 L635,120 L645,135 L648,152 L642,168 L630,178 L615,182 L600,178 L588,165 L582,150 L582,135 Z"/>
+                            {/* Southeast Asia */}
+                            <path d="M715,140 L745,138 L768,145 L782,158 L785,172 L775,182 L758,185 L738,180 L720,168 L710,155 Z"/>
+                            {/* Japan */}
+                            <path d="M780,75 L790,70 L800,75 L798,85 L788,88 L780,83 Z"/>
+                            {/* Indonesia */}
+                            <path d="M730,185 L755,182 L778,188 L790,198 L788,210 L775,215 L752,212 L730,205 L720,195 Z"/>
+                            <path d="M795,200 L815,195 L832,202 L835,215 L825,222 L808,220 L795,210 Z"/>
+                            {/* Middle East */}
+                            <path d="M520,100 L545,95 L565,98 L578,108 L575,122 L560,130 L542,132 L525,125 L515,112 Z"/>
+                            {/* Australia */}
+                            <path d="M738,295 L768,288 L800,290 L828,298 L848,312 L858,330 L858,348 L850,364 L835,375 L815,380 L792,378 L770,370 L750,358 L736,342 L728,324 L728,308 Z"/>
+                            {/* New Zealand */}
+                            <path d="M868,358 L878,350 L886,358 L884,370 L875,375 L866,368 Z"/>
+                            {/* Caribbean */}
+                            <path d="M168,192 L180,188 L190,192 L192,200 L182,204 L170,200 Z"/>
+                            {/* Philippines */}
+                            <path d="M770,155 L780,150 L788,158 L785,168 L775,172 L768,164 Z"/>
+                          </g>
 
-                      {/* Continent labels — subtle */}
-                      <div style={{position:'relative',height:120,fontFamily:"'Plus Jakarta Sans',system-ui"}}>
-                        {/* Continent outlines as simple shapes */}
-                        <svg style={{position:'absolute',inset:0,width:'100%',height:'100%'}} viewBox="0 0 100 100" preserveAspectRatio="none">
-                          {/* N. America blob */}
-                          <ellipse cx="20" cy="38" rx="13" ry="16" fill="#dce8f5" opacity="0.8"/>
-                          {/* S. America */}
-                          <ellipse cx="26" cy="62" rx="7" ry="12" fill="#dce8f5" opacity="0.8"/>
-                          {/* Europe */}
-                          <ellipse cx="49" cy="32" rx="8" ry="8" fill="#dce8f5" opacity="0.8"/>
-                          {/* Africa */}
-                          <ellipse cx="50" cy="58" rx="9" ry="14" fill="#dce8f5" opacity="0.8"/>
-                          {/* Asia */}
-                          <ellipse cx="72" cy="36" rx="18" ry="14" fill="#dce8f5" opacity="0.8"/>
-                          {/* Australia */}
-                          <ellipse cx="80" cy="68" rx="8" ry="6" fill="#dce8f5" opacity="0.8"/>
+                          {/* Graticule lines — subtle */}
+                          <g stroke="#b8d8f0" strokeWidth="0.5" opacity="0.5">
+                            <line x1="0" y1="263" x2="1010" y2="263"/>
+                          </g>
+                          <text x="8" y="270" fontSize="9" fill="#8bb8d8" opacity="0.7">0°</text>
+
+                          {/* Resolver pins — positioned on map */}
+                          {REGIONS.map(reg => {
+                            const pass = regionPass(reg.key)
+                            const pinX = parseFloat(reg.x) / 100 * 1010
+                            const pinY = parseFloat(reg.y) / 100 * 527
+                            const pinColor = pass ? '#ffffff' : '#ff4444'
+                            const pinStroke = pass ? '#0059a5' : '#cc0000'
+                            const dotColor = pass ? '#0059a5' : '#e53e3e'
+                            return (
+                              <g key={reg.key} transform={`translate(${pinX},${pinY})`}>
+                                {/* Map pin shape */}
+                                <path d="M0,-26 C-10,-26 -18,-18 -18,-8 C-18,6 0,22 0,22 C0,22 18,6 18,-8 C18,-18 10,-26 0,-26 Z"
+                                  fill={pass ? '#1a7fd4' : '#e53e3e'}
+                                  stroke="#ffffff"
+                                  strokeWidth="2.5"
+                                  style={{filter:'drop-shadow(0 2px 4px rgba(0,0,0,0.25))'}}
+                                />
+                                {/* Inner circle */}
+                                <circle cx="0" cy="-8" r="7" fill="#ffffff" opacity="0.95"/>
+                                {/* Status indicator */}
+                                {pass
+                                  ? <path d="M-4,-8 L-1,-5 L5,-12" stroke={dotColor} strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                                  : <><line x1="-3" y1="-11" x2="3" y2="-5" stroke={pinColor} strokeWidth="2.5" strokeLinecap="round"/><line x1="3" y1="-11" x2="-3" y2="-5" stroke={pinColor} strokeWidth="2.5" strokeLinecap="round"/></>
+                                }
+                                {/* Label */}
+                                <rect x="-32" y="24" width="64" height="16" rx="8" fill="rgba(255,255,255,0.92)" stroke={pass?'#a8d0f0':'#feb2b2'} strokeWidth="1"/>
+                                <text x="0" y="35" textAnchor="middle" fontSize="8.5" fill={pass?'#0059a5':'#c53030'} fontWeight="700" fontFamily="'Plus Jakarta Sans',system-ui">{reg.label}</text>
+                              </g>
+                            )
+                          })}
                         </svg>
 
-                        {/* Resolver pins */}
-                        {REGIONS.map(reg => {
-                          const pass = regionStatus(reg.key)
-                          const pinC  = pass ? '#0073d1' : '#e53e3e'
-                          const pinBg = pass ? '#e8f3fc' : '#fff5f5'
-                          const pinBd = pass ? '#a8d0f0' : '#feb2b2'
-                          return (
-                            <div key={reg.key} style={{
-                              position:'absolute',
-                              left:`${reg.cx}%`, top:`${reg.cy}%`,
-                              transform:'translate(-50%,-100%)',
-                              zIndex:10,
-                            }}>
-                              {/* Pill label */}
-                              <div style={{background:'#ffffff',border:`1.5px solid ${pinBd}`,borderRadius:20,padding:'4px 10px',display:'inline-flex',alignItems:'center',gap:6,whiteSpace:'nowrap',boxShadow:'0 2px 8px rgba(0,0,0,0.10)',marginBottom:4}}>
-                                <div style={{width:9,height:9,borderRadius:'50%',background:pinC,flexShrink:0}}/>
-                                <span style={{fontSize:11,fontWeight:700,color:'#1a2332'}}>{reg.icon} {reg.label}</span>
-                                <span style={{fontSize:10,fontWeight:600,color:pinC}}>{pass?'✓':'✗'}</span>
-                              </div>
-                              {/* Connector dot */}
-                              <div style={{width:8,height:8,borderRadius:'50%',background:pinC,border:`2px solid #ffffff`,margin:'0 auto',boxShadow:`0 0 0 3px ${pinBg}`}}/>
-                            </div>
-                          )
-                        })}
-                      </div>
-
-                      {/* Legend */}
-                      <div style={{display:'flex',gap:16,justifyContent:'center',marginTop:8}}>
-                        <span style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'#4a5568'}}>
-                          <span style={{width:9,height:9,borderRadius:'50%',background:'#0073d1',display:'inline-block'}}/> Propagated
-                        </span>
-                        <span style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'#4a5568'}}>
-                          <span style={{width:9,height:9,borderRadius:'50%',background:'#e53e3e',display:'inline-block'}}/> Inconsistent
-                        </span>
-                        <span style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'#8896a7'}}>
-                          <span style={{width:20,height:1,background:'#94afc4',display:'inline-block',opacity:0.6}}/> Equator
-                        </span>
+                        {/* Legend */}
+                        <div style={{position:'absolute',bottom:10,right:12,display:'flex',gap:12,background:'rgba(255,255,255,0.88)',borderRadius:8,padding:'5px 12px',border:'1px solid #e2e8f0',backdropFilter:'blur(4px)'}}>
+                          <span style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'#4a5568',fontWeight:500}}>
+                            <svg width="12" height="16" viewBox="0 0 12 16"><path d="M6,0 C2.7,0 0,2.7 0,6 C0,10.5 6,16 6,16 C6,16 12,10.5 12,6 C12,2.7 9.3,0 6,0Z" fill="#1a7fd4"/><circle cx="6" cy="6" r="3" fill="white"/></svg>
+                            Propagated
+                          </span>
+                          <span style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'#4a5568',fontWeight:500}}>
+                            <svg width="12" height="16" viewBox="0 0 12 16"><path d="M6,0 C2.7,0 0,2.7 0,6 C0,10.5 6,16 6,16 C6,16 12,10.5 12,6 C12,2.7 9.3,0 6,0Z" fill="#e53e3e"/><circle cx="6" cy="6" r="3" fill="white"/></svg>
+                            Inconsistent
+                          </span>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Resolver detail cards */}
-                    <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10}}>
+                    {/* Resolver cards */}
+                    <div style={{padding:'14px',display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10}}>
                       {REGIONS.map(reg => {
-                        const pass = regionStatus(reg.key)
+                        const pass = regionPass(reg.key)
                         return (
-                          <div key={reg.key} style={{background:'#ffffff',border:`1.5px solid ${pass?'#a8d0f0':'#feb2b2'}`,borderRadius:10,padding:'14px',borderTop:`3px solid ${pass?'#0073d1':'#e53e3e'}`}}>
-                            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
-                              <span style={{fontSize:20}}>{reg.icon}</span>
-                              <div>
-                                <div style={{fontSize:12,fontWeight:700,color:'#1a2332'}}>{reg.label}</div>
-                                <div style={{fontSize:10,color:'#8896a7',fontFamily:'monospace',marginTop:1}}>{reg.resolver}</div>
-                              </div>
+                          <div key={reg.key} style={{background:'#ffffff',border:`1.5px solid ${pass?'#a8d0f0':'#feb2b2'}`,borderRadius:10,padding:'12px',borderTop:`3px solid ${pass?'#0073d1':'#e53e3e'}`}}>
+                            <div style={{fontSize:12,fontWeight:700,color:'#1a2332',marginBottom:3}}>{reg.label}</div>
+                            <div style={{fontSize:10,color:'#8896a7',fontFamily:'monospace',marginBottom:8}}>{reg.resolver}</div>
+                            <div style={{display:'inline-flex',alignItems:'center',gap:5,padding:'3px 8px',borderRadius:10,background:pass?'#e8f3fc':'#fff5f5',border:`1px solid ${pass?'#a8d0f0':'#feb2b2'}`}}>
+                              <div style={{width:6,height:6,borderRadius:'50%',background:pass?'#0073d1':'#e53e3e'}}/>
+                              <span style={{fontSize:10,fontWeight:700,color:pass?'#0073d1':'#e53e3e'}}>{pass?'Propagated':'Inconsistent'}</span>
                             </div>
-                            <div style={{display:'inline-flex',alignItems:'center',gap:5,padding:'3px 9px',borderRadius:12,background:pass?'#e8f3fc':'#fff5f5',border:`1px solid ${pass?'#a8d0f0':'#feb2b2'}`,marginBottom:8}}>
-                              <div style={{width:6,height:6,borderRadius:'50%',background:pass?'#0073d1':'#e53e3e',flexShrink:0}}/>
-                              <span style={{fontSize:11,fontWeight:700,color:pass?'#0073d1':'#e53e3e'}}>{pass?'Propagated':'Inconsistent'}</span>
-                            </div>
-                            {/* Record type badges */}
-                            <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+                            <div style={{display:'flex',flexWrap:'wrap',gap:3,marginTop:8}}>
                               {scan.propagation.records?.map(rec=>{
-                                const ok = rec[reg.key]==='pass'
-                                return (
-                                  <span key={rec.type} style={{fontSize:9,fontFamily:'monospace',fontWeight:700,padding:'2px 6px',borderRadius:4,background:ok?'#e8f3fc':'#fff5f5',color:ok?'#0059a5':'#c53030',border:`1px solid ${ok?'#a8d0f0':'#feb2b2'}`}}>
-                                    {rec.type}
-                                  </span>
-                                )
+                                const ok=rec[reg.key]==='pass'
+                                return <span key={rec.type} style={{fontSize:9,fontFamily:'monospace',fontWeight:700,padding:'1px 5px',borderRadius:3,background:ok?'#e8f3fc':'#fff5f5',color:ok?'#0059a5':'#c53030',border:`1px solid ${ok?'#a8d0f0':'#feb2b2'}`}}>{rec.type}</span>
                               })}
                             </div>
                           </div>
@@ -1515,37 +1531,37 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                     </div>
                   </div>
 
-                  {/* Propagation summary table */}
+                  {/* Record breakdown table */}
                   {scan.propagation.records?.length > 0 && (
                     <div style={card}>
                       <div style={cardHd}>
                         <span style={{fontSize:12,fontWeight:700,color:'#1a2332'}}>Record-by-record breakdown</span>
-                        <span style={{fontSize:11,color:'#8896a7'}}>{scan.propagation.records.filter(r=>['us','eu','apac','au'].every(k=>r[k]==='pass')).length}/{scan.propagation.records.length} consistent</span>
+                        <span style={{fontSize:11,color:'#8896a7'}}>{scan.propagation.records.filter(r=>['us','eu','apac','au'].every(k=>r[k]==='pass')).length} / {scan.propagation.records.length} consistent</span>
                       </div>
                       <div style={{overflowX:'auto'}}>
                         <table style={{width:'100%',borderCollapse:'collapse',fontSize:12}}>
                           <thead>
                             <tr style={{background:'#fafbfc'}}>
-                              {['Record','N. America 🇺🇸','Europe 🇪🇺','Asia Pacific 🌏','Australia 🇦🇺','Status'].map(h=>(
+                              {['Record type','N. America 🇺🇸','Europe 🇪🇺','Asia Pacific 🌏','Australia 🇦🇺','Overall'].map(h=>(
                                 <th key={h} style={{textAlign:'left',padding:'8px 14px',fontSize:10,fontWeight:700,color:'#8896a7',borderBottom:'1.5px solid #e2e8f0',textTransform:'uppercase',letterSpacing:'0.07em',whiteSpace:'nowrap'}}>{h}</th>
                               ))}
                             </tr>
                           </thead>
                           <tbody>
                             {scan.propagation.records.map((rec,i)=>{
-                              const allOk = ['us','eu','apac','au'].every(k=>rec[k]==='pass')
+                              const allOk=['us','eu','apac','au'].every(k=>rec[k]==='pass')
                               return (
                                 <tr key={i} style={{borderBottom:'1px solid #f1f5f9',background:i%2?'#fafbfc':'#ffffff'}}>
                                   <td style={{padding:'9px 14px'}}><span style={{fontFamily:'monospace',fontWeight:700,fontSize:11,background:'#e8f3fc',color:'#0059a5',padding:'2px 7px',borderRadius:4}}>{rec.type}</span></td>
                                   {['us','eu','apac','au'].map(k=>(
                                     <td key={k} style={{padding:'9px 14px'}}>
                                       {rec[k]==='pass'
-                                        ? <span style={{color:'#0073d1',fontWeight:600,fontSize:12}}>✓</span>
-                                        : <span style={{color:'#e53e3e',fontWeight:600,fontSize:12}}>✗</span>}
+                                        ? <span style={{color:'#0073d1',fontWeight:700,fontSize:13}}>✓</span>
+                                        : <span style={{color:'#e53e3e',fontWeight:700,fontSize:13}}>✗</span>}
                                     </td>
                                   ))}
                                   <td style={{padding:'9px 14px'}}>
-                                    <span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:allOk?'#e8f3fc':'#fff5f5',color:allOk?'#0059a5':'#c53030',border:`1px solid ${allOk?'#a8d0f0':'#feb2b2'}`,fontWeight:600}}>{allOk?'Consistent':'Inconsistent'}</span>
+                                    <span style={{fontSize:10,padding:'2px 9px',borderRadius:10,fontWeight:600,background:allOk?'#e8f3fc':'#fff5f5',color:allOk?'#0059a5':'#c53030',border:`1px solid ${allOk?'#a8d0f0':'#feb2b2'}`}}>{allOk?'Consistent':'Inconsistent'}</span>
                                   </td>
                                 </tr>
                               )
