@@ -5,7 +5,7 @@ import { Radar, ArrowLeft, Shield, Globe, Lock, Mail, AlertTriangle, CheckCircle
 const F = "'Inter',system-ui,sans-serif"
 
 function Score({ value }) {
-  const color = value >= 70 ? '#16a34a' : value >= 50 ? '#d97706' : '#dc2626'
+  const color = value >= 70 ? 'var(--green)' : value >= 50 ? '#d97706' : '#dc2626'
   const pct = value || 0
   const r = 36, c = 2 * Math.PI * r
   const dash = (pct / 100) * c
@@ -29,9 +29,9 @@ function StatusBadge({ status }) {
   const pass = ['pass','active','configured','enforced','consistent','present','signed','blocked'].some(p => s.includes(p))
   const fail = ['fail','missing','critical','listed','expired'].some(p => s.includes(p))
   const warn = ['warn','none','not configured','not signed','quarantine','near'].some(p => s.includes(p))
-  const bg = pass ? '#f0fdf4' : fail ? '#fef2f2' : warn ? '#fffbeb' : '#f9fafb'
-  const color = pass ? '#16a34a' : fail ? '#dc2626' : warn ? '#d97706' : '#6b7280'
-  const border = pass ? '#bbf7d0' : fail ? '#fecaca' : warn ? '#fde68a' : '#e5e7eb'
+  const bg = pass ? 'var(--green-bg)' : fail ? '#fef2f2' : warn ? '#fffbeb' : '#f9fafb'
+  const color = pass ? 'var(--green)' : fail ? '#dc2626' : warn ? '#d97706' : '#6b7280'
+  const border = pass ? 'var(--green-bdr)' : fail ? '#fecaca' : warn ? '#fde68a' : '#e5e7eb'
   return <span style={{ fontSize:11, fontWeight:600, padding:'2px 8px', borderRadius:10, background:bg, color, border:`1px solid ${border}` }}>{status || '—'}</span>
 }
 
@@ -98,7 +98,7 @@ export default function SharedScan({ shareId, setPage }) {
   if (loading) return (
     <div style={{ minHeight:'100vh', background:'var(--page)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:F }}>
       <div style={{ textAlign:'center' }}>
-        <div style={{ width:32, height:32, border:'3px solid #e5e7eb', borderTopColor:'#16a34a', borderRadius:'50%', animation:'spin 0.7s linear infinite', margin:'0 auto 12px' }}/>
+        <div style={{ width:32, height:32, border:'3px solid #e5e7eb', borderTopColor:'var(--green)', borderRadius:'50%', animation:'spin 0.7s linear infinite', margin:'0 auto 12px' }}/>
         <div style={{ fontSize:13, color:'var(--t3)' }}>Loading shared scan…</div>
       </div>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
@@ -132,7 +132,7 @@ export default function SharedScan({ shareId, setPage }) {
       {/* Navbar */}
       <div style={{ background:'var(--card)', borderBottom:'1px solid var(--border)', padding:'0 24px', height:54, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
         <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-          <div style={{ width:28, height:28, background:'#16a34a', borderRadius:7, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:28, height:28, background:'var(--green)', borderRadius:7, display:'flex', alignItems:'center', justifyContent:'center' }}>
             <Radar size={14} color="#fff"/>
           </div>
           <span style={{ fontSize:14, fontWeight:700, color:'var(--t1)', letterSpacing:'-0.02em' }}>DomainRadar</span>
@@ -165,7 +165,7 @@ export default function SharedScan({ shareId, setPage }) {
                 </span>
               )}
               {issues.length === 0 && (
-                <span style={{ fontSize:11, fontWeight:600, padding:'2px 9px', borderRadius:10, background:'#f0fdf4', color:'#16a34a', border:'1px solid #bbf7d0' }}>All clear</span>
+                <span style={{ fontSize:11, fontWeight:600, padding:'2px 9px', borderRadius:10, background:'var(--green-bg)', color:'var(--green)', border:'1px solid var(--green-bdr)' }}>All clear</span>
               )}
             </div>
           </div>
@@ -197,7 +197,7 @@ export default function SharedScan({ shareId, setPage }) {
           </Section>
 
           {/* SSL */}
-          <Section title="SSL / TLS" icon={Lock} color="#16a34a">
+          <Section title="SSL / TLS" icon={Lock} color="var(--green)">
             <Row label="Status" status={ssl.overall_status}/>
             {ssl.certs?.[0] && <>
               <Row label="Issuer" value={ssl.certs[0].issuer_org || ssl.certs[0].issuer_cn || '—'}/>
@@ -226,7 +226,7 @@ export default function SharedScan({ shareId, setPage }) {
         <div style={{ background:'#111827', borderRadius:14, padding:'24px', textAlign:'center', marginTop:8 }}>
           <div style={{ fontSize:18, fontWeight:700, color:'#fff', marginBottom:6, letterSpacing:'-0.02em' }}>Monitor your own domain for free</div>
           <div style={{ fontSize:13, color:'rgba(255,255,255,0.5)', marginBottom:16 }}>Get alerts when anything changes. Auto-fix DNS issues with one click.</div>
-          <button onClick={() => setPage('auth')} style={{ padding:'10px 28px', background:'#16a34a', color:'#fff', border:'none', borderRadius:9, fontSize:14, fontWeight:600, cursor:'pointer', fontFamily:F }}>
+          <button onClick={() => setPage('auth')} style={{ padding:'10px 28px', background:'var(--green)', color:'#fff', border:'none', borderRadius:9, fontSize:14, fontWeight:600, cursor:'pointer', fontFamily:F }}>
             Start free →
           </button>
         </div>

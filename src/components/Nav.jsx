@@ -5,10 +5,10 @@ import { useAuth } from '../hooks/useAuth'
 export default function Nav({ page, setPage, alertCount = 0 }) {
   const { user, signOut } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
-  const ac = '#10b981'
+  const ac = 'var(--green)'
   const NavBtn = ({ id, icon: Icon, label, badge }) => (
     <button onClick={() => setPage(id)}
-      style={{ display:'flex',alignItems:'center',gap:5,padding:'5px 11px',background:page===id?'rgba(16,185,129,0.12)':'transparent',border:`1px solid ${page===id?'rgba(16,185,129,0.25)':'transparent'}`,borderRadius:7,color:page===id?ac:'rgba(255,255,255,0.5)',fontSize:12,fontWeight:500,cursor:'pointer',transition:'all 0.15s',whiteSpace:'nowrap' }}>
+      style={{ display:'flex',alignItems:'center',gap:5,padding:'5px 11px',background:page===id?'rgba(232,137,122,0.12)':'transparent',border:`1px solid ${page===id?'rgba(232,137,122,0.25)':'transparent'}`,borderRadius:7,color:page===id?ac:'rgba(255,255,255,0.5)',fontSize:12,fontWeight:500,cursor:'pointer',transition:'all 0.15s',whiteSpace:'nowrap' }}>
       {Icon&&<Icon size={13}/>}{label}
       {badge>0&&<span style={{fontSize:9,padding:'1px 5px',borderRadius:8,background:'rgba(239,68,68,0.2)',color:'#ef4444',fontWeight:600,marginLeft:2}}>{badge}</span>}
     </button>
@@ -18,7 +18,7 @@ export default function Nav({ page, setPage, alertCount = 0 }) {
       <div style={{ display:'flex',alignItems:'center',gap:8,cursor:'pointer' }} onClick={() => setPage('landing')}>
         <div style={{ width:30,height:30,background:ac,borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center' }}><Radar size={16} color="#fff"/></div>
         <span style={{ fontSize:15,fontWeight:700,color:'#fff' }}>DomainRadar</span>
-        <span style={{ fontSize:9,background:'rgba(16,185,129,0.15)',color:ac,padding:'1px 7px',borderRadius:10,fontWeight:600,border:'1px solid rgba(16,185,129,0.25)' }}>beta</span>
+        <span style={{ fontSize:9,background:'rgba(232,137,122,0.15)',color:ac,padding:'1px 7px',borderRadius:10,fontWeight:600,border:'1px solid rgba(232,137,122,0.25)' }}>beta</span>
       </div>
       {user ? (
         <div style={{ display:'flex',alignItems:'center',gap:3 }}>
@@ -31,7 +31,7 @@ export default function Nav({ page, setPage, alertCount = 0 }) {
           <div style={{ position:'relative',marginLeft:4 }}>
             <button onClick={() => setMenuOpen(o => !o)}
               style={{ display:'flex',alignItems:'center',gap:5,padding:'5px 10px',background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:7,cursor:'pointer' }}>
-              <div style={{ width:22,height:22,borderRadius:'50%',background:'rgba(16,185,129,0.2)',color:ac,display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,fontWeight:700 }}>{user.email?.[0]?.toUpperCase()}</div>
+              <div style={{ width:22,height:22,borderRadius:'50%',background:'rgba(232,137,122,0.2)',color:ac,display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,fontWeight:700 }}>{user.email?.[0]?.toUpperCase()}</div>
               <ChevronDown size={11} color="rgba(255,255,255,0.4)"/>
             </button>
             {menuOpen && (

@@ -11,7 +11,7 @@ function CopyBtn({ text }) {
   const [c,setC]=useState(false)
   return (
     <button onClick={() => { navigator.clipboard.writeText(text); setC(true); setTimeout(()=>setC(false),2000) }}
-      style={{ padding:'4px 10px', background:'rgba(16,185,129,0.1)', border:'1px solid #86efac', borderRadius:5, color:'var(--t1)', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
+      style={{ padding:'4px 10px', background:'rgba(232,137,122,0.1)', border:'1px solid var(--green-bdr)', borderRadius:5, color:'var(--t1)', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', gap:4 }}>
       {c?<><Check size={11}/>Copied</>:<><Copy size={11}/>Copy</>}
     </button>
   )
@@ -47,7 +47,7 @@ function WebhookTestButton({ url }) {
 
   return (
     <button onClick={test} disabled={state === 'loading'}
-      style={{ padding:'8px 12px', background: state==='ok'?'#f0fdf4':state==='fail'?'#fef2f2':'#fff', border:`1px solid ${state==='ok'?'#86efac':state==='fail'?'#fecaca':'#e5e7eb'}`, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', color: state==='ok'?'#16a34a':state==='fail'?'#dc2626':'#374151', fontFamily:'inherit', transition:'all 0.15s', flexShrink:0 }}>
+      style={{ padding:'8px 12px', background: state==='ok'?'var(--green-bg)':state==='fail'?'#fef2f2':'#fff', border:`1px solid ${state==='ok'?'var(--green-bdr)':state==='fail'?'#fecaca':'#e5e7eb'}`, borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', color: state==='ok'?'var(--green)':state==='fail'?'#dc2626':'#374151', fontFamily:'inherit', transition:'all 0.15s', flexShrink:0 }}>
       {state==='loading' ? '…' : state==='ok' ? '✓ Sent!' : state==='fail' ? '✗ Failed' : 'Test'}
     </button>
   )
@@ -117,7 +117,7 @@ export default function Settings({ user }) {
       <div style={{ display:'flex', gap:0, borderBottom:'1px solid var(--border)', marginBottom:20 }}>
         {['api','profile','notifications','team'].map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
-            style={{ padding:'8px 16px', background:'transparent', border:'none', borderBottom:`2px solid ${activeTab===t?'#16a34a':'transparent'}`, cursor:'pointer', fontSize:12, fontWeight:activeTab===t?600:400, color:activeTab===t?'#16a34a':'#374151', textTransform:'capitalize', transition:'all 0.15s', marginBottom:-1 }}>
+            style={{ padding:'8px 16px', background:'transparent', border:'none', borderBottom:`2px solid ${activeTab===t?'var(--green)':'transparent'}`, cursor:'pointer', fontSize:12, fontWeight:activeTab===t?600:400, color:activeTab===t?'var(--green)':'#374151', textTransform:'capitalize', transition:'all 0.15s', marginBottom:-1 }}>
             {t === 'api' ? 'API Keys' : t === 'notifications' ? 'Notifications' : t === 'team' ? 'Team' : 'Profile'}
           </button>
         ))}
@@ -126,7 +126,7 @@ export default function Settings({ user }) {
       {activeTab === 'api' && (
         <>
           <div style={card}>
-            <div style={{ ...cardHd }}><Key size={13} color="#16a34a"/> API keys</div>
+            <div style={{ ...cardHd }}><Key size={13} color="var(--green)"/> API keys</div>
             <div style={{ padding:16 }}>
               <div style={{ fontSize:13,color:'var(--t2)', marginBottom:12, lineHeight:1.6 }}>
                 Use API keys to access DomainRadar programmatically. Include as <code style={{ fontFamily:'monospace', background:'#e5e7eb', padding:'1px 6px', borderRadius:4 }}>Authorization: Bearer YOUR_KEY</code> header.
@@ -141,7 +141,7 @@ export default function Settings({ user }) {
                 ].map(([m,ep,desc]) => (
                   <div key={ep} style={{ display:'flex', gap:10, marginBottom:4 }}>
                     <span style={{ color:'#3730a3', width:30 }}>{m}</span>
-                    <span style={{ color:'#15803d', flex:1 }}>{ep}</span>
+                    <span style={{ color:'var(--green)', flex:1 }}>{ep}</span>
                     <span style={{ color:'var(--t2)' }}>{desc}</span>
                   </div>
                 ))}
@@ -152,13 +152,13 @@ export default function Settings({ user }) {
                   style={{ flex:1, padding:'8px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:13, color:'var(--t1)', outline:'none', fontFamily:'inherit' }}
                   onKeyDown={e => e.key==='Enter'&&createApiKey()}/>
                 <button onClick={createApiKey} disabled={!newKeyName.trim()}
-                  style={{ padding:'8px 16px', background:'#dcfce7', border:'1px solid rgba(16,185,129,0.3)', borderRadius:7, color:'var(--t1)', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
+                  style={{ padding:'8px 16px', background:'var(--green-bg)', border:'1px solid rgba(232,137,122,0.3)', borderRadius:7, color:'var(--t1)', fontSize:13, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5, opacity:!newKeyName.trim()?0.5:1 }}>
                   <Plus size={13}/> Generate
                 </button>
               </div>
               {/* Show newly created key */}
               {createdKey && (
-                <div style={{ padding:'12px 14px', background:'#f0fdf4', border:'1px solid var(--border-md)', borderRadius:8, marginBottom:16 }}>
+                <div style={{ padding:'12px 14px', background:'var(--green-bg)', border:'1px solid var(--border-md)', borderRadius:8, marginBottom:16 }}>
                   <div style={{ fontSize:12, fontWeight:600, color:'var(--t1)', marginBottom:6 }}>✓ Key created — copy it now, it won't be shown again</div>
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                     <code style={{ flex:1, fontFamily:'monospace', fontSize:12, color:'var(--t1)', background:'var(--card-hi)', padding:'6px 10px', borderRadius:6, wordBreak:'break-all' }}>{createdKey.key}</code>
@@ -170,7 +170,7 @@ export default function Settings({ user }) {
               {/* Keys list */}
               {apiKeys.map(k => (
                 <div key={k.id} style={{ display:'flex', alignItems:'center', gap:12, padding:'9px 0', borderBottom:`1px solid #f9fafb` }}>
-                  <Key size={13} color={k.revoked?D.dim:'#16a34a'}/>
+                  <Key size={13} color={k.revoked?D.dim:'var(--green)'}/>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:12, fontWeight:500, color:k.revoked?D.dim:D.text }}>{k.name}</div>
                     <div style={{ fontSize:10, color:'var(--t2)', fontFamily:'monospace' }}>{k.key_prefix}… · {k.request_count||0} requests · {k.last_used_at?`Last used ${new Date(k.last_used_at).toLocaleDateString()}`:'Never used'}</div>
@@ -200,7 +200,7 @@ export default function Settings({ user }) {
             </div>
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={saveProfile} disabled={saving}
-                style={{ padding:'8px 18px', background:'#16a34a', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
+                style={{ padding:'8px 18px', background:'var(--green)', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
                 {saving ? 'Saving…' : 'Save changes'}
               </button>
               <button onClick={() => { if(window.confirm('Sign out?')) signOut() }}
@@ -237,7 +237,7 @@ export default function Settings({ user }) {
           <div style={{ ...cardHd }}><Bell size={13} color="#f59e0b"/> Notifications</div>
           <div style={{ padding:16 }}>
             <label style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16, cursor:'pointer' }}>
-              <input type="checkbox" checked={profile.alert_email !== false} onChange={e => setProfile(p => ({ ...p, alert_email: e.target.checked }))} style={{ accentColor:'#16a34a', width:16, height:16 }}/>
+              <input type="checkbox" checked={profile.alert_email !== false} onChange={e => setProfile(p => ({ ...p, alert_email: e.target.checked }))} style={{ accentColor:'var(--green)', width:16, height:16 }}/>
               <div>
                 <div style={{ fontSize:13, fontWeight:500, color:'var(--t1)' }}>Email alerts</div>
                 <div style={{ fontSize:12,color:'var(--t2)' }}>Get notified when a domain score changes or new issues are detected</div>
@@ -254,7 +254,7 @@ export default function Settings({ user }) {
               <div style={{ fontSize:11, color:'var(--t3)', marginTop:5 }}>We'll POST a JSON payload to this URL when alerts fire.</div>
             </div>
             <button onClick={saveProfile} disabled={saving}
-              style={{ padding:'8px 18px', background:'#16a34a', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
+              style={{ padding:'8px 18px', background:'var(--green)', color:'#fff', border:'none', borderRadius:7, fontSize:13, fontWeight:500, cursor:'pointer' }}>
               {saving ? 'Saving…' : 'Save'}
             </button>
           </div>
@@ -300,7 +300,7 @@ function TeamSection({ user }) {
     setMembers(m => m.filter(x => x.id !== id))
   }
 
-  const statusColor = { pending:'#d97706', active:'#16a34a', rejected:'#dc2626' }
+  const statusColor = { pending:'#d97706', active:'var(--green)', rejected:'#dc2626' }
   const roleColor   = { admin:'#a855f7', editor:'#3d9bff', viewer:'#6b7280' }
 
   return (
@@ -314,11 +314,11 @@ function TeamSection({ user }) {
             <option value="editor">Editor</option>
             <option value="admin">Admin</option>
           </select>
-          <button onClick={invite} disabled={saving||!email.trim()} style={{ padding:'8px 16px', background:'#16a34a', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap' }}>
+          <button onClick={invite} disabled={saving||!email.trim()} style={{ padding:'8px 16px', background:'var(--green)', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap' }}>
             {saving ? 'Sending…' : 'Invite'}
           </button>
         </div>
-        {msg && <div style={{ fontSize:12, color:'var(--t1)', marginBottom:12, padding:'6px 10px', background:'#f0fdf4', borderRadius:6 }}>{msg}</div>}
+        {msg && <div style={{ fontSize:12, color:'var(--t1)', marginBottom:12, padding:'6px 10px', background:'var(--green-bg)', borderRadius:6 }}>{msg}</div>}
         {members.length === 0 ? (
           <div style={{ textAlign:'center', padding:'24px', color:'var(--t2)', fontSize:12 }}>No team members yet. Invite someone above.</div>
         ) : members.map(m => (

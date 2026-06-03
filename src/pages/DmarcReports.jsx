@@ -26,7 +26,7 @@ function CopyBtn({ text }) {
   const [c,setC] = useState(false)
   return (
     <button onClick={() => { navigator.clipboard.writeText(text); setC(true); setTimeout(() => setC(false), 2000) }}
-      style={{ padding:'4px 10px', background:'#dcfce7', border:'1px solid #86efac', borderRadius:6, color:'var(--t1)', fontSize:12, fontWeight:600, cursor:'pointer',transition:'background 0.15s', display:'flex', alignItems:'center', gap:5, flexShrink:0 }}>
+      style={{ padding:'4px 10px', background:'var(--green-bg)', border:'1px solid var(--green-bdr)', borderRadius:6, color:'var(--t1)', fontSize:12, fontWeight:600, cursor:'pointer',transition:'background 0.15s', display:'flex', alignItems:'center', gap:5, flexShrink:0 }}>
       {c ? <><Check size={11}/>Copied</> : <><Copy size={11}/>Copy</>}
     </button>
   )
@@ -80,7 +80,7 @@ function PolicyWizard({ domain, currentPolicy, ruaAddress }) {
   const policies = [
     { p: 'none', label: 'None (monitor)', color: '#6b7280', desc: 'Emails pass regardless. You receive reports to see who is sending on your behalf. Start here.', risk: 'Low', visibility: 'Full' },
     { p: 'quarantine', label: 'Quarantine', color: '#d97706', desc: 'Unauthenticated emails go to spam. Legitimate senders must pass SPF or DKIM.', risk: 'Medium', visibility: 'Full' },
-    { p: 'reject', label: 'Reject (enforce)', color: '#16a34a', desc: 'Unauthenticated emails are blocked entirely. Maximum protection — use only after monitoring confirms all senders pass.', risk: 'High if misconfigured', visibility: 'Full' },
+    { p: 'reject', label: 'Reject (enforce)', color: 'var(--green)', desc: 'Unauthenticated emails are blocked entirely. Maximum protection — use only after monitoring confirms all senders pass.', risk: 'High if misconfigured', visibility: 'Full' },
   ]
   const currentIdx = policies.findIndex(p => p.p === currentPolicy) ?? 0
   const safeIdx = Math.max(0, currentIdx)
@@ -92,7 +92,7 @@ function PolicyWizard({ domain, currentPolicy, ruaAddress }) {
   return (
     <div style={card}>
       <div style={cardHd}>
-        <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)', display:'flex', alignItems:'center', gap:7 }}><Shield size={14} color="#10b981"/> DMARC enforcement wizard — {domain?.domain_name}</span>
+        <span style={{ fontSize:13, fontWeight:600, color:'var(--t1)', display:'flex', alignItems:'center', gap:7 }}><Shield size={14} color="var(--green)"/> DMARC enforcement wizard — {domain?.domain_name}</span>
       </div>
       <div style={{ padding:16 }}>
         {/* Policy ladder */}
@@ -100,7 +100,7 @@ function PolicyWizard({ domain, currentPolicy, ruaAddress }) {
           {policies.map((p, i) => (
             <div key={p.p} style={{ flex:1, minWidth:140, padding:'10px 12px', borderRadius:10, border:`1px solid ${i === safeIdx ? p.color+'60' : D.border}`, background: i === safeIdx ? p.color+'12' : 'rgba(255,255,255,0.02)', position:'relative' }}>
               {i === safeIdx && <div style={{ position:'absolute', top:8, right:8, fontSize:9, padding:'1px 6px', borderRadius:6, background:p.color+'25', color:p.color, fontWeight:700 }}>CURRENT</div>}
-              {i < safeIdx && <CheckCircle size={12} color="#10b981" style={{ position:'absolute', top:8, right:8 }}/>}
+              {i < safeIdx && <CheckCircle size={12} color="var(--green)" style={{ position:'absolute', top:8, right:8 }}/>}
               <div style={{ fontSize:13, fontWeight:600, color:i <= safeIdx ? p.color : D.dim, marginBottom:4 }}>{p.label}</div>
               <div style={{ fontSize:12, color:'var(--t2)' }}>{p.desc}</div>
             </div>
@@ -174,7 +174,7 @@ function UploadXMLModal({ domain, onClose, onSuccess }) {
         )}
         {error && <div style={{ fontSize:12, color:'#dc2626', marginTop:8 }}>{error}</div>}
         <div style={{ display:'flex', gap:8, marginTop:14 }}>
-          <button onClick={upload} disabled={loading} style={{ flex:1, padding:'9px', background:'#16a34a', color:'#fff', border:'none', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer',transition:'background 0.15s' }}>
+          <button onClick={upload} disabled={loading} style={{ flex:1, padding:'9px', background:'var(--green)', color:'#fff', border:'none', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer',transition:'background 0.15s' }}>
             {loading ? 'Processing…' : 'Upload & parse'}
           </button>
           <button onClick={onClose} style={{ padding:'9px 16px', background:'#e5e7eb', border:'1px solid var(--border)', borderRadius:8, color:'var(--t2)', fontSize:13, cursor:'pointer',transition:'background 0.15s' }}>Cancel</button>
@@ -251,7 +251,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
   const topCountries = Object.values(countryBreakdown).sort((a, b) => b.count - a.count).slice(0, 8)
 
   const donutData = totalVolume > 0
-    ? [{ name: 'Pass', value: totalPass, color: '#16a34a' }, { name: 'Fail', value: totalFail, color: '#dc2626' }]
+    ? [{ name: 'Pass', value: totalPass, color: 'var(--green)' }, { name: 'Fail', value: totalFail, color: '#dc2626' }]
     : [{ name: 'No data', value: 1, color: '#e5e7eb' }]
 
   const hasData = totalVolume > 0
@@ -268,7 +268,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
         </div>
         <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
           {[7,30,90].map(r => (
-            <button key={r} onClick={() => setRange(r)} style={{ padding:'5px 12px', background:range===r?'#dcfce7':'#f9fafb', border:`1px solid ${range===r?'rgba(16,185,129,0.3)':'#e5e7eb'}`, borderRadius:7, color:range===r?'#16a34a':D.muted, fontSize:12, fontWeight:500, cursor:'pointer',transition:'background 0.15s' }}>{r}d</button>
+            <button key={r} onClick={() => setRange(r)} style={{ padding:'5px 12px', background:range===r?'var(--green-bg)':'#f9fafb', border:`1px solid ${range===r?'rgba(232,137,122,0.3)':'#e5e7eb'}`, borderRadius:7, color:range===r?'var(--green)':D.muted, fontSize:12, fontWeight:500, cursor:'pointer',transition:'background 0.15s' }}>{r}d</button>
           ))}
           <button onClick={() => setShowUpload(true)} style={{ padding:'5px 12px', background:'#e5e7eb', border:'1px solid var(--border)', borderRadius:7, color:'var(--t1)', fontSize:12, cursor:'pointer',transition:'background 0.15s', display:'flex', alignItems:'center', gap:5 }}><Upload size={11}/> Upload XML</button>
           <button onClick={fetchData} style={{ padding:'5px 10px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, color:'var(--t2)', cursor:'pointer',transition:'background 0.15s' }}><RefreshCw size={12}/></button>
@@ -283,7 +283,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
 
       {loading ? (
         <div style={{ display:'flex', justifyContent:'center', padding:40 }}>
-          <div style={{ width:28, height:28, border:'3px solid rgba(16,185,129,0.2)', borderTopColor:'#16a34a', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
+          <div style={{ width:28, height:28, border:'3px solid rgba(232,137,122,0.2)', borderTopColor:'var(--green)', borderRadius:'50%', animation:'spin 0.7s linear infinite' }}/>
         </div>
       ) : !hasData ? (
         <div style={{ ...card, padding:'48px 24px', textAlign:'center' }}>
@@ -293,7 +293,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
             Add the RUA address above to your DMARC record. Reports arrive automatically within 24–48 hours.
             Or upload a report XML manually to test immediately.
           </p>
-          <button onClick={() => setShowUpload(true)} style={{ padding:'8px 20px', background:'#16a34a', border:'none', borderRadius:8, color:'#fff', fontSize:13, fontWeight:600, cursor:'pointer',transition:'background 0.15s' }}>
+          <button onClick={() => setShowUpload(true)} style={{ padding:'8px 20px', background:'var(--green)', border:'none', borderRadius:8, color:'#fff', fontSize:13, fontWeight:600, cursor:'pointer',transition:'background 0.15s' }}>
             Upload test XML now
           </button>
         </div>
@@ -303,7 +303,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))', gap:10 }}>
             {[
               { label:'Total messages', value:totalVolume.toLocaleString(), color:'var(--t1)' },
-              { label:'Pass rate', value:`${passRate}%`, color: passRate >= 90 ? '#16a34a' : passRate >= 70 ? '#d97706' : '#dc2626' },
+              { label:'Pass rate', value:`${passRate}%`, color: passRate >= 90 ? 'var(--green)' : passRate >= 70 ? '#d97706' : '#dc2626' },
               { label:'Passing', value:totalPass.toLocaleString(), color:'var(--t1)' },
               { label:'Failing', value:totalFail.toLocaleString(), color: totalFail > 0 ? '#dc2626' : '#6b7280' },
             ].map(s => (
@@ -322,14 +322,14 @@ function DmarcReportsInner({ user, selectedDomain }) {
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={stats} margin={{ top:5, right:5, left:-20, bottom:0 }}>
                     <defs>
-                      <linearGradient id="gPass" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/><stop offset="95%" stopColor="#10b981" stopOpacity={0}/></linearGradient>
+                      <linearGradient id="gPass" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--green)" stopOpacity={0.3}/><stop offset="95%" stopColor="var(--green)" stopOpacity={0}/></linearGradient>
                       <linearGradient id="gFail" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/><stop offset="95%" stopColor="#ef4444" stopOpacity={0}/></linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)"/>
                     <XAxis dataKey="stat_date" tick={{ fill:'#9ca3af', fontSize:9 }} axisLine={false} tickLine={false}/>
                     <YAxis tick={{ fill:'#9ca3af', fontSize:9 }} axisLine={false} tickLine={false}/>
                     <Tooltip content={<VTooltip/>}/>
-                    <Area type="monotone" dataKey="pass_count" name="Pass" stroke="#10b981" strokeWidth={2} fill="url(#gPass)"/>
+                    <Area type="monotone" dataKey="pass_count" name="Pass" stroke="var(--green)" strokeWidth={2} fill="url(#gPass)"/>
                     <Area type="monotone" dataKey="fail_count" name="Fail" stroke="#ef4444" strokeWidth={2} fill="url(#gFail)"/>
                   </AreaChart>
                 </ResponsiveContainer>
@@ -344,7 +344,7 @@ function DmarcReportsInner({ user, selectedDomain }) {
                   </Pie>
                 </PieChart>
                 <div style={{ textAlign:'center' }}>
-                  <div style={{ fontSize:22, fontWeight:700, color: passRate >= 90 ? '#16a34a' : passRate >= 70 ? '#d97706' : '#dc2626' }}>{passRate}%</div>
+                  <div style={{ fontSize:22, fontWeight:700, color: passRate >= 90 ? 'var(--green)' : passRate >= 70 ? '#d97706' : '#dc2626' }}>{passRate}%</div>
                   <div style={{ fontSize:12, color:'var(--t2)' }}>pass rate</div>
                 </div>
               </div>
@@ -361,16 +361,16 @@ function DmarcReportsInner({ user, selectedDomain }) {
                   return (
                     <div key={i} style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 0', borderBottom: i < topSources.length-1 ? '1px solid #f0f2f5' : 'none' }}>
                       {s.threat && <AlertTriangle size={12} color="#ef4444" style={{ flexShrink:0 }}/>}
-                      {!s.threat && <CheckCircle size={12} color="#10b981" style={{ flexShrink:0 }}/>}
+                      {!s.threat && <CheckCircle size={12} color="var(--green)" style={{ flexShrink:0 }}/>}
                       <div style={{ flex:1, minWidth:0 }}>
                         <div style={{ fontSize:12, fontWeight:500, color:'var(--t1)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{s.name}</div>
                         <div style={{ height:4, borderRadius:2, background:'#e5e7eb', marginTop:4, overflow:'hidden' }}>
-                          <div style={{ height:'100%', width:`${pct}%`, background: pct >= 90 ? '#16a34a' : pct >= 70 ? '#d97706' : '#dc2626', borderRadius:2 }}/>
+                          <div style={{ height:'100%', width:`${pct}%`, background: pct >= 90 ? 'var(--green)' : pct >= 70 ? '#d97706' : '#dc2626', borderRadius:2 }}/>
                         </div>
                       </div>
                       <div style={{ fontSize:12, color:'var(--t2)', flexShrink:0, textAlign:'right' }}>
                         <div>{s.count.toLocaleString()} msgs</div>
-                        <div style={{ color: pct >= 90 ? '#16a34a' : '#d97706' }}>{pct}% pass</div>
+                        <div style={{ color: pct >= 90 ? 'var(--green)' : '#d97706' }}>{pct}% pass</div>
                       </div>
                     </div>
                   )

@@ -10,7 +10,7 @@ function daysColor(days) {
   if (days <= 7)  return '#dc2626'
   if (days <= 30) return '#d97706'
   if (days <= 60) return '#3d9bff'
-  return '#16a34a'
+  return 'var(--green)'
 }
 
 function DaysBadge({ days, expiresAt }) {
@@ -27,7 +27,7 @@ function DaysBadge({ days, expiresAt }) {
 }
 
 function Field({ label, value, good }) {
-  const color = good === true ? '#16a34a' : good === false ? '#dc2626' : D.muted
+  const color = good === true ? 'var(--green)' : good === false ? '#dc2626' : D.muted
   return (
     <div>
       <div style={{ fontSize:10, color:'var(--t2)', marginBottom:2, textTransform:'uppercase', letterSpacing:'0.05em' }}>{label}</div>
@@ -94,7 +94,7 @@ function CertCard({ cert, open, onToggle, onDelete }) {
               <div style={{ fontSize:12,color:'var(--t2)', marginBottom:6, fontWeight:500 }}>TLS versions</div>
               <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                 {tlsVersions.map(v => (
-                  <span key={v} style={{ fontSize:12, padding:'2px 8px', borderRadius:6, background:(v==='TLSv1.0'||v==='TLSv1.1')?'#fef2f2':'#f0fdf4', color:(v==='TLSv1.0'||v==='TLSv1.1')?'#dc2626':'#16a34a', border:`1px solid ${(v==='TLSv1.0'||v==='TLSv1.1')?'#fecaca':'#bbf7d0'}`, fontWeight:500 }}>{v}</span>
+                  <span key={v} style={{ fontSize:12, padding:'2px 8px', borderRadius:6, background:(v==='TLSv1.0'||v==='TLSv1.1')?'#fef2f2':'var(--green-bg)', color:(v==='TLSv1.0'||v==='TLSv1.1')?'#dc2626':'var(--green)', border:`1px solid ${(v==='TLSv1.0'||v==='TLSv1.1')?'#fecaca':'var(--green-bdr)'}`, fontWeight:500 }}>{v}</span>
                 ))}
               </div>
             </div>
@@ -238,7 +238,7 @@ export default function SslCertificates({ user }) {
           <p style={{ fontSize:13, color:'var(--t2)' }}>TLS certificate health across all monitored domains</p>
         </div>
         <button onClick={scanAll} disabled={scanning || !domains.some(d=>d.verified)}
-          style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'#dcfce7', border:'1px solid #86efac', borderRadius:8, color:'var(--t1)', fontSize:12, fontWeight:600, cursor:'pointer',transition:'background 0.12s', opacity:scanning?0.6:1 }}>
+          style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'var(--green-bg)', border:'1px solid var(--green-bdr)', borderRadius:8, color:'var(--t1)', fontSize:12, fontWeight:600, cursor:'pointer',transition:'background 0.12s', opacity:scanning?0.6:1 }}>
           <RefreshCw size={13} style={{ animation:scanning?'sslspin 1s linear infinite':'none' }}/> Scan all
         </button>
       </div>
@@ -246,7 +246,7 @@ export default function SslCertificates({ user }) {
       {/* Manual domain input */}
       <div style={{ ...card, marginBottom:20, padding:'14px 16px' }}>
         <div style={{ fontSize:12, fontWeight:600, color:'var(--t1)', marginBottom:10, display:'flex', alignItems:'center', gap:7 }}>
-          <Search size={13} color="#16a34a"/> Check any domain
+          <Search size={13} color="var(--green)"/> Check any domain
         </div>
         <div style={{ display:'flex', gap:8 }}>
           <input
@@ -259,7 +259,7 @@ export default function SslCertificates({ user }) {
           <button
             onClick={scanManualDomain}
             disabled={manualScanning || !manualDomain.trim()}
-            style={{ padding:'9px 18px', background:'#16a34a', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer',transition:'background 0.12s', display:'flex', alignItems:'center', gap:7, opacity: manualScanning || !manualDomain.trim() ? 0.6 : 1 }}>
+            style={{ padding:'9px 18px', background:'var(--green)', color:'#fff', border:'none', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer',transition:'background 0.12s', display:'flex', alignItems:'center', gap:7, opacity: manualScanning || !manualDomain.trim() ? 0.6 : 1 }}>
             {manualScanning
               ? <><div style={{ width:13, height:13, border:'2px solid #9ca3af', borderTopColor:'#fff', borderRadius:'50%', animation:'sslspin 0.7s linear infinite' }}/> Scanning…</>
               : <><Plus size={13}/> Check SSL</>
@@ -272,16 +272,16 @@ export default function SslCertificates({ user }) {
       </div>
 
       {/* Status messages */}
-      {scanMsg && <div style={{ padding:'9px 14px', background:'#f0fdf4', border:'1px solid var(--border-md)', borderRadius:8, color:'var(--t1)', fontSize:12, marginBottom:14 }}>{scanMsg}</div>}
+      {scanMsg && <div style={{ padding:'9px 14px', background:'var(--green-bg)', border:'1px solid var(--border-md)', borderRadius:8, color:'var(--t1)', fontSize:12, marginBottom:14 }}>{scanMsg}</div>}
       {scanError && <div style={{ padding:'9px 14px', background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:8, color:'#dc2626', fontSize:12, marginBottom:14 }}>{scanError}</div>}
 
       {/* Summary cards */}
       {certs.length > 0 && (
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))', gap:10, marginBottom:18 }}>
           <SummaryCard label="Total" value={certs.length} color="#6b7280"/>
-          <SummaryCard label="Expiring ≤ 30d" value={expiringSoon} color={expiringSoon>0?'#d97706':'#16a34a'} onClick={()=>setFilter('expiring')}/>
-          <SummaryCard label="Issues" value={issues} color={issues>0?'#dc2626':'#16a34a'} onClick={()=>setFilter('issues')}/>
-          <SummaryCard label="Healthy" value={certs.filter(c=>c.days_remaining>30&&c.chain_valid&&!c.weak_cipher_detected).length} color="#16a34a"/>
+          <SummaryCard label="Expiring ≤ 30d" value={expiringSoon} color={expiringSoon>0?'#d97706':'var(--green)'} onClick={()=>setFilter('expiring')}/>
+          <SummaryCard label="Issues" value={issues} color={issues>0?'#dc2626':'var(--green)'} onClick={()=>setFilter('issues')}/>
+          <SummaryCard label="Healthy" value={certs.filter(c=>c.days_remaining>30&&c.chain_valid&&!c.weak_cipher_detected).length} color="var(--green)"/>
         </div>
       )}
 
@@ -289,7 +289,7 @@ export default function SslCertificates({ user }) {
       {certs.length > 0 && (
         <div style={{ display:'flex', gap:6, marginBottom:14, flexWrap:'wrap' }}>
           {[['all','All'],['expiring','Expiring soon'],['issues','Issues']].map(([v,l])=>(
-            <button key={v} onClick={()=>setFilter(v)} style={{ padding:'5px 12px', background:filter===v?'#dcfce7':'#f9fafb', border:`1px solid ${filter===v?'#86efac':'#e5e7eb'}`, borderRadius:7, color:filter===v?'#15803d':'#374151', fontSize:12, fontWeight:filter===v?600:400, cursor:'pointer',transition:'background 0.12s' }}>{l}</button>
+            <button key={v} onClick={()=>setFilter(v)} style={{ padding:'5px 12px', background:filter===v?'var(--green-bg)':'#f9fafb', border:`1px solid ${filter===v?'var(--green-bdr)':'#e5e7eb'}`, borderRadius:7, color:filter===v?'var(--green)':'#374151', fontSize:12, fontWeight:filter===v?600:400, cursor:'pointer',transition:'background 0.12s' }}>{l}</button>
           ))}
         </div>
       )}

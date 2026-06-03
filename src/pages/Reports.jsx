@@ -115,7 +115,7 @@ export default function Reports({ user }) {
             </select>
           )}
           <button onClick={()=>setUploadXML(u=>!u)}
-            style={{ padding:'7px 14px', background:'#dcfce7', border:'1px solid rgba(16,185,129,0.3)', borderRadius:8, color:'var(--t1)', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+            style={{ padding:'7px 14px', background:'var(--green-bg)', border:'1px solid rgba(232,137,122,0.3)', borderRadius:8, color:'var(--t1)', fontSize:12, fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
             <Upload size={13}/> Upload XML report
           </button>
         </div>
@@ -131,7 +131,7 @@ export default function Reports({ user }) {
             </div>
             <textarea value={xmlInput} onChange={e=>setXmlInput(e.target.value)} rows={8} placeholder="<?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?><feedback>..."
               style={{ width:'100%', padding:'10px 12px', background:'var(--card-hi)', border:'1px solid var(--border)', borderRadius:7, fontSize:12, color:D.t, outline:'none', resize:'vertical', fontFamily:'monospace', lineHeight:1.5 }}/>
-            {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(16,185,129,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'#00e5a0':'#ff4d6a', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
+            {uploadMsg && <div style={{ padding:'6px 10px', borderRadius:6, background:uploadMsg.startsWith('✓')?'rgba(232,137,122,0.1)':'rgba(239,68,68,0.1)', color:uploadMsg.startsWith('✓')?'#00e5a0':'#ff4d6a', fontSize:12, margin:'8px 0' }}>{uploadMsg}</div>}
             <div style={{ display:'flex', gap:8, marginTop:8 }}>
               <button onClick={uploadReport} disabled={uploading||!xmlInput}
                 style={{ padding:'7px 16px', background:'#00e5a0', color:'#fff', border:'none', borderRadius:7, fontSize:12, fontWeight:500, cursor:'pointer', opacity:!xmlInput?0.5:1 }}>
@@ -152,7 +152,7 @@ export default function Reports({ user }) {
           <div style={{ fontSize:13, color:D.m, maxWidth:420, margin:'0 auto', lineHeight:1.7 }}>
             To receive aggregate reports automatically, add this to your DMARC record:
           </div>
-          <div style={{ fontFamily:'monospace', fontSize:12, color:'var(--t1)', background:'#f0fdf4', border:'1px solid var(--border-md)', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
+          <div style={{ fontFamily:'monospace', fontSize:12, color:'var(--t1)', background:'var(--green-bg)', border:'1px solid var(--border-md)', borderRadius:8, padding:'10px 16px', margin:'12px auto', maxWidth:480, textAlign:'left' }}>
             rua=mailto:reports@dnsradar.easysecurity.in
           </div>
           <div style={{ fontSize:12, color:D.d }}>Or upload an existing XML report above to get started immediately.</div>
@@ -182,14 +182,14 @@ export default function Reports({ user }) {
               <ResponsiveContainer width="100%" height={180}>
                 <AreaChart data={chartData} margin={{ top:4, right:4, bottom:0, left:-20 }}>
                   <defs>
-                    <linearGradient id="gc" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#10b981" stopOpacity={0.15}/><stop offset="95%" stopColor="#10b981" stopOpacity={0}/></linearGradient>
+                    <linearGradient id="gc" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--green)" stopOpacity={0.15}/><stop offset="95%" stopColor="var(--green)" stopOpacity={0}/></linearGradient>
                     <linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#ef4444" stopOpacity={0.15}/><stop offset="95%" stopColor="#ef4444" stopOpacity={0}/></linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false}/>
                   <XAxis dataKey="date" tick={{ fill:'#9ca3af', fontSize:9 }} axisLine={false} tickLine={false}/>
                   <YAxis tick={{ fill:'#9ca3af', fontSize:9 }} axisLine={false} tickLine={false}/>
                   <Tooltip content={<TTip/>}/>
-                  <Area type="monotone" dataKey="compliant" name="Compliant" stroke="#10b981" strokeWidth={2} fill="url(#gc)"/>
+                  <Area type="monotone" dataKey="compliant" name="Compliant" stroke="var(--green)" strokeWidth={2} fill="url(#gc)"/>
                   <Area type="monotone" dataKey="failing" name="Failing" stroke="#ef4444" strokeWidth={2} fill="url(#gf)"/>
                 </AreaChart>
               </ResponsiveContainer>

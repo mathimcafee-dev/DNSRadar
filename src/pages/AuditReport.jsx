@@ -21,10 +21,10 @@ export default function AuditReport({ setPage, setScanDomain, setScanType }) {
   return (
     <div style={{ fontFamily:F, background:'var(--page)', minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'40px 24px' }}>
       <div style={{ maxWidth:520, width:'100%', textAlign:'center' }}>
-        <div style={{ width:48, height:48, background:'#16a34a', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 20px' }}>
+        <div style={{ width:48, height:48, background:'var(--green)', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 20px' }}>
           <Radar size={24} color="#fff" strokeWidth={2.5}/>
         </div>
-        <div style={{ fontSize:11, fontWeight:700, color:'#16a34a', textTransform:'uppercase', letterSpacing:'0.12em', marginBottom:12 }}>Free DNS Audit</div>
+        <div style={{ fontSize:11, fontWeight:700, color:'var(--green)', textTransform:'uppercase', letterSpacing:'0.12em', marginBottom:12 }}>Free DNS Audit</div>
         <h1 style={{ fontSize:'clamp(26px,5vw,40px)', fontWeight:900, letterSpacing:'-0.04em', lineHeight:1.1, marginBottom:16 }}>
           Full domain security audit
         </h1>
@@ -40,11 +40,11 @@ export default function AuditReport({ setPage, setScanDomain, setScanType }) {
               placeholder="yourdomain.com"
               autoFocus
               style={{ width:'100%', padding:'13px 14px 13px 36px', background:'var(--card)', border:'1.5px solid #e5e7eb', borderRadius:10, fontSize:15, fontFamily:MONO, color:'#111', outline:'none', boxSizing:'border-box', boxShadow:'0 2px 8px rgba(0,0,0,0.06)' }}
-              onFocus={e => e.target.style.borderColor='#16a34a'}
+              onFocus={e => e.target.style.borderColor='var(--green)'}
               onBlur={e => e.target.style.borderColor='#e5e7eb'}
             />
           </div>
-          <button type="submit" style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'13px 22px', background:'#16a34a', color:'#fff', border:'none', borderRadius:10, fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:F, whiteSpace:'nowrap', boxShadow:'0 2px 8px rgba(22,163,74,0.25)' }}>
+          <button type="submit" style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'13px 22px', background:'var(--green)', color:'#fff', border:'none', borderRadius:10, fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:F, whiteSpace:'nowrap', boxShadow:'0 2px 8px rgba(232,137,122,0.25)' }}>
             Run audit <ArrowRight size={15}/>
           </button>
         </form>
@@ -52,7 +52,7 @@ export default function AuditReport({ setPage, setScanDomain, setScanType }) {
         <div style={{ display:'flex', gap:20, justifyContent:'center', flexWrap:'wrap', marginBottom:40 }}>
           {['SPF & DKIM & DMARC','SSL certificate','Blacklists (52)','DNS propagation','Security checks','Health score'].map(f => (
             <div key={f} style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'var(--t3)' }}>
-              <div style={{ width:6, height:6, borderRadius:'50%', background:'#16a34a' }}/>
+              <div style={{ width:6, height:6, borderRadius:'50%', background:'var(--green)' }}/>
               {f}
             </div>
           ))}
