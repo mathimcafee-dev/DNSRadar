@@ -28,15 +28,35 @@ const PROVIDERS = [
 ]
 
 // Build the exact DNS record fix for each issue type
-function buildFixRecord(issue, domain) {
+// ACCURACY RULES (RFC-compliant, safe for any domain):
+//   SPF  → Never auto-generate. Each domain has different mail providers.
+//          Show warning + link to SPF Generator instead.
+//   DMARC→ p=none ONLY (monitoring mode). Never push quarantine/reject as default.
+//          adkim=r; aspf=r (relaxed) — required for ESP compatibility.
+//          rua= uses DomainRadar inbound address, never a made-up domain mailbox.
+//   CAA  → Requires user to select their CA vendor. Never hardcode to letsencrypt.
+//          TTL=3600 is correct for CAA (changes rarely).
+function buildFixRecord(issue, domain, ruaAddress) {
   const d = domain?.domain_name || 'yourdomain.com'
   switch (issue.type) {
     case 'SPF':
-      return { type:'TXT', name:'@', content:`v=spf1 include:_spf.google.com ~all`, ttl:300, label:'SPF record' }
-    case 'DMARC':
-      return { type:'TXT', name:`_dmarc.${d}`, content:`v=DMARC1; p=quarantine; rua=mailto:reports@${d}; adkim=r; aspf=r`, ttl:300, label:'DMARC record' }
+      // SPF CANNOT be auto-generated safely — it depends on which mail servers
+      // the user actually uses. Returning null blocks the auto-fix button.
+      return null
+    case 'DMARC': {
+      // Safe defaults per RFC 7489 and Google/Yahoo 2024 sender requirements:
+      // - p=none: monitoring only, no mail blocked — safe starting point
+      // - adkim=r: relaxed DKIM alignment — required for ESPs (SendGrid, Mailchimp etc)
+      // - aspf=r: relaxed SPF alignment — required for subdomains
+      // - rua: use DomainRadar inbound address if available, else omit
+      const rua = ruaAddress ? `; rua=mailto:${ruaAddress}` : ''
+      return { type:'TXT', name:`_dmarc.${d}`, content:`v=DMARC1; p=none${rua}; adkim=r; aspf=r`, ttl:300, label:'DMARC record' }
+    }
     case 'CAA':
-      return { type:'CAA', name:'@', content:`0 issue "letsencrypt.org"`, ttl:3600, label:'CAA record' }
+      // CAA records restrict which CAs can issue certs for your domain.
+      // The content is set by the user via the CAA vendor picker in AutoFixButton.
+      // This fallback should not be reached — AutoFixButton handles CAA separately.
+      return null
     default:
       return null
   }
@@ -111,7 +131,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
   async function autoFix(cred, issue) {
     const fixKey = `${cred.id}-${issue.type}`
     setFixing(f => ({ ...f, [fixKey]: true }))
-    const record = buildFixRecord(issue, selectedDomain)
+    const record = buildFixRecord(issue, selectedDomain, null) // rua handled by DMARC setup wizard
     if (!record) { setFixing(f => ({ ...f, [fixKey]: false })); return }
 
     try {
@@ -290,7 +310,7 @@ export default function DnsAutoFix({ user, domains, selectedDomain, onScanTrigge
                 DomainRadar will push these exact records to your DNS. Review each record before confirming. Changes are logged and reversible.
               </div>
               {fixableIssues.map((issue, i) => {
-                const record = buildFixRecord(issue, selectedDomain)
+                const record = buildFixRecord(issue, selectedDomain, null) // rua handled by DMARC setup wizard
                 if (!record) return null
                 return (
                   <div key={i} style={{ ...card }}>

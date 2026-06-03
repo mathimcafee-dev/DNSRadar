@@ -236,12 +236,12 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
   const [state, setState] = useState('idle')
   const [cred, setCred] = useState(null)
   const [showConfirm, setShowConfirm] = useState(false)
-  const [caaVendors, setCaaVendors] = useState(['letsencrypt'])
+  const [caaVendors, setCaaVendors] = useState([]) // Default empty — user must select their actual CA
   const [caaMode, setCaaMode] = useState('issue') // issue | issuewild | iodef
 
   const RECORD_MAP = {
-    SPF:   { type:'TXT', name:'@',                         label:'SPF record' },
-    DMARC: { type:'TXT', name:d=>`_dmarc.${d}`,            label:'DMARC record' },
+    SPF:   { type:'TXT', name:'@',                         label:'SPF record', ttl:3600 },
+    DMARC: { type:'TXT', name:d=>`_dmarc.${d}`,            label:'DMARC record', ttl:3600 },
     CAA:   { type:'CAA', name:'@',                         label:'CAA record' },
     DKIM:  { type:'TXT', name:d=>`default._domainkey.${d}`,label:'DKIM record' },
   }
@@ -279,7 +279,7 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
       let allOk = true
       for (const content of lines) {
         const res = await supabase.functions.invoke('dns-autofix', {
-          body: { credential_id: cred.id, domain_id: domainId, action:'create', record_type:'CAA', record_name: recordName, record_content: content, record_ttl: 300 },
+          body: { credential_id: cred.id, domain_id: domainId, action:'create', record_type:'CAA', record_name: recordName, record_content: content, record_ttl: 3600 },
           headers: { Authorization: `Bearer ${session?.access_token}` }
         })
         if (!res.data?.success) { allOk = false }
@@ -287,7 +287,7 @@ function AutoFixButton({ domainId, issueType, fixValue, domainName }) {
       setState(allOk ? 'success' : 'error')
     } else {
       const res = await supabase.functions.invoke('dns-autofix', {
-        body: { credential_id: cred.id, domain_id: domainId, action:'create', record_type: mapping.type, record_name: recordName, record_content: fixValue, record_ttl: 300 },
+        body: { credential_id: cred.id, domain_id: domainId, action:'create', record_type: mapping.type, record_name: recordName, record_content: fixValue, record_ttl: mapping.ttl || 3600 },
         headers: { Authorization: `Bearer ${session?.access_token}` }
       })
       setState(res.data?.success ? 'success' : 'error')
@@ -565,11 +565,11 @@ function IssuesPanel({ issues, critical, warns, scan, selected, user, setPage })
               <div style={{fontSize:12, color:'#8896a7', marginTop:4}}>No issues detected on {selected?.domain_name}</div>
             </div>
           ) : issues.map((iss, i) => {
-            const fixVal = iss.type==='SPF'   ? (scan.email_auth?.spf_raw || 'v=spf1 include:_spf.google.com ~all')
-                         : iss.type==='DMARC' ? (scan.email_auth?.dmarc_suggestion || scan.email_auth?.dmarc_raw || `v=DMARC1; p=quarantine; rua=mailto:dmarc@${selected?.domain_name}; adkim=s; aspf=s`)
+            const fixVal = iss.type==='SPF'   ? (scan.email_auth?.spf_raw || null) // null blocks auto-fix for missing SPF
+                         : iss.type==='DMARC' ? (scan.email_auth?.dmarc_suggestion || scan.email_auth?.dmarc_raw || null)
                          : iss.type==='CAA'   ? '0 issue "letsencrypt.org"'
                          : iss.fix
-            const canAutoFix = ['SPF','DMARC','CAA'].includes(iss.type) && fixVal
+            const canAutoFix = ['SPF','DMARC','CAA'].includes(iss.type) && fixVal && fixVal.trim().length > 0
             const sevColor = iss.severity==='critical'?'#e53e3e':iss.severity==='warn'?'#0073d1':'#0284c7'
             const sevBg    = iss.severity==='critical'?'#fff5f5':iss.severity==='warn'?'#e8f3fc':'#e0f2fe'
             const sevBd    = iss.severity==='critical'?'#feb2b2':iss.severity==='warn'?'#fcd34d':'#bfdbfe'
@@ -592,7 +592,15 @@ function IssuesPanel({ issues, critical, warns, scan, selected, user, setPage })
                     </div>
                   )}
                   {!canAutoFix && iss.fix && (
-                    <div style={{fontSize:11, color:'#8896a7', marginTop:3, lineHeight:1.5}}>{iss.fix}</div>
+                    <div style={{marginTop:4}}>
+                      <div style={{fontSize:12, color:'#4a5568', lineHeight:1.6, marginBottom: iss.type==='SPF' ? 8 : 0}}>{iss.fix}</div>
+                      {iss.type==='SPF' && (
+                        <button onClick={()=>setPage('tools')}
+                          style={{fontSize:12,fontWeight:600,color:'#0073d1',background:'#e8f3fc',border:'1px solid #a8d0f0',borderRadius:6,padding:'5px 12px',cursor:'pointer',fontFamily:'inherit'}}>
+                          Open SPF Generator →
+                        </button>
+                      )}
+                    </div>
                   )}
                 </div>
                 {canAutoFix && (
@@ -1259,9 +1267,9 @@ export default function Dashboard({ user, setPage, setScanDomain, setScanType, o
                 <div style={card}>
                   <div style={cardHd}><span style={{fontSize:12,fontWeight:700,color:'#1a2332',display:'flex',alignItems:'center',gap:6}}><Mail size={13} color="#a78bfa"/> Email authentication</span></div>
                   {[
-                    {name:'SPF',  status:scan.email_auth.spf_status,  val:scan.email_auth.spf_raw,  note:scan.email_auth.spf_fix,  extra:scan.email_auth.spf_lookups!=null?`${scan.email_auth.spf_lookups}/10 lookups`:null, fixType:'SPF',  fixVal:scan.email_auth.spf_raw||'v=spf1 include:_spf.google.com ~all'},
+                    {name:'SPF',  status:scan.email_auth.spf_status,  val:scan.email_auth.spf_raw,  note:scan.email_auth.spf_fix,  extra:scan.email_auth.spf_lookups!=null?`${scan.email_auth.spf_lookups}/10 lookups`:null, fixType:'SPF',  fixVal:scan.email_auth.spf_raw||null}, // null blocks auto-fix when no existing SPF
                     {name:'DKIM', status:scan.email_auth.dkim_status, val:scan.email_auth.dkim_selector?`Selector: ${scan.email_auth.dkim_selector}`:null, note:scan.email_auth.dkim_note},
-                    {name:'DMARC',status:scan.email_auth.dmarc_status,val:scan.email_auth.dmarc_raw, note:scan.email_auth.dmarc_fix,suggest:scan.email_auth.dmarc_suggestion, fixType:'DMARC', fixVal:scan.email_auth.dmarc_suggestion||scan.email_auth.dmarc_raw||`v=DMARC1; p=quarantine; rua=mailto:dmarc@${selected?.domain_name}; adkim=s; aspf=s`},
+                    {name:'DMARC',status:scan.email_auth.dmarc_status,val:scan.email_auth.dmarc_raw, note:scan.email_auth.dmarc_fix,suggest:scan.email_auth.dmarc_suggestion, fixType:'DMARC', fixVal:scan.email_auth.dmarc_suggestion||scan.email_auth.dmarc_raw||null},
                     {name:'BIMI', status:scan.email_auth.bimi_status||'Not configured',   val:scan.email_auth.bimi_raw, note:scan.email_auth.bimi_note},
                     {name:'MTA-STS',status:scan.email_auth.mta_sts_status||'Not configured',val:null,note:'Enforces TLS for all inbound mail delivery.'},
                     {name:'TLS-RPT',status:scan.email_auth.tls_rpt_status||'Not configured',val:null,note:'Enables TLS failure reporting.'},

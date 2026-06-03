@@ -56,7 +56,7 @@ async function analyzeSPF(domain: string) {
   const spfRecord = txtRecords.find((r: any) => r.data?.includes('v=spf1'))
   if (!spfRecord) return {
     spf_status: 'Missing', spf_raw: null, spf_lookups: 0,
-    spf_fix: `No SPF record found. Add TXT record: v=spf1 include:_spf.google.com ~all`,
+    spf_fix: `No SPF record found. SPF is required to authorise mail servers for your domain. Use the SPF Generator in Tools to build the correct record for your mail provider.`,
   }
   const raw = spfRecord.data.replace(/"/g, '').trim()
   const mechanisms = raw.match(/\b(include|a|mx|ptr|exists|redirect)[:=]/g) || []
@@ -157,7 +157,8 @@ async function analyzeDMARC(domain: string) {
     return {
       dmarc_status: 'Missing', dmarc_raw: null,
       dmarc_fix: `No DMARC record. Add TXT record at _dmarc.${domain}`,
-      dmarc_suggestion: `v=DMARC1; p=quarantine; rua=mailto:dmarc@${domain}; adkim=s; aspf=s`,
+      // dmarc_suggestion intentionally omits rua= — use DMARC Reports → RUA Setup to get your unique inbound address
+      dmarc_suggestion: `v=DMARC1; p=none; adkim=r; aspf=r`,
     }
   }
 
@@ -182,7 +183,7 @@ async function analyzeDMARC(domain: string) {
   }
 
   if (!rua) {
-    fix = (fix ? fix + ' ' : '') + `rua tag missing — add rua=mailto:dmarc@${domain} to receive aggregate reports.`
+    fix = (fix ? fix + ' ' : '') + 'rua= tag missing — add a report email address to receive DMARC aggregate reports.'
     if (status === 'Pass') status = 'Warn'
   }
   if (pct && parseInt(pct) < 100) {
@@ -380,7 +381,7 @@ function buildIssues(spf: any, dkim: any, dmarc: any, ssl: any, security: any, b
   else if (spf.spf_status === 'Fail') issues.push({ type: 'SPF', severity: 'critical', message: spf.spf_fix, fix: 'Use SPF flattening to reduce DNS lookup count.' })
   else if (spf.spf_status === 'Warn') issues.push({ type: 'SPF', severity: 'warn', message: spf.spf_fix })
   if (dkim.dkim_status === 'Missing') issues.push({ type: 'DKIM', severity: 'critical', message: 'No DKIM record found on common selectors. Emails cannot be cryptographically verified.', fix: 'Configure DKIM with your email provider.' })
-  if (dmarc.dmarc_status === 'Missing') issues.push({ type: 'DMARC', severity: 'critical', message: `No DMARC record found at _dmarc.${dmarc.dmarc_fix?.split(' ').pop() || ''}`, fix: dmarc.dmarc_fix })
+  if (dmarc.dmarc_status === 'Missing') issues.push({ type: 'DMARC', severity: 'critical', message: 'No DMARC record found. Your domain has no protection against email spoofing.', fix: dmarc.dmarc_fix })
   else if (dmarc.dmarc_status === 'Warn') issues.push({ type: 'DMARC', severity: 'warn', message: dmarc.dmarc_fix || 'DMARC policy needs strengthening.', fix: dmarc.dmarc_suggestion })
   if (ssl.overall_status === 'Fail') issues.push({ type: 'SSL', severity: 'critical', message: 'HTTPS connection failed or no valid certificate found.', fix: 'Install a valid SSL certificate.' })
   else if (ssl.overall_status === 'Warn') {
